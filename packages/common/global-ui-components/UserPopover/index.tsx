@@ -1,0 +1,90 @@
+// Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+
+import Identicon from '@polkadot/react-identicon';
+import { Popover } from 'antd';
+import React from 'react';
+import Link from 'next/link';
+import { CircleArrowDownIcon, WarningRoundedIcon } from '@common/global-ui-components/Icons';
+import { SubstrateAddress } from '@common/global-ui-components/SubstrateAddress';
+import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+
+interface IUserPopover {
+	userAddress: string;
+}
+const UserPopover = ({ userAddress }: IUserPopover) => {
+	const handleDisconnect = () => {
+		// logout();
+	};
+
+	if (!userAddress) {
+		return (
+			<Link
+				href='/login'
+				className='flex items-center justify-center gap-x-2 outline-none border-none text-white bg-highlight rounded-lg p-2.5 shadow-none text-xs'
+			>
+				<WarningRoundedIcon className='text-sm text-primary' />
+				Not Connected
+			</Link>
+		);
+	}
+
+	return (
+		<SlideInMotion>
+			<Popover
+				placement='bottom'
+				content={
+					<div className='bg-bg-main flex flex-col gap-2 p-4 w-64 border-[1px] border-primary rounded-lg mt-2'>
+						<div className='flex flex-col items-center gap-2'>
+							<Identicon
+								value={userAddress}
+								theme='polkadot'
+								size={50}
+								className='rounded-full border-2 border-primary p-1'
+							/>
+							<Typography
+								variant={ETypographyVariants.h6}
+								className='font-bold text-text-primary m-auto'
+							>
+								My Address
+							</Typography>
+						</div>
+						<div className='m-auto'>
+							<SubstrateAddress
+								address={userAddress}
+								disableIdenticon
+								className='text-text-primary bg-bg-secondary rounded-md p-2 w-auto'
+								copyIcon
+							/>
+						</div>
+						<Button
+							variant={EButtonVariant.DANGER}
+							onClick={handleDisconnect}
+							className='w-full text-text-primary bg-failure p-2 text-sm font-normal mt-3'
+						>
+							Disconnect
+						</Button>
+					</div>
+				}
+				trigger='click'
+				arrow={false}
+			>
+				<Button
+					variant={EButtonVariant.PRIMARY}
+					className='p-2.5 h-full px-4 border-2 flex gap-4'
+				>
+					<SubstrateAddress
+						address={userAddress}
+						identiconSize={15}
+					/>
+					<CircleArrowDownIcon className='text-primary' />
+				</Button>
+			</Popover>
+		</SlideInMotion>
+	);
+};
+
+export default UserPopover;

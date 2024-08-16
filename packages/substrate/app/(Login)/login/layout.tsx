@@ -1,0 +1,36 @@
+// Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+import '@common/styles/globals.scss';
+import { LayoutWrapper } from '@common/global-ui-components/LayoutWrapper';
+import { LoginLayout as GlobalLoginLayout } from '@common/global-ui-components/LoginLayout';
+import NextTopLoader from 'nextjs-toploader';
+import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
+import { PropsWithChildren } from 'react';
+import { redirect } from 'next/navigation';
+import { NextApiRequest } from 'next';
+import { cookies } from 'next/headers';
+import { CREATE_ORGANISATION_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
+
+export default function LoginLayout({ children }: PropsWithChildren<{ req: NextApiRequest }>) {
+	const user = getUserFromCookie();
+
+	if (user) {
+		const { organisations } = user;
+		if (organisations.length > 0) {
+			redirect(ORGANISATION_DASHBOARD_URL({ id: organisations[0].id }));
+		}
+		const address = user.address?.[0] || '';
+		redirect(CREATE_ORGANISATION_URL({ address }));
+	}
+	return (
+		<html lang='en'>
+			<body>
+				<LayoutWrapper>
+					<NextTopLoader />
+					<GlobalLoginLayout>{children}</GlobalLoginLayout>
+				</LayoutWrapper>
+			</body>
+		</html>
+	);
+}

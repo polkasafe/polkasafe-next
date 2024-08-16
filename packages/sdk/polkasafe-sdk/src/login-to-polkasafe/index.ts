@@ -1,0 +1,10 @@
+import { request } from '../utils/request';
+import { handleHeaders } from '../utils/handleHeaders';
+
+export function loginToPolkasafe(address: string, signature: string) {
+	if (!address) {
+		throw new Error('Invalid signature, use setSignature method to set the signature');
+	}
+	const headers = handleHeaders({ address, signature });
+	return request('/login_test', headers, { method: 'POST' });
+}
