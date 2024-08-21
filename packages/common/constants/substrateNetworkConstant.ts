@@ -2,21 +2,21 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import acalaLogo from '~assets/parachains-logos/acala-logo.png';
-import alephzeroLogo from '~assets/parachains-logos/aleph-zero-logo.jpeg';
-import assethubLogo from '~assets/parachains-logos/assethub-logo.png';
-import astarLogo from '~assets/parachains-logos/astar-logo.png';
-import kusamaLogo from '~assets/parachains-logos/kusama-logo.gif';
-import moonbeamLogo from '~assets/parachains-logos/moonbeam-logo.png';
-import moonriverLogo from '~assets/parachains-logos/moonriver-logo.png';
-import polkadotLogo from '~assets/parachains-logos/polkadot-logo.jpg';
-import polymeshLogo from '~assets/parachains-logos/polymesh-logo.png';
-import westendLogo from '~assets/parachains-logos/westend-logo.png';
 import { StaticImageData } from 'next/image';
-import rococoLogo from '~assets/parachains-logos/rococo-logo.jpeg';
-import phalaLogo from '~assets/parachains-logos/phala-logo.png';
-import khalaLogo from '~assets/parachains-logos/khala-logo.png';
-import availLogo from '~assets/parachains-logos/avail-logo.png';
+import acalaLogo from '@common/assets/parachains-logos/acala-logo.png';
+import alephzeroLogo from '@common/assets/parachains-logos/aleph-zero-logo.jpeg';
+import assethubLogo from '@common/assets/parachains-logos/assethub-logo.png';
+import astarLogo from '@common/assets/parachains-logos/astar-logo.png';
+import kusamaLogo from '@common/assets/parachains-logos/kusama-logo.gif';
+import moonbeamLogo from '@common/assets/parachains-logos/moonbeam-logo.png';
+import moonriverLogo from '@common/assets/parachains-logos/moonriver-logo.png';
+import polkadotLogo from '@common/assets/parachains-logos/polkadot-logo.jpg';
+import polymeshLogo from '@common/assets/parachains-logos/polymesh-logo.png';
+import westendLogo from '@common/assets/parachains-logos/westend-logo.png';
+import rococoLogo from '@common/assets/parachains-logos/rococo-logo.jpeg';
+import phalaLogo from '@common/assets/parachains-logos/phala-logo.png';
+import khalaLogo from '@common/assets/parachains-logos/khala-logo.png';
+import availLogo from '@common/assets/parachains-logos/avail-logo.png';
 
 export type Network = (typeof networks)[keyof typeof networks];
 export type TokenSymbol = (typeof tokenSymbol)[keyof typeof tokenSymbol];

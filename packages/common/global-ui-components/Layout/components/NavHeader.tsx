@@ -1,13 +1,13 @@
 import React from 'react';
 import { Layout as AntDLayout } from 'antd';
 import { useSearchParams, usePathname } from 'next/navigation';
-import { IOrganisation } from '@substrate/app/global/types';
 import OrganisationDropdown from '@common/global-ui-components/OrganisationDropdown';
 import Breadcrumb from '@common/global-ui-components/Breadcrumb';
 import NotificationPopover from '@common/global-ui-components/NotificationPopover';
 import DonateButton from '@common/global-ui-components/DonateButton';
 import DocsButton from '@common/global-ui-components/DocsButton';
 import UserPopover from '@common/global-ui-components/UserPopover';
+import { IOrganisation } from '@common/types/substrate';
 
 const { Header } = AntDLayout;
 

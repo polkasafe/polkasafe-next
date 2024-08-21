@@ -16,7 +16,7 @@ import {
 	IGetOrganisationProps,
 	IGetOrganisationTransactionProps,
 	ILoginProps
-} from './types';
+} from '@common/types/sdk';
 import { getOrganisationAsset } from './get-organisation-assets';
 import { getTransactionsForOrganisation } from './get-transactions-for-organisation';
 

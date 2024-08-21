@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { SubstrateLoginForm } from '@substrate/app/(Login)/login/components/SubstrateLoginForm';
-import ConnectWalletImg from '@next-common/assets/connect-wallet.svg';
+import ConnectWalletImg from '@common/assets/icons/connect-wallet.svg';
 
 function Web3Login() {
 	return (

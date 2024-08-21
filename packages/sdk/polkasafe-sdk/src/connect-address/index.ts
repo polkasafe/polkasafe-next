@@ -6,5 +6,5 @@ export function connectAddress(address: string) {
 		throw new Error('Invalid signature, use setSignature method to set the signature');
 	}
 	const headers = handleHeaders({ address });
-	return request('/connectAddress_test', headers, { method: 'POST' });
+	return request('/auth/connectAddress', headers, { method: 'POST' });
 }

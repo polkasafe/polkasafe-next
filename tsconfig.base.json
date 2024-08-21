@@ -39,9 +39,6 @@
       "@next-common/*": [
         "./next-common/*"
       ],
-      "~assets/*": [
-        "./next-common/assets/*"
-      ]
     },
     "plugins": [
       {

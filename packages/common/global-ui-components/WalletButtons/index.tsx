@@ -9,9 +9,9 @@ import SubWalletIcon from '@common/assets/wallet-icons/subwallet-icon.svg';
 import TalismanIcon from '@common/assets/wallet-icons/talisman-icon.svg';
 import { twMerge } from 'tailwind-merge';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-import { Wallet } from 'substrate/app/global/types';
 import WalletButton from '@common/global-ui-components/WalletButton';
 import APP_NAME from '@common/constants/appName';
+import { Wallet } from '@common/enum/substrate';
 
 interface IWalletButtons {
 	loggedInWallet: Wallet;
