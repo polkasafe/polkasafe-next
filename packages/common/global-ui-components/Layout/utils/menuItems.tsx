@@ -7,7 +7,7 @@ import {
 	StarIcon,
 	TransactionIcon,
 	TreasuryAnalyticsIcon
-} from '@next-common/ui-components/CustomIcons';
+} from '@common/global-ui-components/Icons';
 
 export const menuItems = [
 	{

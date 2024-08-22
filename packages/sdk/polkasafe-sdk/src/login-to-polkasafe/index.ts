@@ -6,5 +6,5 @@ export function loginToPolkasafe(address: string, signature: string) {
 		throw new Error('Invalid signature, use setSignature method to set the signature');
 	}
 	const headers = handleHeaders({ address, signature });
-	return request('/login_test', headers, { method: 'POST' });
+	return request('/auth/login', headers, { method: 'POST' });
 }

@@ -30,5 +30,5 @@ export function getTransactionsForMultisig({
 		limit
 	});
 
-	return request('/getTransaction_test', {}, { method: 'POST', body });
+	return request('/getTransaction', {}, { method: 'POST', body });
 }

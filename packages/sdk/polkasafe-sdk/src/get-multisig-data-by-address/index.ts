@@ -15,5 +15,5 @@ export function getMultisigDataByMultisigAddress({ address, network }: Props) {
 		network
 	});
 
-	return request('/getMultisigData_test', {}, { method: 'POST', body });
+	return request('/getMultisigData', {}, { method: 'POST', body });
 }

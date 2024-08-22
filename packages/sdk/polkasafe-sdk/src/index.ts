@@ -1,3 +1,12 @@
+import {
+	IConnectAddressTokenProps,
+	IConnectProps,
+	IGetMultisigDataProps,
+	IGetMultisigTransactionProps,
+	IGetOrganisationProps,
+	IGetOrganisationTransactionProps,
+	ILoginProps
+} from '@common/types/sdk';
 import CURRENCY_API_KEY from './constants/currencyApiKey';
 import { currencySymbols } from './constants/currencyConstants';
 import { getOrganisationById } from './get-organisation-by-id';
@@ -8,15 +17,6 @@ import { getAddressToken } from './get-connect-address-token';
 import { getMultisigDataByMultisigAddress } from './get-multisig-data-by-address';
 import { getMultisigQueue } from './get-multisig-queue';
 import { getTransactionsForMultisig } from './get-transactions-for-multisig';
-import {
-	IConnectAddressTokenProps,
-	IConnectProps,
-	IGetMultisigDataProps,
-	IGetMultisigTransactionProps,
-	IGetOrganisationProps,
-	IGetOrganisationTransactionProps,
-	ILoginProps
-} from './types';
 import { getOrganisationAsset } from './get-organisation-assets';
 import { getTransactionsForOrganisation } from './get-transactions-for-organisation';
 

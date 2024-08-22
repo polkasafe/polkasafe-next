@@ -11,8 +11,6 @@ import Link from 'next/link';
 import AssetsCard from '@common/global-ui-components/AssetsCard';
 import RightArrowOutlined from '@common/assets/icons/RightArrowOutlined.svg';
 import DashboardTransaction from '@substrate/app/(Main)/dashboard/components/OrganisationDashoard/components/DashboardTransaction';
-import { useAtomValue } from 'jotai';
-import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 
 export default async function OrganisationDashboard({ id }: { id: string }) {
 	const data = await getOrganisationData(id);

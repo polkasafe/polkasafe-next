@@ -21,17 +21,19 @@ async function Assets({ searchParams }: IAssetsProps) {
 		// check local storage for login user details
 		//  if not found redirect to login page
 		redirect(LOGIN_URL);
-		return null;
 	}
 
 	if (_organisation && !isValidAddress(_organisation)) {
 		redirect('/404');
-		return null;
 	}
 
 	if (_multisig && (!isValidAddress(_multisig) || !isValidNetwork(_network))) {
 		redirect('/404');
-		return null;
+	}
+
+	if (_organisation) {
+		const { assets } = await getMultisigAssets(_multisig, _network);
+		return <AssetsTemplate assets={assets} />;
 	}
 
 	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network)) {

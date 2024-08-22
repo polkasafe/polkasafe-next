@@ -6,14 +6,14 @@
     "packages/*"
   ],
   "scripts": {
-    "build:substrate": "yarn --cwd packages/next-substrate build",
-    "build:evm": "yarn --cwd packages/next-evm build",
-    "next:substrate": "yarn --cwd packages/next-substrate dev",
-    "next:evm": "yarn --cwd packages/next-evm dev",
+    "build:substrate": "yarn --cwd packages/substrate build",
+    "build:evm": "yarn --cwd packages/evm build",
+    "next:substrate": "yarn --cwd packages/substrate dev",
+    "next:evm": "yarn --cwd packages/evm dev",
     "dev": "npm-run-all --parallel next:substrate",
     "prepare": "husky install",
-    "lint": "yarn workspace next-substrate lint",
-    "lint-fix": "yarn workspace next-substrate lint --fix"
+    "lint": "yarn workspace substrate lint",
+    "lint-fix": "yarn workspace substrate lint --fix"
   },
   "dependencies": {
     "@svgr/webpack": "^8.1.0",

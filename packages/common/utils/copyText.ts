@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import getEncodedAddress from '@next-substrate/utils/getEncodedAddress';
+import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { message } from 'antd';
 
 /**

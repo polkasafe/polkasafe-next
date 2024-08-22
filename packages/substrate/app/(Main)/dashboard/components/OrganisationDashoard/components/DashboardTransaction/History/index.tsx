@@ -3,9 +3,12 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
 import TransactionHead from '@common/global-ui-components/Transaction/TransactionHead';
-import { IDashboardTransaction } from '@substrate/app/global/types';
 import { Skeleton } from 'antd';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+import { IDashboardTransaction } from '@common/types/substrate';
+import { getApiAtomByNetwork } from '@substrate/app/global/utils/getApiAtomByNetwork';
+import { PrimitiveAtom } from 'jotai';
+import { IApiAtom } from '@substrate/app/atoms/api/apiAtom';
 
 interface IHistoryProps {
 	transactions: Array<IDashboardTransaction> | null;
@@ -50,10 +53,9 @@ function History({ transactions = [] }: IHistoryProps) {
 				{!transactions ? (
 					<Skeleton active />
 				) : (
-					transactions.map((transaction, index) => (
+					transactions.map((transaction) => (
 						<TransactionHead
-							// eslint-disable-next-line react/no-array-index-key
-							key={`${transaction.callHash}_${index}`}
+							key={`${transaction.callHash}`}
 							callData={transaction.callData}
 							callHash={transaction.callHash}
 							createdAt={transaction.createdAt.toLocaleString()}
@@ -61,6 +63,7 @@ function History({ transactions = [] }: IHistoryProps) {
 							network={transaction.network}
 							amountToken={transaction.amountToken}
 							from={transaction.from}
+							apiAtom={getApiAtomByNetwork(transaction.network) as PrimitiveAtom<IApiAtom>}
 						/>
 					))
 				)}

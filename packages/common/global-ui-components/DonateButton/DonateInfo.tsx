@@ -3,11 +3,13 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Divider } from 'antd';
 import React from 'react';
-import PolkasafeLogo from '@next-common/assets/polkasafe-logo-white.svg';
-import { ExternalLinkIcon, WalletIcon } from '@next-common/ui-components/CustomIcons';
+import PolkasafeLogo from '@common/assets/icons/polkasafe-logo-white.svg';
 
+import { ExternalLinkIcon, WalletIcon } from '@common/global-ui-components/Icons';
+import { networks } from '@common/constants/substrateNetworkConstant';
 import QR from './QR';
 
+// TODO: need to add the network prop
 const DonateInfo = () => {
 	return (
 		<>
@@ -22,7 +24,7 @@ const DonateInfo = () => {
 					</div>
 				</article>
 				<article>
-					<QR />
+					<QR network={networks.POLKADOT} />
 				</article>
 			</div>
 			<Divider className='bg-text_secondary my-8' />

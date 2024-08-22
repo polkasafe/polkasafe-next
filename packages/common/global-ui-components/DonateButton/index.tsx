@@ -3,9 +3,9 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { useState } from 'react';
 
-import ModalComponent from '@next-common/ui-components/ModalComponent';
 import { DollarIcon } from '@common/global-ui-components/Icons';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
+import Modal from '@common/global-ui-components/Modal';
 import DonateInfo from './DonateInfo';
 
 const DonateButton = () => {
@@ -13,13 +13,13 @@ const DonateButton = () => {
 	return (
 		<SlideInMotion>
 			<div className='relative'>
-				<ModalComponent
+				<Modal
 					onCancel={() => setOpenDonateModal(false)}
 					title={<h3 className='text-white mb-8 text-lg font-semibold'>Donate Us!</h3>}
 					open={openDonateModal}
 				>
 					<DonateInfo />
-				</ModalComponent>
+				</Modal>
 				<button
 					onClick={() => setOpenDonateModal(true)}
 					className='flex items-center justify-center gap-x-2 outline-none border-none text-white bg-highlight rounded-lg p-2.5 shadow-none text-xs'

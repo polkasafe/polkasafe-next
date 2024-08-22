@@ -24,7 +24,7 @@ import { chainProperties, networks } from '@common/constants/substrateNetworkCon
 import { initialize } from 'avail-js-sdk';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { queueNotification } from '@common/global-ui-components/QueueNotification';
-import { NotificationStatus } from '@next-common/types';
+import { NotificationStatus } from '@common/enum/substrate';
 
 export const checkAvailNetwork = (network: string) => {
 	return [networks.AVAIL, networks.TURING].includes(network);

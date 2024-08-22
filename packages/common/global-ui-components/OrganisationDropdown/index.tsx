@@ -1,4 +1,3 @@
-import { IOrganisation } from '@substrate/app/global/types';
 import React from 'react';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import Image from 'next/image';
@@ -7,6 +6,7 @@ import { Dropdown } from 'antd';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import { useRouter } from 'next/navigation';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
+import { IOrganisation } from '@common/types/substrate';
 
 interface IOrganisationDropdown {
 	organisations: Array<IOrganisation>;

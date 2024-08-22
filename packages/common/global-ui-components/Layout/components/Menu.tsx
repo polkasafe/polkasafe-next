@@ -4,7 +4,7 @@
 
 import Link from 'next/link';
 import PolkasafeLogo from '@common/assets/icons/polkasafe.svg';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { menuItems } from '@common/global-ui-components/Layout/utils/menuItems';
 import MenuItem from '@common/global-ui-components/Layout/components/MenuItem';
 // import Image from 'next/image';
@@ -34,6 +34,20 @@ const Menu = ({ userAddress }: IMenuProps) => {
 	const pathname = usePathname();
 	const organisation = useAtomValue(organisationAtom);
 	const { multisigs = [] } = organisation || {};
+	const searchParams = useSearchParams();
+	const _organisation = searchParams.get('_organisation');
+	const _multisig = searchParams.get('_multisig');
+	const _network = searchParams.get('_network');
+
+	const getUrl = (baseUrl: string) => {
+		if (_organisation) {
+			return `${baseUrl}?_organisation=${_organisation}`;
+		}
+		if (_multisig && _network) {
+			return `${baseUrl}?_multisig=${_multisig}&_network=${_network}`;
+		}
+		return '/';
+	};
 
 	return (
 		<div className='bg-bg-main flex flex-col h-full py-4 px-3 max-sm:px-0 max-sm:py-0'>
@@ -56,7 +70,7 @@ const Menu = ({ userAddress }: IMenuProps) => {
 							return (
 								<MenuItem
 									key={item.title}
-									baseURL={item.baseURL}
+									baseURL={getUrl(item.baseURL)}
 									authenticated={Boolean(userAddress)}
 									icon={item.icon}
 									pathname={pathname}

@@ -10,7 +10,6 @@ import { WalletIcon } from '@common/global-ui-components/Icons';
 import Loader from '@common/global-ui-components/Loder';
 import WalletButtons from '@common/global-ui-components/WalletButtons';
 import React, { useEffect, useState } from 'react';
-import { NotificationStatus, Wallet } from 'substrate/app/global/types';
 import { InjectedAccount } from '@polkadot/extension-inject/types';
 import { useRouter } from 'next/navigation';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
@@ -24,6 +23,7 @@ import { TFAForm } from '@substrate/app/(Login)/login/components/TFAForm';
 import { clientLogin } from '@substrate/app/(Login)/client-actions/client-login';
 import { CREATE_ORGANISATION_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
+import { NotificationStatus, Wallet } from '@common/enum/substrate';
 
 export function SubstrateLoginForm() {
 	const setAtom = useSetAtom(userAtom);

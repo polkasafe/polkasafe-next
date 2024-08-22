@@ -2,21 +2,23 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
-import { useGlobalApiContext } from '@next-substrate/context/ApiContext';
-import AddressQr from '@next-common/ui-components/AddressQr';
-import { CopyIcon, ExternalLinkIcon } from '@next-common/ui-components/CustomIcons';
-import copyText from '@next-substrate/utils/copyText';
-import shortenAddress from '@next-substrate/utils/shortenAddress';
+import shortenAddress from '@common/utils/shortenAddress';
+import copyText from '@common/utils/copyText';
+import { CopyIcon, ExternalLinkIcon } from '@common/global-ui-components/Icons';
+import { Network } from '@common/constants/substrateNetworkConstant';
+import AddressQr from '@common/global-ui-components/AddressQR';
 
-const QR = () => {
-	const { network } = useGlobalApiContext();
+const QR = ({ network }: { network: Network }) => {
 	return (
 		<div className='flex flex-col gap-y-5 p-5 bg-bg-secondary rounded-xl items-center'>
 			<p className='text-xs md:text-sm text-normal text-text_secondary'>
 				Scan this QR Code with your wallet application
 			</p>
-			<div className='flex items-center justify-center'>
-				<AddressQr address='165gUhnbTdZEfjY4drYNybJuRBf3MLJfZxQUraJDeX17B4Pb' />
+			<div className='flex items-center justify-center p-2'>
+				<AddressQr
+					address='165gUhnbTdZEfjY4drYNybJuRBf3MLJfZxQUraJDeX17B4Pb'
+					genesisHash=''
+				/>
 			</div>
 			<div className='flex items-center gap-x-3 justify-center bg-highlight rounded-lg p-2'>
 				<p className='text-xs md:text-sm leading-[15px]'>
