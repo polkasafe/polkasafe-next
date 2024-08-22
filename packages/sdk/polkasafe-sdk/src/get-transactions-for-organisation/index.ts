@@ -1,4 +1,4 @@
-import { IGetOrganisationTransactionProps } from '../types';
+import { IGetOrganisationTransactionProps } from '@common/types/sdk';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '../constants/pagination';
 import { request } from '../utils/request';
 
@@ -22,5 +22,5 @@ export function getTransactionsForOrganisation({
 		limit
 	});
 
-	return request('/getTransactionForOrg_test', {}, { method: 'POST', body });
+	return request('/getHistoryTxForOrg', {}, { method: 'POST', body });
 }

@@ -6,6 +6,9 @@ import TransactionHead from '@common/global-ui-components/Transaction/Transactio
 import { Skeleton } from 'antd';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IDashboardTransaction } from '@common/types/substrate';
+import { getApiAtomByNetwork } from '@substrate/app/global/utils/getApiAtomByNetwork';
+import { PrimitiveAtom } from 'jotai';
+import { IApiAtom } from '@substrate/app/atoms/api/apiAtom';
 
 interface IHistoryProps {
 	transactions: Array<IDashboardTransaction> | null;
@@ -60,6 +63,7 @@ function History({ transactions = [] }: IHistoryProps) {
 							network={transaction.network}
 							amountToken={transaction.amountToken}
 							from={transaction.from}
+							apiAtom={getApiAtomByNetwork(transaction.network) as PrimitiveAtom<IApiAtom>}
 						/>
 					))
 				)}

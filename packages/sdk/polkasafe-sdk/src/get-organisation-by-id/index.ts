@@ -18,5 +18,5 @@ export function getOrganisationById({ address, signature, organisationId }: Prop
 
 	const headers = handleHeaders({ address, signature });
 
-	return request('/getOrganisationById_test', headers, { method: 'POST', body });
+	return request('/getOrganisationById', headers, { method: 'POST', body });
 }

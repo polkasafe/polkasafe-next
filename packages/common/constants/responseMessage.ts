@@ -39,5 +39,6 @@ export const ResponseMessages = {
 	ADDRESS_NOT_IN_DB: 'no user with this address',
 	ADDRESS_ALREADY_EXISTS: 'address already exists',
 	INVALID_INVOICE_ID: 'Invalid invoice id;',
-	INVALID_ADDRESS: 'Invalid address'
+	INVALID_ADDRESS: 'Invalid address',
+	INVALID_ORGANISATION_ID: 'Invalid organisation id'
 };

@@ -9,7 +9,6 @@ import { EUserType } from '@common/enum/substrate';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { USER_COLLECTION } from '@common/db/collections';
 import { v4 as uuidv4 } from 'uuid';
-import { DB } from '@common/db/firebase';
 
 export function getLoginToken(): string {
 	return `<Bytes>polkasafe-login-${uuidv4()}</Bytes>`;
@@ -26,7 +25,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (!substrateAddress) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_HEADERS }, { status: 400 });
 		}
-		const userRef = DB.collection('user').doc(substrateAddress);
+		const userRef = USER_COLLECTION.doc(substrateAddress);
 		const userDocData = (await userRef.get())?.data?.() || null;
 
 		if (userDocData?.two_factor_auth?.enabled) {

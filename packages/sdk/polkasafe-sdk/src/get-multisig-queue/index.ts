@@ -26,5 +26,5 @@ export function getMultisigQueue({ address, network, page = DEFAULT_PAGE, limit 
 		limit
 	});
 
-	return request('/getQueueTransaction_test', {}, { method: 'POST', body });
+	return request('/getQueueTransaction', {}, { method: 'POST', body });
 }

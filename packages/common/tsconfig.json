@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "rootDirs": [],
-    "baseUrl": "/",
+    "baseUrl": ".",
     "declaration": true,
     "downlevelIteration": true,
     "target": "es5",
@@ -25,6 +25,7 @@
     "paths": {
       "@assets/*": ["./assets/*"],
       "@common/*": ["./*"],
+      "@substrate/*": ["../substrate/*"],
     },
     "plugins": [
       {

@@ -24,5 +24,5 @@ export function getAssetsForAddress({ address, network, page = DEFAULT_PAGE, lim
 		page,
 		limit
 	});
-	return request('/getAssets_test', {}, { method: 'POST', body });
+	return request('/getAssets', {}, { method: 'POST', body });
 }

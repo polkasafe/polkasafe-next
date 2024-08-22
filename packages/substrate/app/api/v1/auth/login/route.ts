@@ -62,11 +62,11 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			const data = doc.data();
 			if (data && data.created_at) {
 				const organisations = await getOrganisations(substrateAddress);
-				console.log('organisations_res', organisations);
 				const resUser: IUserResponse = {
 					address: data?.address || substrateAddress,
 					organisations: organisations || null,
-					type: EUserType.SUBSTRATE
+					type: EUserType.SUBSTRATE,
+					signature: signature as string
 				};
 
 				if (!data.notification_preferences) {
@@ -94,7 +94,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const newUserResponse: IUserResponse = {
 			address: substrateAddress,
 			organisations: [],
-			type: EUserType.SUBSTRATE
+			type: EUserType.SUBSTRATE,
+			signature: signature as string
 		};
 
 		await USER_COLLECTION.doc(substrateAddress).set(newUser, { merge: true });

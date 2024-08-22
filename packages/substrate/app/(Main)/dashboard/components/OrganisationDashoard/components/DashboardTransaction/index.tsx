@@ -11,10 +11,9 @@ import { twMerge } from 'tailwind-merge';
 import DownIcon from '@common/assets/icons/down.svg';
 import History from '@substrate/app/(Main)/dashboard/components/OrganisationDashoard/components/DashboardTransaction/History';
 import Queue from '@substrate/app/(Main)/dashboard/components/OrganisationDashoard/components/DashboardTransaction/Queue';
-import { IDashboardTransaction, IMultisig, ITransaction } from '@substrate/app/global/types';
-import { getOrganisationTransactions, getOrganisationQueueTransactions } from '@sdk/polkasafe-sdk/src';
+import { getOrganisationTransactions } from '@sdk/polkasafe-sdk/src';
 import { parseTransaction } from '@substrate/app/global/utils/parseTransaction';
-import { getCallData } from '@substrate/app/global/utils/getCallData';
+import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
 
 interface IDashboardTransactionProps {
 	multisigs: Array<IMultisig>;
@@ -26,18 +25,19 @@ const styles = {
 };
 
 function DashboardTransaction({ multisigs }: IDashboardTransactionProps) {
-	const [selectedMultisig, setSelectedMultisig] = useState<Array<IMultisig>>(multisigs);
+	const [isMounted, setIsMounted] = useState(false);
+
+	const [selectedMultisig] = useState<Array<IMultisig>>(multisigs);
 	const [transaction, setTransaction] = useState<Array<IDashboardTransaction> | null>(null);
 	const selectedTab = useSearchParams().get('tab') || 'history';
 	useEffect(() => {
 		const fetchTransactions = async () => {
 			try {
 				const multisigs = selectedMultisig.map((multisig) => `${multisig.address}_${multisig.network}`);
-				const transactionsData = (await getOrganisationTransactions({ multisigs, limit: 3 })) as {
+				const transactionsData = (await getOrganisationTransactions({ multisigs, limit: 10 })) as {
 					data: { transactions: Array<any> };
 				};
 				const transactions = transactionsData.data.transactions.map(parseTransaction) as Array<IDashboardTransaction>;
-				console.log(transactions);
 				setTransaction(transactions);
 				// setTransaction([]);
 			} catch (error) {
@@ -45,7 +45,15 @@ function DashboardTransaction({ multisigs }: IDashboardTransactionProps) {
 			}
 		};
 		fetchTransactions();
+	}, [selectedMultisig]);
+
+	useEffect(() => {
+		setIsMounted(true);
 	}, []);
+
+	if (!isMounted) {
+		return null;
+	}
 
 	return (
 		<div className='flex flex-col gap-2'>

@@ -2,9 +2,6 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-// @ts-nocheck
-import { ApiPromise } from '@polkadot/api';
-import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
 import type { SubmittableExtrinsic, SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import type { Call, ExtrinsicPayload } from '@polkadot/types/interfaces';
 import { compactToU8a, isHex, u8aConcat, u8aEq } from '@polkadot/util';
@@ -32,7 +29,7 @@ const DEFAULT_INFO: IExtrinsicInfo = {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default function decodeCallData(hex: string, api: any): { data?: IExtrinsicInfo; error?: string } {
+export function decodeCallData(hex: string, api: any): { data?: IExtrinsicInfo; error?: string } {
 	if (!isHex(hex))
 		return {
 			error: 'Invalid hex string'
@@ -56,6 +53,11 @@ export default function decodeCallData(hex: string, api: any): { data?: IExtrins
 				};
 
 			decoded = tx;
+			if (!decoded) {
+				return {
+					error: 'Unable to decode data as SubmittableExtrinsic'
+				};
+			}
 			extrinsicCall = api.createType('Call', decoded.method);
 		} catch {
 			try {
@@ -73,6 +75,12 @@ export default function decodeCallData(hex: string, api: any): { data?: IExtrins
 
 					extrinsicPayload = api.createType('ExtrinsicPayload', prefixed);
 
+					if (!extrinsicPayload) {
+						return {
+							error: 'Unable to decode data as ExtrinsicPayload'
+						};
+					}
+
 					if (u8aEq(extrinsicPayload.toU8a(), prefixed))
 						return {
 							error: 'Unable to decode data as un-prefixed ExtrinsicPayload'
@@ -85,6 +93,11 @@ export default function decodeCallData(hex: string, api: any): { data?: IExtrins
 			} catch {
 				// final attempt, we try this as-is as a (prefixed) payload
 				extrinsicPayload = api.createType('ExtrinsicPayload', hex);
+				if (!extrinsicPayload) {
+					return {
+						error: 'Unable to decode data as un-prefixed ExtrinsicPayload'
+					};
+				}
 
 				if (extrinsicPayload.toHex() === hex)
 					return {

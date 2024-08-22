@@ -20,7 +20,6 @@ const initializeFirebase = (key: any) => {
 };
 
 const serviceAccount = deepParseJson(POLKASAFE_FIREBASE_CONFIG) as firebaseAdmin.ServiceAccount;
-console.log('serviceAccount__', serviceAccount);
 
 const app = initializeFirebase(serviceAccount);
 const DB = firebaseAdmin.firestore(app);

@@ -8,15 +8,13 @@ import NextTopLoader from 'nextjs-toploader';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 import { PropsWithChildren } from 'react';
 import { redirect } from 'next/navigation';
-import { NextApiRequest } from 'next';
 import { CREATE_ORGANISATION_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 
-export default function LoginLayout({ children }: PropsWithChildren<{ req: NextApiRequest }>) {
+export default function LoginLayout({ children }: PropsWithChildren) {
 	const user = getUserFromCookie();
 
 	if (user) {
 		const { organisations } = user;
-		console.log(user, 'user');
 		if (organisations.length > 0) {
 			redirect(ORGANISATION_DASHBOARD_URL({ id: organisations[0].id }));
 		}

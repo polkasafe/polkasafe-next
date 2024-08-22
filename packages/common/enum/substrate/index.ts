@@ -42,3 +42,8 @@ export enum EUserType {
 	SUBSTRATE = 'SUBSTRATE',
 	EVM = 'EVM'
 }
+
+export enum ETransactionType {
+	HISTORY_TRANSACTION = 'history',
+	QUEUE_TRANSACTION = 'queue'
+}

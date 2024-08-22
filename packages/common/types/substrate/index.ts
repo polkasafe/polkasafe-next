@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { Network } from '@common/constants/substrateNetworkConstant';
 import { ECHANNEL, EUserType } from '@common/enum/substrate';
 
 // RULES: Interface should be in PascalCase
@@ -14,8 +15,8 @@ export interface ISearchParams {
 export interface IProxy {
 	name: string;
 	address: string;
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt?: Date;
+	updatedAt?: Date;
 }
 
 export interface IMultisig {
@@ -61,11 +62,7 @@ export interface ITransaction {
 	amountToken: number;
 	network: string;
 	transactionFields?: ITxnCategory;
-}
-
-export enum ETransactionType {
-	HISTORY_TRANSACTION = 'history',
-	QUEUE_TRANSACTION = 'queue'
+	approvals: Array<string>;
 }
 
 export interface IChannelPreferences {
@@ -186,4 +183,41 @@ export interface IUserResponse {
 	address: string;
 	organisations: Array<IOrganisation>;
 	type: EUserType;
+	signature?: string;
+}
+export interface IResponse<T> {
+	error?: string | null;
+	data: T;
+}
+
+export interface IDBMultisig {
+	address: string;
+	created_at: Date;
+	updated_at: Date;
+	name: string;
+	signatories: Array<string>;
+	network: Network;
+	threshold: number;
+	type: EUserType;
+	proxy?: Array<IProxy>;
+}
+
+export interface IDBTransaction {
+	id: string;
+	multisigAddress: string;
+	amount_token: string;
+	amount_usd: string;
+	approvals: string;
+	block_number: string;
+	callHash: string;
+	created_at: string;
+	updated_at: string;
+	from: string;
+	network: string;
+	to: string;
+	token: string;
+	transactionFields: string;
+	callData: string;
+	note: string;
+	status: string;
 }
