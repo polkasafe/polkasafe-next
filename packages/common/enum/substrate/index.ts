@@ -101,3 +101,9 @@ export enum ECurrency {
 	GHS = 'GHS',
 	AOA = 'AOA'
 }
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export enum WC_POLKADOT_METHODS {
+	POLKADOT_SIGN_TRANSACTION = 'polkadot_signTransaction',
+	POLKADOT_SIGN_MESSAGE = 'polkadot_signMessage'
+}

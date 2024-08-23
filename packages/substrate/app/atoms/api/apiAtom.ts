@@ -19,8 +19,6 @@ export interface IApiAtom {
 	network: string;
 }
 
-export const apiAtom = atom<AllNetworkApi | null>(null);
-
 // add all networks api atom
 export const polkadotApi = atom<IApiAtom | null>(null);
 export const astarApi = atom<IApiAtom | null>(null);

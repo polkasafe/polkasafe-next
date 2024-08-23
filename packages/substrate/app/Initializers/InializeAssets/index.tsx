@@ -6,19 +6,19 @@
 
 import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
 import { useAtomValue, useSetAtom } from 'jotai/react';
-import { PropsWithChildren, useEffect } from 'react';
-import { apiAtom } from '@substrate/app/atoms/api/apiAtom';
+import { PropsWithChildren, useCallback, useEffect } from 'react';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 import axios from 'axios';
 import { chainProperties, networks } from '@common/constants/substrateNetworkConstant';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
+import { useApi } from '@substrate/app/hooks/useApi';
 
 function InitializeAssets({ children }: PropsWithChildren) {
 	const organisation = useAtomValue(organisationAtom);
-	const apis = useAtomValue(apiAtom);
+	const apis = useApi();
 	const setAtom = useSetAtom(assetsAtom);
 
-	const handleOrganisation = async () => {
+	const handleOrganisationAssets = useCallback(async () => {
 		if (!apis || !organisation) {
 			return;
 		}
@@ -62,14 +62,14 @@ function InitializeAssets({ children }: PropsWithChildren) {
 
 		const assets = await Promise.all(assetsPromise);
 		setAtom(assets);
-	};
+	}, [apis, organisation, setAtom]);
 
 	useEffect(() => {
 		if (!organisation) {
 			return;
 		}
-		handleOrganisation();
-	}, [organisation]);
+		handleOrganisationAssets();
+	}, [handleOrganisationAssets, organisation]);
 
 	return children;
 }

@@ -16,7 +16,7 @@ interface ILoderProps {
 
 const Loader: React.FC<ILoderProps> = ({ size = Size.DEFAULT }: ILoderProps) => {
 	return (
-		<div className='flex h-full items-center justify-center'>
+		<div className='flex items-center justify-center'>
 			<Spin size={size} />
 		</div>
 	);

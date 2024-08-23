@@ -39,18 +39,18 @@ export type ChainPropType = {
 export const networks = {
 	ALEPHZERO: 'alephzero',
 	ASTAR: 'astar',
-	AVAIL: 'avail-goldberg',
+	AVAIL: 'avail',
 	KHALA: 'khala',
 	KUSAMA: 'kusama',
 	// PASEO: 'paseo',
 	PHALA: 'phala',
 	POLKADOT: 'polkadot',
 	ROCOCO: 'rococo',
+	// ROCOCO_ASSETHUB: 'assethub-rococo',
 	STATEMINE: 'assethub-kusama',
 	STATEMINT: 'assethub-polkadot',
-	TURING: 'avail-turing',
-	WESTEND: 'westend',
-	ROCOCO_ASSETHUB: 'assethub-rococo'
+	// TURING: 'avail-turing',
+	WESTEND: 'westend'
 };
 
 export const tokenSymbol = {

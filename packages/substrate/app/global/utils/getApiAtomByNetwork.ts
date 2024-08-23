@@ -44,6 +44,6 @@ export const getApiAtomByNetwork = (network: string) => {
 		case networks.WESTEND:
 			return westendApi;
 		default:
-			return null;
+			return polkadotApi;
 	}
 };

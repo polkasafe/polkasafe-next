@@ -2,7 +2,6 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import '@common/styles/globals.scss';
-import { LayoutWrapper } from '@common/global-ui-components/LayoutWrapper';
 import { LoginLayout as GlobalLoginLayout } from '@common/global-ui-components/LoginLayout';
 import NextTopLoader from 'nextjs-toploader';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
@@ -22,13 +21,9 @@ export default function LoginLayout({ children }: PropsWithChildren) {
 		redirect(CREATE_ORGANISATION_URL({ address }));
 	}
 	return (
-		<html lang='en'>
-			<body>
-				<LayoutWrapper>
-					<NextTopLoader />
-					<GlobalLoginLayout>{children}</GlobalLoginLayout>
-				</LayoutWrapper>
-			</body>
-		</html>
+		<>
+			<NextTopLoader />
+			<GlobalLoginLayout>{children}</GlobalLoginLayout>
+		</>
 	);
 }

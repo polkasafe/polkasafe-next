@@ -229,7 +229,7 @@ export interface IWalletConnect {
 	client: Client | undefined;
 	session: SessionTypes.Struct | undefined;
 	connect: (pairing?: { topic: string }) => Promise<string[]>;
-	disconnect: () => Promise<void>;
+	disconnect?: () => Promise<void>;
 	pairings: PairingTypes.Struct[];
 }
 export interface IDBAssets {
