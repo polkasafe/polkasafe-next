@@ -20,10 +20,10 @@ import {
 	westendApi
 } from '@substrate/app/atoms/api/apiAtom';
 import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
-import { IMultisigAssets } from '@substrate/app/global/types';
 // import axios from 'axios';
 import { atom } from 'jotai';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
+import { IMultisigAssets } from '@common/types/substrate';
 // import { tokenSymbolToNetwork } from '@next-common/global/networkConstants';
 
 export const assetsAtom = atom<Promise<Array<IMultisigAssets | null>>>(async (get) => {

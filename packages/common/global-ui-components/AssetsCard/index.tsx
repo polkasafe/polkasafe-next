@@ -3,9 +3,12 @@
 'use client';
 
 import DoughnutChart from '@common/global-ui-components/DoughnutChart';
-import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
-import { useAtomValue } from 'jotai/react';
+import { IMultisigAssets } from '@common/types/substrate';
 import React from 'react';
+
+interface IAssetCard {
+	assets: Array<IMultisigAssets | null>;
+}
 
 const getRandomColor = (): string => {
 	const baseColor: string = '#3b0e96';
@@ -27,8 +30,7 @@ const getRandomColor = (): string => {
 	return color;
 };
 
-export default function AssetsCard() {
-	const assets = useAtomValue(assetsAtom);
+export default function AssetsCard({ assets }: IAssetCard) {
 	const assetsData = assets.map((asset) => {
 		if (!asset) {
 			return null;
@@ -36,7 +38,7 @@ export default function AssetsCard() {
 		return {
 			label: asset.symbol,
 			color: getRandomColor(),
-			value: asset.free
+			value: Number(asset.free)
 		};
 	});
 

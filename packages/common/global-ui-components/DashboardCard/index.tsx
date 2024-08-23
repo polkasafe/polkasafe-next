@@ -9,14 +9,17 @@ import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
 import SelectCurrency from '@common/global-ui-components/SelectCurrency';
 import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
 import { useAtomValue } from 'jotai/react';
-import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
+import { IMultisigAssets } from '@common/types/substrate';
 
-function DashboardCard() {
-	const assets = useAtomValue(assetsAtom);
+interface IDashboardCard {
+	assets: Array<IMultisigAssets | null>;
+}
+
+function DashboardCard({ assets }: IDashboardCard) {
 	const totalBalance = assets?.reduce((acc, asset) => acc + (Number(asset?.usd) || 0), 0);
 	const currency = useAtomValue(selectedCurrencyAtom);
 	const symbol = getCurrencySymbol(currency);
-	console.log(currency, symbol);
+
 	return (
 		<div className='overflow-hidden'>
 			<div className='relative'>

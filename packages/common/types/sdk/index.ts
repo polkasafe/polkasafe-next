@@ -33,3 +33,7 @@ export interface IGetOrganisationTransactionProps {
 	page?: number;
 	limit?: number;
 }
+
+export interface IGetMultisigAssets {
+	multisigIds: Array<string>;
+}
