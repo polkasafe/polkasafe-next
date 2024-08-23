@@ -7,9 +7,10 @@
 import React from 'react';
 import Table from '@common/global-ui-components/Table';
 import Button from '@common/global-ui-components/Button';
+import { IAsset } from '@common/types/substrate';
 
 interface IAssetsTableProps {
-	dataSource: Array<{ asset: string; balance: string; value: string }>;
+	dataSource: Array<IAsset>;
 }
 
 function AssetsTable({ dataSource }: IAssetsTableProps) {
@@ -29,6 +30,12 @@ function AssetsTable({ dataSource }: IAssetsTableProps) {
 			dataIndex: 'value',
 			key: 'value'
 		},
+		{
+			title: 'Multisig',
+			dataIndex: 'multisig',
+			key: 'multisig'
+		},
+
 		{
 			title: 'Actions',
 			dataIndex: 'actions',

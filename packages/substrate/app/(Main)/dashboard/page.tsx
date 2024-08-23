@@ -6,7 +6,7 @@ import { isValidAddress } from '@substrate/app/global/utils/isValidAddress';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { isValidNetwork } from '@substrate/app/global/utils/isValidNetwork';
-import OrganisationDashboard from '@substrate/app/(Main)/dashboard/components/OrganisationDashoard';
+import OrganisationDashboard from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard';
 import { ISearchParams } from '@common/types/substrate';
 import { getMultisigDataAndTransactions } from './ssr-actions/getMultisigDataAndTransactions';
 import MultisigDashboard from './components/MultisigDashboard';

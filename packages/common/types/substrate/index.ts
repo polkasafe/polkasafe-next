@@ -130,6 +130,7 @@ export interface IAsset {
 	logoURI: string;
 	name: string;
 	symbol: string;
+	multisigId?: string;
 }
 
 export interface IMultisigAssets {
@@ -220,4 +221,17 @@ export interface IDBTransaction {
 	callData: string;
 	note: string;
 	status: string;
+}
+
+export interface IDBAssets {
+	address: string;
+	balance_token: string;
+	balance_usd: string;
+	logoURI: string;
+	name: string;
+	symbol: string;
+}
+
+export interface IUpdateDBAssetProps extends IDBAssets {
+	multisigId: string;
 }
