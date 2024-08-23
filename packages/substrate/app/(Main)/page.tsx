@@ -5,7 +5,7 @@
 // import { EProjectType } from '@common/constants/projectConstants';
 // import { SplashScreen } from '@common/global-ui-components/LayoutWrapper/SplashScreen';
 import { redirect } from 'next/navigation';
-import { ISearchParams } from '@substrate/app/global/types';
+import { ISearchParams } from '@common/types/substrate';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 import { LOGIN_URL, MULTISIG_DASHBOARD_URL, ORGANISATION_DASHBOARD_URL } from '../global/end-points';
 // import { cookies } from 'next/headers';

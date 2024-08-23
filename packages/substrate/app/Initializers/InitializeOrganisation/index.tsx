@@ -10,7 +10,7 @@ import { useAtomValue, useSetAtom } from 'jotai/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { getOrganization } from '@sdk/polkasafe-sdk/src';
-import { IOrganisation } from '@substrate/app/global/types';
+import { IOrganisation } from '@common/types/substrate';
 
 function InitializeOrganisation() {
 	const searchParams = useSearchParams();

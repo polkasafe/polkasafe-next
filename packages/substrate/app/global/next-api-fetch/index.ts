@@ -13,8 +13,6 @@ interface Args {
 }
 
 async function nextApiClientFetch<T>({ url, data, method, headers }: Args): Promise<{ data?: T; error?: string }> {
-	const currentURL = new URL(window.location.href);
-
 	const reqURL = url.startsWith('/') ? url.substring(1) : url;
 
 	const response = await fetchPF(`${window.location.origin}/${reqURL}`, {

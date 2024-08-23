@@ -27,7 +27,7 @@ export interface ChainProps {
 	ss58Format: number;
 	tokenDecimals: number;
 	tokenSymbol: TokenSymbol;
-	chainId: number;
+	chainId: string;
 	rpcEndpoint: string;
 	existentialDeposit: string;
 }
@@ -69,7 +69,7 @@ export const tokenSymbol = {
 export const chainProperties: ChainPropType = {
 	[networks.POLKADOT]: {
 		blockTime: 6000,
-		chainId: 0,
+		chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182',
 		existentialDeposit: '1.00',
 		logo: polkadotLogo,
 		rpcEndpoint: 'wss://rpc.polkadot.io',
@@ -79,7 +79,7 @@ export const chainProperties: ChainPropType = {
 	},
 	[networks.KUSAMA]: {
 		blockTime: 6000,
-		chainId: 0,
+		chainId: 'polkadot:b0a8d493285c2df73290dfb7e61f870f',
 		existentialDeposit: '0.000333333333',
 		logo: kusamaLogo,
 		rpcEndpoint: 'wss://kusama-rpc.polkadot.io',
@@ -89,17 +89,17 @@ export const chainProperties: ChainPropType = {
 	},
 	[networks.WESTEND]: {
 		blockTime: 6000,
-		chainId: 0,
+		chainId: 'polkadot:e143f23803ac50e8f6f8e62695d1ce9e',
 		existentialDeposit: '0.0100',
 		logo: westendLogo,
-		rpcEndpoint: 'wss://westend-rpc.dwellir.com',
+		rpcEndpoint: 'wss://westend-rpc.polkadot.io',
 		ss58Format: 42,
 		tokenDecimals: 12,
 		tokenSymbol: tokenSymbol.WND
 	},
 	[networks.ROCOCO]: {
 		blockTime: 6000,
-		chainId: 0,
+		chainId: 'polkadot:6408de7737c59c238890533af25896a2',
 		existentialDeposit: '0.000033333333',
 		logo: rococoLogo,
 		rpcEndpoint: 'wss://rococo-rpc.polkadot.io',
@@ -109,7 +109,7 @@ export const chainProperties: ChainPropType = {
 	},
 	[networks.ASTAR]: {
 		blockTime: 12000,
-		chainId: 0,
+		chainId: 'polkadot:9eb76c5184c4ab8679d2d5d819fdf90b',
 		existentialDeposit: '0.000000000001',
 		logo: astarLogo,
 		rpcEndpoint: 'wss://astar-rpc.dwellir.com/',
@@ -119,7 +119,7 @@ export const chainProperties: ChainPropType = {
 	},
 	[networks.STATEMINT]: {
 		blockTime: 6000,
-		chainId: 0,
+		chainId: 'polkadot:68d56f15f85d3136970ec16946040bc1',
 		existentialDeposit: '0.1000',
 		logo: assethubLogo,
 		rpcEndpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
@@ -129,7 +129,7 @@ export const chainProperties: ChainPropType = {
 	},
 	[networks.STATEMINE]: {
 		blockTime: 6000,
-		chainId: 0,
+		chainId: 'polkadot:48239ef607d7928874027a43a6768920',
 		existentialDeposit: '0.000033333333',
 		logo: assethubLogo,
 		rpcEndpoint: 'wss://kusama-asset-hub-rpc.polkadot.io',
@@ -139,7 +139,7 @@ export const chainProperties: ChainPropType = {
 	},
 	[networks.ALEPHZERO]: {
 		blockTime: 1000,
-		chainId: 0,
+		chainId: 'polkadot:70255b4d28de0fc4e1a193d7e175ad1c',
 		existentialDeposit: '0.0000000005',
 		logo: alephzeroLogo,
 		rpcEndpoint: 'wss://ws.azero.dev/',
@@ -149,7 +149,7 @@ export const chainProperties: ChainPropType = {
 	},
 	[networks.PHALA]: {
 		blockTime: 1000,
-		chainId: 0,
+		chainId: 'polkadot:1bb969d85965e4bb5a651abbedf21a54',
 		existentialDeposit: '0.0100',
 		logo: phalaLogo,
 		rpcEndpoint: 'wss://phala.api.onfinality.io/public-ws/',
@@ -159,7 +159,7 @@ export const chainProperties: ChainPropType = {
 	},
 	[networks.KHALA]: {
 		blockTime: 1000,
-		chainId: 0,
+		chainId: 'polkadot:d43540ba6d3eb4897c28a77d48cb5b72',
 		existentialDeposit: '0.0100',
 		logo: khalaLogo,
 		rpcEndpoint: 'wss://khala.public.curie.radiumblock.co/ws/',
@@ -167,36 +167,36 @@ export const chainProperties: ChainPropType = {
 		tokenDecimals: 12,
 		tokenSymbol: tokenSymbol.PHA
 	},
+	// [networks.TURING]: {
+	// blockTime: 1000,
+	// chainId: 'polkadot:d3d2f3a3495dc597434a99d7d449ebad',
+	// existentialDeposit: '0.00001',
+	// logo: availLogo,
+	// rpcEndpoint: 'wss://turing-rpc.avail.so/ws',
+	// ss58Format: 42,
+	// tokenDecimals: 18,
+	// tokenSymbol: tokenSymbol.T_AVAIL
+	// },
 	[networks.AVAIL]: {
 		blockTime: 1000,
-		chainId: 0,
+		chainId: 'polkadot:b91746b45e0346cc2f815a520b9c6cb4',
 		existentialDeposit: '0.00001',
 		logo: availLogo,
-		rpcEndpoint: 'wss://rpc-testnet.avail.tools/ws',
-		ss58Format: 42,
-		tokenDecimals: 18,
-		tokenSymbol: tokenSymbol.AVL
-	},
-	[networks.TURING]: {
-		blockTime: 1000,
-		chainId: 0,
-		existentialDeposit: '0.00001',
-		logo: availLogo,
-		rpcEndpoint: 'wss://turing-rpc.avail.so/ws',
+		rpcEndpoint: 'wss://zeref-api.slowops.xyz/ws',
 		ss58Format: 42,
 		tokenDecimals: 18,
 		tokenSymbol: tokenSymbol.T_AVAIL
-	},
-	[networks.ROCOCO_ASSETHUB]: {
-		blockTime: 6000,
-		chainId: 0,
-		existentialDeposit: '0.0000333333330',
-		logo: rococoLogo,
-		rpcEndpoint: 'wss://asset-hub-rococo-rpc.dwellir.com',
-		ss58Format: 42,
-		tokenDecimals: 12,
-		tokenSymbol: tokenSymbol.ROC
 	}
+	// [networks.ROCOCO_ASSETHUB]: {
+	// blockTime: 6000,
+	// chainId: 'polkadot:7c34d42fc815d392057c78b49f2755c75',
+	// existentialDeposit: '0.000033333333',
+	// logo: rococoLogo,
+	// rpcEndpoint: 'wss://asset-hub-rococo-rpc.dwellir.com',
+	// ss58Format: 42,
+	// tokenDecimals: 12,
+	// tokenSymbol: tokenSymbol.ROC
+	// }
 	// [networks.PASEO]: {
 	// blockTime: 1000,
 	// chainId: 0,

@@ -14,7 +14,9 @@ export enum Wallet {
 	POLKADOT = 'polkadot-js',
 	SUBWALLET = 'subwallet-js',
 	TALISMAN = 'talisman',
-	METAMASK = 'metamask'
+	METAMASK = 'metamask',
+	WALLET_CONNECT = 'wallet-connect',
+	POLKADOT_VAULT = 'polkadot-vault'
 }
 
 export enum EProjectType {

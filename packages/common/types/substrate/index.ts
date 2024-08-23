@@ -4,6 +4,8 @@
 
 import { Network } from '@common/constants/substrateNetworkConstant';
 import { ECHANNEL, EUserType } from '@common/enum/substrate';
+import Client from '@walletconnect/sign-client';
+import { PairingTypes, SessionTypes } from '@walletconnect/types';
 
 // RULES: Interface should be in PascalCase
 // RULES: Interface should have I prefix
@@ -220,4 +222,12 @@ export interface IDBTransaction {
 	callData: string;
 	note: string;
 	status: string;
+}
+
+export interface IWalletConnect {
+	client: Client | undefined;
+	session: SessionTypes.Struct | undefined;
+	connect: (pairing?: { topic: string }) => Promise<string[]>;
+	disconnect: () => Promise<void>;
+	pairings: PairingTypes.Struct[];
 }

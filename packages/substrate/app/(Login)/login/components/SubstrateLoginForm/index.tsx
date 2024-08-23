@@ -1,6 +1,7 @@
 // Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+/* eslint-disable no-tabs */
 
 'use client';
 
@@ -39,6 +40,7 @@ export function SubstrateLoginForm() {
 	const [selectedWallet, setSelectedWallet] = useState<Wallet>(Wallet.POLKADOT);
 	const [tfaToken, setTfaToken] = useState<string>('');
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const [tokenExpired, setTokenExpired] = useState<boolean>(false);
 
 	const router = useRouter();
@@ -127,7 +129,7 @@ export function SubstrateLoginForm() {
 		}
 	};
 
-	const handleSubmitAuthCode = async (authCode: number) => {
+	const handleSubmitAuthCode = async () => {
 		const substrateAddress = getSubstrateAddress(address);
 		if (!substrateAddress) {
 			console.log('INVALID SUBSTRATE ADDRESS');
@@ -210,17 +212,21 @@ export function SubstrateLoginForm() {
 		}
 	};
 
-	return tfaToken ? (
-		<TFAForm
-			onSubmit={handleSubmitAuthCode}
-			onCancel={() => {
-				setTfaToken('');
-				setTokenExpired(false);
-			}}
-			loginDisabled={(noExtension || noAccounts || !address) && showAccountsDropdown}
-			loading={loading}
-		/>
-	) : (
+	if (tfaToken) {
+		return (
+			<TFAForm
+				onSubmit={handleSubmitAuthCode}
+				onCancel={() => {
+					setTfaToken('');
+					setTokenExpired(false);
+				}}
+				loginDisabled={(noExtension || noAccounts || !address) && showAccountsDropdown}
+				loading={loading}
+			/>
+		);
+	}
+
+	return (
 		<div>
 			<h2 className='font-bold text-lg text-white'>Get Started</h2>
 			<p className='mt-2  text-normal text-sm text-white'>Connect your wallet</p>

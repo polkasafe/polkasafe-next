@@ -5,7 +5,7 @@
 'use client';
 
 import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
-import { IOrganisation } from '@substrate/app/global/types';
+import { IOrganisation } from '@common/types/substrate';
 import { useHydrateAtoms } from 'jotai/utils';
 
 interface IInitializeUserProps {

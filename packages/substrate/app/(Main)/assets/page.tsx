@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { LOGIN_URL } from '@substrate/app/global/end-points';
-import { ISearchParams } from '@substrate/app/global/types';
+import { ISearchParams } from '@common/types/substrate';
 import { isValidAddress } from '@substrate/app/global/utils/isValidAddress';
 import { isValidNetwork } from '@substrate/app/global/utils/isValidNetwork';
 import { redirect } from 'next/navigation';
