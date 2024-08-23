@@ -21,7 +21,7 @@ function NewTransaction() {
 			<Modal
 				open={openModal}
 				onCancel={() => setOpenModal(false)}
-				title='Fund Multisig'
+				title='New Transaction'
 			>
 				Content
 			</Modal>

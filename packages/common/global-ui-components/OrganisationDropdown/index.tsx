@@ -4,9 +4,9 @@ import Image from 'next/image';
 import emptyImage from '@common/assets/icons/empty-image.png';
 import { Dropdown } from 'antd';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
-import { useRouter } from 'next/navigation';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import { IOrganisation } from '@common/types/substrate';
+import Link from 'next/link';
 
 interface IOrganisationDropdown {
 	organisations: Array<IOrganisation>;
@@ -15,7 +15,6 @@ interface IOrganisationDropdown {
 
 // TODO: tailwind need to update
 function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisationDropdown) {
-	const router = useRouter();
 	return (
 		<SlideInMotion>
 			<Dropdown
@@ -24,11 +23,12 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 				menu={{
 					items: organisations.map((item) => ({
 						key: item.id,
-						label: <span className='text-white capitalize truncate'>{item.name}</span>
-					})),
-					onClick: (e) => {
-						router.push(ORGANISATION_DASHBOARD_URL({ id: e.key }));
-					}
+						label: (
+							<Link href={ORGANISATION_DASHBOARD_URL({ id: item.id })}>
+								<span className='text-white capitalize truncate'>{item.name}</span>
+							</Link>
+						)
+					}))
 				}}
 			>
 				<div className='flex justify-between items-center text-white gap-x-2'>

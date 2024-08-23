@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table as AntdTable } from 'antd';
 import styled from 'styled-components';
+import { IAsset } from '@common/types/substrate';
 
 const StyledTable = styled(AntdTable)`
 	.ant-table-content {
@@ -21,21 +22,28 @@ type TDataSource = {
 	asset: string;
 	balance: string;
 	value: string;
+	multisig: string;
 };
 
 interface ITableProps {
 	columns: Array<TColumns>;
-	dataSource: Array<TDataSource>;
+	dataSource: Array<IAsset>;
 }
 
 function Table({ columns, dataSource }: ITableProps) {
+	const data: Array<TDataSource> = dataSource.map((asset) => ({
+		asset: asset.symbol,
+		balance: asset.balanceToken,
+		value: asset.balanceUSD,
+		multisig: asset.multisigId?.split('-')?.[0] || ''
+	}));
 	return (
 		<StyledTable
 			rowClassName='bg-bg-main'
 			pagination={false}
 			className='w-full bg-bg-main'
 			columns={columns}
-			dataSource={dataSource}
+			dataSource={data}
 		/>
 	);
 }

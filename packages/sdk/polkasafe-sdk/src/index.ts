@@ -1,6 +1,7 @@
 import {
 	IConnectAddressTokenProps,
 	IConnectProps,
+	IGetMultisigAssets,
 	IGetMultisigDataProps,
 	IGetMultisigTransactionProps,
 	IGetOrganisationProps,
@@ -19,6 +20,8 @@ import { getMultisigQueue } from './get-multisig-queue';
 import { getTransactionsForMultisig } from './get-transactions-for-multisig';
 import { getOrganisationAsset } from './get-organisation-assets';
 import { getTransactionsForOrganisation } from './get-transactions-for-organisation';
+import { handleHeaders } from './utils/handleHeaders';
+import { request } from './utils/request';
 
 export const getConnectAddressToken = ({ address }: IConnectAddressTokenProps) => getAddressToken(address);
 
@@ -43,8 +46,21 @@ export const getOrganisationQueueTransactions = async ({
 	limit
 }: IGetMultisigTransactionProps) => getMultisigQueue({ address, network, page, limit });
 
-export const getAssets = async ({ address, network }: IGetMultisigDataProps) =>
-	getAssetsForAddress({ address, network });
+export const getAssets = async ({ multisigIds }: IGetMultisigAssets) => getAssetsForAddress({ multisigIds });
+
+export const getMultisigsByOrganisation = async ({ address, signature, organisationId }: IGetOrganisationProps) => {
+	if (!address || !signature || !organisationId) {
+		throw new Error('Invalid Params');
+	}
+
+	const body = JSON.stringify({
+		organisationId
+	});
+
+	const headers = handleHeaders({ address, signature });
+
+	return request('/getMultisigsByOrg', headers, { method: 'POST', body });
+};
 
 export const login = async ({ address, signature }: ILoginProps) => loginToPolkasafe(address, signature);
 

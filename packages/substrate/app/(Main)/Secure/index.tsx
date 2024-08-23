@@ -6,10 +6,13 @@ import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 import { redirect } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 
-export default function Secure({ children }: PropsWithChildren) {
+export default function Secure({ children, organisation }: PropsWithChildren<{ organisation?: string }>) {
 	const user = getUserFromCookie();
 	if (!user) {
 		redirect(LOGIN_URL);
+	}
+	if (organisation && !user.organisations.map((a) => a.id).includes(organisation)) {
+		redirect('/404');
 	}
 	return children;
 }

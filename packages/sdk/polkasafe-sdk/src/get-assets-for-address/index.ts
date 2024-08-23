@@ -1,28 +1,13 @@
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '../constants/pagination';
 import { request } from '../utils/request';
 
 type Props = {
-	address: string;
-	network: string;
-	page?: number;
-	limit?: number;
+	multisigIds: Array<string>;
 };
 
-export function getAssetsForAddress({ address, network, page = DEFAULT_PAGE, limit = DEFAULT_PAGE_SIZE }: Props) {
-	if (!address) {
+export function getAssetsForAddress({ multisigIds }: Props) {
+	if (!multisigIds) {
 		throw new Error('Multisig address is required');
 	}
-	if (!Number(page)) {
-		throw new Error('Invalid request please check you params');
-	}
-	if (!Number(limit)) {
-		throw new Error('Invalid request please check you params');
-	}
-	const body = JSON.stringify({
-		address,
-		network,
-		page,
-		limit
-	});
+	const body = JSON.stringify({ multisigIds });
 	return request('/getAssets', {}, { method: 'POST', body });
 }
