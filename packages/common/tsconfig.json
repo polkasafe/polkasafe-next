@@ -33,5 +33,7 @@
       }
     ]
   },
+  "include": ["common/**/*"],
   "exclude": ["node_modules"]
 }
+
