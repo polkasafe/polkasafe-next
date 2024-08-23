@@ -14,8 +14,6 @@ import {
 	rococoApi,
 	assethubPolkadotApi,
 	assethubKusamaApi,
-	assethubRococoApi,
-	availTuringApi,
 	westendApi
 } from '@substrate/app/atoms/api/apiAtom';
 import { useSetAtom } from 'jotai';
@@ -27,7 +25,7 @@ import { queueNotification } from '@common/global-ui-components/QueueNotificatio
 import { NotificationStatus } from '@common/enum/substrate';
 
 export const checkAvailNetwork = (network: string) => {
-	return [networks.AVAIL, networks.TURING].includes(network);
+	return [networks.AVAIL].includes(network);
 };
 
 function InitializeAPI() {
@@ -40,8 +38,6 @@ function InitializeAPI() {
 	const setRococoApiAtom = useSetAtom(rococoApi);
 	const setAssethubPolkadotApiAtom = useSetAtom(assethubPolkadotApi);
 	const setAssethubKusamaApiAtom = useSetAtom(assethubKusamaApi);
-	const setAssethubRococoApiAtom = useSetAtom(assethubRococoApi);
-	const setAvailTuringApiAtom = useSetAtom(availTuringApi);
 	const setWestendApiAtom = useSetAtom(westendApi);
 
 	const getApiSetter = (network: string) => {
@@ -64,10 +60,6 @@ function InitializeAPI() {
 				return setAssethubPolkadotApiAtom;
 			case networks.STATEMINE:
 				return setAssethubKusamaApiAtom;
-			case networks.ROCOCO_ASSETHUB:
-				return setAssethubRococoApiAtom;
-			case networks.TURING:
-				return setAvailTuringApiAtom;
 			case networks.WESTEND:
 				return setWestendApiAtom;
 			default:
