@@ -1,28 +1,33 @@
-import { getAssets, getMultisigData, getQueueTransactions, getTransactions } from '@sdk/polkasafe-sdk/src';
-import { ETransactionType, IMultisig, ITransaction } from '@substrate/app/global/types';
+// Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+import { ETransactionType } from '@common/enum/substrate';
+import { ITransaction } from '@common/types/substrate';
+import { getQueueTransactions, getTransactions } from '@sdk/polkasafe-sdk/src';
 
-const parseAssets = (assets: any) => ({
-  balance: assets.balance_token,
-  value: `$ ${assets.balance_usd || 0}`,
-  logoURI: assets.logoURI,
-  name: assets.name,
-  asset: assets.symbol
-})
+export const getMultisigTransactions = async (
+	type: ETransactionType,
+	address: string,
+	network: string,
+	page: number,
+	limit: number
+) => {
+	const transactionsData =
+		type === ETransactionType.HISTORY_TRANSACTION
+			? await getTransactions({ address, network, page, limit })
+			: await getQueueTransactions({ address, network, page, limit });
 
-export const getMultisigTransactions = async (type: ETransactionType, address: string, network: string, page: number, limit: number) => {
-  
-  const transactionsData = type === ETransactionType.HISTORY_TRANSACTION ? 
-                  await getTransactions({address, network, page, limit}) : 
-                  await getQueueTransactions({address, network, page, limit})
+	const {
+		data: { count, transactions },
+		error: transactionsError
+	} = transactionsData as {
+		data: { count: number; transactions: Array<ITransaction> };
+		error: string;
+	};
 
-  const { data: { count, transactions }, error: transactionsError } = transactionsData as { 
-    data: { count: number, transactions: Array<ITransaction> },
-    error: string
-  };
+	if (transactionsError) {
+		return { transactions: [] };
+	}
 
-  if(transactionsError) {
-    return { transactions: [] }
-  }
-
-  return { transactions, count }
-}
+	return { transactions, count };
+};

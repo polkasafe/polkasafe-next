@@ -4,6 +4,7 @@ import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Modal from '@common/global-ui-components/Modal';
 import React, { useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
+import NewTransactionForm from '@common/modals/NewTransaction/component/NewTransactionForm';
 
 function NewTransaction() {
 	const [openModal, setOpenModal] = useState(false);
@@ -23,7 +24,9 @@ function NewTransaction() {
 				onCancel={() => setOpenModal(false)}
 				title='New Transaction'
 			>
-				Content
+				<div className='flex flex-col gap-5'>
+					<NewTransactionForm />
+				</div>
 			</Modal>
 		</div>
 	);

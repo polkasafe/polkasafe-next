@@ -44,7 +44,9 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 					return {
 						name: data.name,
 						address: data.address,
-						network: data.network
+						network: data.network,
+						threshold: data.threshold,
+						signatories: data.signatories
 					};
 				}) || [];
 			const multisigs = (await Promise.all(multisigsPromise)).filter((a) => Boolean(a));

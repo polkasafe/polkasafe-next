@@ -7,10 +7,20 @@
 import AssetsCard from '@common/global-ui-components/AssetsCard';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 import { useAtomValue } from 'jotai';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 function AssetsOverview() {
 	const assets = useAtomValue(assetsAtom);
+	const [isMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	if (!isMounted) {
+		return null;
+	}
+
 	return <AssetsCard assets={assets} />;
 }
 

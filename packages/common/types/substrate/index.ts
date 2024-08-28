@@ -4,6 +4,10 @@
 
 import { Network } from '@common/constants/substrateNetworkConstant';
 import { ECHANNEL, EUserType } from '@common/enum/substrate';
+import { ApiPromise } from '@polkadot/api';
+import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
+import { SignerOptions, SubmittableExtrinsic } from '@polkadot/api/types';
+import { BN } from '@polkadot/util';
 
 // RULES: Interface should be in PascalCase
 // RULES: Interface should have I prefix
@@ -234,4 +238,36 @@ export interface IDBAssets {
 
 export interface IUpdateDBAssetProps extends IDBAssets {
 	multisigId: string;
+}
+
+export interface ISubstrateExecuteProps {
+	api: ApiPromise | AvailApiPromise;
+	apiReady: boolean;
+	network: string;
+	tx: SubmittableExtrinsic<'promise'>;
+	address: string;
+	params?: Partial<SignerOptions>;
+	errorMessageFallback: string;
+	onSuccess: (txHash?: string, txIndex?: number) => Promise<void> | void;
+	onFailed: (errorMessageFallback?: string) => Promise<void> | void;
+	setStatus?: (pre: string) => void;
+}
+
+export interface IRecipient {
+	address: string;
+	amount: BN;
+}
+
+export interface ISendTransactionForm {
+	recipient: string;
+	amount: BN;
+	note: string;
+	selectedMultisigAddress: string;
+	selectedProxy?: string;
+}
+
+export interface ISendTransaction {
+	recipients: Array<IRecipient>;
+	note: string;
+	sender: IMultisig;
 }

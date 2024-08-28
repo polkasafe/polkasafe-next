@@ -9,11 +9,11 @@ import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import DownIcon from '@common/assets/icons/down.svg';
-import History from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/DashboardTransaction/History';
-import Queue from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/DashboardTransaction/Queue';
+import History from '@common/global-ui-components/History';
 import { getOrganisationTransactions } from '@sdk/polkasafe-sdk/src';
 import { parseTransaction } from '@substrate/app/global/utils/parseTransaction';
 import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
+import { ETransactionTab } from '@common/enum/substrate';
 
 interface IDashboardTransactionProps {
 	multisigs: Array<IMultisig>;
@@ -25,11 +25,12 @@ const styles = {
 };
 
 function DashboardTransaction({ multisigs }: IDashboardTransactionProps) {
-	const [isMounted, setIsMounted] = useState(false);
+	const selectedTab = useSearchParams().get('tab') || 'history';
 
+	const [isMounted, setIsMounted] = useState(false);
 	const [selectedMultisig] = useState<Array<IMultisig>>(multisigs);
 	const [transaction, setTransaction] = useState<Array<IDashboardTransaction> | null>(null);
-	const selectedTab = useSearchParams().get('tab') || 'history';
+
 	useEffect(() => {
 		const fetchTransactions = async () => {
 			try {
@@ -62,15 +63,18 @@ function DashboardTransaction({ multisigs }: IDashboardTransactionProps) {
 					<Button
 						variant={EButtonVariant.PRIMARY}
 						className={twMerge(
-							selectedTab === 'history' && styles.selectedTab,
-							selectedTab !== 'history' && styles.tab
+							selectedTab === ETransactionTab.HISTORY && styles.selectedTab,
+							selectedTab !== ETransactionTab.HISTORY && styles.tab
 						)}
 					>
 						History
 					</Button>
 					<Button
 						variant={EButtonVariant.PRIMARY}
-						className={twMerge(selectedTab === 'queue' && styles.selectedTab, selectedTab !== 'queue' && styles.tab)}
+						className={twMerge(
+							selectedTab === ETransactionTab.QUEUE && styles.selectedTab,
+							selectedTab !== ETransactionTab.QUEUE && styles.tab
+						)}
 					>
 						Queue
 					</Button>
@@ -85,8 +89,8 @@ function DashboardTransaction({ multisigs }: IDashboardTransactionProps) {
 					</Button>
 				</div>
 			</div>
-			{selectedTab === 'history' && <History transactions={transaction} />}
-			{selectedTab === 'queue' && <Queue />}
+			{selectedTab === ETransactionTab.HISTORY && <History transactions={transaction} />}
+			{/* {selectedTab === 'queue' && <Queue />} */}
 		</div>
 	);
 }

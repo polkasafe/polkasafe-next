@@ -35,16 +35,16 @@ const Menu = ({ userAddress }: IMenuProps) => {
 	const organisation = useAtomValue(organisationAtom);
 	const { multisigs = [] } = organisation || {};
 	const searchParams = useSearchParams();
-	const _organisation = searchParams.get('_organisation');
-	const _multisig = searchParams.get('_multisig');
-	const _network = searchParams.get('_network');
+	const organisationParam = searchParams.get('_organisation');
+	const multisig = searchParams.get('_multisig');
+	const network = searchParams.get('_network');
 
 	const getUrl = (baseUrl: string) => {
-		if (_organisation) {
-			return `${baseUrl}?_organisation=${_organisation}`;
+		if (organisationParam) {
+			return `${baseUrl}?_organisation=${organisationParam}`;
 		}
-		if (_multisig && _network) {
-			return `${baseUrl}?_multisig=${_multisig}&_network=${_network}`;
+		if (multisig && network) {
+			return `${baseUrl}?_multisig=${multisig}&_network=${network}`;
 		}
 		return '/';
 	};

@@ -4,20 +4,13 @@ import Typography, { ETypographyVariants } from '@common/global-ui-components/Ty
 import FundMultisig from '@common/modals/FundMultisig';
 import NewTransaction from '@common/modals/NewTransaction';
 import EyeIcon from '@common/assets/icons/eye.svg';
-import React from 'react';
 import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
 import SelectCurrency from '@common/global-ui-components/SelectCurrency';
-import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
-import { useAtomValue } from 'jotai/react';
-import { IMultisigAssets } from '@common/types/substrate';
+import { useDashboardContext } from '@common/context/DashboarcContext';
 
-interface IDashboardCard {
-	assets: Array<IMultisigAssets | null>;
-}
-
-function DashboardCard({ assets }: IDashboardCard) {
+function DashboardCard() {
+	const { assets, currency } = useDashboardContext();
 	const totalBalance = assets?.reduce((acc, asset) => acc + (Number(asset?.usd) || 0), 0);
-	const currency = useAtomValue(selectedCurrencyAtom);
 	const symbol = getCurrencySymbol(currency);
 
 	return (

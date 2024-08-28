@@ -99,3 +99,13 @@ export enum ECurrency {
 	GHS = 'GHS',
 	AOA = 'AOA'
 }
+
+export enum ETxType {
+	TRANSFER = 'Transfer',
+	APPROVE = 'Approve'
+}
+
+export enum ETransactionTab {
+	HISTORY = 'history',
+	QUEUE = 'queue'
+}

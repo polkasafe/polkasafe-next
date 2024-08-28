@@ -12,6 +12,7 @@ import RightArrowOutlined from '@common/assets/icons/RightArrowOutlined.svg';
 import DashboardTransaction from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/DashboardTransaction';
 import { DashboardOverview } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/Overview/DashboardOverview';
 import AssetsOverview from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/Overview/AssetsOverview';
+import { Suspense } from 'react';
 
 export default async function OrganisationDashboard({ id }: { id: string }) {
 	const data = await getOrganisationData(id);
@@ -31,7 +32,6 @@ export default async function OrganisationDashboard({ id }: { id: string }) {
 								href={ASSETS_ORGANISATION_URL({ id })}
 								className='flex gap-2 items-center text-text-outline-primary'
 							>
-								{' '}
 								View All <RightArrowOutlined />
 							</Link>
 						</div>
@@ -39,7 +39,9 @@ export default async function OrganisationDashboard({ id }: { id: string }) {
 					</div>
 				</div>
 				<div className='bg-bg-main rounded-3xl p-5 h-full'>
-					<DashboardTransaction multisigs={data?.organisationData?.multisigs || []} />
+					<Suspense key={id}>
+						<DashboardTransaction multisigs={data?.organisationData?.multisigs || []} />
+					</Suspense>
 				</div>
 			</div>
 		</Secure>
