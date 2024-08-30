@@ -69,7 +69,7 @@ const AddressDropdown = ({ defaultAddress, className, accounts, disabled, onAcco
 				}
 			}}
 		>
-			<div className='flex items-center justify-between '>
+			<div className='flex items-center justify-between'>
 				<SubstrateAddress
 					extensionName={dropdownList[selectedAddress]}
 					address={selectedAddress}

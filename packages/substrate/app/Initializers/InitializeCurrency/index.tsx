@@ -1,3 +1,7 @@
+// Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+
 'use client';
 
 import { useSetAtom } from 'jotai/react';
@@ -5,7 +9,7 @@ import { useEffect } from 'react';
 import { getCurrencyPrices } from '@sdk/polkasafe-sdk/src';
 import { currencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
 
-const InitializeCurrency = () => {
+function InitializeCurrency() {
 	const setAtom = useSetAtom(currencyAtom);
 
 	useEffect(() => {
@@ -17,6 +21,6 @@ const InitializeCurrency = () => {
 	}, []);
 
 	return null;
-};
+}
 
 export default InitializeCurrency;

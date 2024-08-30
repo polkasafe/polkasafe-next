@@ -23,8 +23,8 @@ interface IAddressProps {
 }
 
 const styles = {
-	container: 'flex w-full items-center gap-x-3 justify-center',
-	textContainer: 'flex flex-col text-xs font-normal leading-13px justify-center items-center',
+	container: 'flex items-center gap-x-3',
+	textContainer: 'flex flex-col text-xs font-normal leading-13px justify-center',
 	textActive: 'text-white',
 	textDisabled: 'text-text_secondary'
 };
@@ -32,6 +32,7 @@ const styles = {
 export const SubstrateAddress: React.FC<IAddressProps> = ({
 	address,
 	className,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	displayInline,
 	disableIdenticon = false,
 	disableAddress,

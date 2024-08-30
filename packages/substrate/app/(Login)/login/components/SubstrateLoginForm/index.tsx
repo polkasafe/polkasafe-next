@@ -1,11 +1,13 @@
 // Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+/* eslint-disable no-tabs */
 
 'use client';
 
 import AccountSelectionForm from '@common/global-ui-components/AccountSelectionForm';
 import Button from '@common/global-ui-components/Button';
+import { stringToHex } from '@polkadot/util';
 import { WalletIcon } from '@common/global-ui-components/Icons';
 import Loader from '@common/global-ui-components/Loder';
 import WalletButtons from '@common/global-ui-components/WalletButtons';
@@ -18,12 +20,15 @@ import { queueNotification } from '@common/global-ui-components/QueueNotificatio
 import { whitelist } from '@substrate/app/(Login)/login/utils/whiteList';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { getSignature } from '@substrate/app/(Login)/login/utils/getSignature';
-import { useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { TFAForm } from '@substrate/app/(Login)/login/components/TFAForm';
 import { clientLogin } from '@substrate/app/(Login)/client-actions/client-login';
 import { CREATE_ORGANISATION_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
-import { NotificationStatus, Wallet } from '@common/enum/substrate';
+import { NotificationStatus, Wallet, WC_POLKADOT_METHODS } from '@common/enum/substrate';
+import { walletConnectAtom } from '@substrate/app/atoms/walletConnect/walletConnectAtom';
+import { signatureVerify, cryptoWaitReady } from '@polkadot/util-crypto';
+import { chainProperties, networks } from '@common/constants/substrateNetworkConstant';
 
 export function SubstrateLoginForm() {
 	const setAtom = useSetAtom(userAtom);
@@ -39,6 +44,9 @@ export function SubstrateLoginForm() {
 	const [selectedWallet, setSelectedWallet] = useState<Wallet>(Wallet.POLKADOT);
 	const [tfaToken, setTfaToken] = useState<string>('');
 
+	const wc = useAtomValue(walletConnectAtom);
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const [tokenExpired, setTokenExpired] = useState<boolean>(false);
 
 	const router = useRouter();
@@ -82,11 +90,35 @@ export function SubstrateLoginForm() {
 				setLoading(false);
 			} else {
 				let signature = '';
-				if (!whitelist.includes(getSubstrateAddress(address))) {
+				if (!whitelist.includes(getSubstrateAddress(address)) && selectedWallet !== Wallet.WALLET_CONNECT) {
 					setSigning(true);
 					signature = await getSignature(selectedWallet, token, substrateAddress);
 					setSigning(false);
 				}
+
+				if (selectedWallet === Wallet.WALLET_CONNECT && wc && wc.client && wc.session) {
+					const message = stringToHex(token);
+
+					const result = await wc.client!.request<{ signature: string }>({
+						chainId: chainProperties[networks.POLKADOT].chainId,
+						request: {
+							method: WC_POLKADOT_METHODS.POLKADOT_SIGN_MESSAGE,
+							params: {
+								address,
+								message
+							}
+						},
+						topic: wc.session!.topic
+					});
+
+					// sr25519 signatures need to wait for WASM to load
+					await cryptoWaitReady();
+					const { isValid: valid } = signatureVerify(message, result.signature, address);
+					if (valid) {
+						signature = result.signature;
+					}
+				}
+
 				const { data: userData, error: connectAddressErr } = (await clientLogin(substrateAddress, signature)) as any;
 
 				setLoading(false);
@@ -127,7 +159,7 @@ export function SubstrateLoginForm() {
 		}
 	};
 
-	const handleSubmitAuthCode = async (authCode: number) => {
+	const handleSubmitAuthCode = async () => {
 		const substrateAddress = getSubstrateAddress(address);
 		if (!substrateAddress) {
 			console.log('INVALID SUBSTRATE ADDRESS');
@@ -210,18 +242,22 @@ export function SubstrateLoginForm() {
 		}
 	};
 
-	return tfaToken ? (
-		<TFAForm
-			onSubmit={handleSubmitAuthCode}
-			onCancel={() => {
-				setTfaToken('');
-				setTokenExpired(false);
-			}}
-			loginDisabled={(noExtension || noAccounts || !address) && showAccountsDropdown}
-			loading={loading}
-		/>
-	) : (
-		<div>
+	if (tfaToken) {
+		return (
+			<TFAForm
+				onSubmit={handleSubmitAuthCode}
+				onCancel={() => {
+					setTfaToken('');
+					setTokenExpired(false);
+				}}
+				loginDisabled={(noExtension || noAccounts || !address) && showAccountsDropdown}
+				loading={loading}
+			/>
+		);
+	}
+
+	return (
+		<>
 			<h2 className='font-bold text-lg text-white'>Get Started</h2>
 			<p className='mt-2  text-normal text-sm text-white'>Connect your wallet</p>
 			<p className='text-text_secondary text-sm font-normal mt-5'>
@@ -230,6 +266,7 @@ export function SubstrateLoginForm() {
 			{showAccountsDropdown ? (
 				<div className='mt-5'>
 					<WalletButtons
+						wcAtom={walletConnectAtom}
 						setNoAccounts={setNoAccounts}
 						setFetchAccountsLoading={setFetchAccountsLoading}
 						setNoExtenstion={setNoExtension}
@@ -263,11 +300,12 @@ export function SubstrateLoginForm() {
 				disabled={(noExtension || noAccounts || !address) && showAccountsDropdown}
 				icon={<WalletIcon />}
 				loading={loading}
+				className='mt-[25px] h-auto'
 				onClick={async () => (showAccountsDropdown ? handleConnectWallet() : setShowAccountsDropdown(true))}
 			>
 				Connect Wallet
 			</Button>
 			{signing && <div className='text-white mt-1'>Please Sign This Randomly Generated Text To Login.</div>}
-		</div>
+		</>
 	);
 }

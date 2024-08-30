@@ -14,7 +14,9 @@ export enum Wallet {
 	POLKADOT = 'polkadot-js',
 	SUBWALLET = 'subwallet-js',
 	TALISMAN = 'talisman',
-	METAMASK = 'metamask'
+	METAMASK = 'metamask',
+	WALLET_CONNECT = 'wallet-connect',
+	POLKADOT_VAULT = 'polkadot-vault'
 }
 
 export enum EProjectType {
@@ -111,4 +113,9 @@ export enum ETransactionTab {
 	MEMBERS = 'members',
 	ASSETS = 'assets',
 	MULTISIGS = 'multisigs'
+}
+
+export enum WC_POLKADOT_METHODS {
+	POLKADOT_SIGN_TRANSACTION = 'polkadot_signTransaction',
+	POLKADOT_SIGN_MESSAGE = 'polkadot_signMessage'
 }

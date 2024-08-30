@@ -9,9 +9,9 @@ import React from 'react';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@sdk/polkasafe-sdk/src/constants/pagination';
 import { ISearchParams } from '@common/types/substrate';
 import { ETransactionType } from '@common/enum/substrate';
+import { isValidOrg } from '@substrate/app/global/utils/isValidOrg';
 import { getMultisigTransactions } from './ssr-actions/getMultisigTransactions';
 import TransactionTemplate from './components/TransactionTemplete';
-import { isValidOrg } from '@substrate/app/global/utils/isValidOrg';
 
 interface ITransactionProps {
 	searchParams: ISearchParams;
