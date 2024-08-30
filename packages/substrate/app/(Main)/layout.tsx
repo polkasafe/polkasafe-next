@@ -8,10 +8,12 @@ import { Layout } from '@common/global-ui-components/Layout';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 import { LOGIN_URL } from '@substrate/app/global/end-points';
 import { redirect } from 'next/navigation';
-import InitializeUser from '@substrate/app/Initializers/InitializeUser';
-import InitializeOrganisation from '@substrate/app/Initializers/InitializeOrganisation';
-import InitializeCurrency from '@substrate/app/Initializers/InitializeCurrency';
-import InitializeAPI from '@substrate/app/Initializers/InitializeAPI';
+import { Provider } from 'jotai';
+import Initializers from '@substrate/app/Initializers';
+import QueryProvider from '@substrate/app/providers/QueryClient';
+import { LayoutWrapper } from '@common/global-ui-components/LayoutWrapper';
+// import InitializeAssets from '@substrate/app/Initializers/InializeAssets';
+// const inter = Inter({ subsets: ['latin'] })
 
 export default function MainLayout({ children }: PropsWithChildren) {
 	const user = getUserFromCookie();
@@ -19,23 +21,27 @@ export default function MainLayout({ children }: PropsWithChildren) {
 		redirect(LOGIN_URL);
 	}
 	return (
-		<>
-			<InitializeUser
-				userAddress={user.address[0]}
-				organisations={user.organisations}
-				signature={user.signature}
-			/>
-			<InitializeOrganisation />
-			<InitializeCurrency />
-			<InitializeAPI />
-			{/* <InitializeAssets /> */}
-			<NextTopLoader />
-			<Layout
-				userAddress={user.address[0]}
-				organisations={user.organisations}
-			>
-				{children}
-			</Layout>
-		</>
+		<html lang='en'>
+			<body>
+				<Provider>
+					<LayoutWrapper>
+						<QueryProvider>
+							<Initializers
+								userAddress={user.address[0]}
+								signature={user.signature}
+								organisations={user.organisations}
+							/>
+							<NextTopLoader />
+							<Layout
+								userAddress={user.address[0]}
+								organisations={user.organisations}
+							>
+								{children}
+							</Layout>
+						</QueryProvider>
+					</LayoutWrapper>
+				</Provider>
+			</body>
+		</html>
 	);
 }

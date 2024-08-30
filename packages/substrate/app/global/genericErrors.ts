@@ -1,4 +1,4 @@
-// Copyright 2019-2025 @blobscriptions/marketplace authors & contributors
+// Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -17,6 +17,8 @@ export const ERROR_CODES = {
 	BAD_REQUEST: 'BAD_REQUEST',
 	MISSING_REQUIRED_FIELDS: 'MISSING_REQUIRED_FIELDS',
 	INVALID_REQUIRED_FIELDS: 'INVALID_REQUIRED_FIELDS',
+	INVALID_TRANSACTION: 'INVALID_TRANSACTION',
+	TRANSACTION_FAILED: 'TRANSACTION_FAILED'
 };
 
 export const ERROR_MESSAGES = {
@@ -34,4 +36,6 @@ export const ERROR_MESSAGES = {
 	[ERROR_CODES.BAD_REQUEST]: 'Bad request.',
 	[ERROR_CODES.MISSING_REQUIRED_FIELDS]: 'Missing required fields.',
 	[ERROR_CODES.INVALID_REQUIRED_FIELDS]: 'Invalid required fields.',
+	[ERROR_CODES.INVALID_TRANSACTION]: 'Invalid transaction.',
+	[ERROR_CODES.TRANSACTION_FAILED]: 'Transaction failed.'
 };

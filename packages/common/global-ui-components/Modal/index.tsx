@@ -8,15 +8,17 @@ import { PropsWithChildren, ReactNode } from 'react';
 export interface IModal {
 	open: boolean;
 	title: ReactNode;
+	loading?: boolean;
 }
 
 interface IModalProps extends IModal {
 	onCancel: () => void;
 }
 
-const Modal = ({ open, children, title, onCancel }: PropsWithChildren<IModalProps>) => {
+const Modal = ({ open, children, title, onCancel, loading = false }: PropsWithChildren<IModalProps>) => {
 	return (
 		<AntDModal
+			loading={loading}
 			centered
 			footer={false}
 			closeIcon={

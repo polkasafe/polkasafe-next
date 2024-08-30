@@ -9,11 +9,18 @@ import { ASSETS_ORGANISATION_URL } from '@substrate/app/global/end-points';
 import Link from 'next/link';
 
 import RightArrowOutlined from '@common/assets/icons/RightArrowOutlined.svg';
-import DashboardTransaction from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/DashboardTransaction';
-import { DashboardOverview } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/Overview/DashboardOverview';
-import AssetsOverview from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/Overview/AssetsOverview';
+import { ActionAndDetails } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails';
+import { DashboardOverview } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/DashboardOverview';
+import AssetsOverview from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/AssetsOverview';
+import { Suspense } from 'react';
+import { ETransactionTab } from '@common/enum/substrate';
 
-export default async function OrganisationDashboard({ id }: { id: string }) {
+interface IOrganisationDashboard {
+	id: string;
+	selectedTab: ETransactionTab;
+}
+
+export default async function OrganisationDashboard({ id, selectedTab }: IOrganisationDashboard) {
 	const data = await getOrganisationData(id);
 
 	return (
@@ -31,7 +38,6 @@ export default async function OrganisationDashboard({ id }: { id: string }) {
 								href={ASSETS_ORGANISATION_URL({ id })}
 								className='flex gap-2 items-center text-text-outline-primary'
 							>
-								{' '}
 								View All <RightArrowOutlined />
 							</Link>
 						</div>
@@ -39,7 +45,13 @@ export default async function OrganisationDashboard({ id }: { id: string }) {
 					</div>
 				</div>
 				<div className='bg-bg-main rounded-3xl p-5 h-full'>
-					<DashboardTransaction multisigs={data?.organisationData?.multisigs || []} />
+					<Suspense key={id}>
+						<ActionAndDetails
+							multisigs={data?.organisationData?.multisigs || []}
+							organisationId={id}
+							selectedTab={selectedTab}
+						/>
+					</Suspense>
 				</div>
 			</div>
 		</Secure>

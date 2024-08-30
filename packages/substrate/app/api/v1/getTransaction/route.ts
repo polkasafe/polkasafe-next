@@ -7,7 +7,7 @@ import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
-import { onChainTransaction } from '@substrate/app/api/api-utils/onChainTransaction';
+import { onChainTransaction } from '@substrate/app/api/api-utils/onChainHistoryTransaction';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	const { headers } = req;

@@ -42,7 +42,6 @@ export const networks = {
 	AVAIL: 'avail',
 	KHALA: 'khala',
 	KUSAMA: 'kusama',
-	// PASEO: 'paseo',
 	PHALA: 'phala',
 	POLKADOT: 'polkadot',
 	ROCOCO: 'rococo',

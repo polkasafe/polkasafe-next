@@ -6,9 +6,10 @@ import { isValidAddress } from '@substrate/app/global/utils/isValidAddress';
 import { isValidNetwork } from '@substrate/app/global/utils/isValidNetwork';
 import { redirect } from 'next/navigation';
 import React from 'react';
-import { ISearchParams } from '@common/types/substrate';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@sdk/polkasafe-sdk/src/constants/pagination';
+import { ISearchParams } from '@common/types/substrate';
 import { ETransactionType } from '@common/enum/substrate';
+import { isValidOrg } from '@substrate/app/global/utils/isValidOrg';
 import { getMultisigTransactions } from './ssr-actions/getMultisigTransactions';
 import TransactionTemplate from './components/TransactionTemplete';
 
@@ -20,20 +21,14 @@ async function Transaction({ searchParams }: ITransactionProps) {
 	const { _multisig, _organisation, _network, _type, _page, _limit } = searchParams;
 
 	if (!_organisation && !_multisig) {
-		// check local storage for login user details
 		//  if not found redirect to login page
 		redirect(LOGIN_URL);
-		return null;
 	}
-
-	if (_organisation && !isValidAddress(_organisation)) {
+	if (_organisation && !isValidOrg(_organisation)) {
 		redirect('/404');
-		return null;
 	}
-
 	if (_multisig && (!isValidAddress(_multisig) || !isValidNetwork(_network))) {
 		redirect('/404');
-		return null;
 	}
 
 	if (

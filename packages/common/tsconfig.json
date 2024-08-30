@@ -24,8 +24,9 @@
     "useUnknownInCatchVariables": false,
     "paths": {
       "@assets/*": ["./assets/*"],
-      "@common/*": ["./*"],
       "@substrate/*": ["../substrate/*"],
+      "@common/*": ["./*"],
+      "@sdk/*": ["../sdk/*"],
     },
     "plugins": [
       {
@@ -33,7 +34,14 @@
       }
     ]
   },
-  "include": ["common/**/*"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "custom.d.ts",
+    "**/*.tsx",
+    "**/*.svg",
+    "**/*.png",
+  ],
   "exclude": ["node_modules"]
 }
 

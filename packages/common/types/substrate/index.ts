@@ -4,6 +4,10 @@
 
 import { Network } from '@common/constants/substrateNetworkConstant';
 import { ECHANNEL, EUserType } from '@common/enum/substrate';
+import { ApiPromise } from '@polkadot/api';
+import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
+import { SignerOptions, SubmittableExtrinsic } from '@polkadot/api/types';
+import { BN } from '@polkadot/util';
 import Client from '@walletconnect/sign-client';
 import { PairingTypes, SessionTypes } from '@walletconnect/types';
 
@@ -47,6 +51,7 @@ export interface IDashboardTransaction {
 	createdAt: Date;
 	multisigAddress: string;
 	from: string;
+	to?: string;
 }
 
 export interface ITransaction {
@@ -223,6 +228,7 @@ export interface IDBTransaction {
 	callData: string;
 	note: string;
 	status: string;
+	initiator: string;
 }
 
 export interface IWalletConnect {
@@ -243,4 +249,40 @@ export interface IDBAssets {
 
 export interface IUpdateDBAssetProps extends IDBAssets {
 	multisigId: string;
+}
+
+export interface ISubstrateExecuteProps {
+	api: ApiPromise | AvailApiPromise;
+	apiReady: boolean;
+	network: string;
+	tx: SubmittableExtrinsic<'promise'>;
+	address: string;
+	params?: Partial<SignerOptions>;
+	errorMessageFallback: string;
+	onSuccess: (txHash?: string, txIndex?: number) => Promise<void> | void;
+	onFailed: (errorMessageFallback?: string) => Promise<void> | void;
+	setStatus?: (pre: string) => void;
+}
+
+export interface IRecipient {
+	address: string;
+	amount: BN;
+}
+
+export interface ISendTransactionForm {
+	recipient: string;
+	amount: BN;
+	note: string;
+	selectedMultisigAddress: string;
+	selectedProxy?: string;
+}
+
+export interface ISendTransaction {
+	recipients: Array<IRecipient>;
+	note: string;
+	sender: IMultisig;
+}
+
+export interface IGenericObject {
+	[key: string]: any;
 }

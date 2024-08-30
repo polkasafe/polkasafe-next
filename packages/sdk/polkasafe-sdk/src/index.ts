@@ -8,6 +8,7 @@ import {
 	IGetOrganisationTransactionProps,
 	ILoginProps
 } from '@common/types/sdk';
+import { ETransactionType } from '@common/enum/sdk';
 import CURRENCY_API_KEY from './constants/currencyApiKey';
 import { currencySymbols } from './constants/currencyConstants';
 import { getOrganisationById } from './get-organisation-by-id';
@@ -19,7 +20,7 @@ import { getMultisigDataByMultisigAddress } from './get-multisig-data-by-address
 import { getMultisigQueue } from './get-multisig-queue';
 import { getTransactionsForMultisig } from './get-transactions-for-multisig';
 import { getOrganisationAsset } from './get-organisation-assets';
-import { getTransactionsForOrganisation } from './get-transactions-for-organisation';
+import { getTransactionsForMultisigs } from './get-transactions-for-multisigs';
 import { handleHeaders } from './utils/handleHeaders';
 import { request } from './utils/request';
 
@@ -33,11 +34,11 @@ export const getMultisigData = async ({ address, network }: IGetMultisigDataProp
 export const getTransactions = async ({ address, network, page, limit }: IGetMultisigTransactionProps) =>
 	getTransactionsForMultisig({ address, network, page, limit });
 
-export const getQueueTransactions = async ({ address, network, page, limit }: IGetMultisigTransactionProps) =>
-	getMultisigQueue({ address, network, page, limit });
+export const getQueueTransactions = async ({ multisigs, page, limit }: IGetOrganisationTransactionProps) =>
+	getTransactionsForMultisigs({ multisigs, page, limit, type: ETransactionType.QUEUE_TRANSACTION });
 
-export const getOrganisationTransactions = async ({ multisigs, page, limit }: IGetOrganisationTransactionProps) =>
-	getTransactionsForOrganisation({ multisigs, page, limit });
+export const getHistoryTransactions = async ({ multisigs, page, limit }: IGetOrganisationTransactionProps) =>
+	getTransactionsForMultisigs({ multisigs, page, limit, type: ETransactionType.HISTORY_TRANSACTION });
 
 export const getOrganisationQueueTransactions = async ({
 	address,

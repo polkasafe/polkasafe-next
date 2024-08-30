@@ -2,12 +2,12 @@
 // RULES: Enum should have E prefix
 
 export enum ETransactionOptions {
-	SEND = 'send',
-	RECEIVE = 'receive',
-	PROXY = 'proxy',
+	SENT = 'sent',
+	RECEIVED = 'received',
+	CREATE_PROXY = 'create_proxy',
 	REMOVE_SIGNATORY = 'remove_signatory',
 	ADD_SIGNATORY = 'add_signatory',
-	CREATE_MULTISIG = 'create_multisig'
+	CUSTOM = 'custom'
 }
 
 export enum Wallet {
@@ -102,7 +102,19 @@ export enum ECurrency {
 	AOA = 'AOA'
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+export enum ETxType {
+	TRANSFER = 'Transfer',
+	APPROVE = 'Approve'
+}
+
+export enum ETransactionTab {
+	HISTORY = 'history',
+	QUEUE = 'queue',
+	MEMBERS = 'members',
+	ASSETS = 'assets',
+	MULTISIGS = 'multisigs'
+}
+
 export enum WC_POLKADOT_METHODS {
 	POLKADOT_SIGN_TRANSACTION = 'polkadot_signTransaction',
 	POLKADOT_SIGN_MESSAGE = 'polkadot_signMessage'
