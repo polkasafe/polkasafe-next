@@ -33,28 +33,29 @@ const getExcHistoryResponse = async (multisigAddress: string, network: string, p
 			: [];
 
 	const excHistoryTransactionsPromise = filteredExcHistoryData.map(async (transaction: any) => {
-		const transactionDoc = await TRANSACTION_COLLECTION.doc(transaction.call_hash).get();
-		const txn: IDBTransaction = transactionDoc.data() as IDBTransaction;
+		const dbTransactionDoc = await TRANSACTION_COLLECTION.doc(transaction.call_hash).get();
+		const dbTransaction: IDBTransaction = dbTransactionDoc.data() as IDBTransaction;
 
 		return {
 			multi_id: transaction.multi_id || '',
 			multisigAddress,
-			amount_token: transactionDoc.exists && txn?.amount_token ? txn?.amount_token : '',
+			amount_token: dbTransactionDoc.exists && dbTransaction?.amount_token ? dbTransaction?.amount_token : '',
 			amount_usd: String(Number(transaction.usd_amount) * Number(1)),
 			block_number: Number(transaction.block_num || 0),
 			callData: transaction?.call_data
 				? transaction?.call_data
-				: transactionDoc.exists && transaction?.callData
+				: dbTransactionDoc.exists && transaction?.callData
 				? transaction?.callData
 				: '',
 			callHash: transaction.call_hash,
 			created_at: dayjs(transaction.block_timestamp * 1000).toDate(),
 			from: transaction.multi_account_display.address,
+			initiator: transaction.account_display.address,
 			network,
-			note: txn?.note || '',
+			note: dbTransaction?.note || '',
 			to: transaction.to,
 			token: transaction.asset_symbol,
-			transactionFields: txn?.transactionFields || ({} as any)
+			transactionFields: dbTransaction?.transactionFields || ({} as any)
 		} as unknown as IDBTransaction;
 	});
 	return Promise.all(excHistoryTransactionsPromise);
@@ -67,7 +68,8 @@ const getAllHistoryResponse = async (multisigAddress: string, network: string, p
 			address: multisigAddress,
 			currency: 'token',
 			page: page - 1 || 0, // pages start from 0
-			row: entries || 1
+			row: 1,
+			limit: entries
 		},
 		{ headers: SUBSCAN_API_HEADERS }
 	);
@@ -78,34 +80,35 @@ const getAllHistoryResponse = async (multisigAddress: string, network: string, p
 			? allHistoryData.transfers.filter((transfer: any) => transfer.to === multisigAddress)
 			: [];
 
-	const allHistoryTransactionsPromise = filteredAllHistoryData.map(async (transfer: any) => {
-		const transactionDoc = await TRANSACTION_COLLECTION.doc(transfer.hash).get();
-		const transaction: ITransaction = transactionDoc.data() as ITransaction;
+	const allHistoryTransactionsPromise = filteredAllHistoryData.map(async (transaction: any) => {
+		const dbTransactionDoc = await TRANSACTION_COLLECTION.doc(transaction.hash).get();
+		const dbTransaction: ITransaction = dbTransactionDoc.data() as ITransaction;
 
 		return {
 			multisigAddress,
-			amount_token: transfer.amount,
-			amount_usd: String(Number(transfer.usd_amount) * Number(1)),
-			approvals: transactionDoc.exists && transaction.approvals ? transaction.approvals : [],
-			block_number: Number(transfer.block_num),
-			callHash: transfer.hash,
-			created_at: dayjs(transfer.block_timestamp * 1000).toDate(),
-			from: transfer.from,
+			amount_token: transaction.amount,
+			amount_usd: String(Number(transaction.usd_amount) * Number(1)),
+			approvals: dbTransactionDoc.exists && dbTransaction.approvals ? dbTransaction.approvals : [],
+			block_number: Number(transaction.block_num),
+			callHash: transaction.hash,
+			created_at: dayjs(transaction.block_timestamp * 1000).toDate(),
+			from: transaction.from,
 			network,
-			to: transfer.to,
-			token: transfer.asset_symbol,
-			transactionFields: transaction?.transactionFields || ({} as any),
-			callData: transfer?.call_data
-				? transfer?.call_data
-				: transactionDoc.exists && transaction?.callData
-				? transaction?.callData
+			to: transaction.to,
+			token: transaction.asset_symbol,
+			transactionFields: dbTransaction?.transactionFields || ({} as any),
+			initiator: transaction?.account_display?.address,
+			callData: transaction?.call_data
+				? transaction?.call_data
+				: dbTransactionDoc.exists && dbTransaction?.callData
+				? dbTransaction?.callData
 				: ''
 		} as unknown as IDBTransaction;
 	});
 	return Promise.all(allHistoryTransactionsPromise);
 };
 
-async function onChainTransaction(
+export async function onChainHistoryTransaction(
 	multisigAddress: string,
 	network: string,
 	entries: number,
@@ -117,8 +120,6 @@ async function onChainTransaction(
 	};
 
 	try {
-		const transactions: IDBTransaction[] = [];
-
 		const excHistoryTransactionsPromise = getExcHistoryResponse(multisigAddress, network, page, entries);
 		const allHistoryTransactionsPromise = getAllHistoryResponse(multisigAddress, network, page, entries);
 
@@ -128,7 +129,11 @@ async function onChainTransaction(
 		]);
 
 		returnValue.data.transactions = [...excHistoryTransactions, ...allHistoryTransactions];
-		returnValue.data.count = transactions.length;
+
+		// const excHistoryTransactions = await getExcHistoryResponse(multisigAddress, network, page, entries);
+		// returnValue.data.transactions = excHistoryTransactions;
+		// const allHistoryTransactionsPromise = await getAllHistoryResponse(multisigAddress, network, page, entries);
+		// returnValue.data.transactions = allHistoryTransactionsPromise;
 	} catch (err) {
 		console.log('Error in getTransfersByAddress:', err);
 		returnValue.error = String(err) || ResponseMessages.TRANSFERS_FETCH_ERROR;
@@ -136,5 +141,3 @@ async function onChainTransaction(
 
 	return returnValue;
 }
-
-export { onChainTransaction };

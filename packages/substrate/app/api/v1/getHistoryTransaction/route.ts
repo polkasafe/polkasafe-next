@@ -5,24 +5,12 @@ import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
-import { onChainTransaction } from '@substrate/app/api/api-utils/onChainTransaction';
+import { onChainHistoryTransaction } from '@substrate/app/api/api-utils/onChainHistoryTransaction';
 import { Network } from '@common/constants/substrateNetworkConstant';
 import { ITransaction } from '@common/types/substrate';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
-	// const { headers } = req;
-	// const address = headers.get('x-address');
-	// const signature = headers.get('x-signature');
 	try {
-		// check if address is valid
-		// const substrateAddress = getSubstrateAddress(String(address));
-		// if (!substrateAddress) {
-		// return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS }, { status: 400 });
-		// }
-
-		// // check if signature is valid
-		// const { isValid, error } = await isValidRequest(substrateAddress, signature);
-		// if (!isValid) return NextResponse.json({ error }, { status: 400 });
 		const { multisigs, limit, page } = await req.json();
 		if (!multisigs || Number.isNaN(limit) || Number.isNaN(page)) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
@@ -52,7 +40,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			const {
 				data: { transactions: historyItemsArr },
 				error: historyItemsError
-			} = await onChainTransaction(address, network, Number(limit), Number(page));
+			} = await onChainHistoryTransaction(address, network, Number(limit), Number(page));
 			if (historyItemsError || !historyItemsArr) {
 				console.log(`Error in  Multisig - ${address} Network - ${network}:`, {
 					err: historyItemsError

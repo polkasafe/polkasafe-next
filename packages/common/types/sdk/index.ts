@@ -1,3 +1,5 @@
+import { ETransactionType } from '@common/enum/sdk';
+
 export interface IConnectProps {
 	address: string;
 }
@@ -32,6 +34,7 @@ export interface IGetOrganisationTransactionProps {
 	multisigs: Array<string>;
 	page?: number;
 	limit?: number;
+	type?: ETransactionType;
 }
 
 export interface IGetMultisigAssets {

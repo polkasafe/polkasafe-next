@@ -2,12 +2,12 @@
 // RULES: Enum should have E prefix
 
 export enum ETransactionOptions {
-	SEND = 'send',
-	RECEIVE = 'receive',
-	PROXY = 'proxy',
+	SENT = 'sent',
+	RECEIVED = 'received',
+	CREATE_PROXY = 'create_proxy',
 	REMOVE_SIGNATORY = 'remove_signatory',
 	ADD_SIGNATORY = 'add_signatory',
-	CREATE_MULTISIG = 'create_multisig'
+	CUSTOM = 'custom'
 }
 
 export enum Wallet {
@@ -107,5 +107,8 @@ export enum ETxType {
 
 export enum ETransactionTab {
 	HISTORY = 'history',
-	QUEUE = 'queue'
+	QUEUE = 'queue',
+	MEMBERS = 'members',
+	ASSETS = 'assets',
+	MULTISIGS = 'multisigs'
 }

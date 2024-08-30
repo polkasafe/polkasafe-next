@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { ETransactionType } from '@common/enum/substrate';
+import { ETransactionTab, ETransactionType } from '@common/enum/substrate';
 
 export const LOGIN_URL = '/login';
 export const DASHBOARD_URL = '/dashboard';
@@ -31,5 +31,6 @@ export const MULTISIG_TRANSACTION_URL = ({
 }) => `/transactions?_multisig=${multisig}&_page=${page}&_limit=${limit}&_network=${network}&_type=${type}`;
 export const MULTISIG_DASHBOARD_URL = ({ multisig, network }: { multisig: string; network: string }) =>
 	`/dashboard?_multisig=${multisig}&_network=${network}`;
-export const ORGANISATION_DASHBOARD_URL = ({ id }: { id: string }) => `/dashboard?_organisation=${id}`;
+export const ORGANISATION_DASHBOARD_URL = ({ id, tab }: { id: string; tab?: ETransactionTab }) =>
+	`/dashboard?_organisation=${id}&_tab=${tab || ETransactionTab.HISTORY}`;
 export const CREATE_ORGANISATION_URL = ({ address }: { address: string }) => `/create-organisation?address=${address}`;

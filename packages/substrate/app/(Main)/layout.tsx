@@ -10,11 +10,9 @@ import { Layout } from '@common/global-ui-components/Layout';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 import { LOGIN_URL } from '@substrate/app/global/end-points';
 import { redirect } from 'next/navigation';
-import InitializeUser from '@substrate/app/Initializers/InitializeUser';
-import InitializeOrganisation from '@substrate/app/Initializers/InitializeOrganisation';
 import { Provider } from 'jotai';
-import InitializeCurrency from '@substrate/app/Initializers/InitializeCurrency';
-import InitializeAPI from '@substrate/app/Initializers/InitializeAPI';
+import Initializers from '@substrate/app/Initializers';
+import QueryProvider from '@substrate/app/providers/QueryClient';
 // import InitializeAssets from '@substrate/app/Initializers/InializeAssets';
 // const inter = Inter({ subsets: ['latin'] })
 
@@ -40,22 +38,20 @@ export default function RootLayout({ children }: PropsWithChildren) {
 			<body>
 				<Provider>
 					<LayoutWrapper>
-						<InitializeUser
-							userAddress={user.address[0]}
-							organisations={user.organisations}
-							signature={user.signature}
-						/>
-						<InitializeOrganisation />
-						<InitializeCurrency />
-						<InitializeAPI />
-						{/* <InitializeAssets /> */}
-						<NextTopLoader />
-						<Layout
-							userAddress={user.address[0]}
-							organisations={user.organisations}
-						>
-							{children}
-						</Layout>
+						<QueryProvider>
+							<Initializers
+								userAddress={user.address[0]}
+								signature={user.signature}
+								organisations={user.organisations}
+							/>
+							<NextTopLoader />
+							<Layout
+								userAddress={user.address[0]}
+								organisations={user.organisations}
+							>
+								{children}
+							</Layout>
+						</QueryProvider>
 					</LayoutWrapper>
 				</Provider>
 			</body>

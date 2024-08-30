@@ -8,6 +8,7 @@ import React from 'react';
 import { isValidNetwork } from '@substrate/app/global/utils/isValidNetwork';
 import OrganisationDashboard from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard';
 import { ISearchParams } from '@common/types/substrate';
+import { ETransactionTab } from '@common/enum/substrate';
 import { getMultisigDataAndTransactions } from './ssr-actions/getMultisigDataAndTransactions';
 import MultisigDashboard from './components/MultisigDashboard';
 
@@ -16,7 +17,7 @@ interface IDashboardProps {
 }
 
 async function Dashboard({ searchParams }: IDashboardProps) {
-	const { _multisig, _organisation, _network } = searchParams;
+	const { _multisig, _organisation, _network, _tab } = searchParams;
 
 	if (!_organisation && !_multisig) {
 		//  if not found redirect to login page
@@ -25,7 +26,12 @@ async function Dashboard({ searchParams }: IDashboardProps) {
 
 	if (_organisation) {
 		// if organisation found then render organisation dashboard
-		return <OrganisationDashboard id={_organisation} />;
+		return (
+			<OrganisationDashboard
+				id={_organisation}
+				selectedTab={(_tab as ETransactionTab) || ETransactionTab.HISTORY}
+			/>
+		);
 	}
 
 	if (_multisig && (!isValidAddress(_multisig) || !isValidNetwork(_network))) {

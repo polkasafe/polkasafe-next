@@ -49,6 +49,7 @@ export interface IDashboardTransaction {
 	createdAt: Date;
 	multisigAddress: string;
 	from: string;
+	to?: string;
 }
 
 export interface ITransaction {
@@ -225,6 +226,7 @@ export interface IDBTransaction {
 	callData: string;
 	note: string;
 	status: string;
+	initiator: string;
 }
 
 export interface IDBAssets {
@@ -270,4 +272,8 @@ export interface ISendTransaction {
 	recipients: Array<IRecipient>;
 	note: string;
 	sender: IMultisig;
+}
+
+export interface IGenericObject {
+	[key: string]: any;
 }

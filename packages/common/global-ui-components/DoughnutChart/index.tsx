@@ -13,10 +13,13 @@ type IChartData = {
 Chart.register(ArcElement, Tooltip, ChartLegend);
 
 // Main DoughnutChart component
-const DoughnutChart = ({ data }: { data: Array<{ label: string; value: number; color: string }> }) => {
-	if (!data || data.length === 0) {
+const DoughnutChart = ({ data: currentData }: { data: Array<{ label: string; value: number; color: string }> }) => {
+	if (!currentData || currentData.length === 0) {
 		return null;
 	}
+
+	const data = currentData.filter((item) => Boolean(item) && item?.label && item?.color && item?.value);
+
 	const chartData = {
 		labels: data.map((item) => item.label),
 		datasets: [
@@ -54,7 +57,8 @@ const DoughnutChart = ({ data }: { data: Array<{ label: string; value: number; c
 };
 
 // Legend component
-const Legend = ({ data }: { data: Array<IChartData> }) => {
+const Legend = ({ data: currentData }: { data: Array<IChartData> }) => {
+	const data = currentData.filter((item) => Boolean(item) && item?.label && item?.color && item?.value);
 	return (
 		<div>
 			<Typography
@@ -99,7 +103,7 @@ const DoughnutChartWithLegend = ({
 }) => {
 	return (
 		<div className='bg-bg-main flex justify-center items-center px-7 py-5 rounded-3xl gap-10'>
-			{data.filter((item) => item !== null).length > 0 ? (
+			{data.filter((item) => Boolean(item) && item?.label && item?.color && item?.value).length > 0 ? (
 				<>
 					<DoughnutChart data={data as any} />
 					<Legend data={data as any} />

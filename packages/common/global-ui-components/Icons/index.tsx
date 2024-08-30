@@ -102,6 +102,7 @@ import TreasuryAnalyticsSVG from '@common/assets/icons/treasury-analytics-icon.s
 import SendMoneySVG from '@common/assets/icons/money-send-circle.svg';
 import InvoicesSVG from '@common/assets/icons/invoice.svg';
 import LedgerSVG from '@common/assets/icons/ledger.svg';
+import ReceivedIconSVG from '@common/assets/icons/received-icon.svg';
 
 export const AddIcon: React.FC<Partial<CustomIconComponentProps>> = (props: Partial<CustomIconComponentProps>) => (
 	<Icon
@@ -854,6 +855,13 @@ export const InvoicesIcon: React.FC<Partial<CustomIconComponentProps>> = (props:
 export const LedgerIcon: React.FC<Partial<CustomIconComponentProps>> = (props: Partial<CustomIconComponentProps>) => (
 	<Icon
 		component={LedgerSVG}
+		{...props}
+	/>
+);
+
+export const ReceivedIcon: React.FC<Partial<CustomIconComponentProps>> = (props: Partial<CustomIconComponentProps>) => (
+	<Icon
+		component={ReceivedIconSVG}
 		{...props}
 	/>
 );

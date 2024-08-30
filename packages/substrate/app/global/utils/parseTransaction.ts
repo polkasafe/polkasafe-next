@@ -7,12 +7,13 @@ import { IDashboardTransaction } from '@common/types/substrate';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const parseTransaction = (transaction: any) => {
 	return {
-		multisigAddress: transaction.multisigAddress as string,
-		from: transaction.from as string,
-		amountToken: transaction.amount_token as string,
-		network: transaction.network as string,
-		createdAt: new Date(transaction.created_at) as Date,
-		callData: transaction.callData as string,
-		callHash: transaction.callHash as string
+		multisigAddress: transaction.multisigAddress,
+		from: transaction.from,
+		to: transaction.to || '',
+		amountToken: transaction.amount_token,
+		network: transaction.network,
+		createdAt: new Date(transaction.created_at),
+		callData: transaction.callData,
+		callHash: transaction.callHash
 	} as unknown as IDashboardTransaction;
 };

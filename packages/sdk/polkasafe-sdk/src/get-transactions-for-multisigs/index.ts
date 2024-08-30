@@ -1,11 +1,13 @@
 import { IGetOrganisationTransactionProps } from '@common/types/sdk';
+import { ETransactionType } from '@common/enum/sdk';
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '../constants/pagination';
 import { request } from '../utils/request';
 
-export function getTransactionsForOrganisation({
+export function getTransactionsForMultisigs({
 	multisigs,
 	page = DEFAULT_PAGE,
-	limit = DEFAULT_PAGE_SIZE
+	limit = DEFAULT_PAGE_SIZE,
+	type
 }: IGetOrganisationTransactionProps) {
 	if (!multisigs) {
 		throw new Error('Multisig address is required');
@@ -21,6 +23,15 @@ export function getTransactionsForOrganisation({
 		page,
 		limit
 	});
+	if (type === ETransactionType.HISTORY_TRANSACTION) {
+		return request('/getHistoryTransaction', {}, { method: 'POST', body }) as Promise<{
+			data: { transactions: Array<IDBTransaction> } | null;
+			error: string | null;
+		}>;
+	}
 
-	return request('/getHistoryTxForOrg', {}, { method: 'POST', body });
+	return request('/getQueueTransaction', {}, { method: 'POST', body }) as Promise<{
+		data: { transactions: Array<IDBTransaction> } | null;
+		error: string | null;
+	}>;
 }

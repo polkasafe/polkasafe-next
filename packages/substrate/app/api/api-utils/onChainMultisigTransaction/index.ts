@@ -17,7 +17,7 @@ interface IOnchainMultisigResponse {
 	proxy?: Array<{ address: string; name: string }>;
 }
 
-export const onchainMultisigTransaction = async (
+export const onChainMultisigTransaction = async (
 	multisigAddress: string,
 	network: string
 ): Promise<IResponse<IOnchainMultisigResponse>> => {
