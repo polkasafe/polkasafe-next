@@ -115,7 +115,7 @@ export enum ETransactionTab {
 	MULTISIGS = 'multisigs'
 }
 
-export enum WC_POLKADOT_METHODS {
+export enum WcPolkadotMethods {
 	POLKADOT_SIGN_TRANSACTION = 'polkadot_signTransaction',
 	POLKADOT_SIGN_MESSAGE = 'polkadot_signMessage'
 }
