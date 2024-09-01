@@ -7,7 +7,7 @@
 import {
 	astarApi,
 	polkadotApi,
-	availGoldbergApi,
+	availApi,
 	khalaApi,
 	kusamaApi,
 	phalaApi,
@@ -18,20 +18,18 @@ import {
 } from '@substrate/app/atoms/api/apiAtom';
 import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
-import { chainProperties, networks } from '@common/constants/substrateNetworkConstant';
+
 import { initialize } from 'avail-js-sdk';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { queueNotification } from '@common/global-ui-components/QueueNotification';
-import { NotificationStatus } from '@common/enum/substrate';
-
-export const checkAvailNetwork = (network: string) => {
-	return [networks.AVAIL].includes(network);
-};
+import { ENetwork, NotificationStatus } from '@common/enum/substrate';
+import { checkAvailNetwork } from '@substrate/app/global/utils/checkAvailNetwork';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 function InitializeAPI() {
 	const setPolkadotApiAtom = useSetAtom(polkadotApi);
 	const setAstarApiAtom = useSetAtom(astarApi);
-	const setAvailGoldbergApiAtom = useSetAtom(availGoldbergApi);
+	const setAvailApiAtom = useSetAtom(availApi);
 	const setKhalaApiAtom = useSetAtom(khalaApi);
 	const setKusamaApiAtom = useSetAtom(kusamaApi);
 	const setPhalaApiAtom = useSetAtom(phalaApi);
@@ -42,25 +40,25 @@ function InitializeAPI() {
 
 	const getApiSetter = (network: string) => {
 		switch (network) {
-			case networks.POLKADOT:
+			case ENetwork.POLKADOT:
 				return setPolkadotApiAtom;
-			case networks.ASTAR:
+			case ENetwork.ASTAR:
 				return setAstarApiAtom;
-			case networks.AVAIL:
-				return setAvailGoldbergApiAtom;
-			case networks.KHALA:
+			case ENetwork.AVAIL:
+				return setAvailApiAtom;
+			case ENetwork.KHALA:
 				return setKhalaApiAtom;
-			case networks.KUSAMA:
+			case ENetwork.KUSAMA:
 				return setKusamaApiAtom;
-			case networks.PHALA:
+			case ENetwork.PHALA:
 				return setPhalaApiAtom;
-			case networks.ROCOCO:
+			case ENetwork.ROCOCO:
 				return setRococoApiAtom;
-			case networks.STATEMINT:
+			case ENetwork.POLKADOT_ASSETHUB:
 				return setAssethubPolkadotApiAtom;
-			case networks.STATEMINE:
+			case ENetwork.KUSAMA_ASSETHUB:
 				return setAssethubKusamaApiAtom;
-			case networks.WESTEND:
+			case ENetwork.WESTEND:
 				return setWestendApiAtom;
 			default:
 				return null;
@@ -69,10 +67,10 @@ function InitializeAPI() {
 
 	const setAllNetworkApi = async () => {
 		try {
-			const data = Object.values(networks).map(async (network) => {
+			const data = Object.values(ENetwork).map(async (network) => {
 				const isAvail = checkAvailNetwork(network);
-				const provider = isAvail ? null : new WsProvider(chainProperties[network].rpcEndpoint);
-				const availApi = isAvail ? await initialize(chainProperties[network].rpcEndpoint) : null;
+				const provider = isAvail ? null : new WsProvider(networkConstants[network].rpcEndpoint);
+				const availApi = isAvail ? await initialize(networkConstants[network].rpcEndpoint) : null;
 				const api = isAvail ? availApi : new ApiPromise({ provider: provider as WsProvider });
 				if (!api) {
 					queueNotification({

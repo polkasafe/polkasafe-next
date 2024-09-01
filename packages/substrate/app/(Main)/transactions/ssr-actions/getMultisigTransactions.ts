@@ -12,10 +12,11 @@ export const getMultisigTransactions = async (
 	page: number,
 	limit: number
 ) => {
+	const id = `${address}_${network}`;
 	const transactionsData =
 		type === ETransactionType.HISTORY_TRANSACTION
 			? await getTransactions({ address, network, page, limit })
-			: await getQueueTransactions({ address, network, page, limit });
+			: await getQueueTransactions({ multisigs: [id], page, limit });
 
 	const {
 		data: { count, transactions },

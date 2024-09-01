@@ -2,6 +2,7 @@
 
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Modal from '@common/global-ui-components/Modal';
+import { FundMultisigForm } from '@common/modals/FundMultisig/components/FundMultisigForm';
 import React, { useState } from 'react';
 
 function FundMultisig() {
@@ -21,7 +22,7 @@ function FundMultisig() {
 				onCancel={() => setOpenModal(false)}
 				title='Fund Multisig'
 			>
-				Content
+				<FundMultisigForm />
 			</Modal>
 		</div>
 	);

@@ -12,6 +12,7 @@ import { Provider } from 'jotai';
 import Initializers from '@substrate/app/Initializers';
 import QueryProvider from '@substrate/app/providers/QueryClient';
 import { LayoutWrapper } from '@common/global-ui-components/LayoutWrapper';
+import SubstrateLayout from '@substrate/app/(Main)/SubstrateLayout';
 // import InitializeAssets from '@substrate/app/Initializers/InializeAssets';
 // const inter = Inter({ subsets: ['latin'] })
 
@@ -32,12 +33,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
 								organisations={user.organisations}
 							/>
 							<NextTopLoader />
-							<Layout
+							<SubstrateLayout
 								userAddress={user.address[0]}
 								organisations={user.organisations}
 							>
 								{children}
-							</Layout>
+							</SubstrateLayout>
 						</QueryProvider>
 					</LayoutWrapper>
 				</Provider>

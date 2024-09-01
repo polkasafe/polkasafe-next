@@ -4,11 +4,10 @@
 /* eslint-disable security/detect-object-injection */
 
 import APP_NAME from '@common/constants/appName';
-import { Network } from '@common/constants/substrateNetworkConstant';
-import { Wallet } from '@common/enum/substrate';
+import { ENetwork, Wallet } from '@common/enum/substrate';
 import { Injected, InjectedWindow } from '@polkadot/extension-inject/types';
 import { isNumber } from '@polkadot/util';
-import { checkAvailNetwork } from '@substrate/app/Initializers/InitializeAPI';
+import { checkAvailNetwork } from '@substrate/app/global/utils/checkAvailNetwork';
 import { signedExtensions, types } from 'avail-js-sdk';
 
 const getInjectorMetadata = (api: any) => {
@@ -26,7 +25,7 @@ const getInjectorMetadata = (api: any) => {
 	};
 };
 
-export async function setSigner(api: any, chosenWallet: Wallet, network: Network) {
+export async function setSigner(api: any, chosenWallet: Wallet, network: ENetwork) {
 	const injectedWindow = (typeof window !== 'undefined' && window) as Window & InjectedWindow;
 
 	const wallet = injectedWindow.injectedWeb3[String(chosenWallet)];

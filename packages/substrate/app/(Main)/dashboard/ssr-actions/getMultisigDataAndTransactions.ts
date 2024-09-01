@@ -18,7 +18,7 @@ const parseMultisig = (multisig: any) =>
 		proxy: multisig.proxy || []
 	}) as IMultisig;
 
-const parseTransactions = (transaction: IDBTransaction) =>
+const parseTransactions = (transaction: any) =>
 	({
 		id: transaction.id,
 		from: transaction.from,
@@ -41,7 +41,7 @@ export const getMultisigDataAndTransactions = async (address: string, network: s
 	// fetch multisig data and transactions
 	const multisigPromise = getMultisigData({ address, network });
 	const transactionsPromise = getTransactions({ address, network });
-	const queueTransactionPromise = getQueueTransactions({ address, network });
+	const queueTransactionPromise = getQueueTransactions({ multisigs: [`${address}_${network}`], page: 1, limit: 10 });
 
 	// using Promise.all to fetch all data in parallel
 	const [multisigData, transactionsData, queueTransactionData] = await Promise.all([
@@ -61,24 +61,18 @@ export const getMultisigDataAndTransactions = async (address: string, network: s
 		error: string;
 	};
 
-	const {
-		data: { count: queueCount, transactions: queueTransactions },
-		error: queueTransactionsError
-	} = queueTransactionData as {
-		data: { count: number; transactions: Array<IDBTransaction> };
-		error: string;
-	};
+	const { data, error: queueTransactionsError } = queueTransactionData;
 
 	if (multisigError || transactionsError || queueTransactionsError) {
 		return { error: multisigError || transactionsError || queueTransactionsError };
 	}
 
 	const historyTx = transactions.map(parseTransactions);
-	const queueTx = queueTransactions.map(parseTransactions);
+	const queueTx = data?.transactions.map(parseTransactions);
 
 	return {
 		multisig: parseMultisig(multisig),
 		history: { transactions: historyTx, count },
-		queue: { transactions: queueTx, count: queueCount }
+		queue: { transactions: queueTx, count: queueTx?.length || 0 }
 	};
 };

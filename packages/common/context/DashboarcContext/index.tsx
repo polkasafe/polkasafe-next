@@ -1,10 +1,10 @@
-import { IMultisig, IMultisigAssets, ISendTransaction } from '@common/types/substrate';
+import { IFundMultisig, IMultisig, IMultisigAssets, ISendTransaction } from '@common/types/substrate';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 
 interface IDashboardProvider extends PropsWithChildren {
 	onNewTransaction: (values: ISendTransaction) => Promise<void>;
-	onFundMultisig: () => void;
-	assets: Array<IMultisigAssets | null>;
+	onFundMultisig: (value: IFundMultisig) => Promise<void>;
+	assets: Array<IMultisigAssets> | null;
 	currency: string;
 	multisigs: Array<IMultisig>;
 }

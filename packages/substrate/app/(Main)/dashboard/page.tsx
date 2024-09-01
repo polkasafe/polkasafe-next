@@ -51,7 +51,7 @@ async function Dashboard({ searchParams }: IDashboardProps) {
 			<MultisigDashboard
 				multisig={multisig}
 				transactions={history.transactions}
-				queueTransactions={queue.transactions}
+				queueTransactions={queue.transactions || []}
 			/>
 		);
 	}

@@ -2,8 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { Network } from '@common/constants/substrateNetworkConstant';
-import { ECHANNEL, EUserType } from '@common/enum/substrate';
+import { ECHANNEL, ENetwork, EUserType } from '@common/enum/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
 import { SignerOptions, SubmittableExtrinsic } from '@polkadot/api/types';
@@ -32,7 +31,7 @@ export interface IMultisig {
 	signatories: Array<string>;
 	balance: string;
 	disabled: boolean;
-	network: string;
+	network: ENetwork;
 	createdAt: Date;
 	updatedAt: Date;
 	proxy: Array<IProxy>;
@@ -204,7 +203,7 @@ export interface IDBMultisig {
 	updated_at: Date;
 	name: string;
 	signatories: Array<string>;
-	network: Network;
+	network: ENetwork;
 	threshold: number;
 	type: EUserType;
 	proxy?: Array<IProxy>;
@@ -285,4 +284,9 @@ export interface ISendTransaction {
 
 export interface IGenericObject {
 	[key: string]: any;
+}
+
+export interface IFundMultisig {
+	multisigAddress: IMultisig;
+	amount: string;
 }

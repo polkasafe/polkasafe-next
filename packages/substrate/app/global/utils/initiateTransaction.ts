@@ -76,6 +76,21 @@ export const initiateTransaction = async ({
 		}
 		case ETxType.APPROVE:
 			return {};
+		case ETxType.FUND: {
+			const tx = api.tx.balances.transferKeepAlive(address, new BN(data?.[0]?.amount || '0'));
+			await setSigner(api, wallet, network);
+			const mainTx = await getTransaction(tx);
+			return executeTx({
+				api,
+				apiReady: true,
+				tx: mainTx as SubmittableExtrinsic<'promise'>,
+				address: sender,
+				onSuccess: () => {},
+				onFailed: () => {},
+				network,
+				errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+			});
+		}
 		default: {
 			return {};
 		}

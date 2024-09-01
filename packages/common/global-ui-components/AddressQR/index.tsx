@@ -4,7 +4,7 @@
 
 'use client';
 
-import { Network, networks } from '@common/constants/substrateNetworkConstant';
+import { ENetwork } from '@common/enum/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { QrDisplayAddress } from '@polkadot/react-qr';
 
@@ -16,14 +16,14 @@ const AddressQr = ({
 }: {
 	address: string;
 	size?: number;
-	network?: Network;
+	network?: ENetwork;
 	genesisHash: string;
 }) => {
 	return (
 		<div className='flex flex-col items-center'>
 			<QrDisplayAddress
 				size={size}
-				address={getEncodedAddress(address, network || networks.POLKADOT) || address}
+				address={getEncodedAddress(address, network || ENetwork.POLKADOT) || address}
 				genesisHash={genesisHash}
 			/>
 		</div>

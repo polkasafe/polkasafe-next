@@ -2,15 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React from 'react';
-import TransactionHead from '@common/global-ui-components/Transaction/TransactionHead';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IDashboardTransaction } from '@common/types/substrate';
-import { getApiAtomByNetwork } from '@substrate/app/global/utils/getApiAtomByNetwork';
-import { PrimitiveAtom } from 'jotai';
-import { IApiAtom } from '@substrate/app/atoms/api/apiAtom';
+import { ENetwork, ETransactionOptions, ETransactionType } from '@common/enum/substrate';
+import TransactionRow from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList/components/TransactionRow';
 
-interface IHistoryProps {
+interface ITransactionList {
 	transactions: Array<IDashboardTransaction>;
+	txType: ETransactionType;
 }
 
 const columns = [
@@ -19,7 +18,11 @@ const columns = [
 		variant: ETypographyVariants.p
 	},
 	{
-		title: 'Amount',
+		title: 'From',
+		variant: ETypographyVariants.p
+	},
+	{
+		title: 'To',
 		variant: ETypographyVariants.p
 	},
 	{
@@ -27,22 +30,23 @@ const columns = [
 		variant: ETypographyVariants.p
 	},
 	{
-		title: 'Multisig',
+		title: 'Category',
 		variant: ETypographyVariants.p
 	},
 	{
-		title: 'Action',
+		title: 'Status',
 		variant: ETypographyVariants.p
 	}
 ];
-export function Queue({ transactions = [] }: IHistoryProps) {
+export function TransactionList({ transactions = [], txType }: ITransactionList) {
 	return (
 		<>
 			<div className='flex bg-bg-secondary my-1 p-3 rounded-lg mr-1'>
 				{columns.map((column) => (
 					<Typography
+						key={column.title}
 						variant={column.variant}
-						className='basis-1/5 text-base'
+						className='basis-1/6 text-base'
 					>
 						{column.title}
 					</Typography>
@@ -51,16 +55,19 @@ export function Queue({ transactions = [] }: IHistoryProps) {
 			<div className='max-h-72 overflow-x-hidden overflow-y-auto flex flex-col gap-3'>
 				{transactions &&
 					transactions.map((transaction) => (
-						<TransactionHead
-							key={`${transaction.callHash}`}
-							callData={transaction.callData}
+						<TransactionRow
 							callHash={transaction.callHash}
-							createdAt={transaction.createdAt.toLocaleString()}
-							multisigAddress={transaction.multisigAddress}
-							network={transaction.network}
+							callData={transaction.callData}
+							key={`${transaction.callHash}`}
+							createdAt={new Date(transaction.createdAt)}
+							to={transaction.to as string}
+							network={transaction.network as ENetwork}
 							amountToken={transaction.amountToken}
-							from={transaction.from}
-							apiAtom={getApiAtomByNetwork(transaction.network) as PrimitiveAtom<IApiAtom>}
+							from={transaction.from || transaction.multisigAddress}
+							type={
+								transaction.to === transaction.multisigAddress ? ETransactionOptions.RECEIVED : ETransactionOptions.SENT
+							}
+							transactionType={txType}
 						/>
 					))}
 			</div>

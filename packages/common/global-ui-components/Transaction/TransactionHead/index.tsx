@@ -1,17 +1,17 @@
-import { chainProperties } from '@common/constants/substrateNetworkConstant';
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import Address from '@common/global-ui-components/Address';
-import { ETransactionOptions, ETransactionType } from '@common/enum/substrate';
+import { ENetwork, ETransactionOptions, ETransactionType } from '@common/enum/substrate';
 import ReceivedIcon from '@common/assets/icons/arrow-up-right.svg';
 import SentIcon from '@common/assets/icons/sent-icon.svg';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 interface ITransactionHeadProps {
 	type: ETransactionOptions;
 	createdAt: Date;
 	amountToken: string;
 	to: string;
-	network: string;
+	network: ENetwork;
 	from: string;
 	label: Array<string>;
 	transactionType: ETransactionType;
@@ -90,12 +90,12 @@ export function TransactionHead({
 							variant={ETypographyVariants.p}
 							className='flex items-center gap-x-2 justify-start text-text-primary'
 						>
-							{Boolean(amountToken) && <ParachainTooltipIcon src={chainProperties[network]?.logo} />}
+							{Boolean(amountToken) && <ParachainTooltipIcon src={networkConstants[network]?.logo} />}
 							<span
 								className={`font-normal text-xs text-success ${type === ETransactionOptions.SENT && 'text-failure'}`}
 							>
 								{type === ETransactionOptions.SENT || !amountToken ? '-' : '+'} {Boolean(amountToken) && amountToken}{' '}
-								{Boolean(amountToken) || chainProperties[network].tokenSymbol}
+								{Boolean(amountToken) || networkConstants[network].tokenSymbol}
 							</span>
 						</Typography>
 					)}

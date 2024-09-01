@@ -4,7 +4,7 @@
 
 'use client';
 
-import { networks } from '@common/constants/substrateNetworkConstant';
+import { ENetwork } from '@common/enum/substrate';
 import { AllNetworkApi } from '@substrate/app/atoms/api/apiAtom';
 import { getApiAtomByNetwork } from '@substrate/app/global/utils/getApiAtomByNetwork';
 import { useAtomValue } from 'jotai';
@@ -12,7 +12,7 @@ import { useAtomValue } from 'jotai';
 export function useApi() {
 	const apis: AllNetworkApi = {};
 
-	Object.values(networks).forEach((network) => {
+	Object.values(ENetwork).forEach((network) => {
 		const apiAtom = getApiAtomByNetwork(network);
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const apiObject = useAtomValue(apiAtom);

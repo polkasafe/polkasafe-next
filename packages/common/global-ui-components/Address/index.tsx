@@ -5,7 +5,8 @@
 'use client';
 
 import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
-import { chainProperties } from '@common/constants/substrateNetworkConstant';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { ENetwork } from '@common/enum/substrate';
 import { CopyIcon, ExternalLinkIcon } from '@common/global-ui-components/Icons';
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
 import copyText from '@common/utils/copyText';
@@ -24,7 +25,7 @@ interface IAddressComponent {
 	isProxy?: boolean;
 	signatories?: number;
 	threshold?: number;
-	network: string;
+	network: ENetwork;
 	showNetworkBadge?: boolean;
 	addressLength?: number;
 	fullAddress?: boolean;
@@ -139,7 +140,7 @@ const Address: React.FC<IAddressComponent> = ({
 							>
 								<ParachainTooltipIcon
 									size={6}
-									src={chainProperties[network]?.logo}
+									src={networkConstants[network]?.logo}
 								/>
 								{network}
 							</div>

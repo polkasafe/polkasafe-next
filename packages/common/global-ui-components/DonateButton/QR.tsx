@@ -5,10 +5,10 @@ import React from 'react';
 import shortenAddress from '@common/utils/shortenAddress';
 import copyText from '@common/utils/copyText';
 import { CopyIcon, ExternalLinkIcon } from '@common/global-ui-components/Icons';
-import { Network } from '@common/constants/substrateNetworkConstant';
 import AddressQr from '@common/global-ui-components/AddressQR';
+import { ENetwork } from '@common/enum/substrate';
 
-const QR = ({ network }: { network: Network }) => {
+const QR = ({ network }: { network: ENetwork }) => {
 	return (
 		<div className='flex flex-col gap-y-5 p-5 bg-bg-secondary rounded-xl items-center'>
 			<p className='text-xs md:text-sm text-normal text-text_secondary'>

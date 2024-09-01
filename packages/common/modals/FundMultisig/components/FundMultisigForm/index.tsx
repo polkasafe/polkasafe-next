@@ -1,33 +1,27 @@
 import React, { useState } from 'react';
 import { Form, Spin } from 'antd';
-import { newTransactionFormFields } from '@common/modals/NewTransaction/utils/form';
-import ActionButton from '@common/modals/NewTransaction/component/ActionButton';
-import { IMultisig, ISendTransactionForm } from '@common/types/substrate';
+import ActionButton from '@common/modals/NewTransaction/components/ActionButton';
+import { IMultisig } from '@common/types/substrate';
 import SelectAddress from '@common/global-ui-components/SelectAddress';
 import { useDashboardContext } from '@common/context/DashboarcContext';
 import { findMultisig } from '@common/utils/findMultisig';
 import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
+import { fundFormFields } from '@common/modals/FundMultisig/utils/form';
 
-function NewTransactionForm() {
-	const { multisigs, onNewTransaction } = useDashboardContext();
+export function FundMultisigForm() {
+	const { multisigs, onFundMultisig } = useDashboardContext();
 	const [loading, setLoading] = useState(false);
 	const [notification, context] = useNotification();
-	const handleSubmit = async (values: ISendTransactionForm) => {
+	const handleSubmit = async (values: { amount: string; selectedMultisigAddress: string }) => {
 		try {
-			const { recipient, amount, note, selectedMultisigAddress } = values;
+			const { amount, selectedMultisigAddress } = values;
 			const payload = {
-				recipients: [
-					{
-						address: recipient,
-						amount
-					}
-				],
-				sender: findMultisig(multisigs, selectedMultisigAddress) as IMultisig,
-				note
+				amount,
+				multisigAddress: findMultisig(multisigs, selectedMultisigAddress) as IMultisig
 			};
 			setLoading(true);
-			await onNewTransaction(payload);
+			await onFundMultisig(payload);
 			notification.success(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
 		} catch (e) {
 			console.log(e);
@@ -51,7 +45,7 @@ function NewTransactionForm() {
 				>
 					<SelectAddress multisigs={multisigs} />
 
-					{newTransactionFormFields.map((field) => (
+					{fundFormFields.map((field) => (
 						<Form.Item
 							label={field.label}
 							name={field.name}
@@ -70,5 +64,3 @@ function NewTransactionForm() {
 		</div>
 	);
 }
-
-export default NewTransactionForm;

@@ -3,7 +3,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Layout as AntDLayout } from 'antd';
 import NavHeader from '@common/global-ui-components/Layout/components/NavHeader';
-import { IOrganisation } from '@substrate/app/global/types';
+import { IOrganisation } from '@common/types/substrate';
 import Footer from './components/Footer';
 import Menu from './components/Menu';
 
@@ -18,16 +18,20 @@ const classNames = {
 interface ILayoutProps extends PropsWithChildren {
 	userAddress: string;
 	organisations: Array<IOrganisation>;
+	selectedOrganisation: IOrganisation;
 }
 
-export const Layout = ({ userAddress, organisations, children }: ILayoutProps) => {
+export const Layout = ({ userAddress, organisations, children, selectedOrganisation }: ILayoutProps) => {
 	return (
 		<AntDLayout className={classNames.layoutContainer}>
 			<Sider
 				className={classNames.sidebarHeaderAndFooter}
 				width={240}
 			>
-				<Menu userAddress={userAddress} />
+				<Menu
+					userAddress={userAddress}
+					organisation={selectedOrganisation}
+				/>
 			</Sider>
 			<AntDLayout className={classNames.sidebarHeaderAndFooter}>
 				<NavHeader

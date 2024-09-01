@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { ENetwork } from '@common/enum/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { message } from 'antd';
 
@@ -15,6 +16,8 @@ import { message } from 'antd';
  */
 const showMessage = (): void => {
 	message.config({
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-expect-error
 		top: typeof window !== 'undefined' && window.innerHeight - 100
 	});
 	message.open({
@@ -28,7 +31,7 @@ const showMessage = (): void => {
 	});
 };
 
-export default function copyText(text: string, isAddress?: boolean, network?: string) {
+export default function copyText(text: string, isAddress?: boolean, network?: ENetwork) {
 	let textToCopy = text;
 
 	if (isAddress && network) {

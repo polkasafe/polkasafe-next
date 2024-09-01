@@ -20,6 +20,9 @@ function AssetsOverview() {
 	if (!isMounted) {
 		return null;
 	}
+	if (!assets) {
+		return null;
+	}
 
 	return <AssetsCard assets={assets} />;
 }

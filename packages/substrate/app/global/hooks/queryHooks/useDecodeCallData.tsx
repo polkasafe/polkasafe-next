@@ -26,6 +26,7 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 		const metaData = call.meta.toJSON();
 		payload.method = call.method;
 		payload.section = call.section;
+		console.log('callJSONData', callJSONData);
 		if (metaData.name === 'batch_all') {
 			const calls = (callJSONData?.args as IGenericObject)?.calls as Array<IGenericObject>;
 			for (const batchCall of calls) {

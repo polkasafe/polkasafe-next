@@ -6,7 +6,7 @@
 
 import { ETxType, Wallet } from '@common/enum/substrate';
 import DashboardCard from '@common/global-ui-components/DashboardCard';
-import { ISendTransaction } from '@common/types/substrate';
+import { IMultisig, ISendTransaction } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
@@ -16,6 +16,7 @@ import { useAtomValue } from 'jotai';
 import { DashboardProvider } from '@common/context/DashboarcContext';
 import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
 import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
+import { BN } from '@polkadot/util';
 
 export function DashboardOverview() {
 	const assets = useAtomValue(assetsAtom);
@@ -55,8 +56,30 @@ export function DashboardOverview() {
 			sender: address
 		});
 	};
-	const handleFundTransaction = () => {
-		console.log('fund transaction');
+	const handleFundTransaction = async ({ multisigAddress, amount }: { amount: string; multisigAddress: IMultisig }) => {
+		if (!user) {
+			return;
+		}
+		const { address } = user;
+		const wallet = (localStorage.getItem('wallet') as Wallet) || Wallet.POLKADOT;
+		const apiAtom = getApi(multisigAddress.network);
+		if (!apiAtom) {
+			return;
+		}
+		const { api } = apiAtom as { api: ApiPromise };
+		if (!api || !api.isReady) {
+			return;
+		}
+		await initiateTransaction({
+			wallet,
+			type: ETxType.FUND,
+			api,
+			data: [{ amount: new BN(amount), recipient: multisigAddress.address }],
+			isProxy: false,
+			proxyAddress: '',
+			multisig: multisigAddress,
+			sender: address
+		});
 	};
 	return (
 		<DashboardProvider

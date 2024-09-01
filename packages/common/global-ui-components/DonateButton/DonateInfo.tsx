@@ -6,7 +6,7 @@ import React from 'react';
 import PolkasafeLogo from '@common/assets/icons/polkasafe-logo-white.svg';
 
 import { ExternalLinkIcon, WalletIcon } from '@common/global-ui-components/Icons';
-import { networks } from '@common/constants/substrateNetworkConstant';
+import { ENetwork } from '@common/enum/substrate';
 import QR from './QR';
 
 // TODO: need to add the network prop
@@ -24,7 +24,7 @@ const DonateInfo = () => {
 					</div>
 				</article>
 				<article>
-					<QR network={networks.POLKADOT} />
+					<QR network={ENetwork.POLKADOT} />
 				</article>
 			</div>
 			<Divider className='bg-text_secondary my-8' />

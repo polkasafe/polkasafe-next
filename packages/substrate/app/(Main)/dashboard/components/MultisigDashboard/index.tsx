@@ -1,10 +1,10 @@
 // Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import { IMultisig, ITransaction } from '@substrate/app/global/types';
 import React from 'react';
 import OverviewCard from '../OverviewCard';
 import TransactionCard from '../TransactionCard';
+import { IMultisig, ITransaction } from '@common/types/substrate';
 
 interface IMultisigDashboardProps {
 	multisig: IMultisig;

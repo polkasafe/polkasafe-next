@@ -25,10 +25,10 @@ import { TFAForm } from '@substrate/app/(Login)/login/components/TFAForm';
 import { clientLogin } from '@substrate/app/(Login)/client-actions/client-login';
 import { CREATE_ORGANISATION_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
-import { NotificationStatus, Wallet, WC_POLKADOT_METHODS } from '@common/enum/substrate';
+import { ENetwork, NotificationStatus, Wallet, WcPolkadotMethods } from '@common/enum/substrate';
 import { walletConnectAtom } from '@substrate/app/atoms/walletConnect/walletConnectAtom';
 import { signatureVerify, cryptoWaitReady } from '@polkadot/util-crypto';
-import { chainProperties, networks } from '@common/constants/substrateNetworkConstant';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 export function SubstrateLoginForm() {
 	const setAtom = useSetAtom(userAtom);
@@ -100,9 +100,9 @@ export function SubstrateLoginForm() {
 					const message = stringToHex(token);
 
 					const result = await wc.client!.request<{ signature: string }>({
-						chainId: chainProperties[networks.POLKADOT].chainId,
+						chainId: networkConstants[ENetwork.POLKADOT].chainId,
 						request: {
-							method: WC_POLKADOT_METHODS.POLKADOT_SIGN_MESSAGE,
+							method: WcPolkadotMethods.POLKADOT_SIGN_MESSAGE,
 							params: {
 								address,
 								message

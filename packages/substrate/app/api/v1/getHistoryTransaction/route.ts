@@ -6,8 +6,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { onChainHistoryTransaction } from '@substrate/app/api/api-utils/onChainHistoryTransaction';
-import { Network } from '@common/constants/substrateNetworkConstant';
 import { ITransaction } from '@common/types/substrate';
+import { ENetwork } from '@common/enum/substrate';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	try {
@@ -24,7 +24,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
 		const encodedMultisigs = multisigs.map((item: string) => {
 			const [address, network] = item.split('_');
-			const encodeAddress = getEncodedAddress(address, network);
+			const encodeAddress = getEncodedAddress(address, network as ENetwork);
 			if (!encodeAddress) {
 				return null;
 			}
@@ -36,7 +36,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
 		const allTxns: ITransaction[] = [];
 
-		const promises = encodedMultisigs.map(async ({ address, network }: { address: string; network: Network }) => {
+		const promises = encodedMultisigs.map(async ({ address, network }: { address: string; network: ENetwork }) => {
 			const {
 				data: { transactions: historyItemsArr },
 				error: historyItemsError

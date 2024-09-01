@@ -3,12 +3,12 @@
 import React from 'react';
 import { Dropdown } from 'antd';
 import { twMerge } from 'tailwind-merge';
-import { ItemType } from 'antd/es/menu/hooks/useItems';
 import { currencies, currencyProperties, getCurrenciesBySymbol } from '@common/constants/currencyConstants';
 import Image from 'next/image';
 import { useAtom } from 'jotai';
 import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
+import { ItemType } from 'antd/es/menu/interface';
 
 export const CurrencyFlag = ({ src, className }: { src: string; className?: string }) => {
 	return (

@@ -22,7 +22,7 @@ export interface IApiAtom {
 // add all networks api atom
 export const polkadotApi = atom<IApiAtom | null>(null);
 export const astarApi = atom<IApiAtom | null>(null);
-export const availGoldbergApi = atom<IApiAtom | null>(null);
+export const availApi = atom<IApiAtom | null>(null);
 export const khalaApi = atom<IApiAtom | null>(null);
 export const kusamaApi = atom<IApiAtom | null>(null);
 export const paseoApi = atom<IApiAtom | null>(null);

@@ -4,7 +4,7 @@ import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Modal from '@common/global-ui-components/Modal';
 import React, { useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import NewTransactionForm from '@common/modals/NewTransaction/component/NewTransactionForm';
+import { NewTransactionForm } from '@common/modals/NewTransaction/components/NewTransactionForm';
 
 function NewTransaction() {
 	const [openModal, setOpenModal] = useState(false);

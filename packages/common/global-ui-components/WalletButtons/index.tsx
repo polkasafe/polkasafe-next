@@ -39,7 +39,9 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 }: IWalletButtons) => {
 	const [selectedWallet, setSelectedWallet] = useState<Wallet>(Wallet.POLKADOT);
 
-	const { connect, session } = useAtomValue(wcAtom) as { connect: any; session: any };
+	const walletConnectValue = useAtomValue(wcAtom) as { connect: any; session: any } | null;
+	const connect = walletConnectValue?.connect;
+	const session = walletConnectValue?.session;
 
 	const getAccounts = useCallback(
 		async (chosenWallet: Wallet): Promise<undefined> => {

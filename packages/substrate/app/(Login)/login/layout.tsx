@@ -21,9 +21,11 @@ export default function LoginLayout({ children }: PropsWithChildren) {
 		redirect(CREATE_ORGANISATION_URL({ address }));
 	}
 	return (
-		<>
-			<NextTopLoader />
-			<GlobalLoginLayout>{children}</GlobalLoginLayout>
-		</>
+		<html lang='en'>
+			<body>
+				<NextTopLoader />
+				<GlobalLoginLayout>{children}</GlobalLoginLayout>
+			</body>
+		</html>
 	);
 }

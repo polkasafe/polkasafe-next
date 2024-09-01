@@ -2,8 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 /* eslint-disable no-tabs */
-import { Network } from '@common/constants/substrateNetworkConstant';
-import { ETransactionOptions, ETransactionType } from '@common/enum/substrate';
+import { ENetwork, ETransactionOptions, ETransactionType } from '@common/enum/substrate';
 import { TransactionHead } from '@common/global-ui-components/Transaction/TransactionHead';
 import { useDecodeCallData } from '@substrate/app/global/hooks/queryHooks/useDecodeCallData';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
@@ -13,7 +12,7 @@ interface ITransactionRow {
 	callHash: string;
 	createdAt: Date;
 	to: string;
-	network: Network;
+	network: ENetwork;
 	amountToken: string;
 	from: string;
 	type: ETransactionOptions;

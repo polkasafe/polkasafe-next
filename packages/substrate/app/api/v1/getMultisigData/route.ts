@@ -9,7 +9,7 @@ import { isValidRequest } from '@common/utils/isValidRequest';
 import { MULTISIG_COLLECTION, PROXY_COLLECTION } from '@common/db/collections';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { onChainMultisigTransaction } from '@substrate/app/api/api-utils/onChainMultisigTransaction';
-import { EUserType } from '@common/enum/substrate';
+import { ENetwork, EUserType } from '@common/enum/substrate';
 import { DEFAULT_MULTISIG_NAME } from '@common/constants/defaults';
 import { IDBMultisig } from '@common/types/substrate';
 
@@ -112,7 +112,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			updated_at: new Date(),
 			name: DEFAULT_MULTISIG_NAME,
 			signatories: multisigMetaData.signatories || [],
-			network: String(network).toLowerCase(),
+			network: String(network).toLowerCase() as ENetwork,
 			threshold: Number(multisigMetaData.threshold) || 0,
 			type: EUserType.SUBSTRATE,
 			proxy: multisigMetaData.proxy

@@ -7,6 +7,7 @@ import { ResponseMessages } from '@common/constants/responseMessage';
 import { onChainAssets } from '@substrate/app/api/api-utils/onChainAssets';
 import { ASSETS_COLLECTION } from '@common/db/collections';
 import { IUpdateDBAssetProps } from '@common/types/substrate';
+import { ENetwork } from '@common/enum/substrate';
 
 const updateDB = async (assets: Array<IUpdateDBAssetProps>) => {
 	try {
@@ -36,7 +37,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 				if (!address || !network) {
 					return null;
 				}
-				const assets = await onChainAssets(address, network);
+				const assets = await onChainAssets(address, network as ENetwork);
 				return assets.data.map((asset) => ({ ...asset, multisigId }));
 			})
 		);
