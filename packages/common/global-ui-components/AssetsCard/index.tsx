@@ -31,7 +31,7 @@ const getRandomColor = (): string => {
 };
 
 export default function AssetsCard({ assets }: IAssetCard) {
-	const assetsData = assets.map((asset) => {
+	const assetsData = assets?.map((asset) => {
 		if (!asset) {
 			return null;
 		}

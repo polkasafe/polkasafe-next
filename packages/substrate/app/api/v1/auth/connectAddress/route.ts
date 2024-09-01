@@ -10,7 +10,7 @@ import { ResponseMessages } from '@common/constants/responseMessage';
 import { USER_COLLECTION } from '@common/db/collections';
 import { v4 as uuidv4 } from 'uuid';
 
-export function getLoginToken(): string {
+function getLoginToken(): string {
 	return `<Bytes>polkasafe-login-${uuidv4()}</Bytes>`;
 }
 

@@ -2,7 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { chainProperties, Network } from '@common/constants/substrateNetworkConstant';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { ENetwork } from '@common/enum/substrate';
 import { encodeAddress } from '@polkadot/util-crypto';
 
 /**
@@ -12,8 +13,8 @@ import { encodeAddress } from '@polkadot/util-crypto';
  * @param network the network
  *
  */
-export default function getEncodedAddress(address: string, network: Network): string | null {
-	const ss58Format = chainProperties?.[network]?.ss58Format;
+export default function getEncodedAddress(address: string, network: ENetwork | string): string | null {
+	const ss58Format = networkConstants[network as ENetwork]?.ss58Format;
 
 	if (!network || ss58Format === undefined) {
 		return null;

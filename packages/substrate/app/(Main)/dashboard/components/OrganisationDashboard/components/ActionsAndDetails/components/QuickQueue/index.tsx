@@ -8,7 +8,7 @@ import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
 import { useQueueTransaction } from '@substrate/app/global/hooks/queryHooks/useQueueTransaction';
 import { Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { TransactionList } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/TransactionList';
+import { TransactionList } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList';
 import { ETransactionType } from '@common/enum/substrate';
 
 interface IQuickHistory {

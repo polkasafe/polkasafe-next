@@ -1,11 +1,11 @@
 // Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import { Network, networks } from '@common/constants/substrateNetworkConstant';
+import { ENetwork } from '@common/enum/substrate';
 import {
 	astarApi,
 	polkadotApi,
-	availGoldbergApi,
+	availApi,
 	khalaApi,
 	kusamaApi,
 	phalaApi,
@@ -21,7 +21,7 @@ import { useAtomValue } from 'jotai';
 export const useAllAPI = () => {
 	const polkadot = useAtomValue(polkadotApi);
 	const astar = useAtomValue(astarApi);
-	const avail = useAtomValue(availGoldbergApi);
+	const avail = useAtomValue(availApi);
 	const khala = useAtomValue(khalaApi);
 	const kusama = useAtomValue(kusamaApi);
 	const phala = useAtomValue(phalaApi);
@@ -32,31 +32,31 @@ export const useAllAPI = () => {
 	const availTuring = useAtomValue(availTuringApi);
 	const westend = useAtomValue(westendApi);
 
-	const getApi = (network: Network) => {
+	const getApi = (network: ENetwork) => {
 		switch (network) {
-			case networks.POLKADOT:
+			case ENetwork.POLKADOT:
 				return polkadot;
-			case networks.ASTAR:
+			case ENetwork.ASTAR:
 				return astar;
-			case networks.AVAIL:
+			case ENetwork.AVAIL:
 				return avail;
-			case networks.KHALA:
+			case ENetwork.KHALA:
 				return khala;
-			case networks.KUSAMA:
+			case ENetwork.KUSAMA:
 				return kusama;
-			case networks.PHALA:
+			case ENetwork.PHALA:
 				return phala;
-			case networks.ROCOCO:
+			case ENetwork.ROCOCO:
 				return rococo;
-			case networks.STATEMINT:
+			case ENetwork.POLKADOT_ASSETHUB:
 				return assethubPolkadot;
-			case networks.STATEMINE:
+			case ENetwork.KUSAMA_ASSETHUB:
 				return assethubKusama;
-			case networks.ROCOCO_ASSETHUB:
+			case ENetwork.ROCOCO_ASSETHUB:
 				return assethubRococo;
-			case networks.TURING:
+			case ENetwork.AVAIL:
 				return availTuring;
-			case networks.WESTEND:
+			case ENetwork.WESTEND:
 				return westend;
 			default:
 				return null;

@@ -7,7 +7,7 @@ import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
-import { onChainTransaction } from '@substrate/app/api/api-utils/onChainHistoryTransaction';
+import { onChainHistoryTransaction } from '@substrate/app/api/api-utils/onChainHistoryTransaction';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	const { headers } = req;
@@ -41,7 +41,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const {
 			data: { transactions: historyItemsArr, count },
 			error: historyItemsError
-		} = await onChainTransaction(encodedMultisigAddress, network, Number(limit), Number(page));
+		} = await onChainHistoryTransaction(encodedMultisigAddress, network, Number(limit), Number(page));
 
 		if (historyItemsError || !historyItemsArr) {
 			return NextResponse.json({ error: historyItemsError || ResponseMessages.QUEUE_FETCH_ERROR }, { status: 400 });

@@ -1,6 +1,33 @@
 // RULES: Enum with values should be in uppercase
 // RULES: Enum should have E prefix
 
+// ASTAR
+// AVAIL
+// KHALA
+// KUSAMA
+// PHALA
+// POLKADOT
+// ROCOCO
+// ROCOCO_ASSETHUB
+// STATEMINE
+// STATEMINT
+// WESTEND
+
+export enum ENetwork {
+	ALEPHZERO = 'alephzero',
+	ASTAR = 'astar',
+	AVAIL = 'avail',
+	KHALA = 'khala',
+	KUSAMA = 'kusama',
+	PHALA = 'phala',
+	POLKADOT = 'polkadot',
+	ROCOCO = 'rococo',
+	ROCOCO_ASSETHUB = 'rococo-asset-hub',
+	KUSAMA_ASSETHUB = 'kusama-asset-hub',
+	POLKADOT_ASSETHUB = 'polkadot-asset-hub',
+	WESTEND = 'westend'
+}
+
 export enum ETransactionOptions {
 	SENT = 'sent',
 	RECEIVED = 'received',
@@ -104,7 +131,8 @@ export enum ECurrency {
 
 export enum ETxType {
 	TRANSFER = 'Transfer',
-	APPROVE = 'Approve'
+	APPROVE = 'Approve',
+	FUND = 'Fund'
 }
 
 export enum ETransactionTab {

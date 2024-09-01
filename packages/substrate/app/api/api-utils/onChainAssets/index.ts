@@ -8,11 +8,11 @@ import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import { tokenProperties } from '@common/constants/tokenProperties';
 import axios from 'axios';
 import { ResponseMessages } from '@common/constants/responseMessage';
-import { ECurrency } from '@common/enum/substrate';
+import { ECurrency, ENetwork } from '@common/enum/substrate';
 import { tokenValue } from '@substrate/app/api/api-utils/tokenValue';
 import BN from 'bn.js';
 
-export const onChainAssets = async (address: string, network: string): Promise<IResponse<Array<IDBAssets>>> => {
+export const onChainAssets = async (address: string, network: ENetwork): Promise<IResponse<Array<IDBAssets>>> => {
 	const returnValue: IResponse<Array<IDBAssets>> = {
 		data: [],
 		error: ''

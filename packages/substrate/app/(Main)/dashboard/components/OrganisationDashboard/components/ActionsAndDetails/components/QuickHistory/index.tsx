@@ -6,7 +6,7 @@
 
 import { ETransactionType } from '@common/enum/substrate';
 import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
-import { TransactionList } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/TransactionList';
+import { TransactionList } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList';
 import { useHistoryTransaction } from '@substrate/app/global/hooks/queryHooks/useHistoryTransaction';
 import { Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';

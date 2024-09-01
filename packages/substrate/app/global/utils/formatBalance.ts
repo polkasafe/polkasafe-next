@@ -8,7 +8,8 @@ interface Options {
 }
 
 export function formatBalance(value: string, tokenDecimals: number, options: Options): string {
-	const valueString = value.toString();
+	const valueString = value?.toString();
+	if (!valueString) return '0';
 
 	let suffix = '';
 	let prefix = '';

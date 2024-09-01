@@ -3,10 +3,10 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 /* eslint-disable sort-keys */
+import { NotificationStatus } from '@common/enum/substrate';
 import { notification } from 'antd';
 import type { NotificationPlacement } from 'antd/es/notification/interface';
 import { ReactNode } from 'react';
-import { NotificationStatus } from '@next-common/types';
 
 interface Props {
 	header: ReactNode;

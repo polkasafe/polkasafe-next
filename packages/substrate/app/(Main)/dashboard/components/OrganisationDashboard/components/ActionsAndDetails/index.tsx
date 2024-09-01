@@ -12,8 +12,8 @@ import { IMultisig } from '@common/types/substrate';
 import { ETransactionTab } from '@common/enum/substrate';
 import Link from 'next/link';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
-import { QuickHistory } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/QuickHistory';
-import { QuickQueue } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/QuickQueue';
+import { QuickHistory } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/QuickHistory';
+import { QuickQueue } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/QuickQueue';
 
 interface IDashboardTransactionProps {
 	multisigs: Array<IMultisig>;

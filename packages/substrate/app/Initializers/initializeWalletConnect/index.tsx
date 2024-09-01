@@ -5,13 +5,14 @@
 'use client';
 
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
-import { chainProperties, networks } from '@common/constants/substrateNetworkConstant';
 import Client from '@walletconnect/sign-client';
 import UniversalProvider from '@walletconnect/universal-provider';
 import { PairingTypes, SessionTypes } from '@walletconnect/types';
 import { WalletConnectModal } from '@walletconnect/modal';
 import { useSetAtom } from 'jotai';
 import { walletConnectAtom } from '@substrate/app/atoms/walletConnect/walletConnectAtom';
+import { ENetwork } from '@common/enum/substrate';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 export const DEFAULT_APP_METADATA = {
 	name: 'Polkasafe',
@@ -50,7 +51,7 @@ function InitializeWalletConnect({ children }: PropsWithChildren) {
 					pairingTopic: pairing?.topic,
 					requiredNamespaces: {
 						polkadot: {
-							chains: Object.values(networks).map((n) => chainProperties[n].chainId),
+							chains: Object.values(ENetwork).map((n) => networkConstants[n].chainId),
 							events: [],
 							methods: ['polkadot_signTransaction', 'polkadot_signMessage']
 						}
@@ -73,7 +74,7 @@ function InitializeWalletConnect({ children }: PropsWithChildren) {
 				// Update known pairings after session is connected.
 				setPairings(client.pairing.getAll({ active: true }));
 				return s.namespaces.polkadot.accounts
-					.filter((item) => item.split(':')[1] === chainProperties[networks.POLKADOT].chainId.split(':')[1])
+					.filter((item) => item.split(':')[1] === networkConstants[ENetwork.POLKADOT].chainId.split(':')[1])
 					.map((item) => item.split(':')[2]);
 			} catch (e) {
 				console.error(e);

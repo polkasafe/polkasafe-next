@@ -1,5 +1,5 @@
-import { networks } from '@common/constants/substrateNetworkConstant'
+import { ENetwork } from '@common/enum/substrate';
 
-export const isValidNetwork = (network: string) => {
-  return Object.values(networks).includes(network)
-}
+export const isValidNetwork = (network: string | ENetwork) => {
+	return Object.values(ENetwork).includes(network as ENetwork);
+};

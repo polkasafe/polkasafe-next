@@ -1,10 +1,10 @@
-import { IMultisig } from '@substrate/app/global/types';
 import React from 'react';
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
-import { chainProperties } from '@common/constants/substrateNetworkConstant';
 import Identicon from '@polkadot/react-identicon';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';
+import { IMultisig } from '@common/types/substrate';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 interface IMultisigList {
 	multisigs: Array<IMultisig>;
@@ -53,7 +53,7 @@ function MultisigList({ multisigs }: IMultisigList) {
 													<div className={styles.networkIcon}>
 														<ParachainTooltipIcon
 															size={10}
-															src={chainProperties[multisig.network]?.logo}
+															src={networkConstants[multisig.network]?.logo}
 														/>
 													</div>
 												</div>

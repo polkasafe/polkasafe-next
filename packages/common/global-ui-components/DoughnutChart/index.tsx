@@ -103,7 +103,7 @@ const DoughnutChartWithLegend = ({
 }) => {
 	return (
 		<div className='bg-bg-main flex justify-center items-center px-7 py-5 rounded-3xl gap-10'>
-			{data.filter((item) => Boolean(item) && item?.label && item?.color && item?.value).length > 0 ? (
+			{data?.filter((item) => Boolean(item) && item?.label && item?.color && item?.value).length > 0 ? (
 				<>
 					<DoughnutChart data={data as any} />
 					<Legend data={data as any} />
