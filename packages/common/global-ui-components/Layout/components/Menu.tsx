@@ -11,12 +11,12 @@ import MenuItem from '@common/global-ui-components/Layout/components/MenuItem';
 // import emptyImage from '@common/assets/icons/empty-image.png';
 // import { CircleArrowDownIcon, UserPlusIcon } from '@common/global-ui-components/Icons';
 // import { Dropdown } from 'antd';
-import AddMultisig from '@common/global-ui-components/AddMultisig';
 import MultisigList from '@common/global-ui-components/MultisigList';
 import { Skeleton } from 'antd';
 import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';
-import { ETransactionTab } from '@common/enum/substrate';
-import { IOrganisation } from '@common/types/substrate';
+import { ENetwork, ETransactionTab } from '@common/enum/substrate';
+import { IMultisigCreate, IOrganisation } from '@common/types/substrate';
+import { AddMultisig } from '@common/modals/AddMultisig';
 
 const getPath = (basePath: string) => {
 	return basePath;
@@ -25,13 +25,16 @@ const getPath = (basePath: string) => {
 interface IMenuProps {
 	userAddress: string;
 	organisation: IOrganisation;
+	networks: Array<ENetwork>;
+	availableSignatories: Array<string>;
+	onMutisigCreate: (values: IMultisigCreate) => void;
 }
 
 const styles = {
 	menu: 'text-xs font-normal text-text-secondary uppercase ml-4'
 };
 
-const Menu = ({ userAddress, organisation }: IMenuProps) => {
+const Menu = ({ userAddress, organisation, networks, availableSignatories, onMutisigCreate }: IMenuProps) => {
 	const pathname = usePathname();
 	const { multisigs = [] } = organisation || {};
 	const searchParams = useSearchParams();
@@ -92,7 +95,13 @@ const Menu = ({ userAddress, organisation }: IMenuProps) => {
 				/>
 			)}
 
-			{userAddress && <AddMultisig />}
+			{userAddress && (
+				<AddMultisig
+					networks={networks}
+					availableSignatories={availableSignatories}
+					onSubmit={onMutisigCreate}
+				/>
+			)}
 		</div>
 	);
 };

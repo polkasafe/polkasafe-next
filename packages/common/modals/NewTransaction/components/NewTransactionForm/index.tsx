@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Spin } from 'antd';
 import { newTransactionFormFields } from '@common/modals/NewTransaction/utils/form';
-import ActionButton from '@common/modals/NewTransaction/components/ActionButton';
+import ActionButton from '@common/global-ui-components/ActionButton';
 import { IMultisig, ISendTransactionForm } from '@common/types/substrate';
 import SelectAddress from '@common/global-ui-components/SelectAddress';
 import { useDashboardContext } from '@common/context/DashboarcContext';
@@ -64,6 +64,7 @@ export function NewTransactionForm() {
 					<ActionButton
 						disabled={false}
 						loading={loading}
+						label='Send Transaction'
 					/>
 				</Form>
 			</Spin>

@@ -40,5 +40,6 @@ export const ResponseMessages = {
 	ADDRESS_ALREADY_EXISTS: 'address already exists',
 	INVALID_INVOICE_ID: 'Invalid invoice id;',
 	INVALID_ADDRESS: 'Invalid address',
-	INVALID_ORGANISATION_ID: 'Invalid organisation id'
+	INVALID_ORGANISATION_ID: 'Invalid organisation id',
+	ORGANISATION_ALREADY_EXISTS: 'Organisation already exists'
 };

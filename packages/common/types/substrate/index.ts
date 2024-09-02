@@ -290,3 +290,26 @@ export interface IFundMultisig {
 	multisigAddress: IMultisig;
 	amount: string;
 }
+
+export interface IMultisigCreate {
+	name: string;
+	signatories: Array<string>;
+	network: ENetwork;
+	threshold: number;
+}
+
+export interface IDBOrganisation {
+	id?: string;
+	members: Array<string>;
+	multisigs: Array<string>;
+	created_at: Date;
+	updated_at: Date;
+	organisation_address: string;
+	city: string;
+	country: string;
+	name: string;
+	postal_code: string;
+	state: string;
+	tax_number: string;
+	imageURI: string;
+}

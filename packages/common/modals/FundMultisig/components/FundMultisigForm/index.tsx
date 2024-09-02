@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Spin } from 'antd';
-import ActionButton from '@common/modals/NewTransaction/components/ActionButton';
+import ActionButton from '@common/global-ui-components/ActionButton';
 import { IMultisig } from '@common/types/substrate';
 import SelectAddress from '@common/global-ui-components/SelectAddress';
 import { useDashboardContext } from '@common/context/DashboarcContext';
@@ -58,6 +58,7 @@ export function FundMultisigForm() {
 					<ActionButton
 						disabled={false}
 						loading={loading}
+						label='Fund Multisig'
 					/>
 				</Form>
 			</Spin>

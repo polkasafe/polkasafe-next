@@ -40,3 +40,10 @@ export interface IGetOrganisationTransactionProps {
 export interface IGetMultisigAssets {
 	multisigIds: Array<string>;
 }
+
+export interface ICreateMultisig {
+	name: string;
+	signatories: Array<string>;
+	network: string;
+	threshold: number;
+}
