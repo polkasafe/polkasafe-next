@@ -39,8 +39,6 @@
     "**/*.ts",
     "custom.d.ts",
     "**/*.tsx",
-    "**/*.svg",
-    "**/*.png",
   ],
   "exclude": ["node_modules"]
 }
