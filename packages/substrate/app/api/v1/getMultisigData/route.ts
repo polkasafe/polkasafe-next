@@ -22,13 +22,13 @@ const updateDB = async (docId: string, multisig: IDBMultisig) => {
 		newMultisigRef.set(multisig);
 	}
 
-	Promise.all(
+	await Promise.all(
 		(multisig.proxy || [])?.map(async (proxy) => {
 			const proxyId = `${proxy.address}_${docId}`;
 			const proxyRef = await PROXY_COLLECTION.doc(proxyId).get();
 			if (!proxyRef.exists) {
 				const newProxyRef = PROXY_COLLECTION.doc(proxyId);
-				newProxyRef.set({ multisigId: docId, address: proxy.address, name: proxy.name });
+				await newProxyRef.set({ multisigId: docId, address: proxy.address, name: proxy.name });
 			}
 		})
 	);

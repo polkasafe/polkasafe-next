@@ -2,11 +2,12 @@ import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import React from 'react';
 
 interface IActionButton {
+	label: string;
 	disabled: boolean;
 	loading?: boolean;
 }
 
-function ActionButton({ disabled, loading }: IActionButton) {
+function ActionButton({ label, disabled, loading }: IActionButton) {
 	return (
 		<div className='w-full'>
 			<Button
@@ -17,7 +18,7 @@ function ActionButton({ disabled, loading }: IActionButton) {
 				fullWidth
 				loading={Boolean(loading)}
 			>
-				Send Transaction
+				{label}
 			</Button>
 		</div>
 	);

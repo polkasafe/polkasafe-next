@@ -40,6 +40,10 @@ export const ERROR_MESSAGES = {
 	TRANSACTION_FAILED: {
 		message: 'Transaction failed',
 		description: 'Transaction failed to send'
+	},
+	CREATE_MULTISIG_FAILED: {
+		message: 'Create Multisig failed',
+		description: 'Create Multisig failed'
 	}
 };
 
@@ -47,5 +51,9 @@ export const SUCCESS_MESSAGES = {
 	TRANSACTION_SUCCESS: {
 		message: 'Transaction Success',
 		description: 'Transaction has been sent successfully'
+	},
+	CREATE_MULTISIG_SUCCESS: {
+		message: 'Create Multisig Success',
+		description: 'Create Multisig has been sent successfully'
 	}
 };
