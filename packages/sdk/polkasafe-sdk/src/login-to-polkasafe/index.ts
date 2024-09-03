@@ -1,7 +1,7 @@
 import { request } from '../utils/request';
 import { handleHeaders } from '../utils/handleHeaders';
 
-export function loginToPolkasafe(address: string, signature: string) {
+export function loginToPolkasafe({ address, signature }: { address: string; signature: string }) {
 	if (!address) {
 		throw new Error('Invalid signature, use setSignature method to set the signature');
 	}

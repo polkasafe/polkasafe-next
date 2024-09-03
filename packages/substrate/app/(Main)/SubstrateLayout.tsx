@@ -14,7 +14,7 @@ interface ISubstrateLayout {
 
 function SubstrateLayout({ userAddress, organisations, children }: PropsWithChildren<ISubstrateLayout>) {
 	const organisation = useAtomValue(organisationAtom);
-	const handleMultsigCreate = async ({ name, signatories, network, threshold }: IMultisigCreate) => {
+	const handleMultisigCreate = async ({ name, signatories, network, threshold }: IMultisigCreate) => {
 		await createMultisig({
 			multisigName: name,
 			signatories,
@@ -29,7 +29,7 @@ function SubstrateLayout({ userAddress, organisations, children }: PropsWithChil
 			selectedOrganisation={organisation || organisations[0]}
 			networks={Object.values(ENetwork)}
 			availableSignatories={[]}
-			onMultisigCreate={handleMultsigCreate}
+			onMultisigCreate={handleMultisigCreate}
 		>
 			{children}
 		</Layout>

@@ -6,7 +6,7 @@
 
 import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
 import { useAtomValue, useSetAtom } from 'jotai/react';
-import { PropsWithChildren, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 // import axios from 'axios';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
@@ -14,7 +14,7 @@ import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 
-function InitializeAssets({ children }: PropsWithChildren) {
+function InitializeAssets() {
 	const organisation = useAtomValue(organisationAtom);
 	const { getApi } = useAllAPI();
 	const setAtom = useSetAtom(assetsAtom);
@@ -72,7 +72,7 @@ function InitializeAssets({ children }: PropsWithChildren) {
 		handleOrganisationAssets();
 	}, [handleOrganisationAssets, organisation]);
 
-	return children;
+	return null;
 }
 
 export default InitializeAssets;

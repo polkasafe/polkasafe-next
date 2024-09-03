@@ -11,6 +11,7 @@ import { ISearchParams } from '@common/types/substrate';
 import { ETransactionTab } from '@common/enum/substrate';
 import { getMultisigDataAndTransactions } from './ssr-actions/getMultisigDataAndTransactions';
 import MultisigDashboard from './components/MultisigDashboard';
+import { isValidOrg } from '@substrate/app/global/utils/isValidOrg';
 
 interface IDashboardProps {
 	searchParams: ISearchParams;
@@ -24,7 +25,7 @@ async function Dashboard({ searchParams }: IDashboardProps) {
 		redirect(LOGIN_URL);
 	}
 
-	if (_organisation) {
+	if (_organisation && isValidOrg(_organisation)) {
 		// if organisation found then render organisation dashboard
 		return (
 			<OrganisationDashboard
@@ -40,6 +41,7 @@ async function Dashboard({ searchParams }: IDashboardProps) {
 
 	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network)) {
 		const { multisig, history, queue } = await getMultisigDataAndTransactions(_multisig, _network);
+		console.log('multisig', multisig, 'history', history, 'queue', queue);
 		if (!multisig) {
 			redirect('/404');
 		}

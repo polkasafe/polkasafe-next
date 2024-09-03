@@ -17,14 +17,14 @@ export interface IHomeProps {
 export default function Home({ searchParams }: IHomeProps) {
 	const user = getUserFromCookie();
 	const { _multisig, _organisation, _network } = searchParams;
-	if (_organisation) {
-		redirect(ORGANISATION_DASHBOARD_URL({ id: _organisation }));
-	}
 	if (_multisig && _network) {
 		redirect(MULTISIG_DASHBOARD_URL({ multisig: _multisig, network: _network }));
 	}
 	if (!user) {
 		redirect(LOGIN_URL);
+	}
+	if (_organisation) {
+		redirect(ORGANISATION_DASHBOARD_URL({ id: _organisation }));
 	}
 	redirect(ORGANISATION_DASHBOARD_URL({ id: user.organisations[0].id }));
 }

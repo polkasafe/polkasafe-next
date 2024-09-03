@@ -8,7 +8,6 @@ const baseUrl =
 	NEXT_PUBLIC_DEPLOYMENT === EDevelopment.PRODUCTION ? NEXT_PUBLIC_SDK_BASE_URL : 'http://localhost:3000/api/v1';
 
 export function request<T>(endpoint: string, reqHeaders?: any, options?: RequestInit): Promise<T> {
-	console.log('baseUrl', baseUrl);
 	const url = `${baseUrl}${endpoint}`;
 	const headers = {
 		Accept: 'application/json',

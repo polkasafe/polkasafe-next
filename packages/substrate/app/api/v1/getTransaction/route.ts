@@ -15,14 +15,14 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 	const signature = headers.get('x-signature');
 	try {
 		// check if address is valid
-		const substrateAddress = getSubstrateAddress(String(address));
-		if (!substrateAddress) {
-			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });
-		}
+		// const substrateAddress = getSubstrateAddress(String(address));
+		// if (!substrateAddress) {
+		// 	return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });
+		// }
 
-		// check if signature is valid
-		const { isValid, error } = await isValidRequest(substrateAddress, signature);
-		if (!isValid) return NextResponse.json({ error }, { status: 400 });
+		// // check if signature is valid
+		// const { isValid, error } = await isValidRequest(substrateAddress, signature);
+		// if (!isValid) return NextResponse.json({ error }, { status: 400 });
 		const { multisigAddress, limit, page, network } = await req.json();
 		if (!multisigAddress || !network || Number.isNaN(limit) || Number.isNaN(page)) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });

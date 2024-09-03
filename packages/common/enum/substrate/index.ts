@@ -132,7 +132,8 @@ export enum ECurrency {
 export enum ETxType {
 	TRANSFER = 'Transfer',
 	APPROVE = 'Approve',
-	FUND = 'Fund'
+	FUND = 'Fund',
+	CANCEL = 'Cancel'
 }
 
 export enum ETransactionTab {
@@ -146,4 +147,10 @@ export enum ETransactionTab {
 export enum WcPolkadotMethods {
 	POLKADOT_SIGN_TRANSACTION = 'polkadot_signTransaction',
 	POLKADOT_SIGN_MESSAGE = 'polkadot_signMessage'
+}
+
+export enum ECreateOrganisationSteps {
+	ORGANISATION_DETAILS = 'organisation_details',
+	ADD_MULTISIG = 'add_multisig',
+	REVIEW = 'review'
 }

@@ -45,7 +45,7 @@ export const Layout = ({
 					organisation={selectedOrganisation}
 					networks={networks}
 					availableSignatories={availableSignatories}
-					onMutisigCreate={onMultisigCreate}
+					onMultisigCreate={onMultisigCreate}
 				/>
 			</Sider>
 			<AntDLayout className={classNames.sidebarHeaderAndFooter}>
