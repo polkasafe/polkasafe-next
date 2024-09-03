@@ -5,7 +5,7 @@
 import { ECHANNEL, ENetwork, EUserType } from '@common/enum/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
-import { SignerOptions, SubmittableExtrinsic } from '@polkadot/api/types';
+import { SignerOptions, SubmittableExtrinsic, SignerResult } from '@polkadot/api/types';
 import { BN } from '@polkadot/util';
 import Client from '@walletconnect/sign-client';
 import { PairingTypes, SessionTypes } from '@walletconnect/types';
@@ -312,4 +312,19 @@ export interface IDBOrganisation {
 	state: string;
 	tax_number: string;
 	imageURI: string;
+}
+
+export interface QrState {
+	isQrHashed: boolean;
+	qrAddress: string;
+	qrPayload: Uint8Array;
+	qrResolve?: (result: SignerResult) => void;
+	qrReject?: (error: Error) => void;
+}
+
+export enum NotificationStatus {
+	SUCCESS = 'success',
+	ERROR = 'error',
+	WARNING = 'warning',
+	INFO = 'info'
 }

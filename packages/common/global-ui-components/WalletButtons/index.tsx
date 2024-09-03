@@ -8,6 +8,7 @@ import PolkadotWalletIcon from '@common/assets/wallet-icons/polkadotjs-icon.svg'
 import SubWalletIcon from '@common/assets/wallet-icons/subwallet-icon.svg';
 import TalismanIcon from '@common/assets/wallet-icons/talisman-icon.svg';
 import WalletConnectLogo from '@common/assets/wallet-icons/wallet-connect-logo.svg';
+import polkadotVaultLogo from '@common/assets/wallet-icons/polkadot-vault.png';
 import { twMerge } from 'tailwind-merge';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import WalletButton from '@common/global-ui-components/WalletButton';
@@ -15,6 +16,8 @@ import APP_NAME from '@common/constants/appName';
 import { Wallet } from '@common/enum/substrate';
 import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
 import { useAtomValue } from 'jotai';
+import Image from 'next/image';
+import { PolkadotVaultModal } from '@common/modals/PolkadotVault';
 
 interface IWalletButtons {
 	loggedInWallet: Wallet;
@@ -24,6 +27,7 @@ interface IWalletButtons {
 	setNoExtenstion?: React.Dispatch<React.SetStateAction<boolean>>;
 	setNoAccounts?: React.Dispatch<React.SetStateAction<boolean>>;
 	setFetchAccountsLoading?: React.Dispatch<React.SetStateAction<boolean>>;
+	setVaultNetwork?: React.Dispatch<React.SetStateAction<string>>;
 	wcAtom?: any;
 }
 
@@ -35,9 +39,12 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 	setNoAccounts,
 	setNoExtenstion,
 	setFetchAccountsLoading,
+	setVaultNetwork,
 	wcAtom
 }: IWalletButtons) => {
 	const [selectedWallet, setSelectedWallet] = useState<Wallet>(Wallet.POLKADOT);
+
+	const [openVaultModal, setOpenVaultModal] = useState<boolean>(false);
 
 	const walletConnectValue = useAtomValue(wcAtom) as { connect: any; session: any } | null;
 	const connect = walletConnectValue?.connect;
@@ -134,6 +141,9 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 				}));
 				setAccounts(walletConnectAccounts);
 			}
+		} else if (wallet === Wallet.POLKADOT_VAULT) {
+			setOpenVaultModal(true);
+			setFetchAccountsLoading?.(true);
 		} else {
 			await getAccounts(wallet);
 		}
@@ -141,6 +151,13 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 
 	return (
 		<div className={`mb-2 flex items-center justify-center gap-x-5 ${className}`}>
+			<PolkadotVaultModal
+				openVaultModal={openVaultModal}
+				onClose={() => setOpenVaultModal(false)}
+				setAccounts={setAccounts}
+				setFetchAccountsLoading={setFetchAccountsLoading}
+				setVaultNetwork={setVaultNetwork}
+			/>
 			<WalletButton
 				className={twMerge(
 					// eslint-disable-next-line sonarjs/no-duplicate-string
@@ -148,6 +165,7 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 				)}
 				onClick={(event: any) => handleWalletClick(event as any, Wallet.POLKADOT)}
 				icon={<PolkadotWalletIcon />}
+				tooltip='Polkadot'
 			/>
 			<WalletButton
 				className={twMerge(
@@ -155,6 +173,7 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 				)}
 				onClick={(event: any) => handleWalletClick(event as any, Wallet.SUBWALLET)}
 				icon={<SubWalletIcon />}
+				tooltip='Subwallet'
 			/>
 			<WalletButton
 				className={twMerge(
@@ -162,6 +181,7 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 				)}
 				onClick={(event: any) => handleWalletClick(event as any, Wallet.TALISMAN)}
 				icon={<TalismanIcon />}
+				tooltip='Talisman'
 			/>
 			<WalletButton
 				className={twMerge(
@@ -171,6 +191,21 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 				onClick={(event) => handleWalletClick(event as any, Wallet.WALLET_CONNECT)}
 				icon={<WalletConnectLogo />}
 				tooltip='Wallet Connect'
+			/>
+			<WalletButton
+				className={twMerge(
+					selectedWallet === Wallet.POLKADOT_VAULT ? 'border-primary bg-highlight border border-solid' : 'border-none'
+				)}
+				// disabled={!apiReady}
+				onClick={(event) => handleWalletClick(event as any, Wallet.POLKADOT_VAULT)}
+				icon={
+					<Image
+						className='h-[24px] w-[24px]'
+						src={polkadotVaultLogo}
+						alt='Polkadot Vault'
+					/>
+				}
+				tooltip='Polkadot Vault'
 			/>
 		</div>
 	);

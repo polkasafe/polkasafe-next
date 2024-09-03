@@ -7,7 +7,7 @@
 
 import AccountSelectionForm from '@common/global-ui-components/AccountSelectionForm';
 import Button from '@common/global-ui-components/Button';
-import { stringToHex } from '@polkadot/util';
+import { stringToHex, isHex } from '@polkadot/util';
 import { WalletIcon } from '@common/global-ui-components/Icons';
 import Loader from '@common/global-ui-components/Loder';
 import WalletButtons from '@common/global-ui-components/WalletButtons';
@@ -29,9 +29,17 @@ import { ENetwork, NotificationStatus, Wallet, WcPolkadotMethods } from '@common
 import { walletConnectAtom } from '@substrate/app/atoms/walletConnect/walletConnectAtom';
 import { signatureVerify, cryptoWaitReady } from '@polkadot/util-crypto';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { QrState } from '@common/types/substrate';
+import { useApi } from '@substrate/app/hooks/useApi';
+import Modal from '@common/global-ui-components/Modal';
+import InfoBox from '@common/global-ui-components/InfoBox';
+import { QrDisplayPayload, QrScanSignature } from '@polkadot/react-qr';
+import { polkadotVaultSign } from '@substrate/app/(Login)/login/utils/polkadotVaultSign';
 
 export function SubstrateLoginForm() {
 	const setAtom = useSetAtom(userAtom);
+
+	let qrId = 0;
 
 	const [accounts, setAccounts] = useState<InjectedAccount[]>([]);
 	const [showAccountsDropdown, setShowAccountsDropdown] = useState(false);
@@ -44,10 +52,28 @@ export function SubstrateLoginForm() {
 	const [selectedWallet, setSelectedWallet] = useState<Wallet>(Wallet.POLKADOT);
 	const [tfaToken, setTfaToken] = useState<string>('');
 
+	const apis = useApi();
+
 	const wc = useAtomValue(walletConnectAtom);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 	const [tokenExpired, setTokenExpired] = useState<boolean>(false);
+
+	const [openSignWithVaultModal, setOpenSignWithVaultModal] = useState<boolean>(false);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+	const [vaultTxnHash, setVaultTxnHash] = useState<string>('');
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+	const [vaultSignature, setVaultSignature] = useState<string>('');
+
+	const [vaultNetwork, setVaultNetwork] = useState<string>(ENetwork.POLKADOT);
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+	const [{ isQrHashed, qrAddress, qrPayload, qrResolve }, setQrState] = useState<QrState>(() => ({
+		isQrHashed: false,
+		qrAddress: '',
+		qrPayload: new Uint8Array()
+	}));
 
 	const router = useRouter();
 
@@ -90,7 +116,11 @@ export function SubstrateLoginForm() {
 				setLoading(false);
 			} else {
 				let signature = '';
-				if (!whitelist.includes(getSubstrateAddress(address)) && selectedWallet !== Wallet.WALLET_CONNECT) {
+				if (
+					!whitelist.includes(getSubstrateAddress(address)) &&
+					selectedWallet !== Wallet.WALLET_CONNECT &&
+					selectedWallet !== Wallet.POLKADOT_VAULT
+				) {
 					setSigning(true);
 					signature = await getSignature(selectedWallet, token, substrateAddress);
 					setSigning(false);
@@ -117,6 +147,24 @@ export function SubstrateLoginForm() {
 					if (valid) {
 						signature = result.signature;
 					}
+				}
+
+				if (selectedWallet === Wallet.POLKADOT_VAULT) {
+					setOpenSignWithVaultModal(true);
+					if (!apis || !apis[vaultNetwork]?.apiReady) {
+						return;
+					}
+					const { api } = apis[vaultNetwork];
+
+					signature = await polkadotVaultSign({
+						api,
+						token,
+						setQrState,
+						substrateAddress,
+						setOpenSignWithVaultModal,
+						vaultNetwork,
+						setVaultTxnHash
+					});
 				}
 
 				const { data: userData, error: connectAddressErr } = (await clientLogin(substrateAddress, signature)) as any;
@@ -258,6 +306,45 @@ export function SubstrateLoginForm() {
 
 	return (
 		<>
+			<Modal
+				open={openSignWithVaultModal}
+				onCancel={() => {
+					setOpenSignWithVaultModal(false);
+					setLoading(false);
+				}}
+				title='Authorize Transaction in Vault'
+			>
+				<>
+					<InfoBox
+						message={`To verify ownership of the address, a transaction will be conducted on the  ${vaultNetwork} network. Please note that a small gas fee will apply.`}
+					/>
+					<div className='flex items-center gap-x-4'>
+						<div className='rounded-xl bg-white p-4'>
+							<QrDisplayPayload
+								cmd={isQrHashed ? 1 : 2}
+								address={address}
+								genesisHash={apis[vaultNetwork]?.api?.genesisHash}
+								payload={qrPayload}
+							/>
+						</div>
+						<QrScanSignature
+							onScan={(data) => {
+								if (data && data.signature && isHex(data.signature)) {
+									console.log('signature', data.signature);
+									setVaultSignature(data.signature);
+									if (qrResolve) {
+										qrResolve({
+											// eslint-disable-next-line no-plusplus
+											id: ++qrId,
+											signature: data.signature
+										});
+									}
+								}
+							}}
+						/>
+					</div>
+				</>
+			</Modal>
 			<h2 className='font-bold text-lg text-white'>Get Started</h2>
 			<p className='mt-2  text-normal text-sm text-white'>Connect your wallet</p>
 			<p className='text-text_secondary text-sm font-normal mt-5'>
@@ -274,6 +361,7 @@ export function SubstrateLoginForm() {
 						setWallet={setSelectedWallet}
 						setAccounts={setAccounts}
 						loggedInWallet={selectedWallet}
+						setVaultNetwork={setVaultNetwork}
 					/>
 					{fetchAccountsLoading ? (
 						<Loader />

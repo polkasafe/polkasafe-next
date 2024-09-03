@@ -1,4 +1,7 @@
-import getSubstrateAddress from "@common/utils/getSubstrateAddress";
+// Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 
 export const whitelist = [
 	getSubstrateAddress('16Ge612BDMd2GHKWFPhkmJizF7zgYEmtD1xPpnLwFT2WxS1'),
@@ -10,4 +13,3 @@ export const whitelist = [
 	getSubstrateAddress('13rvrw9GrtYAEkDbttj4Js5VfYUN9vgGQhoygEfW39Ug6dFp'),
 	getSubstrateAddress('15rEKyJt1WV7SUEK1N5ddEBRDCZPewakwVdgb2Nzk4cvuoGD')
 ];
-
