@@ -5,14 +5,11 @@ import {
 	IGetMultisigDataProps,
 	IGetMultisigTransactionProps,
 	IGetOrganisationProps,
-	IGetOrganisationTransactionProps,
-	ILoginProps
+	IGetOrganisationTransactionProps
 } from '@common/types/sdk';
 import { ETransactionType } from '@common/enum/sdk';
 import CURRENCY_API_KEY from './constants/currencyApiKey';
 import { currencySymbols } from './constants/currencyConstants';
-import { getOrganisationById } from './get-organisation-by-id';
-import { loginToPolkasafe } from './login-to-polkasafe';
 import { connectAddress } from './connect-address';
 import { getAssetsForAddress } from './get-assets-for-address';
 import { getAddressToken } from './get-connect-address-token';
@@ -63,10 +60,13 @@ export const getMultisigsByOrganisation = async ({ address, signature, organisat
 	return request('/getMultisigsByOrg', headers, { method: 'POST', body });
 };
 
-export const login = async ({ address, signature }: ILoginProps) => loginToPolkasafe(address, signature);
+export const getMultisigByOrganisation = async ({ organisations }: { organisations: Array<string> }) => {
+	const body = JSON.stringify({
+		organisations
+	});
 
-export const getOrganization = async ({ organisationId, address, signature }: IGetOrganisationProps) =>
-	getOrganisationById({ organisationId, address, signature });
+	return request('/getMultisigByOrganisation', {}, { method: 'POST', body });
+};
 
 export const getOrganisationAssets = async ({ organisationId, address, signature }: IGetOrganisationProps) =>
 	getOrganisationAsset({ organisationId, address, signature });

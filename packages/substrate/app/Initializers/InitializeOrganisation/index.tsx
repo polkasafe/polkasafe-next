@@ -9,7 +9,7 @@ import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
 import { useAtomValue, useSetAtom } from 'jotai/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { getOrganization } from '@sdk/polkasafe-sdk/src';
+import { getOrganisationById } from '@sdk/polkasafe-sdk/src/get-organisation-by-id';
 import { IOrganisation } from '@common/types/substrate';
 
 function InitializeOrganisation() {
@@ -20,7 +20,7 @@ function InitializeOrganisation() {
 
 	const handleOrganisation = async () => {
 		if (!user || !organisationId) return;
-		const organisation = (await getOrganization({
+		const organisation = (await getOrganisationById({
 			address: user.address,
 			signature: user.signature,
 			organisationId

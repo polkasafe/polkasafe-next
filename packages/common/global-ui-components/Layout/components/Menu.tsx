@@ -27,14 +27,14 @@ interface IMenuProps {
 	organisation: IOrganisation;
 	networks: Array<ENetwork>;
 	availableSignatories: Array<string>;
-	onMutisigCreate: (values: IMultisigCreate) => void;
+	onMultisigCreate: (values: IMultisigCreate) => void;
 }
 
 const styles = {
 	menu: 'text-xs font-normal text-text-secondary uppercase ml-4'
 };
 
-const Menu = ({ userAddress, organisation, networks, availableSignatories, onMutisigCreate }: IMenuProps) => {
+const Menu = ({ userAddress, organisation, networks, availableSignatories, onMultisigCreate }: IMenuProps) => {
 	const pathname = usePathname();
 	const { multisigs = [] } = organisation || {};
 	const searchParams = useSearchParams();
@@ -99,7 +99,7 @@ const Menu = ({ userAddress, organisation, networks, availableSignatories, onMut
 				<AddMultisig
 					networks={networks}
 					availableSignatories={availableSignatories}
-					onSubmit={onMutisigCreate}
+					onSubmit={onMultisigCreate}
 				/>
 			)}
 		</div>

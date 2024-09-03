@@ -3,8 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { SUBSCAN_API_KEY } from '@common/envs';
 
-console.log(SUBSCAN_API_KEY, 'SUBSCAN_API_KEY');
-
 export const SUBSCAN_API_HEADERS = {
 	Accept: 'application/json',
 	'Content-Type': 'application/json',

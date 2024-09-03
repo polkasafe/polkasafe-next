@@ -73,7 +73,6 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
 		const payload = multisigs.map((multisig: IDBMultisig) => ({
 			...multisig,
-			network: networkConstants[multisig.network as ENetwork],
 			organisationId: organisationId || null,
 			type: EUserType.SUBSTRATE,
 			created_at: new Date(),

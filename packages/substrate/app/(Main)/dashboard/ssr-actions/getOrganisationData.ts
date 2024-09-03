@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { IAsset, IOrganisation } from '@common/types/substrate';
-import { getOrganization } from '@sdk/polkasafe-sdk/src';
+import { getOrganisationById } from '@sdk/polkasafe-sdk/src/get-organisation-by-id';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 
@@ -51,7 +51,7 @@ export const getOrganisationData = async (organisationId: string) => {
 	if (!user?.address || !user?.signature) {
 		return { error: ERROR_MESSAGES.USER_NOT_LOGGED_IN };
 	}
-	const organisationPromise = getOrganization({
+	const organisationPromise = getOrganisationById({
 		address: user.address[0],
 		signature: user.signature,
 		organisationId

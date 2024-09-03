@@ -39,6 +39,8 @@ const parseTransactions = (transaction: any) =>
 
 export const getMultisigDataAndTransactions = async (address: string, network: string) => {
 	// fetch multisig data and transactions
+	console.log('getMultisigDataAndTransactions', address, network);
+
 	const multisigPromise = getMultisigData({ address, network });
 	const transactionsPromise = getTransactions({ address, network });
 	const queueTransactionPromise = getQueueTransactions({ multisigs: [`${address}_${network}`], page: 1, limit: 10 });
@@ -53,10 +55,7 @@ export const getMultisigDataAndTransactions = async (address: string, network: s
 	// parsing multisig data
 	const { data: multisig, error: multisigError } = multisigData as { data: IDBTransaction; error: string };
 
-	const {
-		data: { count, transactions },
-		error: transactionsError
-	} = transactionsData as {
+	const { data: transactions, error: transactionsError } = transactionsData as {
 		data: { count: number; transactions: Array<IDBTransaction> };
 		error: string;
 	};
@@ -67,12 +66,12 @@ export const getMultisigDataAndTransactions = async (address: string, network: s
 		return { error: multisigError || transactionsError || queueTransactionsError };
 	}
 
-	const historyTx = transactions.map(parseTransactions);
+	const historyTx = transactions?.transactions?.map(parseTransactions);
 	const queueTx = data?.transactions.map(parseTransactions);
 
 	return {
 		multisig: parseMultisig(multisig),
-		history: { transactions: historyTx, count },
+		history: { transactions: historyTx, count: transactions.transactions?.length || 0 },
 		queue: { transactions: queueTx, count: queueTx?.length || 0 }
 	};
 };

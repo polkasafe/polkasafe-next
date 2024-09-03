@@ -5,6 +5,8 @@ import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';
 import { IMultisig } from '@common/types/substrate';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import Link from 'next/link';
+import { MULTISIG_DASHBOARD_URL } from '@substrate/app/global/end-points';
 
 interface IMultisigList {
 	multisigs: Array<IMultisig>;
@@ -39,27 +41,51 @@ function MultisigList({ multisigs }: IMultisigList) {
 								return (
 									<ScaleMotion key={`${multisig.address}_${multisig.network}_${i}`}>
 										<li className={styles.listItem}>
-											<button
-												className={styles.button}
-												onClick={() => {}}
-											>
-												<div className={styles.relative}>
-													<Identicon
-														className={styles.identicon}
-														value={multisig.address}
-														size={25}
-														theme='polkadot'
-													/>
-													<div className={styles.networkIcon}>
-														<ParachainTooltipIcon
-															size={10}
-															src={networkConstants[multisig.network]?.logo}
+											<Link href={MULTISIG_DASHBOARD_URL({ multisig: multisig.address, network: multisig.network })}>
+												<button className={styles.button}>
+													<div className={styles.relative}>
+														<Identicon
+															className={styles.identicon}
+															value={multisig.address}
+															size={25}
+															theme='polkadot'
 														/>
+														<div className={styles.networkIcon}>
+															<ParachainTooltipIcon
+																size={10}
+																src={networkConstants[multisig.network]?.logo}
+															/>
+														</div>
 													</div>
-												</div>
-												<span className={styles.truncate}>{multisig.name}</span>
-											</button>
+													<span className={styles.truncate}>{multisig.name}</span>
+												</button>
+											</Link>
 										</li>
+										{multisig.proxy &&
+											multisig.proxy.map((proxy) => (
+												<li className={styles.listItem}>
+													<button
+														className={styles.button}
+														onClick={() => {}}
+													>
+														<div className={styles.relative}>
+															<Identicon
+																className={styles.identicon}
+																value={proxy.address}
+																size={25}
+																theme='polkadot'
+															/>
+															<div className={styles.networkIcon}>
+																<ParachainTooltipIcon
+																	size={10}
+																	src={networkConstants[multisig.network]?.logo}
+																/>
+															</div>
+														</div>
+														<span className={styles.truncate}>{proxy.name}</span>
+													</button>
+												</li>
+											))}
 									</ScaleMotion>
 								);
 							})}
