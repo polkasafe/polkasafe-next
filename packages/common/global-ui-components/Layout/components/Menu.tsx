@@ -7,16 +7,14 @@ import PolkasafeLogo from '@common/assets/icons/polkasafe.svg';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { menuItems } from '@common/global-ui-components/Layout/utils/menuItems';
 import MenuItem from '@common/global-ui-components/Layout/components/MenuItem';
-// import Image from 'next/image';
-// import emptyImage from '@common/assets/icons/empty-image.png';
-// import { CircleArrowDownIcon, UserPlusIcon } from '@common/global-ui-components/Icons';
-// import { Dropdown } from 'antd';
-import MultisigList from '@common/global-ui-components/MultisigList';
-import { Skeleton } from 'antd';
+// import MultisigList from '@common/global-ui-components/MultisigList';
+// import { Skeleton } from 'antd';
 import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';
 import { ENetwork, ETransactionTab } from '@common/enum/substrate';
 import { IMultisigCreate, IOrganisation } from '@common/types/substrate';
 import { AddMultisig } from '@common/modals/AddMultisig';
+import OrganisationDropdown from '@common/global-ui-components/OrganisationDropdown';
+import { Divider } from 'antd';
 
 const getPath = (basePath: string) => {
 	return basePath;
@@ -25,6 +23,7 @@ const getPath = (basePath: string) => {
 interface IMenuProps {
 	userAddress: string;
 	organisation: IOrganisation;
+	organisations: Array<IOrganisation>;
 	networks: Array<ENetwork>;
 	availableSignatories: Array<string>;
 	onMultisigCreate: (values: IMultisigCreate) => void;
@@ -34,9 +33,16 @@ const styles = {
 	menu: 'text-xs font-normal text-text-secondary uppercase ml-4'
 };
 
-const Menu = ({ userAddress, organisation, networks, availableSignatories, onMultisigCreate }: IMenuProps) => {
+const Menu = ({
+	userAddress,
+	organisation,
+	organisations,
+	networks,
+	availableSignatories,
+	onMultisigCreate
+}: IMenuProps) => {
 	const pathname = usePathname();
-	const { multisigs = [] } = organisation || {};
+	// const { multisigs = [] } = organisation || {};
 	const searchParams = useSearchParams();
 	const organisationParam = searchParams.get('_organisation');
 	const multisig = searchParams.get('_multisig');
@@ -66,6 +72,18 @@ const Menu = ({ userAddress, organisation, networks, availableSignatories, onMul
 					</section>
 				</ScaleMotion>
 
+				<section>
+					<h2 className={styles.menu}>Account</h2>
+					{organisations && organisations.length > 0 && (
+						<OrganisationDropdown
+							organisations={organisations}
+							selectedOrganisation={organisation}
+						/>
+					)}
+				</section>
+
+				<Divider className='border-text-disabled my-3' />
+
 				<section className='flex-1 flex flex-col overflow-y-hidden overflow-x-hidden'>
 					<h2 className={styles.menu}>Menu</h2>
 					<ul className='flex flex-1 flex-col py-2 text-white list-none max-sm:h-80'>
@@ -85,7 +103,7 @@ const Menu = ({ userAddress, organisation, networks, availableSignatories, onMul
 					</ul>
 				</section>
 			</div>
-			{organisation ? (
+			{/* {organisation ? (
 				<MultisigList multisigs={multisigs} />
 			) : (
 				<Skeleton
@@ -93,7 +111,7 @@ const Menu = ({ userAddress, organisation, networks, availableSignatories, onMul
 					active
 					avatar
 				/>
-			)}
+			)} */}
 
 			{userAddress && (
 				<AddMultisig

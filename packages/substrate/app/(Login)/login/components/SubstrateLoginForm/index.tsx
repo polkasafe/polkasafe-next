@@ -347,7 +347,7 @@ export function SubstrateLoginForm() {
 			</Modal>
 			<h2 className='font-bold text-lg text-white'>Get Started</h2>
 			<p className='mt-2  text-normal text-sm text-white'>Connect your wallet</p>
-			<p className='text-text_secondary text-sm font-normal mt-5'>
+			<p className='text-text_secondary text-sm font-normal mt-5 text-white'>
 				Your first step towards creating a safe & secure MultiSig
 			</p>
 			{showAccountsDropdown ? (

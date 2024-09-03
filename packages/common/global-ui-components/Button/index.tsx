@@ -29,7 +29,7 @@ export default function Button({
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'bg-secondary text-text-primary border-primary p-3 h-full rounded-lg',
+							'bg-bg-secondary text-text-primary border-primary p-3 h-full rounded-lg',
 							fullWidth && 'w-full',
 							className
 						)}
@@ -44,7 +44,7 @@ export default function Button({
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'bg-secondary text-text-primary border-secondary p-3 h-full rounded-lg',
+							'bg-bg-secondary text-text-primary border-secondary p-3 h-full rounded-lg',
 							fullWidth && 'w-full',
 							className
 						)}
@@ -59,7 +59,7 @@ export default function Button({
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'bg-secondary text-text-danger border-danger bg-failure/75 p-3 h-full rounded-lg',
+							'bg-bg-secondary text-text-danger border-danger bg-failure/75 p-3 h-full rounded-lg',
 							fullWidth && 'w-full',
 							className
 						)}
@@ -74,7 +74,7 @@ export default function Button({
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'bg-secondary text-text-primary border-default p-3 h-full rounded-lg',
+							'bg-bg-secondary text-text-primary border-default p-3 h-full rounded-lg',
 							fullWidth && 'w-full',
 							className
 						)}

@@ -40,7 +40,11 @@ module.exports = {
 			backgroundImage: {
 				'custom-gradient':
 					'linear-gradient(60deg, #434449, #27305B, #34449A, #423C85, #34449A, #27305B, #27305B,#434449)',
-				'org-gradient': 'radial-gradient(100% 100% at 50% 70%, #27305B 0%, rgba(54, 0, 96, 0.00) 100%)'
+				'org-gradient': 'radial-gradient(100% 100% at 50% 70%, #27305B 0%, rgba(54, 0, 96, 0.00) 100%)',
+				'circle-1-gradient': 'linear-gradient(129deg, #701A75 11.01%, #C026D3 95%)',
+				'circle-2-gradient': 'linear-gradient(76deg, #4C1D95 -15.25%, #7C3AED 100%)',
+				'circle-3-gradient': 'linear-gradient(129deg, #312E81 11.01%, #4F46E5 95%)',
+				'circle-4-gradient': 'linear-gradient(129deg, #655600 11.01%, #00CCE3 95%)',
 			}
 		}
 	},

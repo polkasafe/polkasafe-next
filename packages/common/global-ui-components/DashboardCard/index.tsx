@@ -1,8 +1,6 @@
 'use client';
 
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
-import FundMultisig from '@common/modals/FundMultisig';
-import NewTransaction from '@common/modals/NewTransaction';
 import EyeIcon from '@common/assets/icons/eye.svg';
 import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
 import SelectCurrency from '@common/global-ui-components/SelectCurrency';
@@ -14,11 +12,12 @@ function DashboardCard() {
 	const symbol = getCurrencySymbol(currency);
 
 	return (
-		<div className='overflow-hidden'>
-			<div className='relative'>
-				<div className='absolute bg-circle-gradient rounded-full w-[30%] h-80 left-[30%] top-10' />
-			</div>
-			<div className='bg-custom-gradient rounded-3xl px-7 p-6 text-white shadow-lg w-full flex flex-col gap-5'>
+		<div className='overflow-hidden relative'>
+			<div className='h-[150px] w-[150px] rounded-full absolute -bottom-20 left-[10%] z-10 bg-circle-1-gradient' />
+			<div className='h-[220px] w-[220px] rounded-full absolute top-0 left-[20%] z-10 bg-circle-2-gradient' />
+			<div className='h-[120px] w-[180px] rounded-full absolute top-10 left-[45%] z-10 bg-circle-3-gradient' />
+			<div className='h-[270px] w-[270px] rounded-full absolute -bottom-[250px] right-0 z-10 bg-circle-4-gradient' />
+			<div className='relative rounded-[20px] z-20 bg-transparent backdrop-blur-3xl border border-[#505050] px-7 p-6 text-white shadow-lg w-full flex flex-col gap-5'>
 				<div className='flex flex-col gap-2'>
 					<div className='flex justify-between items-center'>
 						<Typography
@@ -54,11 +53,6 @@ function DashboardCard() {
 					>
 						24h
 					</Typography>
-				</div>
-
-				<div className='flex gap-6'>
-					<NewTransaction />
-					<FundMultisig />
 				</div>
 			</div>
 		</div>

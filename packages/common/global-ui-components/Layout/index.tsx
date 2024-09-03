@@ -41,6 +41,7 @@ export const Layout = ({
 				width={240}
 			>
 				<Menu
+					organisations={organisations}
 					userAddress={userAddress}
 					organisation={selectedOrganisation}
 					networks={networks}
@@ -49,10 +50,7 @@ export const Layout = ({
 				/>
 			</Sider>
 			<AntDLayout className={classNames.sidebarHeaderAndFooter}>
-				<NavHeader
-					organisations={organisations}
-					userAddress={userAddress}
-				/>
+				<NavHeader userAddress={userAddress} />
 				<Content className={classNames.content}>{children}</Content>
 				<Footer />
 			</AntDLayout>
