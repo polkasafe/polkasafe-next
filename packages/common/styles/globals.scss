@@ -183,11 +183,10 @@ input {
   display: none !important;
 }
 
-.ant-dropdown-menu-root {
+.ant-dropdown-menu-root, .ant-dropdown-menu-submenu-popup .ant-dropdown-menu {
   margin-top: 6px !important;
-  border: 1px solid #1573fe !important;
   border-radius: 12px !important;
-  background-color: #24272e !important;
+  background: linear-gradient(0deg, #323233 0%, #323233 100%), #24262A;
   padding: 12px 8px !important;
   overflow-y: auto;
   max-height: 300px;

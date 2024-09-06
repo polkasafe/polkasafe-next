@@ -48,10 +48,9 @@ const AddressDropdown = ({ defaultAddress, className, accounts, disabled, onAcco
 				<div>
 					<SubstrateAddress
 						extensionName={account.name}
-						className='text-white'
 						address={account.address}
 					/>
-					<Divider className='bg-text_secondary my-0 mt-3' />
+					<Divider className='border-text-secondary my-0 mt-3' />
 				</div>
 			)
 		};

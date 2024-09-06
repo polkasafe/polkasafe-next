@@ -17,6 +17,7 @@ import { DashboardProvider } from '@common/context/DashboarcContext';
 import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
 import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
 import { BN } from '@polkadot/util';
+import NewTransaction from '@common/modals/NewTransaction';
 
 export function DashboardOverview() {
 	const assets = useAtomValue(assetsAtom);
@@ -89,7 +90,10 @@ export function DashboardOverview() {
 			currency={currency}
 			multisigs={org?.multisigs || []}
 		>
-			<DashboardCard />
+			<div className='flex flex-col gap-y-6'>
+				<DashboardCard />
+				<NewTransaction />
+			</div>
 		</DashboardProvider>
 	);
 }

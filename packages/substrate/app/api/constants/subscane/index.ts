@@ -6,5 +6,5 @@ import { SUBSCAN_API_KEY } from '@common/envs';
 export const SUBSCAN_API_HEADERS = {
 	Accept: 'application/json',
 	'Content-Type': 'application/json',
-	'X-API-Key': SUBSCAN_API_KEY
+	'X-API-Key': SUBSCAN_API_KEY || ''
 };

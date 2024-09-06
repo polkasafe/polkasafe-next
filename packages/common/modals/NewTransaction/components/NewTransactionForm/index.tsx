@@ -28,7 +28,7 @@ export function NewTransactionForm() {
 			};
 			setLoading(true);
 			await onNewTransaction(payload);
-			notification.success(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+			notification.info(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
 		} catch (e) {
 			console.log(e);
 			notification.error({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });

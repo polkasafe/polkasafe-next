@@ -1,24 +1,19 @@
 import React from 'react';
 import { Layout as AntDLayout } from 'antd';
-import { useSearchParams, usePathname } from 'next/navigation';
-import OrganisationDropdown from '@common/global-ui-components/OrganisationDropdown';
+import { usePathname } from 'next/navigation';
 import Breadcrumb from '@common/global-ui-components/Breadcrumb';
 import NotificationPopover from '@common/global-ui-components/NotificationPopover';
 import DonateButton from '@common/global-ui-components/DonateButton';
 import DocsButton from '@common/global-ui-components/DocsButton';
 import UserPopover from '@common/global-ui-components/UserPopover';
-import { IOrganisation } from '@common/types/substrate';
 
 const { Header } = AntDLayout;
 
 interface INavHeaderProps {
-	organisations: Array<IOrganisation>;
 	userAddress: string;
 }
 
-function NavHeader({ organisations, userAddress }: INavHeaderProps) {
-	const organisationId = useSearchParams().get('_organisation');
-	const selectedOrganisation = organisations.find((org) => org.id === organisationId) || organisations[0];
+function NavHeader({ userAddress }: INavHeaderProps) {
 	const pathname = usePathname();
 
 	return (
@@ -27,12 +22,6 @@ function NavHeader({ organisations, userAddress }: INavHeaderProps) {
 				<Breadcrumb link={pathname} />
 			</div>
 			<div className='flex items-center gap-x-3'>
-				{organisations && organisations.length > 0 && (
-					<OrganisationDropdown
-						organisations={organisations}
-						selectedOrganisation={selectedOrganisation}
-					/>
-				)}
 				<NotificationPopover />
 				{userAddress && <UserPopover userAddress={userAddress} />}
 				<DonateButton />

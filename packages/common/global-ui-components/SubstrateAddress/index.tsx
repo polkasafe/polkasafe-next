@@ -26,7 +26,7 @@ const styles = {
 	container: 'flex items-center gap-x-3',
 	textContainer: 'flex flex-col text-xs font-normal leading-13px justify-center',
 	textActive: 'text-white',
-	textDisabled: 'text-text_secondary'
+	textDisabled: 'text-text-secondary'
 };
 
 export const SubstrateAddress: React.FC<IAddressProps> = ({
