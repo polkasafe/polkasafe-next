@@ -4,13 +4,29 @@
 import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
-import { ORGANISATION_COLLECTION } from '@common/db/collections';
+import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collections';
 
 const getDataFromDB = async (docId: string) => {
 	const orgRef = await ORGANISATION_COLLECTION.doc(docId).get();
 	if (orgRef.exists) {
 		const orgData = orgRef.data();
-		return orgData?.multisigs || null;
+
+		const multisigsData = (orgData?.multisigs || []).map(async (multisigId: string | any) => {
+			let id = multisigId;
+			if (typeof multisigId !== 'string' && multisigId.address && multisigId.network) {
+				id = `${multisigId.address}_${multisigId.network}`;
+			}
+
+			if (id.split('_').length <= 1) {
+				return null;
+			}
+			const multisigRef = await MULTISIG_COLLECTION.doc(id).get();
+			if (multisigRef.exists) {
+				return multisigRef.data();
+			}
+			return null;
+		});
+		return { [docId]: { ...orgData, multisigs: (await Promise.all(multisigsData)).filter((a) => Boolean(a)) } };
 	}
 	return null;
 };

@@ -26,11 +26,11 @@ function InitializeUser({ userAddress, signature, organisations }: IInitializeUs
 		const handleUser = async () => {
 			const orgDetails = (await getMultisigByOrganisation({
 				organisations: organisations.map((org) => org.id)
-			})) as Array<IOrganisation>;
+			})) as { data: Array<IOrganisation> };
 			setAtom({
 				address: userAddress,
 				signature,
-				organisations: orgDetails || []
+				organisations: orgDetails.data || []
 			});
 		};
 		handleUser();
