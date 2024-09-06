@@ -433,3 +433,22 @@ td {
 .ant-spin-nested-loading{
   width: 100%;
 }
+
+.ant-dropdown-menu-submenu-title {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.ant-dropdown-menu-submenu-title:hover {
+  background-color: #1a2a42 !important;
+  border-radius: 8px !important;
+}
+
+.ant-dropdown-menu-submenu-selected {
+  background-color: #1a2a42 !important;
+  border-radius: 8px !important;
+}
+
+.ant-dropdown-menu-submenu-vertical {
+  margin-bottom: 8px !important;
+}

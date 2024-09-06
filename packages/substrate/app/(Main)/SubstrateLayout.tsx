@@ -6,6 +6,7 @@ import { organisationAtom } from '@substrate/app/atoms/organisation/organisation
 import { useAtomValue } from 'jotai';
 import { createMultisig } from '@sdk/polkasafe-sdk/src/create-multisig';
 import React, { PropsWithChildren } from 'react';
+import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
 
 interface ISubstrateLayout {
 	userAddress: string;
@@ -14,6 +15,8 @@ interface ISubstrateLayout {
 
 function SubstrateLayout({ userAddress, organisations, children }: PropsWithChildren<ISubstrateLayout>) {
 	const organisation = useAtomValue(organisationAtom);
+	const user = useAtomValue(userAtom);
+
 	const handleMultisigCreate = async ({ name, signatories, network, threshold }: IMultisigCreate) => {
 		await createMultisig({
 			multisigName: name,

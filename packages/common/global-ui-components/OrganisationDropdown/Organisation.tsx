@@ -10,6 +10,7 @@ interface IOrg {
 
 // TODO: tailwind need to update
 function Org({ selectedOrganisation }: IOrg) {
+	console.log('selected ', selectedOrganisation);
 	return (
 		<div className='relative overflow-hidden'>
 			<div className='h-[50px] w-[80%] rounded-full bg-[#8558F2] absolute top-[50%] left-[50%] -translate-y-1/2 -translate-x-1/2 z-10' />
