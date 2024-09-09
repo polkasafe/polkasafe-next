@@ -26,7 +26,7 @@ const getDataFromDB = async (docId: string) => {
 			}
 			return null;
 		});
-		return { [docId]: { ...orgData, multisigs: (await Promise.all(multisigsData)).filter((a) => Boolean(a)) } };
+		return { ...orgData, id: docId, multisigs: (await Promise.all(multisigsData)).filter((a) => Boolean(a)) };
 	}
 	return null;
 };

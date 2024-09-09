@@ -35,6 +35,7 @@ export interface IMultisig {
 	createdAt: Date;
 	updatedAt: Date;
 	proxy: Array<IProxy>;
+	linked?: boolean;
 }
 
 export interface ITxnCategory {
@@ -327,4 +328,18 @@ export enum NotificationStatus {
 	ERROR = 'error',
 	WARNING = 'warning',
 	INFO = 'info'
+}
+
+export interface ICreateMultisig {
+	networks: Array<ENetwork>;
+	availableSignatories: Array<IAddressBook>;
+	onSubmit: (values: IMultisigCreate) => Promise<void>;
+}
+
+export interface ILinkMultisig {
+	networks: Array<ENetwork>;
+	linkedMultisig: Array<IMultisig>;
+	availableMultisig: Array<IMultisig>;
+	onSubmit: (multisigs: IMultisig) => Promise<void>;
+	fetchMultisig: (network: ENetwork) => void;
 }

@@ -10,11 +10,13 @@ import MenuItem from '@common/global-ui-components/Layout/components/MenuItem';
 // import MultisigList from '@common/global-ui-components/MultisigList';
 // import { Skeleton } from 'antd';
 import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';
-import { ENetwork, ETransactionTab } from '@common/enum/substrate';
-import { IMultisigCreate, IOrganisation } from '@common/types/substrate';
-import { AddMultisig } from '@common/modals/AddMultisig';
+import { ETransactionTab } from '@common/enum/substrate';
+import { IOrganisation } from '@common/types/substrate';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import OrganisationDropdown from '@common/global-ui-components/OrganisationDropdown';
 import { Divider } from 'antd';
+import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import { CREATE_ORGANISATION_URL } from '@substrate/app/global/end-points';
 
 const getPath = (basePath: string) => {
 	return basePath;
@@ -22,25 +24,15 @@ const getPath = (basePath: string) => {
 
 interface IMenuProps {
 	userAddress: string;
-	organisation: IOrganisation;
+	organisation: IOrganisation | null;
 	organisations: Array<IOrganisation>;
-	networks: Array<ENetwork>;
-	availableSignatories: Array<string>;
-	onMultisigCreate: (values: IMultisigCreate) => void;
 }
 
 const styles = {
 	menu: 'text-xs font-normal text-text-secondary uppercase ml-4'
 };
 
-const Menu = ({
-	userAddress,
-	organisation,
-	organisations,
-	networks,
-	availableSignatories,
-	onMultisigCreate
-}: IMenuProps) => {
+const Menu = ({ userAddress, organisation, organisations }: IMenuProps) => {
 	const pathname = usePathname();
 	// const { multisigs = [] } = organisation || {};
 	const searchParams = useSearchParams();
@@ -103,22 +95,18 @@ const Menu = ({
 					</ul>
 				</section>
 			</div>
-			{/* {organisation ? (
-				<MultisigList multisigs={multisigs} />
-			) : (
-				<Skeleton
-					loading
-					active
-					avatar
-				/>
-			)} */}
 
 			{userAddress && (
-				<AddMultisig
-					networks={networks}
-					availableSignatories={availableSignatories}
-					onSubmit={onMultisigCreate}
-				/>
+				<Link href={CREATE_ORGANISATION_URL}>
+					<Button
+						variant={EButtonVariant.PRIMARY}
+						className='bg-primary border-primary text-sm'
+						fullWidth
+						icon={<PlusCircleOutlined />}
+					>
+						Create Organisation
+					</Button>
+				</Link>
 			)}
 		</div>
 	);

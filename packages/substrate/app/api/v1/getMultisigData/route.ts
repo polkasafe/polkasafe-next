@@ -8,7 +8,7 @@ import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import { MULTISIG_COLLECTION, PROXY_COLLECTION } from '@common/db/collections';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
-import { onChainMultisigTransaction } from '@substrate/app/api/api-utils/onChainMultisigTransaction';
+import { onChainMultisig } from '@substrate/app/api/api-utils/onChainMultisig';
 import { ENetwork, EUserType } from '@common/enum/substrate';
 import { DEFAULT_MULTISIG_NAME } from '@common/constants/defaults';
 import { IDBMultisig } from '@common/types/substrate';
@@ -73,7 +73,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		}
 
 		const docId = `${encodedMultisigAddress}_${network}`;
-		const { data: multisigMetaData, error: multisigMetaDataErr } = await onChainMultisigTransaction(
+		const { data: multisigMetaData, error: multisigMetaDataErr } = await onChainMultisig(
 			encodedMultisigAddress,
 			network
 		);

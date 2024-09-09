@@ -4,23 +4,22 @@ import { ENetwork } from '@common/enum/substrate';
 import ActionButton from '@common/global-ui-components/ActionButton';
 import { createMultisigFormFields } from '@common/global-ui-components/CreateMultisig/utils/form';
 import { SelectNetwork } from '@common/global-ui-components/SelectNetwork';
-import { IMultisigCreate } from '@common/types/substrate';
+import { ICreateMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
-import { Form, Spin } from 'antd';
+import { Checkbox, Form, Spin } from 'antd';
 import useNotification from 'antd/es/notification/useNotification';
 import { useState } from 'react';
 
-interface ICreateMultisig {
-	networks: Array<ENetwork>;
-	availableSignatories: Array<string>;
-	onSubmit: (values: IMultisigCreate) => void;
-}
-
 // use availableSignatories to populate the select options
 export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICreateMultisig) => {
-	console.log('CreateMultisig', networks, availableSignatories, onSubmit);
 	const [loading, setLoading] = useState(false);
 	const [notification, context] = useNotification();
+
+	const signatoriesOptions = availableSignatories?.map((signatory) => ({
+		label: <p>{signatory.name || signatory.address}</p>,
+		value: signatory.address
+	}));
+
 	const handleSubmit = async (values: {
 		name: string;
 		signatories: Array<string>;
@@ -81,6 +80,15 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 							{field.input}
 						</Form.Item>
 					))}
+					{availableSignatories && (
+						<Form.Item
+							label='Signatories'
+							name='signatories'
+							rules={[{ required: true, message: 'Please select signatories' }]}
+						>
+							<Checkbox.Group options={signatoriesOptions} />
+						</Form.Item>
+					)}
 					<ActionButton
 						disabled={false}
 						loading={loading}

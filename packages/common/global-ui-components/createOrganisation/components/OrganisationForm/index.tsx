@@ -1,11 +1,12 @@
+import { useOrganisationContext } from '@common/context/CreateOrganisationContext';
 import { ECreateOrganisationSteps } from '@common/enum/substrate';
 import { CreateOrganisationActionButtons } from '@common/global-ui-components/createOrganisation/components/CreateOrganisationActionButtons';
 import { organisationDetailsFormFields } from '@common/global-ui-components/createOrganisation/utils/form';
 import { Form } from 'antd';
-import { useState } from 'react';
 
 export const OrganisationDetailForm = () => {
-	const [step, setStep] = useState(ECreateOrganisationSteps.ORGANISATION_DETAILS);
+	const { step, setStep } = useOrganisationContext();
+
 	const handleUpdateStep = (newStep: ECreateOrganisationSteps) => {
 		setStep(newStep);
 	};

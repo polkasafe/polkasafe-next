@@ -3,7 +3,7 @@ import { Input } from 'antd';
 export const createMultisigFormFields = [
 	{
 		label: 'Name',
-		name: 'recipient',
+		name: 'name',
 		type: 'text',
 		required: true,
 		placeholder: 'Give the MultiSig a unique name',
@@ -25,20 +25,6 @@ export const createMultisigFormFields = [
 			{
 				required: true,
 				message: 'Please input the threshold!'
-			}
-		],
-		input: <Input />
-	},
-	{
-		label: 'Owners',
-		name: 'owners',
-		type: 'text',
-		required: true,
-		placeholder: 'Enter the owners',
-		rules: [
-			{
-				required: true,
-				message: 'Please input the owners!'
 			}
 		],
 		input: <Input />

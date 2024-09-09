@@ -33,4 +33,4 @@ export const MULTISIG_DASHBOARD_URL = ({ multisig, network }: { multisig: string
 	`/dashboard?_multisig=${multisig}&_network=${network}`;
 export const ORGANISATION_DASHBOARD_URL = ({ id, tab }: { id: string; tab?: ETransactionTab }) =>
 	`/dashboard?_organisation=${id}&_tab=${tab || ETransactionTab.HISTORY}`;
-export const CREATE_ORGANISATION_URL = ({ address }: { address: string }) => `/create-organisation?address=${address}`;
+export const CREATE_ORGANISATION_URL = `/create-organisation`;

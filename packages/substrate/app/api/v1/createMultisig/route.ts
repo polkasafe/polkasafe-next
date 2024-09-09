@@ -24,8 +24,8 @@ const updateDB = async (multisigs: Array<IDBMultisig>) => {
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	try {
-		const { multisigName, signatories, network, threshold } = await req.json();
-		if (!multisigName || !signatories || !network || !threshold) {
+		const { name, signatories, network, threshold } = await req.json();
+		if (!name || !signatories || !network || !threshold) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
 		if (!Array.isArray(signatories)) {
@@ -43,7 +43,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		);
 		const multisigAddress = encodeMultiAddress(encodedSignatories, threshold);
 		const payload: IDBMultisig = {
-			name: multisigName,
+			name,
 			signatories: encodedSignatories,
 			network,
 			address: multisigAddress,

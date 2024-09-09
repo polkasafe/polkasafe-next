@@ -15,6 +15,7 @@ import { encodeAddress } from '@polkadot/util-crypto';
  */
 export default function getEncodedAddress(address: string, network: ENetwork | string): string | null {
 	const ss58Format = networkConstants[network as ENetwork]?.ss58Format;
+	console.log('ss58Format', ss58Format, network);
 
 	if (!network || ss58Format === undefined) {
 		return null;

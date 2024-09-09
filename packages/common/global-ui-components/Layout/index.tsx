@@ -3,8 +3,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Layout as AntDLayout } from 'antd';
 import NavHeader from '@common/global-ui-components/Layout/components/NavHeader';
-import { IMultisigCreate, IOrganisation } from '@common/types/substrate';
-import { ENetwork } from '@common/enum/substrate';
+import { IOrganisation } from '@common/types/substrate';
 import Footer from './components/Footer';
 import Menu from './components/Menu';
 
@@ -19,21 +18,10 @@ const classNames = {
 interface ILayoutProps extends PropsWithChildren {
 	userAddress: string;
 	organisations: Array<IOrganisation>;
-	selectedOrganisation: IOrganisation;
-	networks: Array<ENetwork>;
-	availableSignatories: Array<string>;
-	onMultisigCreate: (values: IMultisigCreate) => void;
+	selectedOrganisation: IOrganisation | null;
 }
 
-export const Layout = ({
-	userAddress,
-	organisations,
-	children,
-	selectedOrganisation,
-	networks,
-	availableSignatories,
-	onMultisigCreate
-}: ILayoutProps) => {
+export const Layout = ({ userAddress, organisations, children, selectedOrganisation }: ILayoutProps) => {
 	return (
 		<AntDLayout className={classNames.layoutContainer}>
 			<Sider
@@ -44,9 +32,6 @@ export const Layout = ({
 					organisations={organisations}
 					userAddress={userAddress}
 					organisation={selectedOrganisation}
-					networks={networks}
-					availableSignatories={availableSignatories}
-					onMultisigCreate={onMultisigCreate}
 				/>
 			</Sider>
 			<AntDLayout className={classNames.sidebarHeaderAndFooter}>
