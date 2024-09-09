@@ -8,9 +8,6 @@ import { createMultisig } from '@sdk/polkasafe-sdk/src/create-multisig';
 import { getMultisigsByAddress } from '@sdk/polkasafe-sdk/src/get-all-multisig-by-address';
 import { ECreateOrganisationSteps, ENetwork } from '@common/enum/substrate';
 import { useWalletAccounts } from '@substrate/app/global/hooks/useWalletAccounts';
-import { useAtomValue } from 'jotai';
-import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
-import { IConnectProps } from '@common/types/sdk';
 
 export default function SubstrateCreateOrganisation({ user }: { user: IConnectedUser }) {
 	const availableSignatories = useWalletAccounts();

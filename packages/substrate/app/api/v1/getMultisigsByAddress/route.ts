@@ -55,7 +55,9 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
 		const allMultisig: Array<IDBMultisig> = [];
 
-		const dbData = await MULTISIG_COLLECTION.where('signatories', 'array-contains', encodedMultisigAddress).get();
+		const dbData = await MULTISIG_COLLECTION.where('signatories', 'array-contains', encodedMultisigAddress)
+			.where('network', '==', network)
+			.get();
 		if (dbData.docs.length > 0) {
 			dbData.docs.forEach(async (doc) => {
 				const data = doc.data() as IDBMultisig;
@@ -63,6 +65,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 				allMultisig.push({ ...data, proxy: proxyData });
 			});
 		}
+		await Promise.all(allMultisig);
 
 		const onChainData: Array<string> = await onChainMultisigsByAddress(encodedMultisigAddress, network);
 
@@ -71,6 +74,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 				return !allMultisig.map((a) => getSubstrateAddress(a.address)).includes(getSubstrateAddress(address));
 			})
 			.forEach(async (address) => {
+				console.log('address', address);
 				const encodedMultisigAddress = getEncodedAddress(address, network) || address;
 				const docId = `${encodedMultisigAddress}_${network}`;
 				const { data: multisigMetaData, error: multisigMetaDataErr } = await onChainMultisig(
