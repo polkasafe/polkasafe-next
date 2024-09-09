@@ -1,22 +1,12 @@
 'use client';
 
-import { ENetwork } from '@common/enum/substrate';
 import ActionButton from '@common/global-ui-components/ActionButton';
 import { SelectNetwork } from '@common/global-ui-components/SelectNetwork';
-import { IMultisig } from '@common/types/substrate';
+import { ILinkMultisig, IMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { Divider, Form, Spin } from 'antd';
 import useNotification from 'antd/es/notification/useNotification';
 import { useState } from 'react';
-
-interface ILinkMultisig {
-	networks: Array<ENetwork>;
-	linkedMultisig: Array<IMultisig>;
-	availableMultisig: Array<IMultisig>;
-	onSubmit: (multisigs: Array<IMultisig>) => void;
-	fetchMultisig: (network: string) => void;
-}
-
 // use availableSignatories to populate the select options
 export const LinkMultisig = ({
 	networks,
@@ -28,22 +18,15 @@ export const LinkMultisig = ({
 	const [loading, setLoading] = useState(false);
 	const [notification, context] = useNotification();
 
-	const handleSubmit = async (values: { multisigs: Array<IMultisig> }) => {
+	const handleSubmit = async (values: { multisig: IMultisig }) => {
 		try {
-			const { multisigs } = values;
-			if (!multisigs) {
+			const { multisig } = values;
+			if (!multisig) {
 				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select signatories' });
 				return;
 			}
-			if (multisigs.length < 2) {
-				notification.error({
-					...ERROR_MESSAGES.CREATE_MULTISIG_FAILED,
-					description: 'Please select at least 2 signatories'
-				});
-				return;
-			}
 			setLoading(true);
-			await onSubmit(multisigs);
+			await onSubmit?.(multisig);
 			notification.success(SUCCESS_MESSAGES.CREATE_MULTISIG_SUCCESS);
 		} catch (e) {
 			notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: e || e.message });

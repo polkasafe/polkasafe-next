@@ -19,6 +19,7 @@ function InitializeOrganisation() {
 	const setAtom = useSetAtom(organisationAtom);
 
 	const handleOrganisation = async () => {
+		console.log('user', user, 'page initializeOrg Line: 20');
 		if (!user || !organisationId) return;
 		const organisation = (await getOrganisationById({
 			address: user.address,

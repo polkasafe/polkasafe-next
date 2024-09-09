@@ -22,10 +22,10 @@ function Initializers({ userAddress, signature, organisations }: IInitializer) {
 				signature={signature}
 				organisations={organisations}
 			/>
+			<InitializeOrganisation />
 			<InitializeAssets />
 			<InitializeAPI />
 			<InitializeCurrency />
-			<InitializeOrganisation />
 		</>
 	);
 }

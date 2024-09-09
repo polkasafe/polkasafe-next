@@ -3,7 +3,7 @@ import { ENetwork } from '@common/enum/substrate';
 
 interface ISelectNetwork {
 	networks: Array<ENetwork>;
-	onChange?: (value: string) => void;
+	onChange?: (value: ENetwork) => void;
 }
 
 export function SelectNetwork({ networks, onChange }: ISelectNetwork) {

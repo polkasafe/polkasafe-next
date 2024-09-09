@@ -2,7 +2,7 @@ import NextTopLoader from 'nextjs-toploader';
 import { CreateOrganisationLayout } from '@common/global-ui-components/CreateOrganisationLayout';
 import { PropsWithChildren } from 'react';
 
-export const CreateOrgLayout = ({ children }: PropsWithChildren) => {
+export default function CreateOrgLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang='en'>
 			<body>
@@ -11,4 +11,4 @@ export const CreateOrgLayout = ({ children }: PropsWithChildren) => {
 			</body>
 		</html>
 	);
-};
+}

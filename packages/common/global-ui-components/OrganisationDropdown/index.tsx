@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown } from 'antd';
+import { Dropdown, Skeleton } from 'antd';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import { IOrganisation } from '@common/types/substrate';
@@ -10,7 +10,7 @@ import emptyImage from '@common/assets/icons/empty-image.png';
 
 interface IOrganisationDropdown {
 	organisations: Array<IOrganisation>;
-	selectedOrganisation: IOrganisation;
+	selectedOrganisation: IOrganisation | null;
 }
 
 // TODO: tailwind need to update
@@ -53,9 +53,13 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 					}))
 				}}
 			>
-				<div>
-					<Org selectedOrganisation={selectedOrganisation} />
-				</div>
+				{selectedOrganisation ? (
+					<div>
+						<Org selectedOrganisation={selectedOrganisation} />
+					</div>
+				) : (
+					<Skeleton />
+				)}
 			</Dropdown>
 		</SlideInMotion>
 	);

@@ -4,12 +4,12 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import Modal from '@common/global-ui-components/Modal';
 import { CreateMultisig } from '@common/global-ui-components/CreateMultisig';
 import { ENetwork } from '@common/enum/substrate';
-import { IMultisigCreate } from '@common/types/substrate';
+import { IAddressBook, IMultisigCreate } from '@common/types/substrate';
 
 interface IAddMultisig {
 	networks: Array<ENetwork>;
-	availableSignatories: Array<string>;
-	onSubmit: (values: IMultisigCreate) => void;
+	availableSignatories: Array<IAddressBook>;
+	onSubmit: (values: IMultisigCreate) => Promise<void>;
 }
 
 export const AddMultisig = ({ networks, availableSignatories, onSubmit }: IAddMultisig) => {
@@ -28,7 +28,7 @@ export const AddMultisig = ({ networks, availableSignatories, onSubmit }: IAddMu
 			<Modal
 				open={openModal}
 				onCancel={() => setOpenModal(false)}
-				title='New Transaction'
+				title='Create Multisig'
 			>
 				<div className='flex flex-col gap-5'>
 					<CreateMultisig

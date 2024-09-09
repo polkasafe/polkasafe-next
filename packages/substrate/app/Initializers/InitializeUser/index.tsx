@@ -8,7 +8,8 @@ import { IOrganisation } from '@common/types/substrate';
 import { getMultisigByOrganisation } from '@sdk/polkasafe-sdk/src';
 import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
 import { useSetAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useHydrateAtoms } from 'jotai/utils';
+import { PropsWithChildren, useEffect } from 'react';
 
 interface IInitializeUserProps {
 	userAddress: string;
@@ -17,6 +18,7 @@ interface IInitializeUserProps {
 }
 
 function InitializeUser({ userAddress, signature, organisations }: IInitializeUserProps) {
+	useHydrateAtoms([[userAtom, { address: userAddress, signature, organisations }]]);
 	const setAtom = useSetAtom(userAtom);
 
 	useEffect(() => {
@@ -35,6 +37,7 @@ function InitializeUser({ userAddress, signature, organisations }: IInitializeUs
 		};
 		handleUser();
 	}, [organisations]);
+
 	return null;
 }
 

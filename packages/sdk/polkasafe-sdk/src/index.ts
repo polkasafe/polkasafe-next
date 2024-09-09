@@ -77,3 +77,24 @@ export const getCurrencyPrices = async () => {
 	);
 	return response.json();
 };
+
+export const createMultisig = async ({
+	name,
+	signatories,
+	network,
+	threshold
+}: {
+	name: string;
+	signatories: Array<string>;
+	network: string;
+	threshold: number;
+}) => {
+	const body = JSON.stringify({
+		name,
+		signatories,
+		network,
+		threshold
+	});
+
+	return request('/createMultisig', {}, { method: 'POST', body });
+};
