@@ -1,10 +1,11 @@
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import Address from '@common/global-ui-components/Address';
-import { ENetwork, ETransactionOptions, ETransactionType } from '@common/enum/substrate';
+import { ENetwork, ETransactionOptions, ETransactionType, ETxType } from '@common/enum/substrate';
 import ReceivedIcon from '@common/assets/icons/arrow-up-right.svg';
 import SentIcon from '@common/assets/icons/sent-icon.svg';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 
 interface ITransactionHeadProps {
 	type: ETransactionOptions;
@@ -15,6 +16,7 @@ interface ITransactionHeadProps {
 	from: string;
 	label: Array<string>;
 	transactionType: ETransactionType;
+	onAction: (actionType: ETxType) => void;
 }
 
 function TransactionIcon({ type }: { type: ETransactionOptions }) {
@@ -57,7 +59,8 @@ export function TransactionHead({
 	to,
 	createdAt,
 	network,
-	transactionType
+	transactionType,
+	onAction
 }: ITransactionHeadProps) {
 	return (
 		<div className='bg-bg-secondary rounded-xl p-3 mr-2'>
@@ -148,12 +151,22 @@ export function TransactionHead({
 					</Typography>
 				)}
 				{ETransactionType.QUEUE_TRANSACTION === transactionType && (
-					<Typography
-						variant={ETypographyVariants.p}
-						className='flex items-center gap-x-4 basis-1/6 justify-start'
-					>
-						<span className='text-warning'>Pending</span>
-					</Typography>
+					<div className='flex items-center gap-x-4 basis-1/6 justify-start'>
+						<Button
+							variant={EButtonVariant.PRIMARY}
+							className='px-2 py-1'
+							onClick={() => onAction(ETxType.APPROVE)}
+						>
+							Approve
+						</Button>
+						<Button
+							variant={EButtonVariant.DANGER}
+							className='px-2 py-1'
+							onClick={() => onAction(ETxType.CANCEL)}
+						>
+							Cancel
+						</Button>
+					</div>
 				)}
 			</div>
 		</div>

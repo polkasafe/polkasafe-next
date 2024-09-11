@@ -11,6 +11,8 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { setSigner } from '@substrate/app/global/utils/setSigner';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
+import getMultisigInfo from '@substrate/app/global/utils/getMultisigInfo';
 
 interface IGetTransaction {
 	wallet: Wallet;
@@ -22,8 +24,10 @@ interface IGetTransaction {
 	}> | null;
 	multisig: IMultisig;
 	sender: string;
-	proxyAddress: string;
-	isProxy: boolean;
+	proxyAddress?: string;
+	isProxy?: boolean;
+	calldata?: string;
+	callHash?: string;
 }
 
 export const initiateTransaction = async ({
@@ -34,10 +38,13 @@ export const initiateTransaction = async ({
 	multisig,
 	proxyAddress,
 	isProxy,
-	sender
+	sender,
+	calldata,
+	callHash
 }: IGetTransaction) => {
 	const { address, network, threshold, signatories: allSignatories } = multisig;
 	const signatories = allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender));
+
 	const getTransaction = async (tx: SubmittableExtrinsic<'promise'>) => {
 		const MAX_WEIGHT = (await tx.paymentInfo(address)).weight;
 		if (isProxy) {
@@ -46,6 +53,7 @@ export const initiateTransaction = async ({
 		}
 		return api.tx.multisig.asMulti(threshold, signatories, null, tx, MAX_WEIGHT);
 	};
+
 	switch (type) {
 		case ETxType.TRANSFER: {
 			const tx = data?.map((d) => {
@@ -74,8 +82,35 @@ export const initiateTransaction = async ({
 				errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
 			});
 		}
-		case ETxType.APPROVE:
-			return {};
+		case ETxType.APPROVE: {
+			if (!calldata) {
+				console.log('invalid calldata');
+				return;
+			}
+			const callDataHex = api.createType('Call', calldata);
+			const { weight } = await calcWeight(callDataHex, api);
+			console.log(address, callHash, threshold, signatories, calldata, sender);
+			const multisigInfos = await getMultisigInfo(address, api);
+			const [, multisigInfo] = multisigInfos?.find(([h]) => h.eq(callHash)) || [null, null];
+
+			if (!multisigInfo) {
+				console.log('No multisig info found');
+				return undefined;
+			}
+
+			await setSigner(api, wallet, network);
+			const approveTx = api.tx.multisig.asMulti(threshold, signatories, multisigInfo.when, callDataHex, weight);
+			return executeTx({
+				api,
+				apiReady: true,
+				tx: approveTx as SubmittableExtrinsic<'promise'>,
+				address: sender,
+				onSuccess: () => {},
+				onFailed: () => {},
+				network,
+				errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+			});
+		}
 		case ETxType.CANCEL:
 			return {};
 		case ETxType.FUND: {
