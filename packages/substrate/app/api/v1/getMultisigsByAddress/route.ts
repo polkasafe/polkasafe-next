@@ -65,44 +65,70 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 				allMultisig.push({ ...data, proxy: proxyData });
 			});
 		}
-		await Promise.all(allMultisig);
 
 		const onChainData: Array<string> = await onChainMultisigsByAddress(encodedMultisigAddress, network);
 
-		onChainData
-			.filter((address) => {
-				return !allMultisig.map((a) => getSubstrateAddress(a.address)).includes(getSubstrateAddress(address));
-			})
-			.forEach(async (address) => {
-				console.log('address', address);
-				const encodedMultisigAddress = getEncodedAddress(address, network) || address;
-				const docId = `${encodedMultisigAddress}_${network}`;
-				const { data: multisigMetaData, error: multisigMetaDataErr } = await onChainMultisig(
-					encodedMultisigAddress,
-					network
-				);
-				if (multisigMetaDataErr) {
-					return null;
-				}
-				if (!multisigMetaData) {
-					return null;
-				}
+		const onchainFilteredData = onChainData.filter((address) => {
+			return !allMultisig.map((a) => getSubstrateAddress(a.address)).includes(getSubstrateAddress(address));
+		});
 
-				const newMultisig: IDBMultisig = {
-					address: encodedMultisigAddress,
-					created_at: new Date(),
-					updated_at: new Date(),
-					name: DEFAULT_MULTISIG_NAME,
-					signatories: multisigMetaData.signatories || [],
-					network: String(network).toLowerCase() as ENetwork,
-					threshold: Number(multisigMetaData.threshold) || 0,
-					type: EUserType.SUBSTRATE,
-					proxy: multisigMetaData.proxy
-				};
+		// const data = onChainData.map(async (address) => {
+		// 	const encodedAddress = getEncodedAddress(address, network) || address;
+		// 	const docId = `${encodedAddress}_${network}`;
+		// 	const { data: multisigMetaData, error: multisigMetaDataErr } = await onChainMultisig(encodedAddress, network);
+		// 	if (multisigMetaDataErr) {
+		// 		return null;
+		// 	}
+		// 	if (!multisigMetaData) {
+		// 		return null;
+		// 	}
 
-				updateDB(docId, newMultisig);
-				allMultisig.push(newMultisig);
-			});
+		// 	const newMultisig: IDBMultisig = {
+		// 		address: encodedAddress,
+		// 		created_at: new Date(),
+		// 		updated_at: new Date(),
+		// 		name: DEFAULT_MULTISIG_NAME,
+		// 		signatories: multisigMetaData.signatories || [],
+		// 		network: String(network).toLowerCase() as ENetwork,
+		// 		threshold: Number(multisigMetaData.threshold) || 0,
+		// 		type: EUserType.SUBSTRATE,
+		// 		proxy: multisigMetaData.proxy
+		// 	};
+
+		// 	updateDB(docId, newMultisig);
+		// 	return newMultisig;
+		// });
+		// await Promise.all(data);
+
+		for (const address of onchainFilteredData) {
+			const encodedMultisigAddress = getEncodedAddress(address, network) || address;
+			const docId = `${encodedMultisigAddress}_${network}`;
+			const { data: multisigMetaData, error: multisigMetaDataErr } = await onChainMultisig(
+				encodedMultisigAddress,
+				network
+			);
+			if (multisigMetaDataErr) {
+				continue;
+			}
+			if (!multisigMetaData) {
+				continue;
+			}
+
+			const newMultisig: IDBMultisig = {
+				address: encodedMultisigAddress,
+				created_at: new Date(),
+				updated_at: new Date(),
+				name: DEFAULT_MULTISIG_NAME,
+				signatories: multisigMetaData.signatories || [],
+				network: String(network).toLowerCase() as ENetwork,
+				threshold: Number(multisigMetaData.threshold) || 0,
+				type: EUserType.SUBSTRATE,
+				proxy: multisigMetaData.proxy
+			};
+
+			updateDB(docId, newMultisig);
+			allMultisig.push(newMultisig);
+		}
 
 		await Promise.all(allMultisig);
 

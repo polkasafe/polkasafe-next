@@ -1,14 +1,14 @@
+import { useOrganisationContext } from '@common/context/CreateOrganisationContext';
 import { ECreateOrganisationSteps } from '@common/enum/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import React from 'react';
 
 interface ICreateOrganisationActionButtons {
-	step: ECreateOrganisationSteps;
 	loading: boolean;
-	onStepUpdate: (newStep: ECreateOrganisationSteps) => void;
 }
 
-export const CreateOrganisationActionButtons = ({ step, loading, onStepUpdate }: ICreateOrganisationActionButtons) => {
+export const CreateOrganisationActionButtons = ({ loading }: ICreateOrganisationActionButtons) => {
+	const { step, setStep, onCreateOrganisation } = useOrganisationContext();
 	return (
 		<div className='flex justify-between'>
 			<Button
@@ -18,6 +18,13 @@ export const CreateOrganisationActionButtons = ({ step, loading, onStepUpdate }:
 				disabled={step === ECreateOrganisationSteps.ORGANISATION_DETAILS}
 				fullWidth
 				loading={Boolean(loading)}
+				onClick={() =>
+					setStep(
+						step === ECreateOrganisationSteps.REVIEW
+							? ECreateOrganisationSteps.ADD_MULTISIG
+							: ECreateOrganisationSteps.ORGANISATION_DETAILS
+					)
+				}
 			>
 				Cancel
 			</Button>
@@ -27,7 +34,16 @@ export const CreateOrganisationActionButtons = ({ step, loading, onStepUpdate }:
 				className='bg-primary border-primary text-sm'
 				fullWidth
 				loading={Boolean(loading)}
-				onClick={() => onStepUpdate(ECreateOrganisationSteps.ADD_MULTISIG)}
+				onClick={
+					step === ECreateOrganisationSteps.REVIEW
+						? onCreateOrganisation
+						: () =>
+								setStep(
+									step === ECreateOrganisationSteps.ORGANISATION_DETAILS
+										? ECreateOrganisationSteps.ADD_MULTISIG
+										: ECreateOrganisationSteps.REVIEW
+								)
+				}
 			>
 				Next
 			</Button>
