@@ -34,6 +34,7 @@ const updateDB = async (organisation: IDBOrganisation, multisigs: Array<IDBMulti
 				})
 			)
 		]);
+		return orgRef.id;
 	} catch (err: unknown) {
 		console.log('Error in updateDB:', err);
 	}
@@ -63,7 +64,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			city = '',
 			postalCode = '',
 			organisationAddress = '',
-			taxNumber = ''
+			taxNumber = '',
+			description = ''
 		} = await req.json();
 
 		if (!multisigs || !name) {
@@ -97,6 +99,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 				threshold: multisig.threshold,
 				type: EUserType.SUBSTRATE,
 				proxy: multisig.proxy,
+				description,
 				created_at: new Date(),
 				updated_at: new Date()
 			};
@@ -121,8 +124,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			updated_at: new Date()
 		};
 
-		await updateDB(newOrganisation, multisigPayload);
-		return NextResponse.json({ data: newOrganisation, error: null });
+		const docId = await updateDB(newOrganisation, multisigPayload);
+		return NextResponse.json({ data: { ...newOrganisation, id: docId }, error: null });
 	} catch (err: unknown) {
 		console.log('Error in getAssets:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });

@@ -5,6 +5,7 @@ import React from 'react';
 export const LinkMultisigOrganisation = ({
 	networks,
 	linkedMultisig,
+	onRemoveSubmit,
 	availableMultisig,
 	onSubmit,
 	fetchMultisig
@@ -16,6 +17,7 @@ export const LinkMultisigOrganisation = ({
 				linkedMultisig={linkedMultisig}
 				availableMultisig={availableMultisig}
 				onSubmit={onSubmit}
+				onRemoveSubmit={onRemoveSubmit}
 				fetchMultisig={fetchMultisig}
 			/>
 		</div>

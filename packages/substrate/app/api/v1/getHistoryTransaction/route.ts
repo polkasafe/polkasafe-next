@@ -6,8 +6,45 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { onChainHistoryTransaction } from '@substrate/app/api/api-utils/onChainHistoryTransaction';
-import { ITransaction } from '@common/types/substrate';
+import { IDBMultisig, ITransaction } from '@common/types/substrate';
 import { ENetwork } from '@common/enum/substrate';
+
+const getMultisigTransactions = async (multisigs: Array<IDBMultisig>, limit: number, page: number) => {
+	const payload: Array<ITransaction> = [];
+
+	for (const { address, network } of multisigs.filter((a) => Boolean(a))) {
+		const {
+			data: { transactions: historyItemsArr },
+			error: historyItemsError
+		} = await onChainHistoryTransaction(address, network, Number(limit), Number(page));
+		console.log(`Multisig - ${address} Network - ${network}:`);
+		if (historyItemsError || !historyItemsArr) {
+			console.log(`Error in  Multisig - ${address} Network - ${network}:`, {
+				err: historyItemsError
+			});
+		}
+		if (historyItemsArr) {
+			payload.push(...historyItemsArr);
+		}
+	}
+
+	// multisigs.forEach(async ({ address, network }: { address: string; network: ENetwork }) => {
+	// 	const {
+	// 		data: { transactions: historyItemsArr },
+	// 		error: historyItemsError
+	// 	} = await onChainHistoryTransaction(address, network, Number(limit), Number(page));
+	// 	if (historyItemsError || !historyItemsArr) {
+	// 		console.log(`Error in  Multisig - ${address} Network - ${network}:`, {
+	// 			err: historyItemsError
+	// 		});
+	// 	}
+	// 	if (historyItemsArr) {
+	// 		payload.push(...historyItemsArr);
+	// 	}
+	// });
+	// return Promise.all(payload);
+	return payload;
+};
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	try {
@@ -34,24 +71,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			};
 		});
 
-		const allTxns: ITransaction[] = [];
-
-		const promises = encodedMultisigs.map(async ({ address, network }: { address: string; network: ENetwork }) => {
-			const {
-				data: { transactions: historyItemsArr },
-				error: historyItemsError
-			} = await onChainHistoryTransaction(address, network, Number(limit), Number(page));
-			if (historyItemsError || !historyItemsArr) {
-				console.log(`Error in  Multisig - ${address} Network - ${network}:`, {
-					err: historyItemsError
-				});
-			}
-			if (historyItemsArr) {
-				allTxns.push(...historyItemsArr);
-			}
-		});
-
-		await Promise.all(promises);
+		const allTxns = await getMultisigTransactions(encodedMultisigs, limit, page);
 
 		return NextResponse.json(
 			{

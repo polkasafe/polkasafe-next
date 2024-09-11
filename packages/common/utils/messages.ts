@@ -44,6 +44,14 @@ export const ERROR_MESSAGES = {
 	CREATE_MULTISIG_FAILED: {
 		message: 'Create Multisig failed',
 		description: 'Create Multisig failed'
+	},
+	LINKED_MULTISIG_FAILED: {
+		message: 'Link Multisig failed',
+		description: 'Link Multisig failed'
+	},
+	CREATE_ORGANISATION_FAILED: {
+		message: 'Create Organisation failed',
+		description: 'Create Organisation failed'
 	}
 };
 
@@ -55,5 +63,13 @@ export const SUCCESS_MESSAGES = {
 	CREATE_MULTISIG_SUCCESS: {
 		message: 'Create Multisig Success',
 		description: 'Create Multisig has been sent successfully'
+	},
+	LINKED_MULTISIG_SUCCESS: {
+		message: 'Link Multisig Success',
+		description: 'Link Multisig has been sent successfully'
+	},
+	CREATE_ORGANISATION_SUCCESS: {
+		message: 'Create Organisation Success',
+		description: 'Create Organisation has been sent successfully'
 	}
 };

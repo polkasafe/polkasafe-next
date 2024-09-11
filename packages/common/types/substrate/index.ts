@@ -341,5 +341,12 @@ export interface ILinkMultisig {
 	linkedMultisig: Array<IMultisig>;
 	availableMultisig: Array<IMultisig>;
 	onSubmit: (multisigs: IMultisig) => Promise<void>;
+	onRemoveSubmit: (multisigs: IMultisig) => Promise<void>;
 	fetchMultisig: (network: ENetwork) => void;
+}
+
+export interface ICreateOrganisationDetails {
+	name: string;
+	description: string;
+	logo?: File;
 }

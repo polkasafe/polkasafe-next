@@ -1,18 +1,13 @@
 import { useOrganisationContext } from '@common/context/CreateOrganisationContext';
-import { ECreateOrganisationSteps } from '@common/enum/substrate';
 import { CreateOrganisationActionButtons } from '@common/global-ui-components/createOrganisation/components/CreateOrganisationActionButtons';
 import { organisationDetailsFormFields } from '@common/global-ui-components/createOrganisation/utils/form';
 import { Form } from 'antd';
 
 export const OrganisationDetailForm = () => {
-	const { step, setStep } = useOrganisationContext();
-
-	const handleUpdateStep = (newStep: ECreateOrganisationSteps) => {
-		setStep(newStep);
-	};
+	const { onChangeOrganisationDetails } = useOrganisationContext();
 	return (
 		<div>
-			<Form onFinish={() => {}}>
+			<Form onFinish={(values) => onChangeOrganisationDetails({ name: values.name, description: values.description })}>
 				{organisationDetailsFormFields.map((field) => (
 					<Form.Item
 						key={field.name}
@@ -23,11 +18,7 @@ export const OrganisationDetailForm = () => {
 						{field.input}
 					</Form.Item>
 				))}
-				<CreateOrganisationActionButtons
-					step={step}
-					loading={false}
-					onStepUpdate={handleUpdateStep}
-				/>
+				<CreateOrganisationActionButtons loading={false} />
 			</Form>
 		</div>
 	);

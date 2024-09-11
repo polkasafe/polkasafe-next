@@ -1,17 +1,20 @@
 import { ECreateOrganisationSteps, ENetwork } from '@common/enum/substrate';
-import { IAddressBook, IMultisig, IMultisigCreate, IOrganisation } from '@common/types/substrate';
+import { IAddressBook, ICreateOrganisationDetails, IMultisig, IMultisigCreate } from '@common/types/substrate';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 
 interface ICreateOrganisationProvider extends PropsWithChildren {
 	step: ECreateOrganisationSteps;
 	setStep: (newStep: ECreateOrganisationSteps) => void;
-	onCreateOrganisation: (values: IOrganisation) => Promise<void>;
+	onCreateOrganisation: () => Promise<void>;
 	multisigs: Array<IMultisig>;
 	linkedMultisig: Array<IMultisig>;
 	availableSignatories: Array<IAddressBook>;
 	networks: Array<ENetwork>;
+	organisationDetails: ICreateOrganisationDetails;
 	onCreateMultisigSubmit: (values: IMultisigCreate) => Promise<void>;
+	onChangeOrganisationDetails: (value: ICreateOrganisationDetails) => void;
 	onLinkedMultisig: (multisig: IMultisig) => Promise<void>;
+	onRemoveMultisig: (multisig: IMultisig) => Promise<void>;
 	fetchMultisig: (network: ENetwork) => Promise<void>;
 }
 
@@ -28,6 +31,9 @@ export function CreateOrganisationProvider({
 	fetchMultisig,
 	linkedMultisig,
 	onLinkedMultisig,
+	organisationDetails,
+	onRemoveMultisig,
+	onChangeOrganisationDetails,
 	children
 }: ICreateOrganisationProvider) {
 	const value = useMemo(
@@ -40,19 +46,25 @@ export function CreateOrganisationProvider({
 			networks,
 			availableSignatories,
 			onCreateMultisigSubmit,
+			onChangeOrganisationDetails,
 			onLinkedMultisig,
+			onRemoveMultisig,
+			organisationDetails,
 			fetchMultisig
 		}),
 		[
 			step,
 			setStep,
+			onRemoveMultisig,
 			availableSignatories,
 			fetchMultisig,
 			linkedMultisig,
 			multisigs,
+			onChangeOrganisationDetails,
 			networks,
 			onCreateMultisigSubmit,
 			onLinkedMultisig,
+			organisationDetails,
 			onCreateOrganisation
 		]
 	);
