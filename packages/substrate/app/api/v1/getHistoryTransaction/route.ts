@@ -11,7 +11,6 @@ import { ENetwork } from '@common/enum/substrate';
 
 const getMultisigTransactions = async (multisigs: Array<IDBMultisig>, limit: number, page: number) => {
 	const payload: Array<ITransaction> = [];
-	console.log('multisigs', multisigs);
 
 	for (const { address, network } of multisigs.filter((a) => Boolean(a))) {
 		const {
