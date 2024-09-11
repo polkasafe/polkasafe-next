@@ -9,15 +9,16 @@ import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
 
 interface ISubstrateLayout {
 	userAddress: string;
-	organisations: Array<IOrganisation>;
 }
 
-function SubstrateLayout({ userAddress, organisations, children }: PropsWithChildren<ISubstrateLayout>) {
+function SubstrateLayout({ userAddress, children }: PropsWithChildren<ISubstrateLayout>) {
 	const organisation = useAtomValue(organisationAtom);
+	const user = useAtomValue(userAtom);
+	console.log('user', user);
 	return (
 		<Layout
 			userAddress={userAddress}
-			organisations={organisations}
+			organisations={user?.organisations || []}
 			selectedOrganisation={organisation}
 		>
 			{children}

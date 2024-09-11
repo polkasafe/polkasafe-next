@@ -20,6 +20,8 @@ interface IDashboardProps {
 async function Dashboard({ searchParams }: IDashboardProps) {
 	const { _multisig, _organisation, _network, _tab } = searchParams;
 
+	console.log('valid', _multisig && isValidAddress(_multisig) && isValidNetwork(_network))
+
 	if (!_organisation && !_multisig) {
 		//  if not found redirect to login page
 		redirect(LOGIN_URL);
@@ -36,18 +38,25 @@ async function Dashboard({ searchParams }: IDashboardProps) {
 	}
 
 	if (_multisig && (!isValidAddress(_multisig) || !isValidNetwork(_network))) {
-		redirect('/404');
+		// redirect('/404');
+		console.log('problem 1');
+		return <></>;
 	}
+
 
 	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network)) {
 		const { multisig, history, queue } = await getMultisigDataAndTransactions(_multisig, _network);
 		console.log('multisig', multisig, 'history', history, 'queue', queue);
 		if (!multisig) {
-			redirect('/404');
+			// redirect('/404');
+			console.log('problem 2');
+			return <></>;
 		}
 
 		if (!history && !queue) {
-			redirect('/404');
+			// redirect('/404');
+			console.log('problem 3');
+			return <></>;
 		}
 		return (
 			<MultisigDashboard

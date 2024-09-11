@@ -1,12 +1,14 @@
 import React from 'react';
 import { Dropdown, Skeleton } from 'antd';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
-import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
+import { MULTISIG_DASHBOARD_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import { IOrganisation } from '@common/types/substrate';
 import Link from 'next/link';
 import Org from '@common/global-ui-components/OrganisationDropdown/Organisation';
 import Image from 'next/image';
 import emptyImage from '@common/assets/icons/empty-image.png';
+import Address from '@common/global-ui-components/Address';
+import { ENetwork } from '@common/enum/substrate';
 
 interface IOrganisationDropdown {
 	organisations: Array<IOrganisation>;
@@ -22,8 +24,8 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 				className='my-2'
 				menu={{
 					selectable: true,
-					selectedKeys: [selectedOrganisation.id],
-					defaultSelectedKeys: [selectedOrganisation.id],
+					// selectedKeys: [selectedOrganisation.id],
+					// defaultSelectedKeys: [selectedOrganisation.id],
 					items: organisations.map((item) => ({
 						key: item.id,
 						label: (
@@ -46,9 +48,17 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 								</div>
 							</Link>
 						),
-						children: ['Multisig 1', 'Multisig 2']?.map((m) => ({
-							key: m,
-							label: <span className='text-white capitalize truncate'>{m}</span>
+						children: item.multisigs?.map((m) => ({
+							key: m.address,
+							label: (
+								<Link href={MULTISIG_DASHBOARD_URL({ multisig: m.address, network: m.network })}>
+									<Address
+										address={m.address}
+										name={m.name}
+										network={m.network || ENetwork.POLKADOT}
+									/>
+								</Link>
+							)
 						}))
 					}))
 				}}

@@ -17,7 +17,7 @@ function MultisigDashboard({ multisig, transactions, queueTransactions }: IMulti
 		<div>
 			<div>
 				<h1>Overview:</h1>
-				<OverviewCard {...multisig} />
+				<OverviewCard address={multisig.address} network={multisig.network} balance={multisig.balance} signatories={multisig.signatories} threshold={multisig.threshold} name={multisig.name} />
 			</div>
 			<div className='flex gap-3'>
 				<div className='bg-bg-secondary'>

@@ -35,7 +35,6 @@ export default function MainLayout({ children }: PropsWithChildren) {
 							<NextTopLoader />
 							<SubstrateLayout
 								userAddress={user.address[0]}
-								organisations={user.organisations}
 							>
 								{children}
 							</SubstrateLayout>
