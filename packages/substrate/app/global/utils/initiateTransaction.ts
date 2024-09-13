@@ -89,17 +89,11 @@ export const initiateTransaction = async ({
 			}
 			const callDataHex = api.createType('Call', calldata);
 			const { weight } = await calcWeight(callDataHex, api);
-			console.log(address, callHash, threshold, signatories, calldata, sender);
-			const multisigInfos = await getMultisigInfo(address, api);
-			const [, multisigInfo] = multisigInfos?.find(([h]) => h.eq(callHash)) || [null, null];
-
-			if (!multisigInfo) {
-				console.log('No multisig info found');
-				return undefined;
-			}
+			const info: any = await api.query.multisig.multisigs(multisig.address, callHash);
+			const TIME_POINT = info.unwrap().when;
 
 			await setSigner(api, wallet, network);
-			const approveTx = api.tx.multisig.asMulti(threshold, signatories, multisigInfo.when, callDataHex, weight);
+			const approveTx = api.tx.multisig.asMulti(threshold, signatories, TIME_POINT, callDataHex, weight);
 			return executeTx({
 				api,
 				apiReady: true,
@@ -111,8 +105,27 @@ export const initiateTransaction = async ({
 				errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
 			});
 		}
-		case ETxType.CANCEL:
-			return {};
+		case ETxType.CANCEL: {
+			if (!callHash) {
+				console.log('invalid callHash');
+				return;
+			}
+			const info: any = await api.query.multisig.multisigs(multisig.address, callHash);
+			const TIME_POINT = info.unwrap().when;
+			console.log(`Time point is: ${TIME_POINT}`);
+			const tx = api.tx.multisig.cancelAsMulti(multisig.threshold, signatories, TIME_POINT, callHash);
+			await setSigner(api, wallet, network);
+			return executeTx({
+				api,
+				apiReady: true,
+				tx,
+				address: sender,
+				onSuccess: () => {},
+				onFailed: () => {},
+				network,
+				errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+			});
+		}
 		case ETxType.FUND: {
 			const tx = api.tx.balances.transferKeepAlive(address, new BN(data?.[0]?.amount || '0'));
 			await setSigner(api, wallet, network);

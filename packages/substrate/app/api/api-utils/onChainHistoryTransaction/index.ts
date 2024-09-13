@@ -45,8 +45,8 @@ const getExcHistoryResponse = async (multisigAddress: string, network: string, p
 			callData: transaction?.call_data
 				? transaction?.call_data
 				: dbTransactionDoc.exists && transaction?.callData
-				? transaction?.callData
-				: '',
+					? transaction?.callData
+					: '',
 			callHash: transaction.call_hash,
 			created_at: dayjs(transaction.block_timestamp * 1000).toDate(),
 			from: transaction.multi_account_display.address,
@@ -101,8 +101,8 @@ const getAllHistoryResponse = async (multisigAddress: string, network: string, p
 			callData: transaction?.call_data
 				? transaction?.call_data
 				: dbTransactionDoc.exists && dbTransaction?.callData
-				? dbTransaction?.callData
-				: ''
+					? dbTransaction?.callData
+					: ''
 		} as unknown as IDBTransaction;
 	});
 	return Promise.all(allHistoryTransactionsPromise);
@@ -127,8 +127,27 @@ export async function onChainHistoryTransaction(
 			excHistoryTransactionsPromise,
 			allHistoryTransactionsPromise
 		]);
+		const allTransactions = [...excHistoryTransactions, ...allHistoryTransactions];
+		const callhashCounts = allTransactions.reduce((acc, obj) => {
+			acc[obj.callhash] = (acc[obj.callhash] || 0) + 1;
+			return acc;
+		}, {});
 
-		returnValue.data.transactions = [...excHistoryTransactions, ...allHistoryTransactions];
+		const processedCallhashes = new Set();
+
+		// Step 3: Filter the array to include:
+		const filteredArray = allTransactions.filter((obj) => {
+			const isUnique = callhashCounts[obj.callhash] === 1;
+			const isFirstRepeated = !processedCallhashes.has(obj.callhash) && callhashCounts[obj.callhash] > 1;
+
+			if (isUnique || isFirstRepeated) {
+				processedCallhashes.add(obj.callhash);
+				return true;
+			}
+			return false;
+		});
+
+		returnValue.data.transactions = filteredArray;
 
 		// const excHistoryTransactions = await getExcHistoryResponse(multisigAddress, network, page, entries);
 		// returnValue.data.transactions = excHistoryTransactions;
