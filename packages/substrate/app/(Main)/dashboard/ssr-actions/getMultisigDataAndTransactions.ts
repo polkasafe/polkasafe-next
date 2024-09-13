@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { IDBTransaction, IMultisig, ITransaction } from '@common/types/substrate';
-import { getMultisigData, getQueueTransactions, getTransactions } from '@sdk/polkasafe-sdk/src';
+import { getHistoryTransactions, getMultisigData, getQueueTransactions, getTransactions } from '@sdk/polkasafe-sdk/src';
 
 const parseMultisig = (multisig: any) =>
 	({
@@ -42,7 +42,7 @@ export const getMultisigDataAndTransactions = async (address: string, network: s
 	console.log('getMultisigDataAndTransactions', address, network);
 
 	const multisigPromise = getMultisigData({ address, network });
-	const transactionsPromise = getTransactions({ address, network });
+	const transactionsPromise = getHistoryTransactions({ multisigs: [`${address}_${network}`], page: 1, limit: 10 });
 	const queueTransactionPromise = getQueueTransactions({ multisigs: [`${address}_${network}`], page: 1, limit: 10 });
 
 	// using Promise.all to fetch all data in parallel
@@ -55,10 +55,7 @@ export const getMultisigDataAndTransactions = async (address: string, network: s
 	// parsing multisig data
 	const { data: multisig, error: multisigError } = multisigData as { data: IDBTransaction; error: string };
 
-	const { data: transactions, error: transactionsError } = transactionsData as {
-		data: { count: number; transactions: Array<IDBTransaction> };
-		error: string;
-	};
+	const { data: transactions, error: transactionsError } = transactionsData;
 
 	const { data, error: queueTransactionsError } = queueTransactionData;
 
@@ -71,7 +68,7 @@ export const getMultisigDataAndTransactions = async (address: string, network: s
 
 	return {
 		multisig: parseMultisig(multisig),
-		history: { transactions: historyTx, count: transactions.transactions?.length || 0 },
+		history: { transactions: historyTx, count: transactions?.transactions?.length || 0 },
 		queue: { transactions: queueTx, count: queueTx?.length || 0 }
 	};
 };

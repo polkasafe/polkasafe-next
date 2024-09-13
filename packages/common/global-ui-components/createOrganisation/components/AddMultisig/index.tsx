@@ -17,6 +17,15 @@ export const AddMultisigsToOrganisation = () => {
 	} = useOrganisationContext();
 	return (
 		<div>
+			<p className='text-lg font-bold mb-2 text-white'>Create/Link Multisig</p>
+			<p className='text-sm text-text-secondary mb-5'>
+				MultiSig is a secure digital wallet that requires one or multiple owners to authorize the transaction.
+			</p>
+			<AddMultisig
+				networks={networks}
+				availableSignatories={availableSignatories}
+				onSubmit={onCreateMultisigSubmit}
+			/>
 			{linkedMultisig &&
 				linkedMultisig.map((multisig) => <div key={multisig.address}>{multisig.name || multisig.address}</div>)}
 
@@ -29,11 +38,6 @@ export const AddMultisigsToOrganisation = () => {
 				onRemoveSubmit={onRemoveMultisig}
 			/>
 
-			<AddMultisig
-				networks={networks}
-				availableSignatories={availableSignatories}
-				onSubmit={onCreateMultisigSubmit}
-			/>
 			<CreateOrganisationActionButtons loading={false} />
 		</div>
 	);

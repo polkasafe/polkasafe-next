@@ -1,0 +1,8 @@
+.ant-collapse-header {
+    align-items: center !important;
+}
+
+.ant-collapse-content {
+    background-color: transparent !important;
+    border-top: 1px solid #1573fe !important;
+}

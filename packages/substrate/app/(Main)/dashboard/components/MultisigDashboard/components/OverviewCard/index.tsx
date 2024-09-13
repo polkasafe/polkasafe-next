@@ -15,7 +15,9 @@ import copyText from '@common/utils/copyText';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import shortenAddress from '@common/utils/shortenAddress';
 import Identicon from '@polkadot/react-identicon';
+import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 import { Skeleton, Spin, Tooltip } from 'antd';
+import { useAtomValue } from 'jotai';
 import React from 'react';
 
 interface IOverviewCardProps {
@@ -43,6 +45,10 @@ function OverviewCard({
 	proxy,
 	className
 }: IOverviewCardProps) {
+
+	const assets = useAtomValue(assetsAtom);
+
+	console.log('assets', assets);
 	return (
 		<>
 		<h2 className='text-base font-bold text-white mb-2'>Overview</h2>
@@ -278,16 +284,18 @@ function OverviewCard({
 					</>
 				)}
 			</div>
-			<div className='flex justify-around w-full mt-5'>
+			<div className='flex justify-around w-full mt-5 gap-x-6'>
 				<NewTransaction />
-				<Button
-					variant={EButtonVariant.SECONDARY}
-					className='bg-primary border-primary text-sm'
-					fullWidth
-					icon={<WalletIcon fill='#1573FE' />}
-				>
-					Fund Multisig
-				</Button>
+				<div className='w-full'>
+					<Button
+						variant={EButtonVariant.SECONDARY}
+						className='text-sm text-[#8AB9FF] border-none'
+						fullWidth
+						icon={<WalletIcon fill='#8AB9FF' />}
+					>
+						Fund Multisig
+					</Button>
+				</div>
 			</div>
 		</div>
 		</>

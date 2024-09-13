@@ -12,13 +12,14 @@ import {
 } from '@common/types/substrate';
 import { createMultisig } from '@sdk/polkasafe-sdk/src/create-multisig';
 import { getMultisigsByAddress } from '@sdk/polkasafe-sdk/src/get-all-multisig-by-address';
-import { ECreateOrganisationSteps, ENetwork } from '@common/enum/substrate';
+import { ENetwork } from '@common/enum/substrate';
 import { useWalletAccounts } from '@substrate/app/global/hooks/useWalletAccounts';
 import { createOrganisation } from '@sdk/polkasafe-sdk/src/create-organisation';
 import { useRouter } from 'next/navigation';
 import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
+import UserPopover from '@common/global-ui-components/UserPopover';
 
 export default function SubstrateCreateOrganisation({ user }: { user: IConnectedUser }) {
 	const availableSignatories = useWalletAccounts();
@@ -31,7 +32,6 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 		name: '',
 		description: ''
 	});
-	const [step, setStep] = useState(ECreateOrganisationSteps.ORGANISATION_DETAILS);
 
 	const onCreateMultisigSubmit = async ({
 		signatories,
@@ -87,6 +87,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 		const payload = {
 			name: organisationDetails.name,
 			description: organisationDetails.description,
+			image: organisationDetails.image,
 			multisigs: linkedMultisigs.map((m) => ({
 				address: m.address,
 				network: m.network,
@@ -115,8 +116,6 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 	return (
 		<div>
 			<CreateOrganisationProvider
-				step={step}
-				setStep={setStep}
 				onCreateMultisigSubmit={onCreateMultisigSubmit}
 				fetchMultisig={fetchMultisig}
 				multisigs={multisigs}
@@ -130,7 +129,14 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 				onChangeOrganisationDetails={handleOrganisationDetails}
 			>
 				{context}
-				<CreateOrganisation />
+				<div className='flex flex-col'>
+					<div className='flex justify-end mb-10 pr-20'>
+						{user && user.address && <UserPopover userAddress={user.address} />}
+					</div>
+					<div className='flex w-full justify-center flex-1 overflow-y-auto'>
+					<CreateOrganisation />
+					</div>
+				</div>
 			</CreateOrganisationProvider>
 		</div>
 	);

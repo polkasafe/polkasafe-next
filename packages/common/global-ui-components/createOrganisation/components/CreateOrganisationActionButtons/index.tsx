@@ -1,6 +1,7 @@
 import { useOrganisationContext } from '@common/context/CreateOrganisationContext';
-import { ECreateOrganisationSteps } from '@common/enum/substrate';
+import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import { ArrowLeftCircle, ArrowRightCircle } from '@common/global-ui-components/Icons';
 import React from 'react';
 
 interface ICreateOrganisationActionButtons {
@@ -8,44 +9,36 @@ interface ICreateOrganisationActionButtons {
 }
 
 export const CreateOrganisationActionButtons = ({ loading }: ICreateOrganisationActionButtons) => {
-	const { step, setStep, onCreateOrganisation } = useOrganisationContext();
+	const { onCreateOrganisation } = useOrganisationContext();
+	const { step, setStep } = useOrgStepsContext();
 	return (
-		<div className='flex justify-between'>
+		<div className='flex w-full justify-between mt-5'>
 			<Button
-				htmlType='submit'
-				variant={EButtonVariant.PRIMARY}
-				className='bg-primary border-primary text-sm'
-				disabled={step === ECreateOrganisationSteps.ORGANISATION_DETAILS}
+				variant={EButtonVariant.DANGER}
+				disabled={step === 0 || loading}
 				fullWidth
-				loading={Boolean(loading)}
-				onClick={() =>
-					setStep(
-						step === ECreateOrganisationSteps.REVIEW
-							? ECreateOrganisationSteps.ADD_MULTISIG
-							: ECreateOrganisationSteps.ORGANISATION_DETAILS
-					)
-				}
+				loading={loading}
+				onClick={() => setStep(step === 2 ? 1 : 0)}
+				icon={<ArrowLeftCircle className='text-sm' />}
+				size='large'
 			>
-				Cancel
+				Back
 			</Button>
 			<Button
 				htmlType='submit'
+				// disabled={
+				// 	(step === 0 && !orgName) ||
+				// 	(step === 1 && linkedMultisigs.length === 0) ||
+				// 	(step === 2 && (!orgName || linkedMultisigs.length === 0))
+				// }
 				variant={EButtonVariant.PRIMARY}
-				className='bg-primary border-primary text-sm'
 				fullWidth
 				loading={Boolean(loading)}
-				onClick={
-					step === ECreateOrganisationSteps.REVIEW
-						? onCreateOrganisation
-						: () =>
-								setStep(
-									step === ECreateOrganisationSteps.ORGANISATION_DETAILS
-										? ECreateOrganisationSteps.ADD_MULTISIG
-										: ECreateOrganisationSteps.REVIEW
-								)
-				}
+				onClick={step === 2 ? onCreateOrganisation : () => setStep(step === 0 ? 1 : 2)}
+				size='large'
 			>
-				Next
+				{step === 2 ? 'Confirm' : 'Next'}
+				{step !== 2 && <ArrowRightCircle className='text-sm' />}
 			</Button>
 		</div>
 	);

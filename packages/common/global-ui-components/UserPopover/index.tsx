@@ -73,7 +73,7 @@ const UserPopover = ({ userAddress }: IUserPopover) => {
 				arrow={false}
 			>
 				<Button
-					variant={EButtonVariant.PRIMARY}
+					variant={EButtonVariant.SECONDARY}
 					className='p-2.5 h-full px-4 border-2 flex gap-4'
 				>
 					<SubstrateAddress

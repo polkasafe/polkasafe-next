@@ -348,5 +348,5 @@ export interface ILinkMultisig {
 export interface ICreateOrganisationDetails {
 	name: string;
 	description: string;
-	logo?: File;
+	image?: string;
 }

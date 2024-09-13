@@ -15,16 +15,20 @@ interface IAddMultisig {
 export const AddMultisig = ({ networks, availableSignatories, onSubmit }: IAddMultisig) => {
 	const [openModal, setOpenModal] = useState(false);
 	return (
-		<div className='w-full'>
-			<Button
-				variant={EButtonVariant.PRIMARY}
-				className='bg-primary border-primary text-sm'
-				fullWidth
-				icon={<PlusCircleOutlined />}
-				onClick={() => setOpenModal(true)}
-			>
-				Add Multisig
-			</Button>
+		<div className='w-full mb-4'>
+			<div className='flex justify-between rounded-xl p-6 bg-bg-main'>
+				<div className='flex-1 pr-10'>
+					<p className='text-white font-bold text-base'>Create MultiSig</p>
+				</div>
+				<Button
+					variant={EButtonVariant.PRIMARY}
+					icon={<PlusCircleOutlined />}
+					onClick={() => setOpenModal(true)}
+					size='large'
+				>
+					Create Multisig
+				</Button>
+			</div>
 			<Modal
 				open={openModal}
 				onCancel={() => setOpenModal(false)}

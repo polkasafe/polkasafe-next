@@ -1,4 +1,4 @@
-import { Input } from 'antd';
+import Input from '@common/global-ui-components/Input';
 
 export const organisationDetailsFormFields = [
 	{
@@ -6,27 +6,20 @@ export const organisationDetailsFormFields = [
 		name: 'name',
 		type: 'text',
 		required: true,
-		placeholder: 'Enter organisation name',
+		placeholder: 'Add a name',
 		rules: [
 			{
 				required: true,
 				message: 'Please input the organisation name!'
 			}
 		],
-		input: <Input />
+		input: <Input placeholder='Add a name' />
 	},
 	{
 		label: 'Description',
 		name: 'description',
 		type: 'text',
-		required: true,
-		placeholder: 'Enter organisation description',
-		rules: [
-			{
-				required: true,
-				message: 'Please input the organisation description!'
-			}
-		],
-		input: <Input />
+		placeholder: 'Add a description to your organisation',
+		input: <Input placeholder='Add a description to your organisation' />
 	}
 ];
