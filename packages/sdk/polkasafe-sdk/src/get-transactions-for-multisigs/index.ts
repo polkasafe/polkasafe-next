@@ -25,13 +25,13 @@ export function getTransactionsForMultisigs({
 	});
 	if (type === ETransactionType.HISTORY_TRANSACTION) {
 		return request('/getHistoryTransaction', {}, { method: 'POST', body }) as Promise<{
-			data: { transactions: Array<IDBTransaction> } | null;
+			data: { transactions: Array<IDBTransaction> };
 			error: string | null;
 		}>;
 	}
 
 	return request('/getQueueTransaction', {}, { method: 'POST', body }) as Promise<{
-		data: { transactions: Array<IDBTransaction> } | null;
+		data: { transactions: Array<IDBTransaction> };
 		error: string | null;
 	}>;
 }

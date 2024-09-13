@@ -39,6 +39,7 @@ const columns = [
 	}
 ];
 export function TransactionList({ transactions = [], txType }: ITransactionList) {
+	console.log('transactions', transactions);
 	return (
 		<>
 			<div className='flex bg-bg-secondary my-1 p-3 rounded-lg mr-1'>
@@ -68,6 +69,7 @@ export function TransactionList({ transactions = [], txType }: ITransactionList)
 								transaction.to === transaction.multisigAddress ? ETransactionOptions.RECEIVED : ETransactionOptions.SENT
 							}
 							transactionType={txType}
+							multisig={transaction.multisigAddress}
 						/>
 					))}
 			</div>

@@ -1,16 +1,16 @@
-import { CancelTransactionResponse } from "./types";
+import { CancelTransactionResponse } from './types';
 
 type Props = {
-	api: any,
-	senderAddress: string,
-	injector: any,
-	network: string,
-	multisig: any,
-	otherSignatories: Array<string>,
-	when: any,
-	callHash: any,
-	statusGrabber: any
-}
+	api: any;
+	senderAddress: string;
+	injector: any;
+	network: string;
+	multisig: any;
+	otherSignatories: Array<string>;
+	when: any;
+	callHash: any;
+	statusGrabber: any;
+};
 
 export const cancelTransactionForWallet = async ({
 	api,
@@ -31,7 +31,7 @@ export const cancelTransactionForWallet = async ({
 	return new Promise<CancelTransactionResponse>((resolve, reject) => {
 		api.tx.multisig
 			.cancelAsMulti(multisig.threshold, otherSignatories, when, callHash)
-			.signAndSend(senderAddress, async ({ status, txHash, events }: { status: any, txHash: any, events: any }) => {
+			.signAndSend(senderAddress, async ({ status, txHash, events }: { status: any; txHash: any; events: any }) => {
 				if (status.isInvalid) {
 					console.log('Transaction invalid');
 					statusGrabber('Transaction invalid');
@@ -65,9 +65,10 @@ export const cancelTransactionForWallet = async ({
 						}
 					}
 				}
-			}).catch((error: any) => {
+			})
+			.catch((error: any) => {
 				console.log(error);
 				reject(error);
 			});
 	});
-}
+};

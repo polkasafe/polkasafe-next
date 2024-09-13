@@ -1,9 +1,9 @@
 // Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+// @ts-nocheck
 
 import { ApiPromise } from '@polkadot/api';
-import type { Call } from '@polkadot/types/interfaces';
 import type { ICompact, INumber } from '@polkadot/types/types';
 import type { BN } from '@polkadot/util';
 import { BN_ZERO, isFunction, objectSpread } from '@polkadot/util';
@@ -59,7 +59,7 @@ export function convertWeight(weight: V1Weight | V2Weight): { v1Weight: BN; v2We
 }
 
 // for a given call, calculate the weight
-export async function calcWeight(call: Call, api: ApiPromise): Promise<Result> {
+export async function calcWeight(call: any, api: ApiPromise): Promise<Result> {
 	let val = objectSpread(
 		{
 			isWeightV2: !isFunction(api.registry.createType<V1Weight>('Weight').toBn)

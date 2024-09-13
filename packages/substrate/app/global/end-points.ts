@@ -29,6 +29,19 @@ export const MULTISIG_TRANSACTION_URL = ({
 	network: string;
 	type: ETransactionType;
 }) => `/transactions?_multisig=${multisig}&_page=${page}&_limit=${limit}&_network=${network}&_type=${type}`;
+
+export const ORGANISATION_TRANSACTION_URL = ({
+	organisationId,
+	page,
+	limit,
+	type
+}: {
+	organisationId: string;
+	page: number;
+	limit: number;
+	type: ETransactionType;
+}) => `/transactions?_organisation=${organisationId}&_page=${page}&_limit=${limit}&_type=${type}`;
+
 export const MULTISIG_DASHBOARD_URL = ({ multisig, network }: { multisig: string; network: string }) =>
 	`/dashboard?_multisig=${multisig}&_network=${network}`;
 export const ORGANISATION_DASHBOARD_URL = ({ id, tab }: { id: string; tab?: ETransactionTab }) =>
