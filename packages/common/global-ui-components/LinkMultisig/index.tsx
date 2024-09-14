@@ -75,7 +75,9 @@ export const LinkMultisig = ({
 						selectedNetwork={selectedNetwork}
 					/>
 				</p>
-				<p className='text-sm text-text-secondary'>Already have a MultiSig? You can link your existing multisigs with a few simple steps</p>
+				<p className='text-sm text-text-secondary'>
+					Already have a MultiSig? You can link your existing multisigs with a few simple steps
+				</p>
 
 				{Boolean(linkedMultisig.length) && <Typography variant={ETypographyVariants.h3}>Linked Multisig</Typography>}
 
@@ -88,16 +90,36 @@ export const LinkMultisig = ({
 				<Divider />
 				<div className='flex flex-col gap-y-3'>
 					{availableMultisig.map((multisig) => (
-							<Collapse className='border border-primary rounded-xl' items={[{ key: multisig.address, label: <Address address={multisig.address} name={multisig.name} network={multisig.network} />, children: multisig.proxy && 
-							<div className='flex flex-col gap-y-3'>
-								{multisig.proxy.map((item) => (
-									<div className='p-2 rounded-xl border border-text-secondary'>
-										<Address address={item.address} network={multisig.network} name={item.name} />
-									</div>
-								))}
-							</div>,
-							extra: <Button onClick={() => handleSubmit({ multisig })}>Link</Button> }]} />
-						))}
+						<Collapse
+							className='border border-primary rounded-xl'
+							items={[
+								{
+									key: multisig.address,
+									label: (
+										<Address
+											address={multisig.address}
+											name={multisig.name}
+											network={multisig.network}
+										/>
+									),
+									children: multisig.proxy && (
+										<div className='flex flex-col gap-y-3'>
+											{multisig.proxy.map((item) => (
+												<div className='p-2 rounded-xl border border-text-secondary'>
+													<Address
+														address={item.address}
+														network={multisig.network}
+														name={item.name}
+													/>
+												</div>
+											))}
+										</div>
+									),
+									extra: <Button onClick={() => handleSubmit({ multisig })}>Link</Button>
+								}
+							]}
+						/>
+					))}
 				</div>
 				<Divider />
 			</Spin>

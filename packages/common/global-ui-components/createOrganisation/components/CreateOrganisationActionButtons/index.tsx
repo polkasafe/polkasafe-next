@@ -7,12 +7,14 @@ interface ICreateOrganisationActionButtons {
 	loading: boolean;
 	onCancelClick?: () => void;
 	onNextClick?: () => void;
+	nextButtonDisabled?: boolean;
 }
 
 export const CreateOrganisationActionButtons = ({
 	loading,
 	onCancelClick,
-	onNextClick
+	onNextClick,
+	nextButtonDisabled
 }: ICreateOrganisationActionButtons) => {
 	const { step } = useOrgStepsContext();
 	return (
@@ -30,11 +32,7 @@ export const CreateOrganisationActionButtons = ({
 			</Button>
 			<Button
 				htmlType='submit'
-				// disabled={
-				// (step === 0 && !orgName) ||
-				// (step === 1 && linkedMultisigs.length === 0) ||
-				// (step === 2 && (!orgName || linkedMultisigs.length === 0))
-				// }
+				disabled={nextButtonDisabled || loading}
 				variant={EButtonVariant.PRIMARY}
 				fullWidth
 				loading={Boolean(loading)}

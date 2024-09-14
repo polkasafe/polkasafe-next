@@ -18,6 +18,8 @@ export const AddMultisigsToOrganisation = () => {
 	} = useOrganisationContext();
 	const { setStep } = useOrgStepsContext();
 
+	console.log('linkedMultisig', linkedMultisig);
+
 	return (
 		<div>
 			<p className='text-lg font-bold mb-2 text-white'>Create/Link Multisig</p>
@@ -45,6 +47,7 @@ export const AddMultisigsToOrganisation = () => {
 				loading={false}
 				onNextClick={() => setStep(ECreateOrganisationSteps.REVIEW)}
 				onCancelClick={() => setStep(ECreateOrganisationSteps.ORGANISATION_DETAILS)}
+				nextButtonDisabled={linkedMultisig.length === 0}
 			/>
 		</div>
 	);

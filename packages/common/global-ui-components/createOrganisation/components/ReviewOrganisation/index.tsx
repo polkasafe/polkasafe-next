@@ -67,7 +67,7 @@ export const ReviewOrganisation = () => {
 			<CreateOrganisationActionButtons
 				loading={false}
 				onNextClick={onCreateOrganisation}
-				onCancelClick={() => setStep(ECreateOrganisationSteps.ORGANISATION_DETAILS)}
+				onCancelClick={() => setStep(ECreateOrganisationSteps.ADD_MULTISIG)}
 			/>
 		</div>
 	);
