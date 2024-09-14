@@ -50,7 +50,7 @@ const Menu = ({ userAddress, organisation, organisations }: IMenuProps) => {
 	};
 
 	return (
-		<div className='bg-bg-main flex flex-col h-full py-4 px-3 max-sm:px-0 max-sm:py-0'>
+		<div className='bg-bg-main flex flex-col h-full py-4 px-3 max-sm:px-0 max-sm:py-0 justify-between'>
 			<div className='flex flex-col mb-3 max-sm:mb-1 overflow-y-hidden overflow-x-hidden'>
 				<ScaleMotion>
 					<section className='flex mb-7 justify-center w-full'>

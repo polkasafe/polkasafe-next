@@ -42,6 +42,7 @@ export const onChainMultisig = async (
 		);
 
 		const response = res.data;
+		console.log('response:', response?.data?.account?.multisig?.multi_account_member);
 
 		const proxy = (response?.data?.account?.proxy?.real_account || []).map((multiData: any) => ({
 			address: multiData.account_display.address,

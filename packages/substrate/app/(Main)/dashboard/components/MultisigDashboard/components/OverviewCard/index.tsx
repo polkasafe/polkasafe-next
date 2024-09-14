@@ -54,7 +54,7 @@ function OverviewCard({
 	className
 }: IOverviewCardProps) {
 	const assets = useAtomValue(assetsAtom);
-	const multiSigAssets = assets?.find((asset) => asset.address === address && asset.network === network);
+	const multiSigAssets = assets?.find((asset) => asset?.address === address && asset?.network === network);
 
 	console.log('assets', assets);
 	return (
