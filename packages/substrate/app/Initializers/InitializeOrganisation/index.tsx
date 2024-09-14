@@ -10,35 +10,17 @@ import { useAtomValue, useSetAtom } from 'jotai/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { getOrganisationById } from '@sdk/polkasafe-sdk/src/get-organisation-by-id';
-import { getOrganisationByMultisig } from '@sdk/polkasafe-sdk/src/get-organisation-by-multisig';
 import { IOrganisation } from '@common/types/substrate';
 
 function InitializeOrganisation() {
 	const searchParams = useSearchParams();
 	const organisationId = searchParams.get('_organisation');
-	const multisig = searchParams.get('_multisig');
-	const network = searchParams.get('_network');
 	const user = useAtomValue(userAtom);
 	const setAtom = useSetAtom(organisationAtom);
 
 	const handleOrganisation = async () => {
 		console.log('user', user, 'page initializeOrg Line: 20');
-		if (!user || (!organisationId && (!multisig || !network))) return;
-		if (!organisationId) {
-			if (!multisig || !network) return;
-			const organisation = (await getOrganisationByMultisig({
-				address: user.address,
-				signature: user.signature,
-				multisig,
-				network
-			})) as { data: IOrganisation };
-			if (!organisation.data) {
-				return;
-			}
-			console.log('organisation', organisation, 'page initializeOrg Line: 23');
-			setAtom(organisation.data);
-			return;
-		}
+		if (!user || !organisationId) return;
 		const organisation = (await getOrganisationById({
 			address: user.address,
 			signature: user.signature,
@@ -55,7 +37,7 @@ function InitializeOrganisation() {
 	};
 
 	useEffect(() => {
-		if (!organisationId && (!multisig || !network)) {
+		if (!organisationId) {
 			return;
 		}
 		handleOrganisation();
