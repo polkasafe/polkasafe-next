@@ -16,7 +16,7 @@ function NavHeader({ userAddress }: INavHeaderProps) {
 	const pathname = usePathname();
 
 	return (
-		<Header className='bg-bg-main flex items-center px-0 justify-between pr-3'>
+		<Header className='bg-bg-main flex items-center px-0 justify-between pr-3 sticky top-0 left-0 z-50'>
 			<div className='p-0 m-0'>
 				<Breadcrumb link={pathname} />
 			</div>

@@ -12,10 +12,10 @@ function NewTransaction() {
 		<div className='w-full'>
 			<Button
 				variant={EButtonVariant.PRIMARY}
-				className='bg-primary border-primary text-sm'
 				fullWidth
 				icon={<PlusCircleOutlined />}
 				onClick={() => setOpenModal(true)}
+				size='large'
 			>
 				New Transaction
 			</Button>

@@ -102,6 +102,7 @@ const Menu = ({ userAddress, organisation, organisations }: IMenuProps) => {
 						className='bg-primary border-primary text-sm'
 						fullWidth
 						icon={<PlusCircleOutlined />}
+						size='large'
 					>
 						Create Organisation
 					</Button>

@@ -114,7 +114,7 @@ const Address: React.FC<IAddressComponent> = ({
 				/>
 			)}
 			{onlyAddress ? (
-				<div className='text-text_secondary flex items-center gap-x-3 text-sm font-normal'>
+				<div className='text-text-secondary flex items-center gap-x-3 text-sm font-normal'>
 					<span className='text-white'>{name || shortenAddress(address || '', addressLength || 10)}</span>
 					<span className='flex items-center gap-x-2 max-sm:gap-0'>
 						<button onClick={() => copyText(address, true, network)}>
@@ -146,7 +146,7 @@ const Address: React.FC<IAddressComponent> = ({
 							</div>
 						)}
 					</div>
-					<div className='text-text_secondary flex items-center gap-x-3 text-xs font-normal max-sm:text-[8px]'>
+					<div className='text-text-secondary flex items-center gap-x-3 text-xs font-normal max-sm:text-[8px]'>
 						<span>
 							{fullAddress ? encodedMultisigAddress : shortenAddress(encodedMultisigAddress || '', addressLength)}
 						</span>
@@ -164,7 +164,7 @@ const Address: React.FC<IAddressComponent> = ({
 						</span>
 						{withEmail && email && (
 							<div>
-								<span className='text-xs text-text_secondary'>{email}</span>
+								<span className='text-xs text-text-secondary'>{email}</span>
 							</div>
 						)}
 					</div>

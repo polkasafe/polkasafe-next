@@ -8,6 +8,7 @@ import Image from 'next/image';
 import emptyImage from '@common/assets/icons/empty-image.png';
 import Address from '@common/global-ui-components/Address';
 import { ENetwork } from '@common/enum/substrate';
+import { useSearchParams } from 'next/navigation';
 
 interface IOrganisationDropdown {
 	organisations: Array<IOrganisation>;
@@ -16,6 +17,13 @@ interface IOrganisationDropdown {
 
 // TODO: tailwind need to update
 function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisationDropdown) {
+	const searchParams = useSearchParams();
+	const organisationId = searchParams.get('_organisation');
+	const multisigId = searchParams.get('_multisig');
+	const network = searchParams.get('_network');
+
+	if (!organisationId) return;
+
 	return (
 		<SlideInMotion>
 			<Dropdown
@@ -23,8 +31,8 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 				className='my-2'
 				menu={{
 					selectable: true,
-					// selectedKeys: [selectedOrganisation.id],
-					// defaultSelectedKeys: [selectedOrganisation.id],
+					selectedKeys: [organisationId],
+					defaultSelectedKeys: [organisationId],
 					items: organisations.map((item) => ({
 						key: item.id,
 						label: (
@@ -50,15 +58,17 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 						children: item.multisigs?.map((m) => ({
 							key: m.address,
 							label: (
-								<Link
-									href={MULTISIG_DASHBOARD_URL({ multisig: m.address, network: m.network, organisationId: item.id })}
-								>
-									<Address
-										address={m.address}
-										name={m.name}
-										network={m.network || ENetwork.POLKADOT}
-									/>
-								</Link>
+								<div className={`${m.address === multisigId && network === m.network && item.id === organisationId ? 'bg-highlight rounded-lg p-2' : ''}`}>
+									<Link
+										href={MULTISIG_DASHBOARD_URL({ multisig: m.address, network: m.network, organisationId: item.id })}
+									>
+										<Address
+											address={m.address}
+											name={m.name}
+											network={m.network || ENetwork.POLKADOT}
+										/>
+									</Link>
+								</div>
 							)
 						}))
 					}))

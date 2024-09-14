@@ -14,7 +14,11 @@ interface ITransactionList {
 
 const columns = [
 	{
-		title: 'Details',
+		title: 'Transaction',
+		variant: ETypographyVariants.p
+	},
+	{
+		title: 'Amount',
 		variant: ETypographyVariants.p
 	},
 	{
@@ -26,15 +30,7 @@ const columns = [
 		variant: ETypographyVariants.p
 	},
 	{
-		title: 'Date',
-		variant: ETypographyVariants.p
-	},
-	{
-		title: 'Category',
-		variant: ETypographyVariants.p
-	},
-	{
-		title: 'Status',
+		title: 'Action',
 		variant: ETypographyVariants.p
 	}
 ];
@@ -47,7 +43,7 @@ export function TransactionList({ transactions = [], txType }: ITransactionList)
 					<Typography
 						key={column.title}
 						variant={column.variant}
-						className='basis-1/6 text-base'
+						className='basis-1/5 text-base'
 					>
 						{column.title}
 					</Typography>
