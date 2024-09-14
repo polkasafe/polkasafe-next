@@ -4,7 +4,6 @@
 
 import DoughnutChart from '@common/global-ui-components/DoughnutChart';
 import { IMultisigAssets } from '@common/types/substrate';
-import React from 'react';
 
 interface IAssetCard {
 	assets: Array<IMultisigAssets | null>;

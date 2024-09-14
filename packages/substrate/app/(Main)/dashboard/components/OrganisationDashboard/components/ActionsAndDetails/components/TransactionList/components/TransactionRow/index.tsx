@@ -53,7 +53,7 @@ function TransactionRow({
 		const api = getApi(network);
 		const txMultisig = findMultisig(organisation?.multisigs || [], `${multisig}_${network}`);
 
-		if (!api?.api || !user?.address || !txMultisig || !callData) {
+		if (!api?.api || !user?.address || !txMultisig) {
 			console.log('API not found', api, user, txMultisig, callData);
 			return;
 		}

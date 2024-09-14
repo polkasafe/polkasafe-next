@@ -1,6 +1,5 @@
 import { UserPlusIcon } from '@common/global-ui-components/Icons';
 import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';
-import React from 'react';
 
 const styles = {
 	section: 'mt-auto',

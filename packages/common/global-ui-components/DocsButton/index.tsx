@@ -1,6 +1,5 @@
 import { DocsIcon } from '@common/global-ui-components/Icons';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
-import React from 'react';
 
 function DocsButton() {
 	return (

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dropdown, Skeleton } from 'antd';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import { MULTISIG_DASHBOARD_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
@@ -51,7 +50,9 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 						children: item.multisigs?.map((m) => ({
 							key: m.address,
 							label: (
-								<Link href={MULTISIG_DASHBOARD_URL({ multisig: m.address, network: m.network })}>
+								<Link
+									href={MULTISIG_DASHBOARD_URL({ multisig: m.address, network: m.network, organisationId: item.id })}
+								>
 									<Address
 										address={m.address}
 										name={m.name}

@@ -4,7 +4,7 @@
 
 import Identicon from '@polkadot/react-identicon';
 import { Popover } from 'antd';
-import React from 'react';
+
 import Link from 'next/link';
 import { CircleArrowDownIcon, WarningRoundedIcon } from '@common/global-ui-components/Icons';
 import { SubstrateAddress } from '@common/global-ui-components/SubstrateAddress';

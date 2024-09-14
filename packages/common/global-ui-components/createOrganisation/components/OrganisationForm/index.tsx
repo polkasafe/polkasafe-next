@@ -7,15 +7,17 @@ import Image from 'next/image';
 import { useState } from 'react';
 import emptyImage from '@common/assets/icons/empty-image.png';
 import Button from '@common/global-ui-components/Button';
+import { NEXT_PUBLIC_IMBB_KEY } from '@common/envs';
+import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
+import { ECreateOrganisationSteps } from '@common/enum/substrate';
 
 export const OrganisationDetailForm = () => {
 	const { onChangeOrganisationDetails } = useOrganisationContext();
+	const { setStep } = useOrgStepsContext();
 
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const [orgImageUrl, setOrgImageUrl] = useState<string>('');
-
-	const IMGBB_KEY = process.env.NEXT_PUBLIC_IMBB_KEY;
 
 	const props: UploadProps = {
 		name: 'file',
@@ -29,7 +31,7 @@ export const OrganisationDetailForm = () => {
 				console.log('file', file);
 				const form = new FormData();
 				form.append('image', file, `${file.name}`);
-				const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+				const res = await fetch(`https://api.imgbb.com/1/upload?key=${NEXT_PUBLIC_IMBB_KEY}`, {
 					body: form,
 					method: 'POST'
 				});
@@ -73,9 +75,10 @@ export const OrganisationDetailForm = () => {
 			<Form
 				layout='vertical'
 				className='rounded-xl p-6 bg-bg-main flex flex-col'
-				onFinish={(values) =>
-					onChangeOrganisationDetails({ name: values.name, description: values.description, image: orgImageUrl })
-				}
+				onFinish={(values) => {
+					onChangeOrganisationDetails({ name: values.name, description: values.description, image: orgImageUrl });
+					setStep(ECreateOrganisationSteps.ADD_MULTISIG);
+				}}
 			>
 				<Form.Item
 					name='image'
@@ -107,8 +110,8 @@ export const OrganisationDetailForm = () => {
 						{field.input}
 					</Form.Item>
 				))}
+				<CreateOrganisationActionButtons loading={false} />
 			</Form>
-			<CreateOrganisationActionButtons loading={false} />
 		</div>
 	);
 };

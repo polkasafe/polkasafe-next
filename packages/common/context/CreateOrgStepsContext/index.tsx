@@ -1,8 +1,9 @@
+import { ECreateOrganisationSteps } from '@common/enum/substrate';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 
 interface ICreateOrganisationProvider extends PropsWithChildren {
-	step: number;
-	setStep: (newStep: number) => void;
+	step: ECreateOrganisationSteps;
+	setStep: (newStep: ECreateOrganisationSteps) => void;
 }
 
 export const CreateOrgStepsContext = createContext({} as ICreateOrganisationProvider);

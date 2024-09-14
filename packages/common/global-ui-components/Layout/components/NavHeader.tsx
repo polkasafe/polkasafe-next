@@ -1,4 +1,3 @@
-import React from 'react';
 import { Layout as AntDLayout } from 'antd';
 import { usePathname } from 'next/navigation';
 import Breadcrumb from '@common/global-ui-components/Breadcrumb';

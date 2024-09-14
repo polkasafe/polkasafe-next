@@ -5,7 +5,7 @@
 'use client';
 
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
-import React from 'react';
+
 import { twMerge } from 'tailwind-merge';
 import DownIcon from '@common/assets/icons/down.svg';
 import { IMultisig } from '@common/types/substrate';
@@ -23,7 +23,8 @@ interface IDashboardTransactionProps {
 
 const styles = {
 	selectedTab: 'bg-highlight text-text-outline-primary border-0 py-3 px-5 text-sm font-bold',
-	tab: 'bg-bg-main text-text-primary border-0 py-3 px-5 text-sm font-bold'
+	tab: 'bg-bg-main text-text-primary border-0 py-3 px-5 text-sm font-bold',
+	filterButton: 'py-3 px-5 font-bold border-2 text-text-outline-primary flex gap-2 items-center'
 };
 
 export function ActionAndDetails({ multisigs, organisationId, selectedTab }: IDashboardTransactionProps) {
@@ -64,7 +65,7 @@ export function ActionAndDetails({ multisigs, organisationId, selectedTab }: IDa
 				<div>
 					<Button
 						variant={EButtonVariant.PRIMARY}
-						className='py-3 px-5 font-bold border-2 text-text-outline-primary flex gap-2 items-center'
+						className={styles.filterButton}
 					>
 						Filters
 						<DownIcon />

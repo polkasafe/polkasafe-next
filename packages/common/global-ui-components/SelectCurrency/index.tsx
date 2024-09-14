@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Dropdown } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import { currencies, currencyProperties, getCurrenciesBySymbol } from '@common/constants/currencyConstants';

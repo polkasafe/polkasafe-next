@@ -4,7 +4,6 @@
 
 'use client';
 
-import React from 'react';
 import Table from '@common/global-ui-components/Table';
 import Button from '@common/global-ui-components/Button';
 import { IAsset } from '@common/types/substrate';

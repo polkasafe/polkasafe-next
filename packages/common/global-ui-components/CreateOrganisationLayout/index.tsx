@@ -8,9 +8,38 @@ import lockIcon from '@assets/icons/multisig-lock-image.png';
 
 import { OutlineCheckIcon } from '@common/global-ui-components/Icons';
 import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
+import { ECreateOrganisationSteps } from '@common/enum/substrate';
+
+const getCreateOrganisationSteps = (value: number) => {
+	switch (value) {
+		case 0:
+			return ECreateOrganisationSteps.ORGANISATION_DETAILS;
+		case 1:
+			return ECreateOrganisationSteps.ADD_MULTISIG;
+		case 2:
+			return ECreateOrganisationSteps.REVIEW;
+		default:
+			return ECreateOrganisationSteps.ORGANISATION_DETAILS;
+	}
+};
+
+const getValueByCreateOrganisationSteps = (value: ECreateOrganisationSteps) => {
+	switch (value) {
+		case ECreateOrganisationSteps.ORGANISATION_DETAILS:
+			return 0;
+		case ECreateOrganisationSteps.ADD_MULTISIG:
+			return 1;
+		case ECreateOrganisationSteps.REVIEW:
+			return 2;
+		default:
+			return 0;
+	}
+};
 
 export default function CreateOrganisationLayout({ children }: { children: React.ReactNode }) {
-	const { step, setStep } = useOrgStepsContext();
+	const { step: stepValue, setStep } = useOrgStepsContext();
+
+	const step = getValueByCreateOrganisationSteps(stepValue);
 
 	return (
 		<Layout
@@ -25,7 +54,7 @@ export default function CreateOrganisationLayout({ children }: { children: React
 					<Steps
 						className='h-full'
 						current={step}
-						onChange={(value) => setStep(value)}
+						onChange={(value) => setStep(getCreateOrganisationSteps(value))}
 						direction='vertical'
 						items={['Create Organisation', 'Create/Link Multisig', 'Review'].map((title, i) => ({
 							// disabled: i > step,

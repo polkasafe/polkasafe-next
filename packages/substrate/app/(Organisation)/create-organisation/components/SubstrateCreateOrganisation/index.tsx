@@ -107,6 +107,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 	};
 
 	const handleOrganisationDetails = (value: ICreateOrganisationDetails) => {
+		console.log('value', value);
 		if (value.name === '' || value.description === '') {
 			return;
 		}
@@ -134,7 +135,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 						{user && user.address && <UserPopover userAddress={user.address} />}
 					</div>
 					<div className='flex w-full justify-center flex-1 overflow-y-auto'>
-					<CreateOrganisation />
+						<CreateOrganisation />
 					</div>
 				</div>
 			</CreateOrganisationProvider>

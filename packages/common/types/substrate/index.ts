@@ -148,6 +148,7 @@ export interface IMultisigAssets {
 	usd: number;
 	address: string;
 	symbol: string;
+	network: ENetwork;
 }
 
 export interface I2FASettings {

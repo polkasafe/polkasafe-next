@@ -5,9 +5,12 @@ import emptyImage from '@common/assets/icons/empty-image.png';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { EditIcon } from '@common/global-ui-components/Icons';
 import Address from '@common/global-ui-components/Address';
+import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
+import { ECreateOrganisationSteps } from '@common/enum/substrate';
 
 export const ReviewOrganisation = () => {
-	const { organisationDetails, linkedMultisig } = useOrganisationContext();
+	const { organisationDetails, linkedMultisig, onCreateOrganisation } = useOrganisationContext();
+	const { setStep } = useOrgStepsContext();
 	return (
 		<div>
 			<p className='text-lg font-bold mb-2 text-white'>Review</p>
@@ -33,7 +36,12 @@ export const ReviewOrganisation = () => {
 								<span className='text-xs text-text-secondary'>{linkedMultisig.length || 0} Multisigs</span>
 							</div>
 						</div>
-						<Button variant={EButtonVariant.PRIMARY} icon={<EditIcon />}>Edit</Button>
+						<Button
+							variant={EButtonVariant.PRIMARY}
+							icon={<EditIcon />}
+						>
+							Edit
+						</Button>
 					</div>
 				</div>
 				<div className=''>
@@ -46,13 +54,21 @@ export const ReviewOrganisation = () => {
 					<div className='flex flex-col gap-y-3'>
 						{linkedMultisig.map((multisig) => (
 							<div className='flex p-2 rounded-xl border border-[#505050]'>
-								<Address address={multisig.address} network={multisig.network} name={multisig.name} />
+								<Address
+									address={multisig.address}
+									network={multisig.network}
+									name={multisig.name}
+								/>
 							</div>
 						))}
 					</div>
 				</div>
 			</div>
-			<CreateOrganisationActionButtons loading={false} />
+			<CreateOrganisationActionButtons
+				loading={false}
+				onNextClick={onCreateOrganisation}
+				onCancelClick={() => setStep(ECreateOrganisationSteps.ORGANISATION_DETAILS)}
+			/>
 		</div>
 	);
 };

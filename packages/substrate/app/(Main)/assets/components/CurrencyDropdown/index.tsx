@@ -4,7 +4,6 @@
 
 'use client';
 
-import React from 'react';
 import Dropdown from '@common/global-ui-components/Dropdown';
 
 export default function CurrencyDropdown({ label = true }: { label?: boolean }) {

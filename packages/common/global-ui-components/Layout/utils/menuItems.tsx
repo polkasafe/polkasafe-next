@@ -1,3 +1,4 @@
+import { ESettingsTab, ETransactionTab } from '@common/enum/substrate';
 import {
 	AddressBookIcon,
 	AppsIcon,
@@ -18,7 +19,8 @@ export const menuItems = [
 	{
 		baseURL: '/transactions',
 		icon: <TransactionIcon />,
-		title: 'Transactions'
+		title: 'Transactions',
+		tab: ETransactionTab.QUEUE
 	},
 	{
 		baseURL: '/assets',
@@ -64,15 +66,17 @@ export const menuItems = [
 		title: 'Apps'
 	},
 	{
-		baseURL: '/settings/notifications',
+		baseURL: '/settings',
 		authenticated: true,
 		icon: <TreasuryAnalyticsIcon />,
-		title: 'Notifications'
+		title: 'Notifications',
+		tab: ESettingsTab.NOTIFICATIONS
 	},
 	{
 		baseURL: '/settings',
 		authenticated: true,
 		icon: <TreasuryAnalyticsIcon />,
-		title: 'Settings'
+		title: 'Settings',
+		tab: ESettingsTab.SIGNATORIES
 	}
 ];

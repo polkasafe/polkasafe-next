@@ -1,6 +1,5 @@
 import { LinkMultisig } from '@common/global-ui-components/LinkMultisig';
 import { ILinkMultisig } from '@common/types/substrate';
-import React from 'react';
 
 export const LinkMultisigOrganisation = ({
 	networks,

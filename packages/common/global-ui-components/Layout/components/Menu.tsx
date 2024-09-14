@@ -10,7 +10,6 @@ import MenuItem from '@common/global-ui-components/Layout/components/MenuItem';
 // import MultisigList from '@common/global-ui-components/MultisigList';
 // import { Skeleton } from 'antd';
 import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';
-import { ETransactionTab } from '@common/enum/substrate';
 import { IOrganisation } from '@common/types/substrate';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import OrganisationDropdown from '@common/global-ui-components/OrganisationDropdown';
@@ -40,12 +39,12 @@ const Menu = ({ userAddress, organisation, organisations }: IMenuProps) => {
 	const multisig = searchParams.get('_multisig');
 	const network = searchParams.get('_network');
 
-	const getUrl = (baseUrl: string) => {
-		if (organisationParam) {
-			return `${baseUrl}?_organisation=${organisationParam}&_tab=${ETransactionTab.HISTORY}`;
+	const getUrl = (baseUrl: string, tab?: string) => {
+		if (multisig && network && organisationParam) {
+			return `${baseUrl}?_multisig=${multisig}&_network=${network}&_organisation=${organisationParam}`;
 		}
-		if (multisig && network) {
-			return `${baseUrl}?_multisig=${multisig}&_network=${network}`;
+		if (organisationParam) {
+			return `${baseUrl}?_organisation=${organisationParam}&_tab=${tab}`;
 		}
 		return '/';
 	};
@@ -83,7 +82,7 @@ const Menu = ({ userAddress, organisation, organisations }: IMenuProps) => {
 							return (
 								<MenuItem
 									key={item.title}
-									baseURL={getUrl(item.baseURL)}
+									baseURL={getUrl(item.baseURL, item.tab)}
 									authenticated={Boolean(userAddress)}
 									icon={item.icon}
 									pathname={pathname}

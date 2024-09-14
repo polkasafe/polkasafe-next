@@ -144,6 +144,14 @@ export enum ETransactionTab {
 	MULTISIGS = 'multisigs'
 }
 
+export enum ESettingsTab {
+	SIGNATORIES = 'signatories',
+	NOTIFICATIONS = 'notifications',
+	TRANSACTION_FIELDS = 'transaction_fields',
+	ADMIN = 'admin',
+	OVERVIEW = 'overview'
+}
+
 export enum WcPolkadotMethods {
 	POLKADOT_SIGN_TRANSACTION = 'polkadot_signTransaction',
 	POLKADOT_SIGN_MESSAGE = 'polkadot_signMessage'

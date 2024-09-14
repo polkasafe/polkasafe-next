@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+
 import { Button as AntDButton, ButtonProps } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';

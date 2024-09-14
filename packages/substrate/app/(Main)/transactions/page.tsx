@@ -6,7 +6,7 @@ import { LOGIN_URL } from '@substrate/app/global/end-points';
 import { isValidAddress } from '@substrate/app/global/utils/isValidAddress';
 import { isValidNetwork } from '@substrate/app/global/utils/isValidNetwork';
 import { redirect } from 'next/navigation';
-import React from 'react';
+
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@sdk/polkasafe-sdk/src/constants/pagination';
 import { ISearchParams } from '@common/types/substrate';
 import { ETransactionType } from '@common/enum/substrate';

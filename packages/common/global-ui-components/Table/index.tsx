@@ -1,4 +1,3 @@
-import React from 'react';
 import { Table as AntdTable } from 'antd';
 import styled from 'styled-components';
 import { IAsset } from '@common/types/substrate';

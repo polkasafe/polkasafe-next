@@ -5,7 +5,7 @@ import { LOGIN_URL } from '@substrate/app/global/end-points';
 import { isValidAddress } from '@substrate/app/global/utils/isValidAddress';
 import { isValidNetwork } from '@substrate/app/global/utils/isValidNetwork';
 import { redirect } from 'next/navigation';
-import React from 'react';
+
 import { ISearchParams } from '@common/types/substrate';
 import { getMultisigAssetsByOrg } from '@substrate/app/(Main)/assets/ssr-actions/getMultisigAssetsByOrg';
 import Secure from '@substrate/app/(Main)/Secure';

@@ -1,7 +1,7 @@
 // Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import React from 'react';
+
 import OverviewCard from './components/OverviewCard';
 import TransactionCard from '../TransactionCard';
 import { IMultisig, ITransaction } from '@common/types/substrate';
@@ -18,7 +18,14 @@ function MultisigDashboard({ multisig, transactions, queueTransactions }: IMulti
 		<div>
 			<div className='grid grid-cols-3 gap-x-6'>
 				<div className='col-span-2'>
-					<OverviewCard address={multisig.address} network={multisig.network} balance={multisig.balance} signatories={multisig.signatories} threshold={multisig.threshold} name={multisig.name} />
+					<OverviewCard
+						address={multisig.address}
+						network={multisig.network}
+						balance={multisig.balance}
+						signatories={multisig.signatories}
+						threshold={multisig.threshold}
+						name={multisig.name}
+					/>
 				</div>
 				<div className='col-span-1'>
 					<SelectAccount multisig={multisig} />

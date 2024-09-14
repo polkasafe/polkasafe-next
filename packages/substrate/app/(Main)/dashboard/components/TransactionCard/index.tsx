@@ -3,7 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ITransaction } from '@common/types/substrate';
-import React from 'react';
 
 export default function TransactionCard({ transactions }: { transactions: Array<ITransaction> }) {
 	console.log(transactions);

@@ -1,5 +1,4 @@
 import { WarningCircleIcon } from '@common/global-ui-components/Icons';
-import React from 'react';
 
 const InfoBox = ({ message }: { message: string }) => {
 	return (

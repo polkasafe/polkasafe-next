@@ -58,7 +58,7 @@ function InitializeAssets() {
 						withThousandDelimitor: false
 					})
 				);
-			return { ...balance, usd: usedValue, address, symbol: networkConstants[network].tokenSymbol };
+			return { ...balance, usd: usedValue, address, network, symbol: networkConstants[network].tokenSymbol };
 		});
 
 		const assets = await Promise.all(assetsPromise);

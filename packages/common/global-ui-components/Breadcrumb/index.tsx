@@ -1,5 +1,4 @@
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
-import React from 'react';
 
 interface IBreadcrumbProps {
 	link: string;

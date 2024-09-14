@@ -1,8 +1,9 @@
 import { useOrganisationContext } from '@common/context/CreateOrganisationContext';
+import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
+import { ECreateOrganisationSteps } from '@common/enum/substrate';
 import { LinkMultisigOrganisation } from '@common/global-ui-components/createOrganisation/components/AddMultisig/components/LinkMultisig';
 import { CreateOrganisationActionButtons } from '@common/global-ui-components/createOrganisation/components/CreateOrganisationActionButtons';
 import { AddMultisig } from '@common/modals/AddMultisig';
-import React from 'react';
 
 export const AddMultisigsToOrganisation = () => {
 	const {
@@ -15,6 +16,8 @@ export const AddMultisigsToOrganisation = () => {
 		fetchMultisig,
 		onLinkedMultisig
 	} = useOrganisationContext();
+	const { setStep } = useOrgStepsContext();
+
 	return (
 		<div>
 			<p className='text-lg font-bold mb-2 text-white'>Create/Link Multisig</p>
@@ -38,7 +41,11 @@ export const AddMultisigsToOrganisation = () => {
 				onRemoveSubmit={onRemoveMultisig}
 			/>
 
-			<CreateOrganisationActionButtons loading={false} />
+			<CreateOrganisationActionButtons
+				loading={false}
+				onNextClick={() => setStep(ECreateOrganisationSteps.REVIEW)}
+				onCancelClick={() => setStep(ECreateOrganisationSteps.ORGANISATION_DETAILS)}
+			/>
 		</div>
 	);
 };

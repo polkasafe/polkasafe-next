@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { twMerge } from 'tailwind-merge';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
