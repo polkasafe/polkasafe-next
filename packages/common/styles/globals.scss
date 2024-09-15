@@ -22,7 +22,7 @@
   --text-success: #06D6A0;
   --text-outline-primary: #1573fe;
   --network-badge: #5065e4;
-  --proxy-pink: '#FF79F2';
+  --proxy-pink: #FF79F2;
   --org-primary-bg: radial-gradient(151.92% 127.02% at 15.32% 21.04%, rgba(179, 121, 223, 0.20) 0%, rgba(204, 88, 84, 0.02) 77.08%, rgba(179, 121, 223, 0.20) 100%);
   --bg-success: #06D6A01A;
   --bg-failure: #E639461A;
@@ -457,4 +457,8 @@ td {
 
 .ant-dropdown-menu-item {
   margin-bottom: 8px !important;
+}
+
+.ant-collapse-content-box {
+  padding: 0 !important;
 }

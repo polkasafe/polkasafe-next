@@ -55,23 +55,9 @@ const Address: React.FC<IAddressComponent> = ({
 	return (
 		<div className=' flex items-center gap-x-3'>
 			{isProxy ? (
-				withBadge ? (
-					<Badge
-						count='Proxy'
-						offset={[-45, 0]}
-						className='border-none'
-						color='#FF79F2'
-					>
-						<Identicon
-							className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
-							value={address}
-							size={iconSize}
-							theme='polkadot'
-						/>
-					</Badge>
-				) : (
+				(
 					<Identicon
-						className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
+						className='rounded-full border-2 border-primary bg-transparent p-1'
 						value={address}
 						size={iconSize}
 						theme='polkadot'
@@ -144,6 +130,9 @@ const Address: React.FC<IAddressComponent> = ({
 								/>
 								{network}
 							</div>
+						)}
+						{isProxy && withBadge && (
+							<div className='rounded-lg py-0 px-[6px] text-highlight flex items-center justify-center bg-proxy-pink text-[10px] font-semibold'>Proxy</div>
 						)}
 					</div>
 					<div className='text-text-secondary flex items-center gap-x-3 text-xs font-normal max-sm:text-[8px]'>

@@ -31,8 +31,6 @@ export const AddMultisigsToOrganisation = () => {
 				availableSignatories={availableSignatories}
 				onSubmit={onCreateMultisigSubmit}
 			/>
-			{linkedMultisig &&
-				linkedMultisig.map((multisig) => <div key={multisig.address}>{multisig.name || multisig.address}</div>)}
 
 			<LinkMultisigOrganisation
 				networks={networks}

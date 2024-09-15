@@ -75,23 +75,70 @@ export const LinkMultisig = ({
 						selectedNetwork={selectedNetwork}
 					/>
 				</p>
-				<p className='text-sm text-text-secondary'>
+				<p className='text-sm text-text-secondary mb-4'>
 					Already have a MultiSig? You can link your existing multisigs with a few simple steps
 				</p>
 
-				{Boolean(linkedMultisig.length) && <Typography variant={ETypographyVariants.h3}>Linked Multisig</Typography>}
+				{/* {Boolean(linkedMultisig.length) && <Typography className='text-text-secondary' variant={ETypographyVariants.h3}>Linked Multisig</Typography>} */}
 
-				{linkedMultisig.map((multisig) => (
-					<div>
-						<div>{multisig.address}</div>
-						<Button onClick={() => handleRemoveSubmit({ multisig })}>Remove</Button>
-					</div>
-				))}
-				<Divider />
+				<div className='flex flex-col gap-y-3 mb-4'>
+					{linkedMultisig.map((multisig) => (
+							multisig.proxy && multisig.proxy.length > 0 ? 
+							<Collapse
+								className='border-none rounded-xl'
+								items={[
+									{
+										key: multisig.address,
+										label: (
+											<Address
+												address={multisig.address}
+												name={multisig.name}
+												network={multisig.network}
+												isMultisig
+												withBadge={false}
+											/>
+										),
+										children: multisig.proxy && (
+											<div className='flex flex-col gap-y-3 p-4 pl-12 relative'>
+												{multisig.proxy.map((item) => (
+													<div className='py-3 px-4 rounded-xl border border-text-disabled flex justify-between relative'>
+														<div className='absolute w-[24px] h-[50px] rounded-es-[11px] border-b-[2px] border-l-[2px] border-primary left-[-25px] top-[-16px]' />
+														<Address
+															address={item.address}
+															network={multisig.network}
+															name={item.name}
+															isProxy
+															withBadge={false}
+														/>
+														<Button className='bg-bg-secondary border-none text-white' onClick={() => handleRemoveSubmit({ multisig })}>Unlink</Button>
+													</div>
+												))}
+											</div>
+										),
+										extra: <Button className='bg-bg-secondary border-none text-white' onClick={() => handleRemoveSubmit({ multisig })}>Unlink Multisig</Button>
+									}
+								]}
+							/>
+							: 
+							<div className='border border-primary rounded-xl py-3 px-4 flex items-center justify-between'>
+								<Address
+									address={multisig.address}
+									name={multisig.name}
+									network={multisig.network}
+									isMultisig
+									withBadge={false}
+								/>
+								<Button className='bg-bg-secondary border-none text-white' onClick={() => handleRemoveSubmit({ multisig })}>Unlink Multisig</Button>
+							</div>
+					))}
+
+				</div>
+
 				<div className='flex flex-col gap-y-3'>
 					{availableMultisig.map((multisig) => (
+						multisig.proxy && multisig.proxy.length > 0 ? 
 						<Collapse
-							className='border border-primary rounded-xl'
+							className='border-none rounded-xl'
 							items={[
 								{
 									key: multisig.address,
@@ -100,25 +147,41 @@ export const LinkMultisig = ({
 											address={multisig.address}
 											name={multisig.name}
 											network={multisig.network}
+											isMultisig
+											withBadge={false}
 										/>
 									),
 									children: multisig.proxy && (
-										<div className='flex flex-col gap-y-3'>
-											{multisig.proxy.map((item) => (
-												<div className='p-2 rounded-xl border border-text-secondary'>
+										<div className='flex flex-col gap-y-3 p-4 pl-12 relative'>
+											{[...multisig.proxy, ...multisig.proxy].map((item, i) => (
+												<div className='py-3 px-4 rounded-xl border border-text-disabled flex justify-between relative'>
+													<div className={`absolute w-[24px] h-[74px] ${i === 0 ? 'h-[74px] top-[-44px]' : 'h-[90px] top-[-60px]'} rounded-es-[11px] border-b-[2px] border-l-[2px] border-primary left-[-25px]`} />
 													<Address
 														address={item.address}
 														network={multisig.network}
 														name={item.name}
+														isProxy
 													/>
+													<Button className='bg-highlight border-none text-label' onClick={() => handleSubmit({ multisig })}>Link</Button>
 												</div>
 											))}
 										</div>
 									),
-									extra: <Button onClick={() => handleSubmit({ multisig })}>Link</Button>
+									extra: <Button className='bg-highlight border-none text-label' onClick={() => handleSubmit({ multisig })}>Link Multisig</Button>
 								}
 							]}
 						/>
+						: 
+						<div className='border border-primary rounded-xl py-3 px-4 flex items-center justify-between'>
+							<Address
+								address={multisig.address}
+								name={multisig.name}
+								network={multisig.network}
+								isMultisig
+								withBadge={false}
+							/>
+							<Button className='bg-highlight border-none text-label' onClick={() => handleSubmit({ multisig })}>Link Multisig</Button>
+						</div>
 					))}
 				</div>
 				<Divider />
