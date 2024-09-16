@@ -321,7 +321,7 @@ export function SubstrateLoginForm() {
 							<QrDisplayPayload
 								cmd={isQrHashed ? 1 : 2}
 								address={address}
-								genesisHash={apis[vaultNetwork]?.api?.genesisHash}
+								genesisHash={apis[vaultNetwork]?.api?.genesisHash as Uint8Array}
 								payload={qrPayload}
 							/>
 						</div>
