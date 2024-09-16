@@ -27,7 +27,6 @@ async function Dashboard({ searchParams }: IDashboard) {
 
 	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network) && _organisation) {
 		const { multisig, history, queue } = await getMultisigDataAndTransactions(_multisig, _network);
-		console.log('multisig', multisig, 'history', history, 'queue', queue);
 		if (!multisig) {
 			// redirect('/404');
 			console.log('problem 2');
@@ -44,6 +43,8 @@ async function Dashboard({ searchParams }: IDashboard) {
 				multisig={multisig}
 				transactions={history.transactions || []}
 				queueTransactions={queue.transactions || []}
+				tab={(_tab as ETransactionTab) || ETransactionTab.QUEUE}
+				id={_organisation}
 			/>
 		);
 	}
@@ -53,7 +54,7 @@ async function Dashboard({ searchParams }: IDashboard) {
 		return (
 			<OrganisationDashboard
 				id={_organisation}
-				selectedTab={(_tab as ETransactionTab) || ETransactionTab.HISTORY}
+				selectedTab={(_tab as ETransactionTab) || ETransactionTab.QUEUE}
 			/>
 		);
 	}

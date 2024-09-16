@@ -8,6 +8,16 @@ import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collections';
 
+const getValidProxy = (proxy: string | Array<{ address: string }>) => {
+	return typeof proxy === 'string'
+		? [{ address: proxy, name: '' }]
+		: (proxy || [])
+				.map((proxy: { address: string } | string) =>
+					typeof proxy === 'string' ? { address: proxy, name: '' } : proxy
+				)
+				.filter((proxy: { address: string }) => Boolean(proxy.address));
+};
+
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	const { headers } = req;
 	const address = headers.get('x-address');
@@ -48,14 +58,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 						network: data.network,
 						threshold: data.threshold,
 						signatories: data.signatories,
-						proxy:
-							data.proxy && typeof data.proxy === 'string'
-								? [{ address: data.proxy, name: '' }]
-								: (data.proxy || [])
-										.map((proxy: { address: string } | string) =>
-											typeof 'string' ? { address: proxy, name: '' } : proxy
-										)
-										.filter((proxy: { address: string }) => Boolean(proxy.address))
+						proxy: data.proxy ? getValidProxy(data.proxy) : []
 					};
 				}) || [];
 			const multisigs = (await Promise.all(multisigsPromise)).filter((a) => Boolean(a));

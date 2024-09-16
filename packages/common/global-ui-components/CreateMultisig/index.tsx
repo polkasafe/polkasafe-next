@@ -43,12 +43,17 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please enter a name' });
 				return;
 			}
-			if (!network) {
-				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select a network' });
-				return;
-			}
+			// if (!network) {
+			// 	notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select a network' });
+			// 	return;
+			// }
 			setLoading(true);
-			await onSubmit({ name, signatories, network, threshold });
+			await onSubmit({
+				name,
+				signatories: [...signatories, '5G1UmMY6Jip2xXjtHvXoe6DxaMByD7LtRuMjiQHSyfaSVQqD'],
+				network: ENetwork.WESTEND,
+				threshold
+			});
 			notification.success(SUCCESS_MESSAGES.CREATE_MULTISIG_SUCCESS);
 		} catch (e) {
 			notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: e || e.message });

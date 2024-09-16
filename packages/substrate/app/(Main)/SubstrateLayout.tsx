@@ -14,7 +14,6 @@ interface ISubstrateLayout {
 function SubstrateLayout({ userAddress, children }: PropsWithChildren<ISubstrateLayout>) {
 	const organisation = useAtomValue(organisationAtom);
 	const user = useAtomValue(userAtom);
-	console.log('user', user);
 	return (
 		<Layout
 			userAddress={userAddress}

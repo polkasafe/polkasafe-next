@@ -67,6 +67,13 @@ export const getMultisigByOrganisation = async ({ organisations }: { organisatio
 
 	return request('/getMultisigByOrganisation', {}, { method: 'POST', body });
 };
+export const getOrganisationsByUser = async ({ address }: { address: string }) => {
+	const body = JSON.stringify({
+		address
+	});
+
+	return request('/getOrganisationsByUser', {}, { method: 'POST', body });
+};
 
 export const getOrganisationAssets = async ({ organisationId, address, signature }: IGetOrganisationProps) =>
 	getOrganisationAsset({ organisationId, address, signature });

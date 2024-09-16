@@ -5,24 +5,11 @@ import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-import { INotificationPreferences, IOrganisation, IUser, IUserResponse } from '@common/types/substrate';
+import { INotificationPreferences, IUser, IUserResponse } from '@common/types/substrate';
 import { ECHANNEL, EUserType } from '@common/enum/substrate';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
-import { ORGANISATION_COLLECTION, USER_COLLECTION } from '@common/db/collections';
-
-const getOrganisations = async (address: string) => {
-	const organisations = await ORGANISATION_COLLECTION.where('members', 'array-contains', address).get();
-	return organisations.docs.map((doc: any) => {
-		const data = doc.data();
-		return {
-			name: data.name,
-			id: doc.id,
-			image: data.imageUri,
-			members: [...new Set(...[data.members])]
-		} as IOrganisation;
-	});
-};
+import { USER_COLLECTION } from '@common/db/collections';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	const { headers } = req;
@@ -61,10 +48,9 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (doc.exists) {
 			const data = doc.data();
 			if (data && data.created_at) {
-				const organisations = await getOrganisations(substrateAddress);
 				const resUser: IUserResponse = {
 					address: data?.address || substrateAddress,
-					organisations: organisations || null,
+					organisations: [],
 					type: EUserType.SUBSTRATE,
 					signature: signature as string
 				};

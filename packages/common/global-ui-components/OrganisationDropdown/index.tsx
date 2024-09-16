@@ -58,7 +58,9 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 						children: item.multisigs?.map((m) => ({
 							key: m.address,
 							label: (
-								<div className={`${m.address === multisigId && network === m.network && item.id === organisationId ? 'bg-highlight rounded-lg p-2' : ''}`}>
+								<div
+									className={`${m.address === multisigId && network === m.network && item.id === organisationId ? 'bg-highlight rounded-lg p-2' : ''}`}
+								>
 									<Link
 										href={MULTISIG_DASHBOARD_URL({ multisig: m.address, network: m.network, organisationId: item.id })}
 									>

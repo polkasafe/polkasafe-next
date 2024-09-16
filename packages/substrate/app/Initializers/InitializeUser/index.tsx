@@ -5,7 +5,7 @@
 'use client';
 
 import { IOrganisation } from '@common/types/substrate';
-import { getMultisigByOrganisation } from '@sdk/polkasafe-sdk/src';
+import { getMultisigByOrganisation, getOrganisationsByUser } from '@sdk/polkasafe-sdk/src';
 import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
 import { useSetAtom } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
@@ -22,12 +22,12 @@ function InitializeUser({ userAddress, signature, organisations }: IInitializeUs
 	const setAtom = useSetAtom(userAtom);
 
 	useEffect(() => {
-		if (!organisations || organisations.length === 0) {
+		if (!userAddress) {
 			return;
 		}
 		const handleUser = async () => {
-			const orgDetails = (await getMultisigByOrganisation({
-				organisations: organisations.map((org) => org.id)
+			const orgDetails = (await getOrganisationsByUser({
+				address: userAddress
 			})) as { data: Array<IOrganisation> };
 			setAtom({
 				address: userAddress,
@@ -36,7 +36,7 @@ function InitializeUser({ userAddress, signature, organisations }: IInitializeUs
 			});
 		};
 		handleUser();
-	}, [organisations]);
+	}, [userAddress]);
 
 	return null;
 }

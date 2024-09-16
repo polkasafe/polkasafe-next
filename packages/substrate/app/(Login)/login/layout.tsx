@@ -17,8 +17,6 @@ export default function LoginLayout({ children }: PropsWithChildren) {
 		if (organisations.length > 0) {
 			redirect(ORGANISATION_DASHBOARD_URL({ id: organisations[0].id }));
 		}
-		const address = user.address?.[0] || '';
-		redirect(CREATE_ORGANISATION_URL);
 	}
 	return (
 		<html lang='en'>

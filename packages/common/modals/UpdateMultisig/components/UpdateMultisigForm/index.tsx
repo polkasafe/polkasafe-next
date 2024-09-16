@@ -10,8 +10,7 @@ import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import ActionButton from '@common/global-ui-components/ActionButton';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-import { AddressInput } from '@common/global-ui-components/AddressInput';
-import { ENetwork } from '@common/enum/substrate';
+// import { AddressInput } from '@common/global-ui-components/AddressInput';
 
 interface IUpdateMultisigForm {
 	multisig: IMultisig;
@@ -32,12 +31,12 @@ export const UpdateMultisigForm = ({
 	const [loading, setLoading] = useState(false);
 
 	const [form] = Form.useForm();
-	console.log('multisig', addresses);
+	console.log('multisig', addressesOptions);
 
 	const handleSubmit = async () => {
 		const values = form.getFieldsValue();
 		const signatories = addresses;
-		const threshold = values.threshold;
+		const { threshold } = values;
 		try {
 			setLoading(true);
 			await onSubmit({
@@ -127,10 +126,15 @@ export const UpdateMultisigForm = ({
 					]}
 				>
 					<div className='flex gap-2'>
-						<AddressInput
-							addresses={addressesOptions}
-							network={multisig.network}
+						<Input
+							placeholder='Enter address'
+							name='address'
 						/>
+						{/* <AddressInput
+							addresses={addressesOptions}
+							placeholder='Enter Address'
+							network={multisig.network}
+						/> */}
 						<Button
 							variant={EButtonVariant.PRIMARY}
 							onClick={() => {
@@ -162,7 +166,7 @@ export const UpdateMultisigForm = ({
 				</Form.Item>
 				<Form.Item
 					label='Threshold'
-					name={'threshold'}
+					name='threshold'
 					initialValue={multisig.threshold}
 					rules={[
 						{ required: true, message: 'Threshold is required' },
@@ -176,8 +180,7 @@ export const UpdateMultisigForm = ({
 						}),
 						() => ({
 							validator(_, value) {
-								console.log('value', value, addresses.length);
-								if (isNaN(Number(value))) {
+								if (Number.isNaN(value)) {
 									return Promise.reject(new Error('Enter a valid number'));
 								}
 								if (Number(value) > addresses.length) {

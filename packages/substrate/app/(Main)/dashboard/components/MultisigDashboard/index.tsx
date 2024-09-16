@@ -6,14 +6,19 @@ import OverviewCard from './components/OverviewCard';
 import TransactionCard from '../TransactionCard';
 import { IMultisig, ITransaction } from '@common/types/substrate';
 import SelectAccount from '@substrate/app/(Main)/dashboard/components/MultisigDashboard/components/SelectAccount';
+import { ActionAndDetails } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails';
+import { ETransactionTab } from '@common/enum/substrate';
+import { Suspense } from 'react';
 
 interface IMultisigDashboardProps {
 	multisig: IMultisig;
 	transactions: Array<ITransaction>;
 	queueTransactions: Array<ITransaction>;
+	tab: ETransactionTab;
+	id: string;
 }
 
-function MultisigDashboard({ multisig, transactions, queueTransactions }: IMultisigDashboardProps) {
+function MultisigDashboard({ multisig, transactions, queueTransactions, id, tab }: IMultisigDashboardProps) {
 	return (
 		<div>
 			<div className='grid grid-cols-3 gap-x-6'>
@@ -31,20 +36,16 @@ function MultisigDashboard({ multisig, transactions, queueTransactions }: IMulti
 					<SelectAccount multisig={multisig} />
 				</div>
 			</div>
-			<div className='flex gap-3'>
-				<div className='bg-bg-secondary'>
-					<h1>History Transactions:</h1>
-					<div className='p-2'>
-						<TransactionCard transactions={transactions} />
-					</div>
-				</div>
-				<div className='bg-bg-secondary'>
-					<h1>Queue Transactions:</h1>
-					<div className='p-2'>
-						<TransactionCard transactions={queueTransactions} />
-					</div>
-				</div>
-			</div>
+
+			<Suspense key={JSON.stringify(multisig)}>
+				<ActionAndDetails
+					multisigs={[multisig]}
+					organisationId={id}
+					selectedTab={tab}
+					multisig={multisig.address}
+					network={multisig.network}
+				/>
+			</Suspense>
 		</div>
 	);
 }

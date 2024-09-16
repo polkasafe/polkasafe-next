@@ -28,7 +28,6 @@ export const OrganisationDetailForm = () => {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-async-promise-executor
 			return new Promise(async (resolve) => {
 				setLoading(true);
-				console.log('file', file);
 				const form = new FormData();
 				form.append('image', file, `${file.name}`);
 				const res = await fetch(`https://api.imgbb.com/1/upload?key=${NEXT_PUBLIC_IMBB_KEY}`, {

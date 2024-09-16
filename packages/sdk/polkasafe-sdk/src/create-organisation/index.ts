@@ -46,7 +46,7 @@ export function createOrganisation({
 		state,
 		taxNumber
 	);
-	if (!name || !description) {
+	if (!name) {
 		throw new Error('Invalid address or network');
 	}
 

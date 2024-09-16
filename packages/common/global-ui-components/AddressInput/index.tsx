@@ -1,9 +1,9 @@
-import isValidSubstrateAddress from '@common/utils/isValidRequest';
 import { Select } from 'antd';
 import Address from '@common/global-ui-components/Address';
 import { ENetwork } from '@common/enum/substrate';
 import { IAddressBook } from '@common/types/substrate';
 import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 
 interface IAddressInput {
 	addresses: Array<IAddressBook>;
@@ -13,7 +13,7 @@ interface IAddressInput {
 
 export const AddressInput = ({ addresses, placeholder, network }: IAddressInput) => {
 	const handleSearch = (search: string) => {
-		if (!isValidSubstrateAddress(search)) {
+		if (getSubstrateAddress(search) === null) {
 			return;
 		}
 		addresses.push({ address: search, name: DEFAULT_ADDRESS_NAME });

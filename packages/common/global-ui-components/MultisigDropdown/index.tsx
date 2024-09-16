@@ -10,7 +10,6 @@ interface IMultisigDropdown {
 
 export const MultisigDropdown = ({ multisigs, onChange }: IMultisigDropdown) => {
 	const [selectedMultisig, setSelectedMultisig] = useState<IMultisig>(multisigs[0]);
-	console.log(selectedMultisig, onChange);
 	const [selectedProxy, setSelectedProxy] = useState<string | null>(selectedMultisig?.proxy?.[0]?.address || null);
 
 	return (

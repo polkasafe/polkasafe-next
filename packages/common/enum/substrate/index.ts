@@ -133,7 +133,9 @@ export enum ETxType {
 	TRANSFER = 'Transfer',
 	APPROVE = 'Approve',
 	FUND = 'Fund',
-	CANCEL = 'Cancel'
+	CANCEL = 'Cancel',
+	ADD_PROXY = 'Add Proxy',
+	REMOVE_PROXY = 'Remove Proxy'
 }
 
 export enum ETransactionTab {

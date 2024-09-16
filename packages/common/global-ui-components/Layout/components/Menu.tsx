@@ -13,7 +13,7 @@ import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';
 import { IOrganisation } from '@common/types/substrate';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import OrganisationDropdown from '@common/global-ui-components/OrganisationDropdown';
-import { Divider } from 'antd';
+import { Divider, Skeleton } from 'antd';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { CREATE_ORGANISATION_URL } from '@substrate/app/global/end-points';
 
@@ -65,11 +65,13 @@ const Menu = ({ userAddress, organisation, organisations }: IMenuProps) => {
 
 				<section>
 					<h2 className={styles.menu}>Account</h2>
-					{organisations && organisations.length > 0 && (
+					{organisations && organisations.length > 0 ? (
 						<OrganisationDropdown
 							organisations={organisations}
 							selectedOrganisation={organisation}
 						/>
+					) : (
+						<Skeleton />
 					)}
 				</section>
 

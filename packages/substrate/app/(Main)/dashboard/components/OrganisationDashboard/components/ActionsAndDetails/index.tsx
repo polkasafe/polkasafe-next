@@ -9,16 +9,18 @@ import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { twMerge } from 'tailwind-merge';
 import DownIcon from '@common/assets/icons/down.svg';
 import { IMultisig } from '@common/types/substrate';
-import { ETransactionTab } from '@common/enum/substrate';
+import { ENetwork, ETransactionTab } from '@common/enum/substrate';
 import Link from 'next/link';
-import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
+import { MULTISIG_DASHBOARD_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import { QuickHistory } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/QuickHistory';
 import { QuickQueue } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/QuickQueue';
 import QuickMultisigs from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/Multisigs';
 
 interface IDashboardTransactionProps {
 	multisigs: Array<IMultisig>;
+	multisig?: string;
 	organisationId: string;
+	network?: ENetwork;
 	selectedTab: ETransactionTab;
 }
 
@@ -28,23 +30,38 @@ const styles = {
 	filterButton: 'py-3 px-5 font-bold border-2 text-text-outline-primary flex gap-2 items-center'
 };
 
-export function ActionAndDetails({ multisigs, organisationId, selectedTab }: IDashboardTransactionProps) {
+export function ActionAndDetails({
+	multisigs,
+	organisationId,
+	selectedTab,
+	multisig,
+	network
+}: IDashboardTransactionProps) {
 	const tabs = [
 		{
 			label: 'Queue',
 			tab: ETransactionTab.QUEUE,
-			link: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.QUEUE })
+			link:
+				multisig && network
+					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.QUEUE })
+					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.QUEUE })
 		},
 		{
 			label: 'Multisig',
 			tab: ETransactionTab.MULTISIGS,
-			link: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MULTISIGS })
+			link:
+				multisig && network
+					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.MULTISIGS })
+					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MULTISIGS })
 		},
 		{
 			label: 'Transaction History',
 			tab: ETransactionTab.HISTORY,
-			link: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.HISTORY })
-		},
+			link:
+				multisig && network
+					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.HISTORY })
+					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.HISTORY })
+		}
 	];
 
 	return (

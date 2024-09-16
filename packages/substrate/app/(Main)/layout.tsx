@@ -4,7 +4,6 @@
 import '@common/styles/globals.scss';
 import NextTopLoader from 'nextjs-toploader';
 import React, { PropsWithChildren } from 'react';
-import { Layout } from '@common/global-ui-components/Layout';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 import { LOGIN_URL } from '@substrate/app/global/end-points';
 import { redirect } from 'next/navigation';
@@ -33,11 +32,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
 								organisations={user.organisations}
 							/>
 							<NextTopLoader />
-							<SubstrateLayout
-								userAddress={user.address[0]}
-							>
-								{children}
-							</SubstrateLayout>
+							<SubstrateLayout userAddress={user.address[0]}>{children}</SubstrateLayout>
 						</QueryProvider>
 					</LayoutWrapper>
 				</Provider>

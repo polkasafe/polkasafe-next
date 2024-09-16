@@ -8,6 +8,11 @@ import { useState } from 'react';
 import Address from '@common/global-ui-components/Address';
 import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
 import { useAtomValue } from 'jotai';
+import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
+import { ETxType, Wallet } from '@common/enum/substrate';
+import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
+import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
+import { ApiPromise } from '@polkadot/api';
 
 interface ISignatories {
 	multisigs: Array<IMultisig>;
@@ -33,12 +38,58 @@ const columns = [
 
 export const Signatories = ({ multisigs }: ISignatories) => {
 	const organisation = useAtomValue(organisationAtom);
+	const user = useAtomValue(userAtom);
+	const { getApi } = useAllAPI();
 	const addresses = organisation?.addressBook || [];
 
 	const [selectedMultisig, setSelectedMultisig] = useState<IMultisig>(multisigs[0]);
 	const [selectedProxy, setSelectedProxy] = useState<string | null>(selectedMultisig?.proxy?.[0]?.address || null);
 
-	const handleUpdateMultisig = async () => {};
+	const handleUpdateMultisig = async (value: {
+		signatories: Array<string>;
+		threshold: number;
+		proxyAddress?: string;
+	}) => {
+		const { signatories, threshold, proxyAddress } = value;
+		if (
+			selectedMultisig.signatories.sort().join(',') === signatories.sort().join(',') &&
+			selectedMultisig.threshold === threshold
+		) {
+			return;
+		}
+
+		const api = getApi(selectedMultisig.network);
+		if (!api?.api || !user?.address) {
+			console.log('API not found', api, user);
+			return;
+		}
+
+		const wallet = (localStorage.getItem('wallet') as Wallet) || Wallet.POLKADOT;
+
+		// add proxy to new multisig
+		await initiateTransaction({
+			wallet,
+			type: ETxType.ADD_PROXY,
+			api: api.api as ApiPromise,
+			data: null,
+			multisig: selectedMultisig,
+			sender: user.address,
+			proxyAddress,
+			newSignatories: signatories,
+			newThreshold: threshold
+		});
+
+		// remove proxy from old multisig
+		await initiateTransaction({
+			wallet,
+			type: ETxType.REMOVE_PROXY,
+			api: api.api as ApiPromise,
+			data: null,
+			multisig: selectedMultisig,
+			sender: user.address,
+			proxyAddress
+		});
+	};
 
 	return (
 		<div className='flex flex-col gap-4 pt-5'>

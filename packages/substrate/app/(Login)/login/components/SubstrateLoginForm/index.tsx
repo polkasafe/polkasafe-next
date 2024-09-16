@@ -185,8 +185,6 @@ export function SubstrateLoginForm() {
 				setLoading(false);
 				setSigning(false);
 
-				console.log('USER DATA', userData);
-
 				// Update atom state
 				setAtom({
 					address: substrateAddress,

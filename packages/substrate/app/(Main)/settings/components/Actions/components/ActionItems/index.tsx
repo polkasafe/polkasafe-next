@@ -11,6 +11,7 @@ interface IActionItems {
 
 export const ActionItems = ({ selectedTab }: IActionItems) => {
 	const organisation = useAtomValue(organisationAtom);
+	console.log('organisation', organisation);
 
 	if (!organisation) {
 		return <div>Loading...</div>;

@@ -44,12 +44,15 @@ export const ORGANISATION_TRANSACTION_URL = ({
 export const MULTISIG_DASHBOARD_URL = ({
 	multisig,
 	network,
-	organisationId
+	organisationId,
+	tab
 }: {
 	multisig: string;
 	network: string;
 	organisationId: string;
-}) => `/dashboard?_organisation=${organisationId}&_multisig=${multisig}&_network=${network}`;
+	tab?: ETransactionTab;
+}) =>
+	`/dashboard?_organisation=${organisationId}&_multisig=${multisig}&_network=${network}&_tab=${tab || ETransactionTab.QUEUE}`;
 export const ORGANISATION_DASHBOARD_URL = ({ id, tab }: { id: string; tab?: ETransactionTab }) =>
 	`/dashboard?_organisation=${id}&_tab=${tab || ETransactionTab.QUEUE}`;
 export const CREATE_ORGANISATION_URL = `/create-organisation`;
