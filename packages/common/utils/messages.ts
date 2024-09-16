@@ -52,6 +52,14 @@ export const ERROR_MESSAGES = {
 	CREATE_ORGANISATION_FAILED: {
 		message: 'Create Organisation failed',
 		description: 'Create Organisation failed'
+	},
+	INVALID_ADDRESS: {
+		message: 'Invalid Address',
+		description: 'Address is invalid'
+	},
+	UPDATE_MULTISIG_FAILED: {
+		message: 'Update Multisig failed',
+		description: 'Update Multisig failed'
 	}
 };
 

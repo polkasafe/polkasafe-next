@@ -54,7 +54,7 @@ export default function Button({ variant, className, fullWidth, children, ...pro
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'flex items-center text-failure text-sm font-normal bg-[#e63946]/[0.1] border-none outline-none rounded-lg min-w-[120px] justify-center',
+							'flex items-center text-failure text-sm font-normal bg-[#e63946]/[0.1] border-none outline-none rounded-lg justify-center',
 							fullWidth && 'w-full',
 							className
 						)}

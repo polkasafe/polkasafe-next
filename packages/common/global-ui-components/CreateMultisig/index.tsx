@@ -68,7 +68,10 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 					layout='vertical'
 					onFinish={handleSubmit}
 				>
-					<SelectNetwork networks={networks} />
+					<SelectNetwork
+						networks={networks}
+						selectedNetwork={ENetwork.POLKADOT}
+					/>
 
 					{createMultisigFormFields.map((field) => (
 						<Form.Item

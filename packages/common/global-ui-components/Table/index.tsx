@@ -1,15 +1,5 @@
 import { Table as AntdTable } from 'antd';
-import styled from 'styled-components';
 import { IAsset } from '@common/types/substrate';
-
-const StyledTable = styled(AntdTable)`
-	.ant-table-content {
-		background-color: var(--bg-main);
-	}
-	.ant-table-row > .ant-table-cell-row-hover {
-		background-color: var(--bg-main) !important;
-	}
-`;
 
 type TColumns = {
 	title: string;
@@ -37,7 +27,7 @@ function Table({ columns, dataSource }: ITableProps) {
 		multisig: asset.multisigId?.split('-')?.[0] || ''
 	}));
 	return (
-		<StyledTable
+		<AntdTable
 			rowClassName='bg-bg-main'
 			pagination={false}
 			className='w-full bg-bg-main'

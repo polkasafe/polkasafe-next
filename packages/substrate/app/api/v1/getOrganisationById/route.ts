@@ -47,7 +47,15 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 						address: data.address,
 						network: data.network,
 						threshold: data.threshold,
-						signatories: data.signatories
+						signatories: data.signatories,
+						proxy:
+							data.proxy && typeof data.proxy === 'string'
+								? [{ address: data.proxy, name: '' }]
+								: (data.proxy || [])
+										.map((proxy: { address: string } | string) =>
+											typeof 'string' ? { address: proxy, name: '' } : proxy
+										)
+										.filter((proxy: { address: string }) => Boolean(proxy.address))
 					};
 				}) || [];
 			const multisigs = (await Promise.all(multisigsPromise)).filter((a) => Boolean(a));

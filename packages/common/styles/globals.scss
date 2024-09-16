@@ -462,3 +462,10 @@ td {
 .ant-collapse-content-box {
   padding: 0 !important;
 }
+
+.ant-table-content {
+  background-color: var(--bg-main);
+}
+.ant-table-row > .ant-table-cell-row-hover {
+  background-color: var(--bg-main) !important;
+}

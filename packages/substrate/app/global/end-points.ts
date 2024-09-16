@@ -51,7 +51,7 @@ export const MULTISIG_DASHBOARD_URL = ({
 	organisationId: string;
 }) => `/dashboard?_organisation=${organisationId}&_multisig=${multisig}&_network=${network}`;
 export const ORGANISATION_DASHBOARD_URL = ({ id, tab }: { id: string; tab?: ETransactionTab }) =>
-	`/dashboard?_organisation=${id}&_tab=${tab || ETransactionTab.HISTORY}`;
+	`/dashboard?_organisation=${id}&_tab=${tab || ETransactionTab.QUEUE}`;
 export const CREATE_ORGANISATION_URL = `/create-organisation`;
 export const SETTINGS_URL = ({ organisationId, tab }: { organisationId: string; tab: ESettingsTab }) =>
 	`/settings?_organisation=${organisationId}&_tab=${tab}`;

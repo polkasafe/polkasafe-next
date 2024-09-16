@@ -198,7 +198,7 @@ export function SubstrateLoginForm() {
 					router.push(ORGANISATION_DASHBOARD_URL({ id: userData.organisations[0].id }));
 					return;
 				}
-				router.push(CREATE_ORGANISATION_URL({ address: substrateAddress }));
+				router.push(CREATE_ORGANISATION_URL);
 			}
 		} catch (error) {
 			console.log('ERROR OCCURED', error);

@@ -55,14 +55,12 @@ const Address: React.FC<IAddressComponent> = ({
 	return (
 		<div className=' flex items-center gap-x-3'>
 			{isProxy ? (
-				(
-					<Identicon
-						className='rounded-full border-2 border-primary bg-transparent p-1'
-						value={address}
-						size={iconSize}
-						theme='polkadot'
-					/>
-				)
+				<Identicon
+					className='rounded-full border-2 border-primary bg-transparent p-1'
+					value={address}
+					size={iconSize}
+					theme='polkadot'
+				/>
 			) : isMultisig ? (
 				withBadge ? (
 					<Badge
@@ -132,7 +130,9 @@ const Address: React.FC<IAddressComponent> = ({
 							</div>
 						)}
 						{isProxy && withBadge && (
-							<div className='rounded-lg py-0 px-[6px] text-highlight flex items-center justify-center bg-proxy-pink text-[10px] font-semibold'>Proxy</div>
+							<div className='rounded-lg py-0 px-[6px] text-highlight flex items-center justify-center bg-proxy-pink text-[10px] font-semibold'>
+								Proxy
+							</div>
 						)}
 					</div>
 					<div className='text-text-secondary flex items-center gap-x-3 text-xs font-normal max-sm:text-[8px]'>

@@ -6,16 +6,6 @@
 /* eslint-disable sort-keys */
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	async redirects() {
-		return [
-			{
-				// TODO: Remove default avail redirect when other networks are live
-				source: '/avail/collection',
-				destination: '/',
-				permanent: true
-			}
-		];
-	},
 	async headers() {
 		return [
 			{
