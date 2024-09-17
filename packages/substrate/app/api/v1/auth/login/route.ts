@@ -27,6 +27,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (!isValid) return NextResponse.json({ error }, { status: 400 });
 
 		const cookie = cookies();
+		const { currentOrganisation = null } = await req.json();
 
 		// default notification preferences
 		const DEFAULT_NOTIFICATION_PREFERENCES: INotificationPreferences = {
@@ -51,7 +52,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 				const resUser: IUserResponse = {
 					address: data?.address?.[0] || substrateAddress,
 					type: EUserType.SUBSTRATE,
-					signature: signature as string
+					signature: signature as string,
+					currentOrganisation
 				};
 
 				if (!data.notification_preferences) {
@@ -79,7 +81,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const newUserResponse: IUserResponse = {
 			address: substrateAddress,
 			type: EUserType.SUBSTRATE,
-			signature: signature as string
+			signature: signature as string,
+			currentOrganisation
 		};
 
 		await USER_COLLECTION.doc(substrateAddress).set(newUser, { merge: true });

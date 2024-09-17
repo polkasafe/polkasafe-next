@@ -42,34 +42,16 @@ export const getMultisigDataAndTransactions = async (address: string, network: s
 	// fetch multisig data and transactions
 	console.log('getMultisigDataAndTransactions', address, network);
 
-	const multisigPromise = getMultisigDataByMultisigAddress({ address, network });
-	const transactionsPromise = getHistoryTransactions({ multisigs: [`${address}_${network}`], page: 1, limit: 10 });
-	const queueTransactionPromise = getQueueTransactions({ multisigs: [`${address}_${network}`], page: 1, limit: 10 });
-
-	// using Promise.all to fetch all data in parallel
-	const [multisigData, transactionsData, queueTransactionData] = await Promise.all([
-		multisigPromise,
-		transactionsPromise,
-		queueTransactionPromise
-	]);
+	const multisigData = await getMultisigDataByMultisigAddress({ address, network });
 
 	// parsing multisig data
 	const { data: multisig, error: multisigError } = multisigData as { data: IDBTransaction; error: string };
 
-	const { data: transactions, error: transactionsError } = transactionsData;
-
-	const { data, error: queueTransactionsError } = queueTransactionData;
-
-	if (multisigError || transactionsError || queueTransactionsError) {
-		return { error: multisigError || transactionsError || queueTransactionsError };
+	if (multisigError) {
+		return { error: multisigError };
 	}
 
-	const historyTx = transactions?.transactions?.map(parseTransactions);
-	const queueTx = data?.transactions.map(parseTransactions);
-
 	return {
-		multisig: parseMultisig(multisig),
-		history: { transactions: historyTx, count: transactions?.transactions?.length || 0 },
-		queue: { transactions: queueTx, count: queueTx?.length || 0 }
+		multisig: parseMultisig(multisig)
 	};
 };

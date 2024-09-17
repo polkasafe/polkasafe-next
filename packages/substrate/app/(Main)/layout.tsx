@@ -20,6 +20,9 @@ export default function MainLayout({ children }: PropsWithChildren) {
 	if (!user) {
 		redirect(LOGIN_URL);
 	}
+	if (!user.currentOrganisation) {
+		redirect('/create-organisation');
+	}
 	return (
 		<html lang='en'>
 			<body>
@@ -27,12 +30,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
 					<LayoutWrapper>
 						<QueryProvider>
 							<Initializers
-								userAddress={user.address[0]}
+								userAddress={user.address}
 								signature={user.signature}
-								organisations={user.organisations}
+								organisations={[]}
 							/>
 							<NextTopLoader />
-							<SubstrateLayout userAddress={user.address[0]}>{children}</SubstrateLayout>
+							<SubstrateLayout userAddress={user.address}>{children}</SubstrateLayout>
 						</QueryProvider>
 					</LayoutWrapper>
 				</Provider>

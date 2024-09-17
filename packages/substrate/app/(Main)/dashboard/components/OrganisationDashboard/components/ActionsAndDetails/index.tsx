@@ -40,41 +40,39 @@ export function ActionAndDetails({
 	network
 }: IDashboardTransactionProps) {
 	const [organisation] = useOrganisation();
+	const isSingleMultisig = multisig && network;
+	console.log(organisation);
 	const multisigData = multisigs.find((item) => item.address === multisig);
-	const members = (multisig && network ? multisigData?.signatories : organisation?.members) || [];
+	const members = (!isSingleMultisig ? multisigData?.signatories : organisation?.members) || [];
 
 	const tabs = [
 		{
 			label: 'Queue',
 			tab: ETransactionTab.QUEUE,
-			link:
-				multisig && network
-					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.QUEUE })
-					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.QUEUE })
+			link: isSingleMultisig
+				? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.QUEUE })
+				: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.QUEUE })
 		},
 		{
 			label: 'Transaction History',
 			tab: ETransactionTab.HISTORY,
-			link:
-				multisig && network
-					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.HISTORY })
-					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.HISTORY })
+			link: isSingleMultisig
+				? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.HISTORY })
+				: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.HISTORY })
 		},
 		{
 			label: 'Multisig',
 			tab: ETransactionTab.MULTISIGS,
-			link:
-				multisig && network
-					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.MULTISIGS })
-					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MULTISIGS })
+			link: isSingleMultisig
+				? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.MULTISIGS })
+				: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MULTISIGS })
 		},
 		{
 			label: 'Members',
 			tab: ETransactionTab.MEMBERS,
-			link:
-				multisig && network
-					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.MEMBERS })
-					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MEMBERS })
+			link: isSingleMultisig
+				? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.MEMBERS })
+				: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MEMBERS })
 		}
 	];
 
@@ -110,10 +108,16 @@ export function ActionAndDetails({
 					</Button>
 				</div>
 			</div>
-			{selectedTab === ETransactionTab.QUEUE && <QuickQueue multisigs={multisigs} />}
-			{selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs multisigs={multisigs} />}
+			{selectedTab === ETransactionTab.QUEUE && (
+				<QuickQueue multisigs={!isSingleMultisig ? organisation?.multisigs || [] : multisigs} />
+			)}
+			{selectedTab === ETransactionTab.MULTISIGS && (
+				<QuickMultisigs multisigs={!isSingleMultisig ? organisation?.multisigs || [] : multisigs} />
+			)}
 			{selectedTab === ETransactionTab.MEMBERS && <Members members={members} />}
-			{selectedTab === ETransactionTab.HISTORY && <QuickHistory multisigs={multisigs} />}
+			{selectedTab === ETransactionTab.HISTORY && (
+				<QuickHistory multisigs={!isSingleMultisig ? organisation?.multisigs || [] : multisigs} />
+			)}
 		</div>
 	);
 }
