@@ -11,12 +11,18 @@ import { SubstrateAddress } from '@common/global-ui-components/SubstrateAddress'
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { LOGIN_URL } from '@substrate/app/global/end-points';
 
 interface IUserPopover {
 	userAddress: string;
-	logout?: () => void;
+	logout?: () => Promise<void>;
 }
 const UserPopover = ({ userAddress, logout }: IUserPopover) => {
+	const router = useRouter();
+	const [loading, setLoading] = useState(false);
+
 	if (!userAddress) {
 		return (
 			<Link
@@ -28,6 +34,19 @@ const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 			</Link>
 		);
 	}
+
+	const handleLogout = async () => {
+		try {
+			setLoading(true);
+			if (logout) {
+				await logout();
+			}
+			router.push(LOGIN_URL);
+		} catch (error) {
+			console.error(error);
+			setLoading(false);
+		}
+	};
 
 	return (
 		<SlideInMotion>
@@ -60,7 +79,8 @@ const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 						{Boolean(logout) && (
 							<Button
 								variant={EButtonVariant.DANGER}
-								onClick={logout}
+								onClick={handleLogout}
+								loading={loading}
 								className='w-full text-text-primary bg-failure p-2 text-sm font-normal mt-3'
 							>
 								Disconnect

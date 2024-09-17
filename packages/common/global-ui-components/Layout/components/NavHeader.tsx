@@ -26,7 +26,9 @@ function NavHeader({ userAddress, logout }: INavHeaderProps) {
 				{userAddress && (
 					<UserPopover
 						userAddress={userAddress}
-						logout={logout}
+						logout={async () => {
+							logout();
+						}}
 					/>
 				)}
 				<DonateButton />

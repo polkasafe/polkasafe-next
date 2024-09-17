@@ -26,23 +26,16 @@ async function Dashboard({ searchParams }: IDashboard) {
 	}
 
 	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network) && _organisation) {
-		const { multisig, history, queue } = await getMultisigDataAndTransactions(_multisig, _network);
+		const { multisig } = await getMultisigDataAndTransactions(_multisig, _network);
 		if (!multisig) {
 			// redirect('/404');
 			console.log('problem 2');
 			return <></>;
 		}
 
-		if (!history && !queue) {
-			// redirect('/404');
-			console.log('problem 3');
-			return <></>;
-		}
 		return (
 			<MultisigDashboard
 				multisig={multisig}
-				transactions={history.transactions || []}
-				queueTransactions={queue.transactions || []}
 				tab={(_tab as ETransactionTab) || ETransactionTab.QUEUE}
 				id={_organisation}
 			/>

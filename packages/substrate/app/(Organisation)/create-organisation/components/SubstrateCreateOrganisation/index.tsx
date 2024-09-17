@@ -138,7 +138,9 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 						{user && user.address && (
 							<UserPopover
 								userAddress={user.address}
-								logout={() => logout({ address: user.address, signature: user.signature })}
+								logout={async () => {
+									logout({ address: user.address, signature: user.signature });
+								}}
 							/>
 						)}
 					</div>

@@ -12,13 +12,11 @@ import { Suspense } from 'react';
 
 interface IMultisigDashboardProps {
 	multisig: IMultisig;
-	transactions: Array<ITransaction>;
-	queueTransactions: Array<ITransaction>;
 	tab: ETransactionTab;
 	id: string;
 }
 
-function MultisigDashboard({ multisig, transactions, queueTransactions, id, tab }: IMultisigDashboardProps) {
+function MultisigDashboard({ multisig, id, tab }: IMultisigDashboardProps) {
 	return (
 		<div className='flex flex-col gap-5 h-full'>
 			<div className='grid grid-cols-3 gap-x-6'>
