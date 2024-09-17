@@ -14,7 +14,8 @@ export const menuItems = [
 	{
 		baseURL: '/dashboard',
 		icon: <HomeIcon />,
-		title: 'Home'
+		title: 'Home',
+		tab: ETransactionTab.QUEUE
 	},
 	{
 		baseURL: '/transactions',

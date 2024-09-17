@@ -22,6 +22,7 @@ interface IOrganisationDashboard {
 
 export default async function OrganisationDashboard({ id, selectedTab }: IOrganisationDashboard) {
 	const data = await getOrganisationData(id);
+	console.log('organisation data:', data);
 
 	return (
 		<Secure>

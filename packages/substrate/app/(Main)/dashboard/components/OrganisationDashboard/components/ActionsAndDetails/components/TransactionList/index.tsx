@@ -6,6 +6,7 @@ import Typography, { ETypographyVariants } from '@common/global-ui-components/Ty
 import { IDashboardTransaction } from '@common/types/substrate';
 import { ENetwork, ETransactionOptions, ETransactionType } from '@common/enum/substrate';
 import TransactionRow from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList/components/TransactionRow';
+import { Empty } from 'antd';
 
 interface ITransactionList {
 	transactions: Array<IDashboardTransaction>;
@@ -35,7 +36,6 @@ const columns = [
 	}
 ];
 export function TransactionList({ transactions = [], txType }: ITransactionList) {
-	console.log('transactions', transactions);
 	return (
 		<>
 			<div className='flex bg-bg-secondary my-1 p-3 rounded-lg mr-1'>

@@ -41,7 +41,6 @@ export function ActionAndDetails({
 }: IDashboardTransactionProps) {
 	const [organisation] = useOrganisation();
 	const isSingleMultisig = multisig && network;
-	console.log(organisation);
 	const multisigData = multisigs.find((item) => item.address === multisig);
 	const members = (!isSingleMultisig ? multisigData?.signatories : organisation?.members) || [];
 
@@ -108,16 +107,10 @@ export function ActionAndDetails({
 					</Button>
 				</div>
 			</div>
-			{selectedTab === ETransactionTab.QUEUE && (
-				<QuickQueue multisigs={!isSingleMultisig ? organisation?.multisigs || [] : multisigs} />
-			)}
-			{selectedTab === ETransactionTab.MULTISIGS && (
-				<QuickMultisigs multisigs={!isSingleMultisig ? organisation?.multisigs || [] : multisigs} />
-			)}
+			{selectedTab === ETransactionTab.QUEUE && <QuickQueue multisigs={multisigs} />}
+			{selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs multisigs={multisigs} />}
 			{selectedTab === ETransactionTab.MEMBERS && <Members members={members} />}
-			{selectedTab === ETransactionTab.HISTORY && (
-				<QuickHistory multisigs={!isSingleMultisig ? organisation?.multisigs || [] : multisigs} />
-			)}
+			{selectedTab === ETransactionTab.HISTORY && <QuickHistory multisigs={multisigs} />}
 		</div>
 	);
 }

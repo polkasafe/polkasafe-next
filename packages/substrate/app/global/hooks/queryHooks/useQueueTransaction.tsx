@@ -26,6 +26,7 @@ export function useQueueTransaction({
 
 	return useQuery({
 		queryKey: [`QueueTransaction${JSON.stringify({ multisigs: multisigIds, page, limit })}`],
-		queryFn: handleQueueTransaction
+		queryFn: handleQueueTransaction,
+		enabled: multisigIds.length > 0
 	});
 }

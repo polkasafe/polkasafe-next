@@ -65,7 +65,7 @@ const getDataFromDB = async (docId: string) => {
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	try {
-		const address = getUserFromCookie()?.address;
+		const { address } = await req.json();
 		if (!address) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}

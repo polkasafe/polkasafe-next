@@ -7,7 +7,8 @@ import Collapse from '@common/global-ui-components/Collapse';
 import { SelectNetwork } from '@common/global-ui-components/SelectNetwork';
 import { ILinkMultisig, IMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES } from '@common/utils/messages';
-import { Divider, Empty, Spin } from 'antd';
+import { Divider, Spin } from 'antd';
+import { Empty } from '@common/global-ui-components/Empty';
 import useNotification from 'antd/es/notification/useNotification';
 import { useState } from 'react';
 // use availableSignatories to populate the select options
@@ -150,13 +151,7 @@ export const LinkMultisig = ({
 
 				<Spin spinning={loading}>
 					<div className='flex flex-col gap-y-2 max-h-80 overflow-x-auto px-3'>
-						{availableMultisig.length === 0 && (
-							<Empty
-								className='text-white'
-								image={Empty.PRESENTED_IMAGE_SIMPLE}
-								description='No onChain Multisig available on this network'
-							/>
-						)}
+						{availableMultisig.length === 0 && <Empty description={'No onChain Multisig available on this network'} />}
 						{availableMultisig.length > 0 &&
 							availableMultisig.map((multisig) =>
 								multisig.proxy && multisig.proxy.length > 0 ? (

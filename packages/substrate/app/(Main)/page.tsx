@@ -17,6 +17,7 @@ export interface IHomeProps {
 export default function Home({ searchParams }: IHomeProps) {
 	const user = getUserFromCookie();
 	const { _multisig, _organisation, _network } = searchParams;
+
 	if (_multisig && _network && _organisation) {
 		redirect(MULTISIG_DASHBOARD_URL({ multisig: _multisig, network: _network, organisationId: _organisation }));
 	}
