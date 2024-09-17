@@ -156,6 +156,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 					<Select
 						placeholder='Select a Proxy'
 						value={selectedProxy}
+						className="custom-select"
 						onChange={(value) => setSelectedProxy(value)}
 						options={selectedMultisig.proxy
 							.map((proxy) =>
