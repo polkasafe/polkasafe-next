@@ -7,6 +7,7 @@ import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collections';
+import { IDBOrganisation } from '@common/types/substrate';
 
 const getValidProxy = (proxy: string | Array<{ address: string }>) => {
 	return typeof proxy === 'string'
@@ -42,11 +43,26 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const organisation = await ORGANISATION_COLLECTION.doc(organisationId).get();
 
 		if (organisation.exists) {
-			const data = organisation.data();
-			const multisigsData = [...new Set(data?.multisigs || [])] as Array<string>;
+			const data = organisation.data() as IDBOrganisation;
+			data.members = [...new Set(data?.members || [])] as Array<string>;
+			const multisigIds = (data?.multisigs || [])
+				.map((multisigId: string | any) => {
+					let id = multisigId;
+					if (typeof multisigId !== 'string' && multisigId.address && multisigId.network) {
+						id = `${multisigId.address}_${multisigId.network}`;
+					}
+
+					if (id.split('_').length <= 1) {
+						return null;
+					}
+					return id;
+				})
+				.filter((a: string | null) => Boolean(a));
+
+			const uniqueMultisigIds = [...new Set(multisigIds)] as Array<string>;
 
 			const multisigsPromise =
-				multisigsData.map(async (multisigId: string) => {
+				uniqueMultisigIds.map(async (multisigId: string) => {
 					const multisig = await MULTISIG_COLLECTION.doc(multisigId).get();
 					const data = multisig.data() || null;
 					if (!data) {

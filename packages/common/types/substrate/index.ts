@@ -190,7 +190,6 @@ export interface IUser {
 
 export interface IUserResponse {
 	address: string;
-	organisations: Array<IOrganisation>;
 	type: EUserType;
 	signature?: string;
 }

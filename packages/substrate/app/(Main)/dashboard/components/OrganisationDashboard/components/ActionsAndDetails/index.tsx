@@ -16,6 +16,7 @@ import { QuickHistory } from '@substrate/app/(Main)/dashboard/components/Organis
 import { QuickQueue } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/QuickQueue';
 import QuickMultisigs from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/Multisigs';
 import Members from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/Members';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 
 interface IDashboardTransactionProps {
 	multisigs: Array<IMultisig>;
@@ -38,6 +39,10 @@ export function ActionAndDetails({
 	multisig,
 	network
 }: IDashboardTransactionProps) {
+	const [organisation] = useOrganisation();
+	const multisigData = multisigs.find((item) => item.address === multisig);
+	const members = (multisig && network ? multisigData?.signatories : organisation?.members) || [];
+
 	const tabs = [
 		{
 			label: 'Queue',
@@ -107,7 +112,7 @@ export function ActionAndDetails({
 			</div>
 			{selectedTab === ETransactionTab.QUEUE && <QuickQueue multisigs={multisigs} />}
 			{selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs multisigs={multisigs} />}
-			{selectedTab === ETransactionTab.MEMBERS && <Members />}
+			{selectedTab === ETransactionTab.MEMBERS && <Members members={members} />}
 			{selectedTab === ETransactionTab.HISTORY && <QuickHistory multisigs={multisigs} />}
 		</div>
 	);

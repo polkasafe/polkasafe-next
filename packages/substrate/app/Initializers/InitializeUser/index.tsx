@@ -17,8 +17,8 @@ interface IInitializeUserProps {
 	organisations: Array<IOrganisation>;
 }
 
-function InitializeUser({ userAddress, signature, organisations }: IInitializeUserProps) {
-	useHydrateAtoms([[userAtom, { address: userAddress, signature, organisations }]]);
+function InitializeUser({ userAddress, signature }: IInitializeUserProps) {
+	useHydrateAtoms([[userAtom, { address: userAddress, signature, organisations: [] }]]);
 	const setAtom = useSetAtom(userAtom);
 
 	useEffect(() => {

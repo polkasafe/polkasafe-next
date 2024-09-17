@@ -49,8 +49,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			const data = doc.data();
 			if (data && data.created_at) {
 				const resUser: IUserResponse = {
-					address: data?.address || substrateAddress,
-					organisations: [],
+					address: data?.address?.[0] || substrateAddress,
 					type: EUserType.SUBSTRATE,
 					signature: signature as string
 				};
@@ -79,7 +78,6 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		};
 		const newUserResponse: IUserResponse = {
 			address: substrateAddress,
-			organisations: [],
 			type: EUserType.SUBSTRATE,
 			signature: signature as string
 		};

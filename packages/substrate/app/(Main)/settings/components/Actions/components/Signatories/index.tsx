@@ -6,12 +6,11 @@ import { findMultisig } from '@common/utils/findMultisig';
 import { Select, Table } from 'antd';
 import { useState } from 'react';
 import Address from '@common/global-ui-components/Address';
-import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
-import { useAtomValue } from 'jotai';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
 import { ETxType, Wallet } from '@common/enum/substrate';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
-import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { ApiPromise } from '@polkadot/api';
 
 interface ISignatories {
@@ -37,8 +36,8 @@ const columns = [
 ];
 
 export const Signatories = ({ multisigs }: ISignatories) => {
-	const organisation = useAtomValue(organisationAtom);
-	const user = useAtomValue(userAtom);
+	const [organisation] = useOrganisation();
+	const [user] = useUser();
 	const { getApi } = useAllAPI();
 	const addresses = organisation?.addressBook || [];
 

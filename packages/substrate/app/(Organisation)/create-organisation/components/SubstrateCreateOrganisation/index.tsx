@@ -74,7 +74,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 	const fetchMultisig = async (network: ENetwork) => {
 		console.log('fetchMultisig', network, user);
 		if (!user) return;
-		const data = (await getMultisigsByAddress({ address: user.address?.[0], network })) as { data: Array<IMultisig> };
+		const data = (await getMultisigsByAddress({ address: user.address, network })) as { data: Array<IMultisig> };
 
 		const leftMultisig = (data?.data || []).filter(
 			(multisig) =>
@@ -133,7 +133,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 				{context}
 				<div className='flex flex-col'>
 					<div className='flex justify-end mb-10 pr-20'>
-						{user && user.address && <UserPopover userAddress={user.address?.[0]} />}
+						{user && user.address && <UserPopover userAddress={user.address} />}
 					</div>
 					<div className='flex w-full justify-center flex-1 overflow-y-auto'>
 						<CreateOrganisation />

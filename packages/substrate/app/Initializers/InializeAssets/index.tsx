@@ -4,8 +4,8 @@
 
 'use client';
 
-import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
-import { useAtomValue, useSetAtom } from 'jotai/react';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
+import { useSetAtom } from 'jotai/react';
 import { useCallback, useEffect } from 'react';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 // import axios from 'axios';
@@ -15,7 +15,7 @@ import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 
 function InitializeAssets() {
-	const organisation = useAtomValue(organisationAtom);
+	const [organisation] = useOrganisation();
 	const { getApi } = useAllAPI();
 	const setAtom = useSetAtom(assetsAtom);
 

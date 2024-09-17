@@ -9,23 +9,23 @@ import DashboardCard from '@common/global-ui-components/DashboardCard';
 import { IMultisig, ISendTransaction } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
-import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
 import { useAtomValue } from 'jotai';
 import { DashboardProvider } from '@common/context/DashboarcContext';
 import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
-import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { BN } from '@polkadot/util';
 import NewTransaction from '@common/modals/NewTransaction';
 
 export function DashboardOverview() {
 	const assets = useAtomValue(assetsAtom);
 	const currency = useAtomValue(selectedCurrencyAtom);
-	const organisation = useAtomValue(organisationAtom);
+	const [organisation] = useOrganisation();
 	const org = organisation;
 	const { getApi } = useAllAPI();
-	const user = useAtomValue(userAtom);
+	const [user] = useUser();
 
 	const handleNewTransaction = async (values: ISendTransaction) => {
 		if (!user) {

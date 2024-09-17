@@ -44,8 +44,8 @@ const getQueueTransactions = async (multisigAddress: string, network: string, pa
 			callData: transaction?.call_data
 				? transaction?.call_data
 				: dbTransactionDoc.exists && dbTransaction?.callData
-				? dbTransaction?.callData
-				: '',
+					? dbTransaction?.callData
+					: '',
 			callHash: transaction.call_hash,
 			created_at: dayjs(transaction.block_timestamp * 1000).toDate(),
 			network,

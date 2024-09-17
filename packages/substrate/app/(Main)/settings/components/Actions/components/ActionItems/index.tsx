@@ -1,8 +1,7 @@
 import { ESettingsTab } from '@common/enum/substrate';
 import { Notifications } from '@substrate/app/(Main)/settings/components/Actions/components/Notifications';
 import { Signatories } from '@substrate/app/(Main)/settings/components/Actions/components/Signatories';
-import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
-import { useAtomValue } from 'jotai';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import React from 'react';
 
 interface IActionItems {
@@ -10,7 +9,7 @@ interface IActionItems {
 }
 
 export const ActionItems = ({ selectedTab }: IActionItems) => {
-	const organisation = useAtomValue(organisationAtom);
+	const [organisation] = useOrganisation();
 	console.log('organisation', organisation);
 
 	if (!organisation) {

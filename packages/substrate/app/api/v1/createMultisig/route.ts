@@ -14,7 +14,7 @@ const updateDB = async (multisigs: Array<IDBMultisig>) => {
 	try {
 		Promise.all(
 			multisigs.map(async (multisig) =>
-				MULTISIG_COLLECTION.doc(`${multisig.address}_${multisig.network}`).set({ multisigs }, { merge: true })
+				MULTISIG_COLLECTION.doc(`${multisig.address}_${multisig.network}`).set(multisigs, { merge: true })
 			)
 		);
 	} catch (err: unknown) {
@@ -24,7 +24,7 @@ const updateDB = async (multisigs: Array<IDBMultisig>) => {
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	try {
-		const { name, signatories, network, threshold } = await req.json();
+		const { name, signatories, network, threshold, proxy = [] } = await req.json();
 		if (!name || !signatories || !network || !threshold) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
@@ -50,7 +50,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			threshold,
 			type: EUserType.SUBSTRATE,
 			created_at: new Date(),
-			updated_at: new Date()
+			updated_at: new Date(),
+			proxy
 		};
 		updateDB([payload]);
 		return NextResponse.json({ data: payload, error: null });

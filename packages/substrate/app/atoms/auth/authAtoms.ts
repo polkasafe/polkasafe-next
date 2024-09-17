@@ -3,6 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { IConnectedUser } from '@common/types/substrate';
-import { atom } from 'jotai';
+import { atom, useAtom } from 'jotai';
 
 export const userAtom = atom<IConnectedUser | null>(null);
+
+export const useUser = () => useAtom(userAtom);

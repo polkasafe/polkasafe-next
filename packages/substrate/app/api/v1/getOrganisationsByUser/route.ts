@@ -53,7 +53,12 @@ const getDataFromDB = async (docId: string) => {
 			}
 			return null;
 		});
-		return { ...orgData, id: docId, multisigs: (await Promise.all(multisigsData)).filter((a) => Boolean(a)) };
+		const data = {
+			name: orgData?.name || '',
+			id: docId,
+			multisigs: (await Promise.all(multisigsData)).filter((a) => Boolean(a))
+		};
+		return data;
 	}
 	return null;
 };

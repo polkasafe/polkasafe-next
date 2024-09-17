@@ -12,6 +12,7 @@ import { DEFAULT_MULTISIG_NAME } from '@common/constants/defaults';
 import { IDBMultisig, IProxy } from '@common/types/substrate';
 import { onChainMultisigsByAddress } from '@substrate/app/api/api-utils/onChainMultisigsByAddress';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { dbProxyData } from '@substrate/app/api/api-utils/dbProxyData';
 
 const updateDB = async (docId: string, multisig: IDBMultisig) => {
 	const multisigRef = await MULTISIG_COLLECTION.doc(String(docId)).get();
@@ -19,19 +20,8 @@ const updateDB = async (docId: string, multisig: IDBMultisig) => {
 	if (!multisigRef.exists) {
 		// if the multisig is not exists in our db, update it
 		const newMultisigRef = MULTISIG_COLLECTION.doc(docId);
-		newMultisigRef.set(multisig);
+		await newMultisigRef.set(multisig, { merge: true });
 	}
-
-	await Promise.all(
-		(multisig.proxy || [])?.map(async (proxy) => {
-			const proxyId = `${proxy.address}_${docId}`;
-			const proxyRef = await PROXY_COLLECTION.doc(proxyId).get();
-			if (!proxyRef.exists) {
-				const newProxyRef = PROXY_COLLECTION.doc(proxyId);
-				await newProxyRef.set({ multisigId: docId, address: proxy.address, name: proxy.name });
-			}
-		})
-	);
 };
 
 const getProxyDataFromDB = async (docId: string) => {
@@ -130,11 +120,25 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			allMultisig.push(newMultisig);
 		}
 
-		await Promise.all(allMultisig);
+		// await Promise.all(allMultisig);
+		const multisigData = await Promise.all(
+			allMultisig.map(async (multisig) => {
+				const docId = `${multisig.address}_${multisig.network}`;
+				const proxyData = (await dbProxyData(docId)) as Array<IProxy>;
+				multisig.proxy = (multisig.proxy || [])?.map((item1) => {
+					const match = proxyData.find((item2) => item2.address === item1.address);
+					if (match) {
+						item1.name = match.name; // Update name with the name from array2
+					}
+					return item1;
+				});
+				return multisig;
+			})
+		);
 
 		return NextResponse.json(
 			{
-				data: allMultisig,
+				data: multisigData,
 				error: null
 			},
 			{ status: 200 }
