@@ -5,11 +5,16 @@ import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-import { INotificationPreferences, IUser, IUserResponse } from '@common/types/substrate';
+import { INotificationPreferences, IOrganisation, IUser, IUserResponse } from '@common/types/substrate';
 import { ECHANNEL, EUserType } from '@common/enum/substrate';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
-import { USER_COLLECTION } from '@common/db/collections';
+import { ORGANISATION_COLLECTION, USER_COLLECTION } from '@common/db/collections';
+
+const getOrganisation = async (address: string) => {
+	const organisations = await ORGANISATION_COLLECTION.where('members', 'array-contains', address).limit(1).get();
+	return organisations.docs.map((doc) => doc.id as string)[0];
+};
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	const { headers } = req;
@@ -49,11 +54,16 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (doc.exists) {
 			const data = doc.data();
 			if (data && data.created_at) {
+				let orgId = currentOrganisation;
+				if (!orgId) {
+					orgId = await getOrganisation(substrateAddress);
+				}
+
 				const resUser: IUserResponse = {
 					address: data?.address?.[0] || substrateAddress,
 					type: EUserType.SUBSTRATE,
 					signature: signature as string,
-					currentOrganisation
+					currentOrganisation: orgId
 				};
 
 				if (!data.notification_preferences) {
