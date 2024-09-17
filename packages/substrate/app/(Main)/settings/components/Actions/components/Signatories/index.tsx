@@ -6,12 +6,15 @@ import { findMultisig } from '@common/utils/findMultisig';
 import { Select, Table } from 'antd';
 import { useState } from 'react';
 import Address from '@common/global-ui-components/Address';
+import { ArrowRightOutlined } from '@ant-design/icons';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
 import { ETxType, Wallet } from '@common/enum/substrate';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { ApiPromise } from '@polkadot/api';
+import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import { DeleteIcon, EditIcon } from '@common/global-ui-components/Icons';
 
 interface ISignatories {
 	multisigs: Array<IMultisig>;
@@ -89,15 +92,26 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 	};
 
 	return (
-		<div className='flex flex-col gap-4 pt-5'>
-			<div className='flex flex-col gap-2'>
-				<Typography
-					variant={ETypographyVariants.p}
-					className='uppercase'
-				>
-					Manage Signatories
-				</Typography>
-				<div className='flex gap-5'>
+		<div className='flex flex-col gap-x-4 gap-y-[48px] pt-5 w-full'>
+			<div className='flex justify-end ml-auto'>
+					{selectedProxy && (
+						<UpdateMultisig
+							className='relative -top-[56px]'
+							multisig={selectedMultisig}
+							proxyAddress={selectedProxy}
+							onSubmit={handleUpdateMultisig}
+							addresses={addresses}
+						/>
+					)}
+			</div>
+			<div className='-mt-[92px] flex justify-between items-center w-full'>
+				<div className='flex flex-col gap-y-3 items-start justify-start'>
+					<Typography
+						variant={ETypographyVariants.p}
+						className='uppercase'
+					>
+						MANAGE MULTISIG
+					</Typography>
 					<Select
 						defaultValue={`${selectedMultisig.address}_${selectedMultisig.network}`}
 						placeholder='Select a person'
@@ -106,6 +120,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 							setSelectedMultisig(multisig);
 							setSelectedProxy(multisig?.proxy?.filter((proxy) => Boolean(proxy.address))?.[0]?.address || null);
 						}}
+
 						options={multisigs.map((multisig) => ({
 							value: `${multisig.address}_${multisig.network}`,
 							label: (
@@ -119,39 +134,50 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 							)
 						}))}
 					/>
-					{selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 && (
-						<Select
-							placeholder='Select a Proxy'
-							value={selectedProxy}
-							onChange={(value) => setSelectedProxy(value)}
-							options={selectedMultisig.proxy
-								.map((proxy) =>
-									proxy.address
-										? {
-												value: `${proxy.address}`,
-												label: (
-													<Address
-														address={proxy.address}
-														network={selectedMultisig.network}
-														isProxy={true}
-														isMultisig={false}
-													/>
-												)
-											}
-										: null
-								)
-								.filter((proxy) => proxy !== null)}
-						/>
-					)}
-					{selectedProxy && (
-						<UpdateMultisig
-							multisig={selectedMultisig}
-							proxyAddress={selectedProxy}
-							onSubmit={handleUpdateMultisig}
-							addresses={addresses}
-						/>
-					)}
 				</div>
+				{selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 && (<div className='flex flex-col items-center justify-center gap-y-2'>
+					<Typography
+						variant={ETypographyVariants.p}
+						className='uppercase'
+					>
+						OR
+					</Typography>
+					<div className='mt-2 rounded-full h-[44px] w-[44px] bg-[#ffffff] text-black opacity-40 flex items-center justify-center'>
+						<ArrowRightOutlined />
+					</div>
+				</div>)}
+				{selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 && (<div className='flex flex-col gap-y-3 items-start'>
+					<Typography
+						variant={ETypographyVariants.p}
+						className='uppercase'
+					>
+						MANAGE PROXY
+					</Typography>
+					<Select
+						className=''
+						placeholder='Select a Proxy'
+						value={selectedProxy}
+						onChange={(value) => setSelectedProxy(value)}
+						options={selectedMultisig.proxy
+							.map((proxy) =>
+								proxy.address
+									? {
+											value: `${proxy.address}`,
+											label: (
+												<Address
+													address={proxy.address}
+													network={selectedMultisig.network}
+													isProxy={true}
+													isMultisig={false}
+												/>
+											)
+										}
+									: null
+							)
+							.filter((proxy) => proxy !== null)}
+					/>
+				</div>)}
+				
 			</div>
 
 			<Table
@@ -160,8 +186,30 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 				columns={columns}
 				dataSource={selectedMultisig.signatories.map((signatory) => ({
 					name: DEFAULT_ADDRESS_NAME,
-					address: signatory,
-					actions: ''
+					address: <Address
+					address={signatory}
+					onlyAddress
+					isMultisig
+					withBadge={false}
+				/>,
+					actions: <div className='flex gap-x-2'>
+						<Button
+								size='small'
+								variant={EButtonVariant.SECONDARY}
+								onClick={() => {}}
+								className='bg bg-[#1A2A42]/[0.1] p-2.5 rounded-lg text-[#3F8CFF] border-none'
+							>
+								<EditIcon />
+							</Button>
+							<Button
+								size='small'
+								variant={EButtonVariant.SECONDARY}
+								onClick={() => {}}
+								className='bg bg-[#e63946]/[0.1] p-2.5 rounded-lg text-failure border-none'
+							>
+								<DeleteIcon />
+							</Button>
+					</div>
 				}))}
 				pagination={false}
 			/>
