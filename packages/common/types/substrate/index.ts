@@ -122,6 +122,12 @@ export interface IConnectedUser {
 	organisations: Array<IOrganisation>;
 }
 
+export interface ICookieUser {
+	address: string;
+	signature: string;
+	currentOrganisation: string;
+}
+
 export interface IGenericResponse<T> {
 	data?: T;
 	error?: string;
@@ -192,6 +198,7 @@ export interface IUserResponse {
 	address: string;
 	type: EUserType;
 	signature?: string;
+	currentOrganisation?: string;
 }
 export interface IResponse<T> {
 	error?: string | null;

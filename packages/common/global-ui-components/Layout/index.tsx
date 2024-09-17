@@ -19,9 +19,10 @@ interface ILayoutProps extends PropsWithChildren {
 	userAddress: string;
 	organisations: Array<IOrganisation>;
 	selectedOrganisation: IOrganisation | null;
+	logout: () => void;
 }
 
-export const Layout = ({ userAddress, organisations, children, selectedOrganisation }: ILayoutProps) => {
+export const Layout = ({ userAddress, organisations, children, selectedOrganisation, logout }: ILayoutProps) => {
 	return (
 		<AntDLayout className={classNames.layoutContainer}>
 			<Sider
@@ -35,7 +36,10 @@ export const Layout = ({ userAddress, organisations, children, selectedOrganisat
 				/>
 			</Sider>
 			<AntDLayout className={classNames.sidebarHeaderAndFooter}>
-				<NavHeader userAddress={userAddress} />
+				<NavHeader
+					userAddress={userAddress}
+					logout={logout}
+				/>
 				<Content className={classNames.content}>{children}</Content>
 				<Footer />
 			</AntDLayout>

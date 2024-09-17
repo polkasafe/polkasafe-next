@@ -10,9 +10,10 @@ const { Header } = AntDLayout;
 
 interface INavHeaderProps {
 	userAddress: string;
+	logout: () => void;
 }
 
-function NavHeader({ userAddress }: INavHeaderProps) {
+function NavHeader({ userAddress, logout }: INavHeaderProps) {
 	const pathname = usePathname();
 
 	return (
@@ -22,7 +23,12 @@ function NavHeader({ userAddress }: INavHeaderProps) {
 			</div>
 			<div className='flex items-center gap-x-3'>
 				<NotificationPopover />
-				{userAddress && <UserPopover userAddress={userAddress} />}
+				{userAddress && (
+					<UserPopover
+						userAddress={userAddress}
+						logout={logout}
+					/>
+				)}
 				<DonateButton />
 				<DocsButton />
 			</div>

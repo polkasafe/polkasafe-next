@@ -26,5 +26,5 @@ export default function Home({ searchParams }: IHomeProps) {
 	if (!user) {
 		redirect(LOGIN_URL);
 	}
-	redirect(ORGANISATION_DASHBOARD_URL({ id: user.organisations[0].id }));
+	redirect(ORGANISATION_DASHBOARD_URL({ id: user.currentOrganisation }));
 }

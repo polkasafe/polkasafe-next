@@ -189,11 +189,11 @@ export function SubstrateLoginForm() {
 				setAtom({
 					address: substrateAddress,
 					signature,
-					organisations: userData.organisations
+					organisations: []
 				});
 
-				if (userData.organisations.length > 0) {
-					router.push(ORGANISATION_DASHBOARD_URL({ id: userData.organisations[0].id }));
+				if (userData.currentOrganisation) {
+					router.push(ORGANISATION_DASHBOARD_URL({ id: userData.currentOrganisation }));
 					return;
 				}
 				router.push(CREATE_ORGANISATION_URL);

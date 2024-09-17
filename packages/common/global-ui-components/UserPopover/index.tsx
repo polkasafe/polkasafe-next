@@ -14,12 +14,9 @@ import Typography, { ETypographyVariants } from '@common/global-ui-components/Ty
 
 interface IUserPopover {
 	userAddress: string;
+	logout?: () => void;
 }
-const UserPopover = ({ userAddress }: IUserPopover) => {
-	const handleDisconnect = () => {
-		// logout();
-	};
-
+const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 	if (!userAddress) {
 		return (
 			<Link
@@ -60,13 +57,15 @@ const UserPopover = ({ userAddress }: IUserPopover) => {
 								copyIcon
 							/>
 						</div>
-						<Button
-							variant={EButtonVariant.DANGER}
-							onClick={handleDisconnect}
-							className='w-full text-text-primary bg-failure p-2 text-sm font-normal mt-3'
-						>
-							Disconnect
-						</Button>
+						{Boolean(logout) && (
+							<Button
+								variant={EButtonVariant.DANGER}
+								onClick={logout}
+								className='w-full text-text-primary bg-failure p-2 text-sm font-normal mt-3'
+							>
+								Disconnect
+							</Button>
+						)}
 					</div>
 				}
 				trigger='click'

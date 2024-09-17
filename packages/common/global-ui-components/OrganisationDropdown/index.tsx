@@ -39,6 +39,10 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 							<Link
 								className='flex items-center'
 								href={ORGANISATION_DASHBOARD_URL({ id: item.id })}
+								onClick={() => {
+									console.log('m', `currentOrganisation`, item.id);
+									localStorage.setItem(`currentOrganisation`, item.id);
+								}}
 							>
 								<div className='flex items-center gap-x-3'>
 									<Image
@@ -64,11 +68,17 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 									<Link
 										href={MULTISIG_DASHBOARD_URL({ multisig: m.address, network: m.network, organisationId: item.id })}
 									>
-										<Address
-											address={m.address}
-											name={m.name}
-											network={m.network || ENetwork.POLKADOT}
-										/>
+										<span
+											onClick={() => {
+												localStorage.setItem(`currentOrganisation`, item.id);
+											}}
+										>
+											<Address
+												address={m.address}
+												name={m.name}
+												network={m.network || ENetwork.POLKADOT}
+											/>
+										</span>
 									</Link>
 								</div>
 							)

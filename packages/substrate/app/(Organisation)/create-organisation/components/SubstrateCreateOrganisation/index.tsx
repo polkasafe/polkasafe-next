@@ -20,6 +20,8 @@ import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import UserPopover from '@common/global-ui-components/UserPopover';
+import { logout } from '@sdk/polkasafe-sdk/src/logout';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 
 export default function SubstrateCreateOrganisation({ user }: { user: IConnectedUser }) {
 	const availableSignatories = useWalletAccounts();
@@ -133,7 +135,12 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 				{context}
 				<div className='flex flex-col'>
 					<div className='flex justify-end mb-10 pr-20'>
-						{user && user.address && <UserPopover userAddress={user.address} />}
+						{user && user.address && (
+							<UserPopover
+								userAddress={user.address}
+								logout={() => logout({ address: user.address, signature: user.signature })}
+							/>
+						)}
 					</div>
 					<div className='flex w-full justify-center flex-1 overflow-y-auto'>
 						<CreateOrganisation />
