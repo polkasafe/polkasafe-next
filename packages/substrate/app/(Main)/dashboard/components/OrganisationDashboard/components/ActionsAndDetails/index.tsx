@@ -15,6 +15,7 @@ import { MULTISIG_DASHBOARD_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/a
 import { QuickHistory } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/QuickHistory';
 import { QuickQueue } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/QuickQueue';
 import QuickMultisigs from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/Multisigs';
+import Members from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/Members';
 
 interface IDashboardTransactionProps {
 	multisigs: Array<IMultisig>;
@@ -53,6 +54,14 @@ export function ActionAndDetails({
 				multisig && network
 					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.MULTISIGS })
 					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MULTISIGS })
+		},
+		{
+			label: 'Members',
+			tab: ETransactionTab.MEMBERS,
+			link:
+				multisig && network
+					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.MEMBERS })
+					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MEMBERS })
 		},
 		{
 			label: 'Transaction History',
@@ -98,6 +107,7 @@ export function ActionAndDetails({
 			</div>
 			{selectedTab === ETransactionTab.QUEUE && <QuickQueue multisigs={multisigs} />}
 			{selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs multisigs={multisigs} />}
+			{selectedTab === ETransactionTab.MEMBERS && <Members />}
 			{selectedTab === ETransactionTab.HISTORY && <QuickHistory multisigs={multisigs} />}
 		</div>
 	);

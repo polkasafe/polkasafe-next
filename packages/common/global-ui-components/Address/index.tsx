@@ -25,7 +25,7 @@ interface IAddressComponent {
 	isProxy?: boolean;
 	signatories?: number;
 	threshold?: number;
-	network: ENetwork;
+	network?: ENetwork;
 	showNetworkBadge?: boolean;
 	addressLength?: number;
 	fullAddress?: boolean;
@@ -43,7 +43,7 @@ const Address: React.FC<IAddressComponent> = ({
 	isProxy,
 	signatories,
 	threshold,
-	network,
+	network = ENetwork.ROCOCO,
 	addressLength,
 	fullAddress,
 	withEmail,
