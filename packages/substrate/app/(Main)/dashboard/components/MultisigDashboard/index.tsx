@@ -20,7 +20,7 @@ interface IMultisigDashboardProps {
 
 function MultisigDashboard({ multisig, transactions, queueTransactions, id, tab }: IMultisigDashboardProps) {
 	return (
-		<div>
+		<div className='flex flex-col gap-5 h-full'>
 			<div className='grid grid-cols-3 gap-x-6'>
 				<div className='col-span-2'>
 					<OverviewCard
@@ -36,16 +36,17 @@ function MultisigDashboard({ multisig, transactions, queueTransactions, id, tab 
 					<SelectAccount multisig={multisig} />
 				</div>
 			</div>
-
-			<Suspense key={JSON.stringify(multisig)}>
-				<ActionAndDetails
-					multisigs={[multisig]}
-					organisationId={id}
-					selectedTab={tab}
-					multisig={multisig.address}
-					network={multisig.network}
-				/>
-			</Suspense>
+			<div className='bg-bg-main rounded-3xl p-5 h-full'>
+				<Suspense key={JSON.stringify(multisig)}>
+					<ActionAndDetails
+						multisigs={[multisig]}
+						organisationId={id}
+						selectedTab={tab}
+						multisig={multisig.address}
+						network={multisig.network}
+					/>
+				</Suspense>
+			</div>
 		</div>
 	);
 }
