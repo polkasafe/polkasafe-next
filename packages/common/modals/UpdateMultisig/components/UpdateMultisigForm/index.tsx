@@ -10,6 +10,7 @@ import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import ActionButton from '@common/global-ui-components/ActionButton';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
 // import { AddressInput } from '@common/global-ui-components/AddressInput';
 
 interface IUpdateMultisigForm {
@@ -71,6 +72,7 @@ export const UpdateMultisigForm = ({
 						<Address
 							address={address}
 							network={multisig.network}
+							name={multisig.name || DEFAULT_ADDRESS_NAME}
 						/>
 						<div className='flex justify-center gap-2'>
 							<Button
