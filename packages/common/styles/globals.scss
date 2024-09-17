@@ -387,16 +387,10 @@ td {
   border: 0.8px dashed rgba(139, 139, 139, 0.70) !important;
   background: #24272E !important;
 }
-.ant-select-focused:where(.css-dev-only-do-not-override-149avxh).ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer) .ant-select-selector {
-  width: 469px !important;
-  height: 69px !important;
-  border-radius: 10px !important;
-  border: 0.8px dashed var(--Primary, #1573FE) !important;
-  background: #1A2A42 !important;
+
+.custom-select-bg {
+  background-color: #1A2A42;
 }
-// :where(.css-dev-only-do-not-override-149avxh).ant-select-single {
-//   width: 50% !important;
-// }
 
 .ant-modal .ant-modal-content {
   background-color: #1b2028 !important;
