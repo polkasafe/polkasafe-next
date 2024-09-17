@@ -53,6 +53,14 @@ export function ActionAndDetails({
 					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.QUEUE })
 		},
 		{
+			label: 'Transaction History',
+			tab: ETransactionTab.HISTORY,
+			link:
+				multisig && network
+					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.HISTORY })
+					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.HISTORY })
+		},
+		{
 			label: 'Multisig',
 			tab: ETransactionTab.MULTISIGS,
 			link:
@@ -67,14 +75,6 @@ export function ActionAndDetails({
 				multisig && network
 					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.MEMBERS })
 					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MEMBERS })
-		},
-		{
-			label: 'Transaction History',
-			tab: ETransactionTab.HISTORY,
-			link:
-				multisig && network
-					? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.HISTORY })
-					: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.HISTORY })
 		}
 	];
 

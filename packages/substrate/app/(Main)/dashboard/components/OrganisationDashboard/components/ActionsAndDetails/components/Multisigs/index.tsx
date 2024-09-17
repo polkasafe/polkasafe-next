@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DEFAULT_MULTISIG_NAME } from "@common/constants/defaults";
+import { DEFAULT_ADDRESS_NAME, DEFAULT_MULTISIG_NAME } from "@common/constants/defaults";
 import Address from "@common/global-ui-components/Address";
 import Typography, { ETypographyVariants } from "@common/global-ui-components/Typography";
 import { IMultisig } from "@common/types/substrate";
@@ -38,7 +38,7 @@ function QuickMultisigs({ multisigs }: { multisigs: IMultisig[] }) {
 							{item.name || DEFAULT_MULTISIG_NAME}
 						</div>
 						<div className="basis-2/6">
-							<Address address={item.address} onlyAddress isMultisig network={item.network} withBadge={false} />
+							<Address address={item.address} name={item.name || DEFAULT_ADDRESS_NAME} onlyAddress isMultisig network={item.network} withBadge={false} />
 						</div>
 					</div>
 				))}
