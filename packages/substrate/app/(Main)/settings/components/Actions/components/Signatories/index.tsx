@@ -104,8 +104,8 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 						/>
 					)}
 			</div>
-			<div className='-mt-[92px] flex justify-between items-center w-full'>
-				<div className='flex flex-col gap-y-3 items-start justify-start'>
+			<div className='-mt-[92px] flex gap-x-[60px] items-center w-full'>
+				<div className={`${selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 ? '' : 'mt-[66px]'} flex flex-col gap-y-3 items-start justify-start`}>
 					<Typography
 						variant={ETypographyVariants.p}
 						className='uppercase'
@@ -135,7 +135,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 						}))}
 					/>
 				</div>
-				{selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 && (<div className='flex flex-col items-center justify-center gap-y-2'>
+				{selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 && (<div className='mt-2 flex flex-col items-center justify-center gap-y-4'>
 					<Typography
 						variant={ETypographyVariants.p}
 						className='uppercase'
@@ -154,9 +154,9 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 						MANAGE PROXY
 					</Typography>
 					<Select
-						className=''
 						placeholder='Select a Proxy'
 						value={selectedProxy}
+						className="custom-select"
 						onChange={(value) => setSelectedProxy(value)}
 						options={selectedMultisig.proxy
 							.map((proxy) =>
@@ -184,7 +184,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 				rowClassName='bg-bg-main'
 				className='w-full bg-bg-main'
 				columns={columns}
-				dataSource={selectedMultisig.signatories.map((signatory) => ({
+				dataSource={selectedMultisig.signatories?.map((signatory) => ({
 					name: DEFAULT_ADDRESS_NAME,
 					address: <Address
 					address={signatory}
