@@ -6,16 +6,29 @@
 
 import { useSetAtom } from 'jotai/react';
 import { useEffect } from 'react';
-import { getCurrencyPrices } from '@sdk/polkasafe-sdk/src';
+import { fetchTokenToUSDPrice, getCurrencyPrices } from '@sdk/polkasafe-sdk/src';
 import { currencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
+import { ENetwork } from '@common/enum/substrate';
+import formatUsdWithUnits from 'common/utils/formatUSDWithUnits';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 function InitializeCurrency() {
 	const setAtom = useSetAtom(currencyAtom);
 
 	useEffect(() => {
 		const handleCurrency = async () => {
+			const usdValues: any = {};
+			for (const network of Object.values(ENetwork)) {
+				// eslint-disable-next-line no-await-in-loop
+				const usdValue = await fetchTokenToUSDPrice(1, network);
+				const formatted = formatUsdWithUnits(usdValue || 0);
+				usdValues[network] = {
+						symbol: networkConstants[network].tokenSymbol,
+						value: formatted && !Number.isNaN(Number(formatted)) ? formatted : 0
+				}
+			}
 			const currencies = await getCurrencyPrices();
-			setAtom(currencies.data);
+			setAtom({ allCurrencyPrices: currencies.data, tokenUsdPrice: usdValues });
 		};
 		handleCurrency();
 	}, []);

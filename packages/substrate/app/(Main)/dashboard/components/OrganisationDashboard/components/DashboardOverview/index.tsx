@@ -6,7 +6,7 @@
 
 import { ETxType, Wallet } from '@common/enum/substrate';
 import DashboardCard from '@common/global-ui-components/DashboardCard';
-import { IMultisig, ISendTransaction } from '@common/types/substrate';
+import { ICurrency, IMultisig, ISendTransaction } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
@@ -14,7 +14,7 @@ import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
 import { useAtomValue } from 'jotai';
 import { DashboardProvider } from '@common/context/DashboarcContext';
-import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
+import { currencyAtom, selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { BN } from '@polkadot/util';
 import NewTransaction from '@common/modals/NewTransaction';
@@ -22,6 +22,7 @@ import NewTransaction from '@common/modals/NewTransaction';
 export function DashboardOverview() {
 	const assets = useAtomValue(assetsAtom);
 	const currency = useAtomValue(selectedCurrencyAtom);
+	const currencyValues = useAtomValue(currencyAtom);
 	const [organisation] = useOrganisation();
 	const org = organisation;
 	const { getApi } = useAllAPI();
@@ -88,7 +89,9 @@ export function DashboardOverview() {
 			onFundMultisig={handleFundTransaction}
 			assets={assets}
 			currency={currency}
+			currencyValues={currencyValues || {} as ICurrency}
 			multisigs={org?.multisigs || []}
+			addressBook={org?.addressBook || []}
 		>
 			<div className='flex flex-col gap-y-6'>
 				<DashboardCard />

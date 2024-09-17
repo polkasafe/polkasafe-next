@@ -1,4 +1,4 @@
-import { IFundMultisig, IMultisig, IMultisigAssets, ISendTransaction } from '@common/types/substrate';
+import { IAddressBook, ICurrency, IFundMultisig, IMultisig, IMultisigAssets, ISendTransaction } from '@common/types/substrate';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 
 interface IDashboardProvider extends PropsWithChildren {
@@ -6,7 +6,9 @@ interface IDashboardProvider extends PropsWithChildren {
 	onFundMultisig: (value: IFundMultisig) => Promise<void>;
 	assets: Array<IMultisigAssets> | null;
 	currency: string;
+	currencyValues: ICurrency;
 	multisigs: Array<IMultisig>;
+	addressBook: IAddressBook[];
 }
 
 export const DashboardContext = createContext({} as IDashboardProvider);
@@ -16,8 +18,10 @@ export function DashboardProvider({
 	onFundMultisig,
 	assets,
 	currency,
+	currencyValues,
 	multisigs,
-	children
+	children,
+	addressBook
 }: IDashboardProvider) {
 	const value = useMemo(
 		() => ({
@@ -25,7 +29,9 @@ export function DashboardProvider({
 			onFundMultisig,
 			assets,
 			currency,
-			multisigs
+			multisigs,
+			addressBook,
+			currencyValues
 		}),
 		[assets, currency, multisigs, onFundMultisig, onNewTransaction]
 	);

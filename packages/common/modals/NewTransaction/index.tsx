@@ -25,7 +25,7 @@ function NewTransaction() {
 				title='New Transaction'
 			>
 				<div className='flex flex-col gap-5'>
-					<NewTransactionForm />
+					<NewTransactionForm onClose={() => setOpenModal(false)} />
 				</div>
 			</Modal>
 		</div>

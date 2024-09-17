@@ -20,6 +20,9 @@ import { getOrganisationAsset } from './get-organisation-assets';
 import { getTransactionsForMultisigs } from './get-transactions-for-multisigs';
 import { handleHeaders } from './utils/handleHeaders';
 import { request } from './utils/request';
+import { networkConstants } from './utils/constants/network_constants';
+import { ENetwork } from '@common/enum/substrate';
+import { SUBSCAN_API_HEADERS } from './utils/constants/subscan_consts';
 
 export const getConnectAddressToken = ({ address }: IConnectAddressTokenProps) => getAddressToken(address);
 
@@ -84,6 +87,30 @@ export const getCurrencyPrices = async () => {
 	);
 	return response.json();
 };
+
+export const fetchTokenToUSDPrice = async (token: number, network: ENetwork) => {
+	try {
+		const response = await fetch(`https://${network}.api.subscan.io/api/open/price_converter`, {
+			body: JSON.stringify({
+				from: networkConstants[network]?.tokenSymbol,
+				quote: 'USD',
+				value: token
+			}),
+			headers: SUBSCAN_API_HEADERS,
+			method: 'POST'
+		});
+
+		const responseJSON = await response.json();
+
+		if (responseJSON.message === 'Success' && responseJSON.data) {
+			return (responseJSON.data.output || '0');
+		}
+	} catch (e) {
+		console.log(e);
+		return '0';
+	}
+	return '0';
+}
 
 export const createMultisig = async ({
 	name,
