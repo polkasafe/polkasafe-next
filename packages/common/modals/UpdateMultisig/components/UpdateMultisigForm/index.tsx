@@ -7,7 +7,7 @@ import getEncodedAddress from '@common/utils/getEncodedAddress';
 import Address from '@common/global-ui-components/Address';
 import { DeleteIcon, EditIcon } from '@common/global-ui-components/Icons';
 import useNotification from 'antd/es/notification/useNotification';
-import { ERROR_MESSAGES } from '@common/utils/messages';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import ActionButton from '@common/global-ui-components/ActionButton';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 // import { AddressInput } from '@common/global-ui-components/AddressInput';
@@ -44,8 +44,9 @@ export const UpdateMultisigForm = ({
 				threshold,
 				proxyAddress
 			});
+			notification.success(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
 		} catch (e) {
-			notification.error(ERROR_MESSAGES.UPDATE_MULTISIG_FAILED);
+			notification.error({ ...ERROR_MESSAGES.UPDATE_MULTISIG_FAILED, description: e.message || e });
 		} finally {
 			setLoading(false);
 		}

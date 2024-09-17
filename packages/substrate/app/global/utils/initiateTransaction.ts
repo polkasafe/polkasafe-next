@@ -4,7 +4,7 @@
 import { ETxType, Wallet } from '@common/enum/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { BN, u8aToHex } from '@polkadot/util';
-import { decodeAddress, encodeAddress, encodeMultiAddress } from '@polkadot/util-crypto';
+import { decodeAddress, encodeAddress, encodeMultiAddress, sortAddresses } from '@polkadot/util-crypto';
 import { IMultisig } from '@common/types/substrate';
 import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
@@ -14,6 +14,7 @@ import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
 import getMultisigInfo from '@substrate/app/global/utils/getMultisigInfo';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import getEncodedAddress from '@common/utils/getEncodedAddress';
 
 interface IGetTransaction {
 	wallet: Wallet;
@@ -41,14 +42,18 @@ export const initiateTransaction = async ({
 	multisig,
 	proxyAddress,
 	isProxy,
-	sender,
+	sender: substrateSender,
 	calldata,
 	callHash,
 	newSignatories,
 	newThreshold
 }: IGetTransaction) => {
 	const { address, network, threshold, signatories: allSignatories } = multisig;
-	const signatories = allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender));
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+	const signatories = sortAddresses(
+		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
 
 	const getTransaction = async (tx: SubmittableExtrinsic<'promise'>) => {
 		const MAX_WEIGHT = (await tx.paymentInfo(address)).weight;
@@ -158,10 +163,13 @@ export const initiateTransaction = async ({
 				encodeAddress(signatory, networkConstants[network].ss58Format)
 			);
 			const multisigAddress = encodeMultiAddress(encodedSignatories, newThreshold);
-			const accountId = u8aToHex(decodeAddress(multisigAddress));
-
+			const accountId = getEncodedAddress(multisigAddress, network);
 			const addProxyTx = api.tx.proxy.addProxy(accountId, 'Any', 0);
-			const mainTx = api.tx.proxy.proxy(proxyAddress, null, addProxyTx);
+
+			const proxyTx = api.tx.proxy.proxy(proxyAddress, null, addProxyTx);
+			const callData = api.createType('Call', proxyTx.method.toHex());
+			const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
+			const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, MAX_WEIGHT as any);
 			await setSigner(api, wallet, network);
 			return executeTx({
 				api,
@@ -177,7 +185,10 @@ export const initiateTransaction = async ({
 
 		case ETxType.REMOVE_PROXY: {
 			const removeProxy = api.tx.proxy.removeProxy(multisig.address, 'Any', 0);
-			const mainTx = api.tx.proxy.proxy(proxyAddress, null, removeProxy);
+			const proxyTx = api.tx.proxy.proxy(proxyAddress, null, removeProxy);
+			const callData = api.createType('Call', proxyTx.method.toHex());
+			const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
+			const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, MAX_WEIGHT as any);
 			await setSigner(api, wallet, network);
 			return executeTx({
 				api,

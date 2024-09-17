@@ -100,6 +100,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 			signature: user.signature
 		};
 		const data = (await createOrganisation(payload)) as { data: IOrganisation };
+		console.log('data', data);
 		if (data?.data?.id) {
 			return router.push(ORGANISATION_DASHBOARD_URL({ id: data?.data.id }));
 		}
@@ -132,7 +133,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 				{context}
 				<div className='flex flex-col'>
 					<div className='flex justify-end mb-10 pr-20'>
-						{user && user.address && <UserPopover userAddress={user.address} />}
+						{user && user.address && <UserPopover userAddress={user.address?.[0]} />}
 					</div>
 					<div className='flex w-full justify-center flex-1 overflow-y-auto'>
 						<CreateOrganisation />

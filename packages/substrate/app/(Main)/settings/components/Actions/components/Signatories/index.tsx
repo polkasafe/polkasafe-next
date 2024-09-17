@@ -55,17 +55,15 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 			selectedMultisig.signatories.sort().join(',') === signatories.sort().join(',') &&
 			selectedMultisig.threshold === threshold
 		) {
-			return;
+			throw new Error('No changes made');
 		}
 
 		const api = getApi(selectedMultisig.network);
 		if (!api?.api || !user?.address) {
-			console.log('API not found', api, user);
-			return;
+			throw new Error('API not found');
 		}
 
 		const wallet = (localStorage.getItem('wallet') as Wallet) || Wallet.POLKADOT;
-
 		// add proxy to new multisig
 		await initiateTransaction({
 			wallet,
