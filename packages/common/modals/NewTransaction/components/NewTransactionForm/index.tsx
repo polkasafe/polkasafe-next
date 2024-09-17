@@ -60,7 +60,6 @@ export function NewTransactionForm() {
 						multisigs={multisigs}
 						onChange={handleMultisig}
 					/>
-					handleMultisig
 					{newTransactionFormFields.map((field) => (
 						<Form.Item
 							label={field.label}

@@ -4,12 +4,12 @@
 
 'use client';
 
-import Table from '@common/global-ui-components/Table';
 import Button from '@common/global-ui-components/Button';
-import { IAsset } from '@common/types/substrate';
+import { IAsset, IMultisigAssets } from '@common/types/substrate';
+import { Table } from 'antd';
 
 interface IAssetsTableProps {
-	dataSource: Array<IAsset>;
+	dataSource: Array<IMultisigAssets>;
 }
 
 function AssetsTable({ dataSource }: IAssetsTableProps) {
@@ -53,6 +53,9 @@ function AssetsTable({ dataSource }: IAssetsTableProps) {
 	];
 	return (
 		<Table
+			rowClassName='bg-bg-main'
+			pagination={false}
+			className='w-full bg-bg-main'
 			columns={assetsColumns}
 			dataSource={dataSource}
 		/>

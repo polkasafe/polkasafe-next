@@ -15,6 +15,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 	const signature = headers.get('x-signature');
 	try {
 		// check if address is valid
+		console.log('address', address, 'signature', signature);
 		const substrateAddress = getSubstrateAddress(String(address));
 		if (!substrateAddress) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });

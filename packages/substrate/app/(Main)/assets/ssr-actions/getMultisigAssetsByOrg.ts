@@ -13,12 +13,12 @@ export const getMultisigAssetsByOrg = async (orgId: string) => {
 		return { assets: [] as Array<IAsset>, error: ERROR_MESSAGES.USER_NOT_LOGGED_IN };
 	}
 	const { data: multisigIds, error: multisigError } = (await getMultisigsByOrganisation({
-		address: user.address[0],
+		address: user.address,
 		signature: user.signature,
 		organisationId: orgId
 	})) as { data: Array<string>; error: string };
 
-	if (!multisigIds.length || multisigError) {
+	if (!multisigIds?.length || multisigError) {
 		return { assets: [] as Array<IAsset>, error: multisigError || ERROR_MESSAGES.NO_MULTISIG_FOUND };
 	}
 

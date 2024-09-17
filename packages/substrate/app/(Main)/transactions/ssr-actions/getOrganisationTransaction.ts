@@ -53,7 +53,7 @@ export const getOrganisationTransactions = async (
 		return { transactions: [], error: ERROR_MESSAGES.USER_NOT_LOGGED_IN };
 	}
 	const data = (await getOrganisationById({
-		address: user.address[0],
+		address: user.address,
 		signature: user.signature,
 		organisationId
 	})) as { data: IOrganisation };

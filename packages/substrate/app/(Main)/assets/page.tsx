@@ -30,19 +30,17 @@ async function Assets({ searchParams }: IAssetsProps) {
 	}
 
 	if (_organisation) {
-		const { assets } = await getMultisigAssetsByOrg(_organisation);
 		return (
 			<Secure organisation={_organisation}>
-				<AssetsTemplate assets={assets} />
+				<AssetsTemplate />
 			</Secure>
 		);
 	}
 
 	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network)) {
-		const { assets } = await getMultisigAssets(_multisig, _network);
-		return <AssetsTemplate assets={assets} />;
+		return <AssetsTemplate />;
 	}
-	return null;
+	return <></>;
 }
 
 export default Assets;

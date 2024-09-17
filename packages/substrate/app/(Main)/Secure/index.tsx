@@ -11,8 +11,5 @@ export default function Secure({ children, organisation }: PropsWithChildren<{ o
 	if (!user) {
 		redirect(LOGIN_URL);
 	}
-	if (organisation && !user.organisations.map((a) => a.id).includes(organisation)) {
-		redirect('/404');
-	}
 	return children;
 }
