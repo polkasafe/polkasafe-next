@@ -9,13 +9,14 @@ interface IUpdateMultisig {
 	multisig: IMultisig;
 	proxyAddress: string;
 	addresses: Array<IAddressBook>;
+	className?: string;
 	onSubmit: (values: any) => Promise<void>;
 }
 
-export const UpdateMultisig = ({ multisig, proxyAddress, onSubmit, addresses }: IUpdateMultisig) => {
+export const UpdateMultisig = ({ multisig, proxyAddress, onSubmit, addresses, className }: IUpdateMultisig) => {
 	const [openModal, setOpenModal] = useState(false);
 	return (
-		<div className='w-full mb-4'>
+		<div className={`w-full mb-4 ${className}`}>
 			<Button
 				variant={EButtonVariant.PRIMARY}
 				icon={<PlusCircleOutlined />}
