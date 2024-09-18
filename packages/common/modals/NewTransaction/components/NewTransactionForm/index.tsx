@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Spin } from 'antd';
+import { Form, Spin, AutoComplete } from 'antd';
 import { newTransactionFormFields } from '@common/modals/NewTransaction/utils/form';
 import { IMultisig, ISendTransactionForm } from '@common/types/substrate';
 import { useDashboardContext } from '@common/context/DashboarcContext';
 import { findMultisig } from '@common/utils/findMultisig';
 import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
-import { AutoComplete } from 'antd';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { CircleArrowDownIcon, CirclePlusIcon, DeleteIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import BN from 'bn.js';
@@ -48,7 +47,6 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 			recipient: ''
 		}
 	]);
-
 
 	// const multisigOptionsWithProxy: IMultisig[] = [];
 
@@ -275,118 +273,114 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 					<div>
 						<div className='flex flex-col gap-y-3 mb-2'>
 							{recipientAndAmount.map(({ recipient }, i) => (
-														<article
-															key={recipient}
-															className='w-[500px] flex items-start gap-x-2 max-sm:w-full max-sm:flex-col'
+								<article
+									key={recipient}
+									className='w-[500px] flex items-start gap-x-2 max-sm:w-full max-sm:flex-col'
+								>
+									<div className='w-[55%] max-sm:w-full'>
+										<label className='text-label font-normal text-xs leading-[13px] block mb-[5px]'>Recipient*</label>
+										<Form.Item
+											name='recipient'
+											rules={[{ required: true }]}
+											help={
+												!recipient && 'Recipient Address is Required'
+												// (!validRecipient[i] && 'Please add a valid Address')
+											}
+											className='border-0 outline-0 my-0 p-0'
+											validateStatus={recipient ? 'success' : 'error'}
+										>
+											<div className='h-[50px]'>
+												{recipient &&
+												autocompleteAddresses.some(
+													(item) =>
+														item.value && getSubstrateAddress(String(item.value)) === getSubstrateAddress(recipient)
+												) ? (
+													<div className='border border-solid border-primary rounded-lg px-2 h-full flex justify-between items-center'>
+														{
+															autocompleteAddresses.find(
+																(item) =>
+																	item.value &&
+																	getSubstrateAddress(String(item.value)) === getSubstrateAddress(recipient)
+															)?.label
+														}
+														<button
+															className='outline-none border-none bg-highlight w-6 h-6 rounded-full flex items-center justify-center z-100'
+															onClick={() => {
+																onRecipientChange('', i);
+															}}
 														>
-															<div className='w-[55%] max-sm:w-full'>
-																<label className='text-label font-normal text-xs leading-[13px] block mb-[5px]'>
-																	Recipient*
-																</label>
-																<Form.Item
-																	name='recipient'
-																	rules={[{ required: true }]}
-																	help={
-																		(!recipient && 'Recipient Address is Required')
-																		// (!validRecipient[i] && 'Please add a valid Address')
-																	}
-																	className='border-0 outline-0 my-0 p-0'
-																	validateStatus={recipient ? 'success' : 'error'}
-																>
-																	<div className='h-[50px]'>
-																		{recipient &&
-																		autocompleteAddresses.some(
-																			(item) =>
-																				item.value &&
-																				getSubstrateAddress(String(item.value)) === getSubstrateAddress(recipient)
-																		) ? (
-																			<div className='border border-solid border-primary rounded-lg px-2 h-full flex justify-between items-center'>
-																				{
-																					autocompleteAddresses.find(
-																						(item) =>
-																							item.value &&
-																							getSubstrateAddress(String(item.value)) === getSubstrateAddress(recipient)
-																					)?.label
-																				}
-																				<button
-																					className='outline-none border-none bg-highlight w-6 h-6 rounded-full flex items-center justify-center z-100'
-																					onClick={() => {
-																						onRecipientChange('', i);
-																					}}
-																				>
-																					<OutlineCloseIcon className='text-primary w-2 h-2' />
-																				</button>
-																			</div>
-																		) : (
-																			<AutoComplete
-																				// autoFocus
-																				// defaultOpen
-																				className='[&>div>span>input]:px-[12px]'
-																				filterOption={(inputValue, options) => {
-																					return inputValue && options?.value
-																						? getSubstrateAddress(String(options?.value) || '') ===
-																								getSubstrateAddress(inputValue)
-																						: true;
-																				}}
-																				// notFoundContent={
-																				// 	validRecipient[i] && (
-																				// 		<Button
-																				// 			icon={<PlusCircleOutlined className='text-primary' />}
-																				// 			className='bg-transparent border-none outline-none text-primary text-sm flex items-center'
-																				// 			onClick={() => setShowAddressModal(true)}
-																				// 		>
-																				// 			Add Address to Address Book
-																				// 		</Button>
-																				// 	)
-																				// }
-																				options={
-																					autocompleteAddresses
-																					// filter duplicate address
-																					// .filter(
-																					// (item) =>
-																					// !recipientAndAmount.some(
-																					// (r) =>
-																					// r.recipient &&
-																					// item.value &&
-																					// getSubstrateAddress(r.recipient) ===
-																					// getSubstrateAddress(String(item.value) || '')
-																					// )
-																					// )
-																				}
-																				id='recipient'
-																				placeholder='Send to Address..'
-																				onChange={(value) => onRecipientChange(value, i)}
-																				value={recipientAndAmount[i].recipient}
-																				defaultValue={''}
-																			/>
-																		)}
-																	</div>
-																</Form.Item>
-															</div>
-															<div className='flex items-center gap-x-2 w-[45%]'>
-																<BalanceInput
-																	network={network}
-																	multipleCurrency
-																	label='Amount*'
-																	defaultValue={formatBnBalance(
-																		recipientAndAmount[i].amount.toString(),
-																		{ numberAfterComma: 0, withThousandDelimitor: false },
-																		network
-																	)}
-																	// fromBalance={multisigBalance}
-																	onChange={(balance) => onAmountChange(balance, i)}
-																	currencyValues={currencyValues}
-																/>
-																{i !== 0 && (
-																	<Button
-																		onClick={() => onRemoveRecipient(i)}
-																		className='text-failure border-none outline-none bg-[#e63946]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8'
-																	>
-																		<DeleteIcon />
-																	</Button>
-																)}
-															</div>
-														</article>
+															<OutlineCloseIcon className='text-primary w-2 h-2' />
+														</button>
+													</div>
+												) : (
+													<AutoComplete
+														// autoFocus
+														// defaultOpen
+														className='[&>div>span>input]:px-[12px]'
+														filterOption={(inputValue, options) => {
+															return inputValue && options?.value
+																? getSubstrateAddress(String(options?.value) || '') === getSubstrateAddress(inputValue)
+																: true;
+														}}
+														// notFoundContent={
+														// 	validRecipient[i] && (
+														// 		<Button
+														// 			icon={<PlusCircleOutlined className='text-primary' />}
+														// 			className='bg-transparent border-none outline-none text-primary text-sm flex items-center'
+														// 			onClick={() => setShowAddressModal(true)}
+														// 		>
+														// 			Add Address to Address Book
+														// 		</Button>
+														// 	)
+														// }
+														options={
+															autocompleteAddresses
+															// filter duplicate address
+															// .filter(
+															// (item) =>
+															// !recipientAndAmount.some(
+															// (r) =>
+															// r.recipient &&
+															// item.value &&
+															// getSubstrateAddress(r.recipient) ===
+															// getSubstrateAddress(String(item.value) || '')
+															// )
+															// )
+														}
+														id='recipient'
+														placeholder='Send to Address..'
+														onChange={(value) => onRecipientChange(value, i)}
+														value={recipientAndAmount[i].recipient}
+														defaultValue=''
+													/>
+												)}
+											</div>
+										</Form.Item>
+									</div>
+									<div className='flex items-center gap-x-2 w-[45%]'>
+										<BalanceInput
+											network={network}
+											multipleCurrency
+											label='Amount*'
+											defaultValue={formatBnBalance(
+												recipientAndAmount[i].amount.toString(),
+												{ numberAfterComma: 0, withThousandDelimitor: false },
+												network
+											)}
+											// fromBalance={multisigBalance}
+											onChange={(balance) => onAmountChange(balance, i)}
+											currencyValues={currencyValues}
+										/>
+										{i !== 0 && (
+											<Button
+												onClick={() => onRemoveRecipient(i)}
+												className='text-failure border-none outline-none bg-[#e63946]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8'
+											>
+												<DeleteIcon />
+											</Button>
+										)}
+									</div>
+								</article>
 							))}
 						</div>
 						<div className='flex'>
@@ -410,10 +404,25 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 					</div>
 					<div className='flex items-center gap-x-4 w-full'>
 						<div className='w-full'>
-							<Button fullWidth size='large' onClick={onClose} variant={EButtonVariant.DANGER} icon={<OutlineCloseIcon className='text-failure' />}>Cancel</Button>
+							<Button
+								fullWidth
+								size='large'
+								onClick={onClose}
+								variant={EButtonVariant.DANGER}
+								icon={<OutlineCloseIcon className='text-failure' />}
+							>
+								Cancel
+							</Button>
 						</div>
 						<div className='w-full'>
-							<Button fullWidth size='large' onClick={handleSubmit} variant={EButtonVariant.PRIMARY}>Next</Button>
+							<Button
+								fullWidth
+								size='large'
+								onClick={handleSubmit}
+								variant={EButtonVariant.PRIMARY}
+							>
+								Next
+							</Button>
 						</div>
 					</div>
 				</Form>

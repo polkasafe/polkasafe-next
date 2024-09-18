@@ -3,13 +3,14 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
-import { organisationAtom, useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
-import { useAtomValue } from 'jotai';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import Address from '@common/global-ui-components/Address';
-import Button, { EButtonVariant } from '@common/global-ui-components/Button';
-import { DeleteIcon, EditIcon } from '@common/global-ui-components/Icons';
-import { StringifyOptions } from 'node:querystring';
+import { AddAddress } from '@common/modals/AddressBook/AddAddress';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
+import { useSearchParams } from 'next/navigation';
+import { IAddressBook } from '@common/types/substrate';
+import { addToAddressBook } from '@sdk/polkasafe-sdk/src/add-to-address-book';
 
 const columns = [
 	{
@@ -31,11 +32,39 @@ interface IMembers {
 }
 
 function Members({ members }: IMembers) {
-	const [organisation] = useOrganisation();
+	const [user] = useUser();
+	const [organisation, setOrganisation] = useOrganisation();
+	const organisationId = useSearchParams().get('_organisation');
 
 	const getNameByAddress = (address: string) => {
 		const entry = organisation?.addressBook?.find((item) => item.address === address);
 		return entry ? entry.name : DEFAULT_ADDRESS_NAME;
+	};
+
+	const handleAddressBook = async (value: IAddressBook) => {
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		if (!organisationId || !organisation) {
+			throw new Error('Organisation not found');
+		}
+		const payload = {
+			address: user.address,
+			signature: user.signature,
+			name: value.name,
+			addressToAdd: value.address,
+			email: value.email,
+			discord: value.discord,
+			telegram: value.telegram,
+			nickName: value.nickName,
+			organisationId
+		};
+		const { data } = (await addToAddressBook(payload)) as { data: { addressBook: Array<IAddressBook> } };
+		if (data.addressBook) {
+			console.log(data.addressBook);
+			setOrganisation({ ...organisation, addressBook: data.addressBook });
+		}
 	};
 
 	return (
@@ -63,23 +92,13 @@ function Members({ members }: IMembers) {
 								withBadge={false}
 							/>
 						</div>
-						<div className='flex gap-x-2 basis-2/6'>
-							<Button
-								size='small'
-								variant={EButtonVariant.SECONDARY}
-								onClick={() => {}}
-								className='bg bg-[#1A2A42]/[0.1] p-2.5 rounded-lg text-[#3F8CFF] border-none'
-							>
-								<EditIcon />
-							</Button>
-							<Button
-								size='small'
-								variant={EButtonVariant.SECONDARY}
-								onClick={() => {}}
-								className='bg bg-[#e63946]/[0.1] p-2.5 rounded-lg text-failure border-none'
-							>
-								<DeleteIcon />
-							</Button>
+						<div className='flex items-center justify-start gap-x-2'>
+							<AddAddress
+								title='Edit'
+								onSubmit={handleAddressBook}
+								addressBook={{ address: item, name: getNameByAddress(item) }}
+								isUsedInsideTable={true}
+							/>
 						</div>
 					</div>
 				))}

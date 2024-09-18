@@ -1,17 +1,17 @@
 import { IAddressBook, IMultisig } from '@common/types/substrate';
-import { Form, Input, Spin } from 'antd';
+import { Form, Spin } from 'antd';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { useState } from 'react';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import Address from '@common/global-ui-components/Address';
-import { DeleteIcon, EditIcon } from '@common/global-ui-components/Icons';
+import { DeleteIcon } from '@common/global-ui-components/Icons';
 import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import ActionButton from '@common/global-ui-components/ActionButton';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
-// import { AddressInput } from '@common/global-ui-components/AddressInput';
+import Input from '@common/global-ui-components/Input';
 
 interface IUpdateMultisigForm {
 	multisig: IMultisig;
@@ -52,6 +52,7 @@ export const UpdateMultisigForm = ({
 			setLoading(false);
 		}
 	};
+	console.log(form.getFieldValue('address'));
 
 	return (
 		<Spin
@@ -75,7 +76,7 @@ export const UpdateMultisigForm = ({
 							name={multisig.name || DEFAULT_ADDRESS_NAME}
 						/>
 						<div className='flex justify-center gap-2'>
-							<Button
+							{/* <Button
 								size='small'
 								variant={EButtonVariant.DANGER}
 								onClick={() => {
@@ -85,7 +86,7 @@ export const UpdateMultisigForm = ({
 								className='bg-bg-secondary text-white'
 							>
 								<EditIcon />
-							</Button>
+							</Button> */}
 							<Button
 								size='small'
 								variant={EButtonVariant.DANGER}
@@ -128,18 +129,14 @@ export const UpdateMultisigForm = ({
 						})
 					]}
 				>
-					<div className='flex gap-2'>
+					<div className='flex gap-2 justify-center items-center'>
 						<Input
 							placeholder='Enter address'
 							name='address'
 						/>
-						{/* <AddressInput
-							addresses={addressesOptions}
-							placeholder='Enter Address'
-							network={multisig.network}
-						/> */}
 						<Button
-							variant={EButtonVariant.PRIMARY}
+							variant={EButtonVariant.SECONDARY}
+							className='px-8 py-2 bg-primary'
 							onClick={() => {
 								const value = form.getFieldsValue();
 								const address = getEncodedAddress(value.address, multisig.network);

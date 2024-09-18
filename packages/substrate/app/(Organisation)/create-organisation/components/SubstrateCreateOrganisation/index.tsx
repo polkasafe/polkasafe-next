@@ -4,7 +4,7 @@ import { CreateOrganisation } from '@common/global-ui-components/createOrganisat
 import { CreateOrganisationProvider } from '@common/context/CreateOrganisationContext';
 import { useState } from 'react';
 import {
-	IConnectedUser,
+	ICookieUser,
 	ICreateOrganisationDetails,
 	IDBMultisig,
 	IMultisig,
@@ -21,9 +21,8 @@ import { ERROR_MESSAGES } from '@common/utils/messages';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import UserPopover from '@common/global-ui-components/UserPopover';
 import { logout } from '@sdk/polkasafe-sdk/src/logout';
-import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 
-export default function SubstrateCreateOrganisation({ user }: { user: IConnectedUser }) {
+export default function SubstrateCreateOrganisation({ user }: { user: ICookieUser }) {
 	const availableSignatories = useWalletAccounts();
 	const router = useRouter();
 	const [notification, context] = useNotification();
@@ -71,6 +70,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 	const onRemoveMultisig = async (multisig: IMultisig) => {
 		const payload = linkedMultisigs.filter((m) => m.address !== multisig.address);
 		setLinkedMultisigs(payload);
+		setMultisigs([...multisigs, multisig]);
 	};
 
 	const fetchMultisig = async (network: ENetwork) => {

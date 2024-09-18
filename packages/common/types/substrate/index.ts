@@ -48,7 +48,7 @@ export interface IDashboardTransaction {
 	callData: string;
 	amountToken: string;
 	network: string;
-	createdAt: Date;
+	createdAt: number;
 	multisigAddress: string;
 	from: string;
 	to?: string;

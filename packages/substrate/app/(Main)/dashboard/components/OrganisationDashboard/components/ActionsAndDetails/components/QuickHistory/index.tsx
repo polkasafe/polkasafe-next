@@ -8,6 +8,7 @@ import { ETransactionType } from '@common/enum/substrate';
 import { Empty } from '@common/global-ui-components/Empty';
 import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
 import { TransactionList } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList';
+import { useHistoryAtom } from '@substrate/app/atoms/transaction/transactionAtom';
 import { useHistoryTransaction } from '@substrate/app/global/hooks/queryHooks/useHistoryTransaction';
 import { Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -19,13 +20,7 @@ interface IQuickHistory {
 export function QuickHistory({ multisigs }: IQuickHistory) {
 	const multisigIds = multisigs.map((multisig) => `${multisig.address}_${multisig.network}`);
 
-	const {
-		data: transactions,
-		isLoading,
-		error
-	} = useHistoryTransaction({
-		multisigIds
-	});
+	const [data] = useHistoryAtom();
 
 	const [isMounted, setIsMounted] = useState(false);
 
@@ -37,19 +32,20 @@ export function QuickHistory({ multisigs }: IQuickHistory) {
 		return null;
 	}
 
-	if (isLoading || !transactions) {
-		return <Skeleton active />;
-	}
-	if (error) {
-		return <div>Error: {error.message}</div>;
+	if (!data?.transactions) {
+		return <Skeleton />;
 	}
 
-	if (transactions.length === 0) {
+	if (data.transactions.length === 0 && data.currentIndex !== multisigIds.length - 1) {
+		return <Skeleton />;
+	}
+
+	if (data.transactions.length === 0 && data.currentIndex === multisigIds.length - 1) {
 		return <Empty description='No Transaction Found' />;
 	}
 	return (
 		<TransactionList
-			transactions={(transactions || []) as Array<IDashboardTransaction>}
+			transactions={(data.transactions || []) as Array<IDashboardTransaction>}
 			txType={ETransactionType.HISTORY_TRANSACTION}
 		/>
 	);

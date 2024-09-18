@@ -31,21 +31,6 @@ export function createOrganisation({
 	state,
 	taxNumber
 }: Props) {
-	console.log(
-		'createOrganisation',
-		address,
-		signature,
-		multisigs,
-		name,
-		description,
-		organisationAddress,
-		city,
-		country,
-		image,
-		postalCode,
-		state,
-		taxNumber
-	);
 	if (!name) {
 		throw new Error('Invalid address or network');
 	}
