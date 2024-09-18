@@ -131,6 +131,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 				onRemoveMultisig={onRemoveMultisig}
 				organisationDetails={organisationDetails}
 				onChangeOrganisationDetails={handleOrganisationDetails}
+				userAddress={user.address}
 			>
 				{context}
 				<div className='flex flex-col'>

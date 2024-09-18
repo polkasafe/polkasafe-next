@@ -1,4 +1,4 @@
-import { Input } from 'antd';
+import Input from "@common/global-ui-components/Input";
 
 export const createMultisigFormFields = [
 	{
@@ -13,7 +13,7 @@ export const createMultisigFormFields = [
 				message: 'Please input the name!'
 			}
 		],
-		input: <Input />
+		input: <Input placeholder='Give the MultiSig a unique name' />
 	},
 	{
 		label: 'Threshold',
@@ -27,6 +27,6 @@ export const createMultisigFormFields = [
 				message: 'Please input the threshold!'
 			}
 		],
-		input: <Input />
+		input: <Input placeholder="2" />
 	}
 ];
