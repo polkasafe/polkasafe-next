@@ -139,7 +139,8 @@ export interface IGenericResponse<T> {
 }
 
 export interface ICurrency {
-	[symbol: string]: { code: string; value: number };
+	tokenUsdPrice: { [network: string]: { symbol: string; value: number } };
+	allCurrencyPrices: { [symbol: string]: { code: string; value: number } };
 }
 
 export interface IAsset {
