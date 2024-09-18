@@ -8,7 +8,7 @@ import { ETxType, Wallet } from '@common/enum/substrate';
 import DashboardCard from '@common/global-ui-components/DashboardCard';
 import { ICurrency, IMultisig, ISendTransaction } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
-import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
+import { useAssets } from '@substrate/app/atoms/assets/assetsAtom';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
@@ -20,7 +20,7 @@ import { BN } from '@polkadot/util';
 import NewTransaction from '@common/modals/NewTransaction';
 
 export function DashboardOverview() {
-	const assets = useAtomValue(assetsAtom);
+	const [assets] = useAssets();
 	const currency = useAtomValue(selectedCurrencyAtom);
 	const currencyValues = useAtomValue(currencyAtom);
 	const [organisation] = useOrganisation();

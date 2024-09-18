@@ -9,17 +9,32 @@ import CurrencyDropdown from '../CurrencyDropdown';
 import AssetsTable from '../AssetsTable';
 import { useAssets } from '@substrate/app/atoms/assets/assetsAtom';
 import { Skeleton } from 'antd';
+import { useCurrency } from '@substrate/app/atoms/currency/currencyAtom';
+import { currencyProperties, getCurrencySymbol } from '@common/constants/currencyConstants';
 
 function AssetsTemplate() {
 	const [assets] = useAssets();
-	console.log('assets:', assets);
+	const [selectedCurrency, setSelectedCurrency] = useCurrency();
+
 	return (
 		<div className='bg-bg-main rounded-xl p-5 h-full gap-5 flex flex-col'>
 			<div className='flex justify-between items-center'>
 				<h1>Tokens</h1>
-				{/* <CurrencyDropdown /> */}
+				<CurrencyDropdown
+					onChange={(val) => {
+						setSelectedCurrency(val);
+						localStorage.setItem('currency', val);
+					}}
+				/>
 			</div>
-			{assets && assets?.length < 0 ? <AssetsTable dataSource={assets || []} /> : <Skeleton />}
+			{assets && assets.length > 0 ? (
+				<AssetsTable
+					dataSource={assets || []}
+					currency={String(getCurrencySymbol(selectedCurrency))}
+				/>
+			) : (
+				<Skeleton />
+			)}
 		</div>
 	);
 }

@@ -1,41 +1,62 @@
-// Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
+// Copyright 2019-2025 @blobscriptions/marketplace authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { ENetwork } from '@common/enum/substrate';
+import { BN } from '@polkadot/util';
 
 interface Options {
 	numberAfterComma?: number;
+	withUnit?: boolean;
 	withThousandDelimitor?: boolean;
 }
 
-export function formatBalance(value: string, tokenDecimals: number, options: Options): string {
-	const valueString = value?.toString();
-	if (!valueString) return '0';
+function scientificToDecimal(scientificStr: string): string {
+	const [base, exponent] = scientificStr.toLowerCase().split('e'); // Handle both 'e' and 'E'
+	const exp = parseInt(exponent, 10);
+	const decimalSplit = base.split('.');
 
-	let suffix = '';
-	let prefix = '';
+	if (decimalSplit.length === 2) {
+		const [intPart, fracPart] = decimalSplit;
+		const totalDigits = fracPart.length + exp; // Total number of digits that should be after the decimal
 
-	if (valueString.length > tokenDecimals) {
-		suffix = valueString.slice(-tokenDecimals);
-		prefix = valueString.slice(0, valueString.length - tokenDecimals);
-	} else {
-		prefix = '0';
-		suffix = valueString.padStart(tokenDecimals - 1, '0');
+		if (totalDigits <= fracPart.length) {
+			// If the total digits required are less than or equal to the fractional part's length,
+			// we just insert the decimal point at the correct position.
+			return `${intPart + fracPart.slice(0, exp)}.${fracPart.slice(exp)}`;
+		}
+		// Append sufficient zeros after the fractional part to make up for the exponent
+		return intPart + fracPart + '0'.repeat(exp - fracPart.length);
+	}
+	// If there's no fractional part, just append zeros.
+	return base + '0'.repeat(exp);
+}
+
+function convertScientificToBigInt(scientificStr: string): string {
+	const decimalStr = scientificToDecimal(scientificStr);
+	return BigInt(decimalStr).toString();
+}
+
+export function formatBalance(amount: BN | string, options: Options, network: ENetwork): string {
+	let valueString = amount?.toString().split(',').join('') || '0';
+	if (valueString.includes('e')) {
+		valueString = convertScientificToBigInt(valueString);
 	}
 
-	let comma = '.';
-	const { numberAfterComma, withThousandDelimitor = true } = options;
-	const numberAfterCommaLtZero = numberAfterComma && numberAfterComma < 0;
+	const { tokenDecimals } = networkConstants[network];
+	const decimals = new BN(tokenDecimals);
+	const factor = new BN(10).pow(decimals);
+	const amountBN = new BN(valueString);
 
-	if (numberAfterCommaLtZero || numberAfterComma === 0) {
-		comma = '';
-		suffix = '';
-	} else if (numberAfterComma && numberAfterComma > 0) {
-		suffix = suffix.slice(0, numberAfterComma);
-	}
+	const precision = new BN(10).pow(new BN(4));
+	const availValue = amountBN.mul(precision).div(factor);
 
-	if (withThousandDelimitor) {
-		prefix = prefix.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-	}
+	const { withUnit } = options;
+	const unit = withUnit ? ` ${networkConstants[network]?.tokenSymbol}` : '';
 
-	return `${prefix}${comma}${suffix}`;
+	const formattedValue = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 4 }).format(
+		Number(availValue.toString()) / Number(precision.toString())
+	);
+
+	return formattedValue + unit;
 }

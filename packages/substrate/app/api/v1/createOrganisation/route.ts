@@ -115,7 +115,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			tax_number: taxNumber,
 			members,
 			created_at: new Date(),
-			updated_at: new Date()
+			updated_at: new Date(),
+			addressBook: []
 		};
 		console.log('newOrganisation', multisigPayload, newOrganisation);
 		const docId = await updateDB(newOrganisation, multisigPayload);

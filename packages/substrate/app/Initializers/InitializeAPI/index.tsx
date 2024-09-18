@@ -16,7 +16,7 @@ import {
 	assethubKusamaApi,
 	westendApi
 } from '@substrate/app/atoms/api/apiAtom';
-import { useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 
 import { initialize } from 'avail-js-sdk';
@@ -27,16 +27,16 @@ import { checkAvailNetwork } from '@substrate/app/global/utils/checkAvailNetwork
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 function InitializeAPI() {
-	const setPolkadotApiAtom = useSetAtom(polkadotApi);
-	const setAstarApiAtom = useSetAtom(astarApi);
-	const setAvailApiAtom = useSetAtom(availApi);
-	const setKhalaApiAtom = useSetAtom(khalaApi);
-	const setKusamaApiAtom = useSetAtom(kusamaApi);
-	const setPhalaApiAtom = useSetAtom(phalaApi);
-	const setRococoApiAtom = useSetAtom(rococoApi);
-	const setAssethubPolkadotApiAtom = useSetAtom(assethubPolkadotApi);
-	const setAssethubKusamaApiAtom = useSetAtom(assethubKusamaApi);
-	const setWestendApiAtom = useSetAtom(westendApi);
+	const [PolkadotApiAtom, setPolkadotApiAtom] = useAtom(polkadotApi);
+	const [AstarApiAtom, setAstarApiAtom] = useAtom(astarApi);
+	const [AvailApiAtom, setAvailApiAtom] = useAtom(availApi);
+	const [KhalaApiAtom, setKhalaApiAtom] = useAtom(khalaApi);
+	const [KusamaApiAtom, setKusamaApiAtom] = useAtom(kusamaApi);
+	const [PhalaApiAtom, setPhalaApiAtom] = useAtom(phalaApi);
+	const [RococoApiAtom, setRococoApiAtom] = useAtom(rococoApi);
+	const [AssethubPolkadotApiAtom, setAssethubPolkadotApiAtom] = useAtom(assethubPolkadotApi);
+	const [AssethubKusamaApiAtom, setAssethubKusamaApiAtom] = useAtom(assethubKusamaApi);
+	const [WestendApiAtom, setWestendApiAtom] = useAtom(westendApi);
 
 	const getApiSetter = (network: string) => {
 		switch (network) {
@@ -60,6 +60,33 @@ function InitializeAPI() {
 				return setAssethubKusamaApiAtom;
 			case ENetwork.WESTEND:
 				return setWestendApiAtom;
+			default:
+				return null;
+		}
+	};
+
+	const getApiValue = (network: string) => {
+		switch (network) {
+			case ENetwork.POLKADOT:
+				return PolkadotApiAtom;
+			case ENetwork.ASTAR:
+				return AstarApiAtom;
+			case ENetwork.AVAIL:
+				return AvailApiAtom;
+			case ENetwork.KHALA:
+				return KhalaApiAtom;
+			case ENetwork.KUSAMA:
+				return KusamaApiAtom;
+			case ENetwork.PHALA:
+				return PhalaApiAtom;
+			case ENetwork.ROCOCO:
+				return RococoApiAtom;
+			case ENetwork.POLKADOT_ASSETHUB:
+				return AssethubPolkadotApiAtom;
+			case ENetwork.KUSAMA_ASSETHUB:
+				return AssethubKusamaApiAtom;
+			case ENetwork.WESTEND:
+				return WestendApiAtom;
 			default:
 				return null;
 		}
@@ -98,8 +125,34 @@ function InitializeAPI() {
 		}
 	};
 
+	const doApiHealthCheck = async () => {
+		try {
+			const data = Object.values(ENetwork).map(async (network) => {
+				const api = getApiValue(network);
+				if (!api) {
+					return;
+				}
+				const { api: apiInstance } = api;
+				if (!apiInstance) {
+					return;
+				}
+				await apiInstance.isReady;
+				await apiInstance.query.system.number();
+			});
+			await Promise.all(data);
+		} catch (error) {
+			//do nothing
+		}
+	};
+
 	useEffect(() => {
 		setAllNetworkApi();
+		const interval = setInterval(() => {
+			doApiHealthCheck();
+		}, 6000);
+		return () => {
+			clearInterval(interval);
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return null;

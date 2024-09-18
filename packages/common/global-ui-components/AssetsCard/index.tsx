@@ -37,9 +37,11 @@ export default function AssetsCard({ assets }: IAssetCard) {
 		return {
 			label: asset.symbol,
 			color: getRandomColor(),
-			value: Number(asset.free)
+			value: Number(asset.free.split(',').join(''))
 		};
 	});
+
+	console.log('assetsData', assetsData);
 
 	return <DoughnutChart data={assetsData} />;
 }

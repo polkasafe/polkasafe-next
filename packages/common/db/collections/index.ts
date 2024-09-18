@@ -6,3 +6,4 @@ export const PROXY_COLLECTION = DB.collection('proxy');
 export const USER_COLLECTION = DB.collection('users');
 export const TRANSACTION_COLLECTION = DB.collection('transactions');
 export const ASSETS_COLLECTION = DB.collection('assets');
+export const CURRENCIES_COLLECTION = DB.collection('currencies');

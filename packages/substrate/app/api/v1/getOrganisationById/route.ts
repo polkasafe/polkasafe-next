@@ -79,7 +79,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 				}) || [];
 			const multisigs = (await Promise.all(multisigsPromise)).filter((a) => Boolean(a));
 
-			return NextResponse.json({ data: { ...data, multisigs } }, { status: 200 });
+			return NextResponse.json({ data: { ...data, addressBook: data.addressBook || [], multisigs } }, { status: 200 });
 		}
 
 		return NextResponse.json({ error: ResponseMessages.ADDRESS_NOT_IN_DB }, { status: 400 });

@@ -1,0 +1,17 @@
+
+.customSelect .ant-dropdown
+  .ant-dropdown-menu
+  .ant-dropdown-menu-item-disabled:hover {
+  background-color: transparent !important;
+}
+
+.customSelect .ant-select-selector {
+  width: 469px !important;
+  height: 69px !important;
+  border-radius: 10px !important;
+  border: 0.8px dashed rgba(139, 139, 139, 0.70) !important;
+  background: #24272E !important;
+}
+.customSelect .ant-select .ant-select-arrow {
+  margin-top: 8px !important;
+}

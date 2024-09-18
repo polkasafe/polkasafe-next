@@ -37,10 +37,14 @@ export const onChainAssets = async (address: string, network: ENetwork): Promise
 					const tokenUSDBalance = new BN(usdValue)
 						.mul(
 							new BN(
-								formatBalance(asset.balance, asset.decimals, {
-									numberAfterComma: 2,
-									withThousandDelimitor: false
-								})
+								formatBalance(
+									asset.balance,
+									{
+										numberAfterComma: 2,
+										withThousandDelimitor: false
+									},
+									network
+								)
 									.split('.')
 									.join('')
 							)
@@ -48,10 +52,14 @@ export const onChainAssets = async (address: string, network: ENetwork): Promise
 						.toString();
 
 					return {
-						balance_token: formatBalance(asset.balance, asset.decimals, {
-							numberAfterComma: 3,
-							withThousandDelimitor: false
-						}),
+						balance_token: formatBalance(
+							asset.balance,
+							{
+								numberAfterComma: 3,
+								withThousandDelimitor: false
+							},
+							network
+						),
 						balance_usd: tokenUSDBalance,
 						logoURI: tokenProperties[asset.symbol as keyof typeof tokenProperties]?.logoURI || '',
 						name: tokenProperties[asset.symbol as keyof typeof tokenProperties]?.name || '',

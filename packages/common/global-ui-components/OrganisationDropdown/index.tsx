@@ -60,7 +60,7 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 							</Link>
 						),
 						children: item.multisigs?.map((m) => ({
-							key: m.address,
+							key: `${m.address}_${m.network}`,
 							label: (
 								<div
 									className={`${m.address === multisigId && network === m.network && item.id === organisationId ? 'bg-highlight rounded-lg p-2' : ''}`}

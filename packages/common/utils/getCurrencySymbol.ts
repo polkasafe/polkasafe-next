@@ -1,8 +1,7 @@
 import { currencyProperties, currencySymbol } from '@common/constants/currencyConstants';
 
 export const getCurrencySymbol = (currency: string) => {
-	const currencySymbolName = currencyProperties[currency].symbol;
-	switch (currencySymbolName) {
+	switch (currency) {
 		case currencySymbol.USD:
 			return '$';
 		case currencySymbol.EUR:

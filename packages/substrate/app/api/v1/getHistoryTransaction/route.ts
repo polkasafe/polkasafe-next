@@ -17,7 +17,6 @@ const getMultisigTransactions = async (multisigs: Array<IDBMultisig>, limit: num
 			data: { transactions: historyItemsArr },
 			error: historyItemsError
 		} = await onChainHistoryTransaction(address, network, Number(limit), Number(page));
-		console.log(`Multisig - ${address} Network - ${network}:`);
 		if (historyItemsError || !historyItemsArr) {
 			console.log(`Error in  Multisig - ${address} Network - ${network}:`, {
 				err: historyItemsError
