@@ -10,7 +10,6 @@ import { AutoComplete } from 'antd';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { CircleArrowDownIcon, CirclePlusIcon, DeleteIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import BN from 'bn.js';
-import Dropdown from '@common/global-ui-components/Dropdown';
 import Address from '@common/global-ui-components/Address';
 import { ENetwork } from '@common/enum/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
@@ -19,6 +18,8 @@ import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import BalanceInput from '@common/global-ui-components/BalanceInput';
 import formatBnBalance from '@common/utils/formatBnBalance';
 import './style.css';
+import { Dropdown } from '@common/global-ui-components/Dropdown';
+import Collapse from '@common/global-ui-components/Collapse';
 export interface IRecipientAndAmount {
 	recipient: string;
 	amount: BN;
@@ -28,13 +29,14 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 	const { multisigs, onNewTransaction, addressBook, currencyValues } = useDashboardContext();
 	const [loading, setLoading] = useState(false);
 	const [notification, context] = useNotification();
-	const [selectedMultisigAddress, setSelectedMultisigAddress] = useState<string>('');
+	const [selectedMultisigAddress, setSelectedMultisigAddress] = useState<string>(multisigs[0].address || '');
 
 	const [autocompleteAddresses, setAutoCompleteAddresses] = useState<DefaultOptionType[]>([]);
 
 	const [tip, setTip] = useState<BN>(new BN(0));
 
 	const [network, setNetwork] = useState<ENetwork>(
+		multisigs[0].network ||
 		ENetwork.POLKADOT
 	);
 
@@ -81,15 +83,74 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 
 	multisigs?.forEach((item) => {
 		multisigOptions.push({
-			key: JSON.stringify({ ...item, isProxy: false }),
+			key: JSON.stringify({ ...item }),
 			label: (
-				<Address
-					isMultisig
-					showNetworkBadge
-					network={item.network}
-					withBadge={false}
-					address={item.address}
-				/>
+				item.proxy && item.proxy.length > 0 ? 
+				<Collapse
+					plain
+					className={`border-none rounded-xl ${selectedMultisigAddress === item.address ? 'selected' : ''}`}
+					expandIconPosition='end'
+					collapsible='icon'
+					defaultActiveKey={[item.address]}
+					items={[
+						{
+							key: item.address,
+							label: (
+								<div className='flex gap-x-3 items-center' onClick={() => {
+									setSelectedMultisigAddress(item?.address);
+									setNetwork(item?.network);
+								}}>
+									<div className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}>
+										<div className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}></div>
+									</div>
+									<Address
+										isMultisig
+										showNetworkBadge
+										network={item.network}
+										withBadge={false}
+										address={item.address}
+									/>
+								</div>
+							),
+							children: item.proxy && (
+								<div className='flex flex-col gap-y-3 p-4 pl-10 relative'>
+									{item.proxy.map((p, i) => (
+										<div onClick={() => {
+											setSelectedMultisigAddress(p.address);
+											setSelectedProxyAddress(p.address);
+										}} className={`${selectedMultisigAddress === p.address ? 'bg-highlight' : ''} p-2 rounded-xl flex gap-x-3 items-center relative`}>
+											<div className={`absolute w-[16px] ${i === 0 ? 'h-[56px] top-[-28px]' : 'h-[76px] top-[-48px]'} rounded-es-[11px] border-b-[2px] border-l-[2px] border-text-secondary left-[-17px]`} />
+											<div className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === p.address ? 'border-primary' : 'border-text-secondary'}`}>
+												<div className={`w-full h-full rounded-full ${selectedMultisigAddress === p.address ? 'bg-primary' : 'bg-transparent'}`}></div>
+											</div>
+											<Address
+												address={p.address}
+												network={item.network}
+												name={p.name}
+												isProxy
+											/>
+										</div>
+									))}
+								</div>
+							)
+						}
+					]}
+				/> :
+				<div className={`flex gap-x-3 items-center px-4 py-3 rounded-xl ${selectedMultisigAddress === item.address ? 'bg-highlight' : ''}`} onClick={() => {
+					setSelectedMultisigAddress(item?.address);
+					setNetwork(item?.network);
+				}}>
+					<div className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}>
+						<div className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}></div>
+					</div>
+					<Address
+						isMultisig
+						showNetworkBadge
+						network={item.network}
+						withBadge={false}
+						address={item.address}
+					/>
+				</div>
 			)
 		});
 	});
@@ -185,16 +246,16 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 						</p>
 						<Dropdown
 							trigger={['click']}
-							className='border border-dashed border-text-secondary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'
+							className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'
 							menu={{
 								items: multisigOptions,
-								onClick: (e) => {
-									const data = JSON.parse(e.key);
-									setSelectedMultisigAddress(data?.isProxy ? data?.proxy : data?.address);
-									setNetwork(data?.network);
-									// setIsProxy(data?.isProxy);
-									// setSelectedProxyName(data.name);
-								}
+								// onClick: (e) => {
+								// 	const data = JSON.parse(e.key);
+								// 	setSelectedMultisigAddress(data?.address);
+								// 	setNetwork(data?.network);
+								// 	// setIsProxy(data?.isProxy);
+								// 	// setSelectedProxyName(data.name);
+								// }
 							}}
 						>
 							<div className='flex justify-between gap-x-4 items-center text-white text-[16px]'>

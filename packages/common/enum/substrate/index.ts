@@ -23,8 +23,8 @@ export enum ENetwork {
 	POLKADOT = 'polkadot',
 	ROCOCO = 'rococo',
 	ROCOCO_ASSETHUB = 'rococo-asset-hub',
-	KUSAMA_ASSETHUB = 'kusama-asset-hub',
-	POLKADOT_ASSETHUB = 'polkadot-asset-hub',
+	KUSAMA_ASSETHUB = 'assethub-kusama',
+	POLKADOT_ASSETHUB = 'assethub-polkadot',
 	WESTEND = 'westend'
 }
 
