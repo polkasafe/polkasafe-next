@@ -10,7 +10,7 @@ export default function AddressBook() {
 	}
 
 	return (
-		<div>
+		<div className='bg-bg-main rounded-3xl p-5 h-full'>
 			<AddressBookTable />
 		</div>
 	);
