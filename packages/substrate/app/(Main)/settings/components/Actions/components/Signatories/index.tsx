@@ -105,7 +105,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 					/>
 				)}
 			</div>
-			<div className='-mt-[92px] flex gap-x-[60px] items-center w-full'>
+			<div className='-mt-[92px] flex gap-x-[60px] items-start w-full'>
 				<div
 					className={`${selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 ? '' : 'mt-[66px]'} flex flex-col gap-y-3 items-start justify-start`}
 				>
@@ -115,38 +115,40 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 					>
 						MANAGE MULTISIG
 					</Typography>
-					<Select
-						className={styles.customSelect}
-						defaultValue={`${selectedMultisig.address}_${selectedMultisig.network}`}
-						placeholder='Select a person'
-						onChange={(value) => {
-							const multisig = findMultisig(multisigs, value) as IMultisig;
-							setSelectedMultisig(multisig);
-							setSelectedProxy(multisig?.proxy?.filter((proxy) => Boolean(proxy.address))?.[0]?.address || null);
-						}}
-						options={multisigs.map((multisig) => ({
-							value: `${multisig.address}_${multisig.network}`,
-							label: (
-								<Address
-									address={multisig.address}
-									network={multisig.network}
-									isProxy={false}
-									isMultisig={true}
-									withBadge={false}
-								/>
-							)
-						}))}
-					/>
+					<div className='h-[69px] bg-[#141414] flex items-center rounded-lg' style={{border: '0.8px dashed rgba(139, 139, 139, 0.70)'}}>
+						<Select
+							className='flex items-center justify-start w-[469px] bg-[#141414]'
+							defaultValue={`${selectedMultisig.address}_${selectedMultisig.network}`}
+							placeholder='Select a person'
+							onChange={(value) => {
+								const multisig = findMultisig(multisigs, value) as IMultisig;
+								setSelectedMultisig(multisig);
+								setSelectedProxy(multisig?.proxy?.filter((proxy) => Boolean(proxy.address))?.[0]?.address || null);
+							}}
+							options={multisigs.map((multisig) => ({
+								value: `${multisig.address}_${multisig.network}`,
+								label: (
+									<Address
+										address={multisig.address}
+										network={multisig.network}
+										isProxy={false}
+										isMultisig={true}
+										withBadge={false}
+									/>
+								)
+							}))}
+						/>
+					</div>
 				</div>
 				{selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 && (
-					<div className='mt-2 flex flex-col items-center justify-center gap-y-4'>
+					<div className='flex flex-col items-center justify-center gap-y-4'>
 						<Typography
 							variant={ETypographyVariants.p}
 							className='uppercase'
 						>
 							OR
 						</Typography>
-						<div className='mt-2 rounded-full h-[44px] w-[44px] bg-[#ffffff] text-black opacity-40 flex items-center justify-center'>
+						<div className='mt-1 rounded-full h-[44px] w-[44px] bg-[#ffffff] text-black opacity-40 flex items-center justify-center'>
 							<ArrowRightOutlined />
 						</div>
 					</div>
@@ -159,29 +161,31 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 						>
 							MANAGE PROXY
 						</Typography>
-						<Select
-							placeholder='Select a Proxy'
-							value={selectedProxy}
-							className={styles.customSelect}
-							onChange={(value) => setSelectedProxy(value)}
-							options={selectedMultisig.proxy
-								.map((proxy) =>
-									proxy.address
-										? {
-												value: `${proxy.address}`,
-												label: (
-													<Address
-														address={proxy.address}
-														network={selectedMultisig.network}
-														isProxy={true}
-														isMultisig={false}
-													/>
-												)
-											}
-										: null
-								)
-								.filter((proxy) => proxy !== null)}
-						/>
+						<div className='h-[69px] bg-[#141414] flex items-center rounded-lg' style={{border: '0.8px dashed rgba(139, 139, 139, 0.70)'}}>
+							<Select
+								placeholder='Select a Proxy'
+								value={selectedProxy}
+								className='flex items-center justify-start w-[469px] bg-[#141414]'
+								onChange={(value) => setSelectedProxy(value)}
+								options={selectedMultisig.proxy
+									.map((proxy) =>
+										proxy.address
+											? {
+													value: `${proxy.address}`,
+													label: (
+														<Address
+															address={proxy.address}
+															network={selectedMultisig.network}
+															isProxy={true}
+															isMultisig={false}
+														/>
+													)
+												}
+											: null
+									)
+									.filter((proxy) => proxy !== null)}
+							/>
+						</div>
 					</div>
 				)}
 			</div>
