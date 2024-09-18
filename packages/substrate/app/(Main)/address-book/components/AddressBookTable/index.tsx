@@ -74,19 +74,14 @@ export const AddressBookTable = () => {
 			key: 'name',
 			fixed: 'left',
 			width: 150,
-			className: 'bg-[#20252E] text-white',
-			render: (text: string) => (
-				<span>
-					{text.length > 5 ? `${text.substring(0, 7)}...` : text}
-				</span>
-			)
+			className: 'bg-bg-main text-white',
+			render: (text: string) => <span>{text.length > 5 ? `${text.substring(0, 7)}...` : text}</span>
 		},
 		{
 			title: 'Address',
 			dataIndex: 'address',
 			key: 'address',
 			width: 400,
-			className: 'text-white',
 			render: (text: string) => (
 				<Address
 					address={text}
@@ -116,9 +111,9 @@ export const AddressBookTable = () => {
 			dataIndex: 'actions',
 			key: 'actions',
 			fixed: 'right',
-			className: 'bg-[#20252E] text-white',
+			className: 'bg-bg-main text-white',
 			width: 100,
-			render: (data: any, allData: IAddressBook) => (
+			render: (_: any, allData: IAddressBook) => (
 				<div className='flex items-center justify-start gap-x-2'>
 					<AddAddress
 						title='Edit'
@@ -130,7 +125,7 @@ export const AddressBookTable = () => {
 				</div>
 			)
 		}
-	];
+	] as any;
 
 	if (!organisation) {
 		return <Skeleton />;
@@ -149,22 +144,22 @@ export const AddressBookTable = () => {
 		<div className='flex flex-col gap-y-6'>
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center gap-x-2'>
-				<ConfigProvider
-					theme={{
-						token: {
-							colorBgContainer: '#24272E',
-							controlHeight: 40,
-							colorIcon: '#1573FE'
-						}
-					}}
-				>
-					<Search
-						placeholder="input search text"
-						allowClear
-						onSearch={() => {}}
-						style={{ width: 420, height: 40 }}
-					/>
-				</ConfigProvider>
+					<ConfigProvider
+						theme={{
+							token: {
+								colorBgContainer: '#24272E',
+								controlHeight: 40,
+								colorIcon: '#1573FE'
+							}
+						}}
+					>
+						<Search
+							placeholder='input search text'
+							allowClear
+							onSearch={() => {}}
+							style={{ width: 420, height: 40 }}
+						/>
+					</ConfigProvider>
 				</div>
 				<div className='flex items-center gap-x-3'>
 					<Button
@@ -180,7 +175,7 @@ export const AddressBookTable = () => {
 					<Button
 						variant={EButtonVariant.PRIMARY}
 						disabled={true}
-						icon={<ExportArrowIcon className='rotate-180'/>}
+						icon={<ExportArrowIcon className='rotate-180' />}
 						onClick={() => {}}
 						className='text-[#1573FE] bg-[#1A2A42]'
 						size='large'

@@ -7,6 +7,7 @@ import { IDashboardTransaction } from '@common/types/substrate';
 import { ENetwork, ETransactionOptions, ETransactionType } from '@common/enum/substrate';
 import TransactionRow from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList/components/TransactionRow';
 import { Empty } from 'antd';
+import { useSearchParams } from 'next/navigation';
 
 interface ITransactionList {
 	transactions: Array<IDashboardTransaction>;
@@ -35,7 +36,24 @@ const columns = [
 		variant: ETypographyVariants.p
 	}
 ];
+
+const filterTransactions = (
+	transactions: Array<IDashboardTransaction>,
+	address: string | null,
+	network: ENetwork | null
+) => {
+	if (!address || !network) {
+		return transactions;
+	}
+	return transactions.filter(
+		(transaction) => transaction.multisigAddress === address && transaction.network === network
+	);
+};
+
 export function TransactionList({ transactions = [], txType }: ITransactionList) {
+	const multisig = useSearchParams().get('_multisig');
+	const network = useSearchParams().get('_network') as ENetwork;
+
 	return (
 		<>
 			<div className='flex bg-bg-secondary my-1 p-3 rounded-lg mr-1'>
@@ -51,7 +69,7 @@ export function TransactionList({ transactions = [], txType }: ITransactionList)
 			</div>
 			<div className='max-h-72 overflow-x-hidden overflow-y-auto flex flex-col gap-3'>
 				{transactions &&
-					transactions.map((transaction) => (
+					filterTransactions(transactions, multisig, network).map((transaction) => (
 						<TransactionRow
 							callHash={transaction.callHash}
 							callData={transaction.callData}

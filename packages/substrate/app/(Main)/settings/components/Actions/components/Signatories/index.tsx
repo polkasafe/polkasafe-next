@@ -31,11 +31,6 @@ const columns = [
 		title: 'Address',
 		dataIndex: 'address',
 		key: 'address'
-	},
-	{
-		title: 'Actions',
-		dataIndex: 'actions',
-		key: 'actions'
 	}
 ];
 
@@ -115,7 +110,10 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 					>
 						MANAGE MULTISIG
 					</Typography>
-					<div className='h-[69px] bg-[#141414] flex items-center rounded-lg' style={{border: '0.8px dashed rgba(139, 139, 139, 0.70)'}}>
+					<div
+						className='h-[69px] bg-[#141414] flex items-center rounded-lg'
+						style={{ border: '0.8px dashed rgba(139, 139, 139, 0.70)' }}
+					>
 						<Select
 							className='flex items-center justify-start w-[469px] bg-[#141414]'
 							defaultValue={`${selectedMultisig.address}_${selectedMultisig.network}`}
@@ -161,7 +159,10 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 						>
 							MANAGE PROXY
 						</Typography>
-						<div className='h-[69px] bg-[#141414] flex items-center rounded-lg' style={{border: '0.8px dashed rgba(139, 139, 139, 0.70)'}}>
+						<div
+							className='h-[69px] bg-[#141414] flex items-center rounded-lg'
+							style={{ border: '0.8px dashed rgba(139, 139, 139, 0.70)' }}
+						>
 							<Select
 								placeholder='Select a Proxy'
 								value={selectedProxy}
@@ -203,26 +204,6 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 							isMultisig
 							withBadge={false}
 						/>
-					),
-					actions: (
-						<div className='flex gap-x-2'>
-							<Button
-								size='small'
-								variant={EButtonVariant.SECONDARY}
-								onClick={() => {}}
-								className='bg bg-[#1A2A42]/[0.1] p-2.5 rounded-lg text-[#3F8CFF] border-none'
-							>
-								<EditIcon />
-							</Button>
-							<Button
-								size='small'
-								variant={EButtonVariant.SECONDARY}
-								onClick={() => {}}
-								className='bg bg-[#e63946]/[0.1] p-2.5 rounded-lg text-failure border-none'
-							>
-								<DeleteIcon />
-							</Button>
-						</div>
 					)
 				}))}
 				pagination={false}
