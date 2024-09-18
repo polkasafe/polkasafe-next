@@ -125,8 +125,9 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			allMultisig.map(async (multisig) => {
 				const docId = `${multisig.address}_${multisig.network}`;
 				const proxyData = (await dbProxyData(docId)) as Array<IProxy>;
+
 				multisig.proxy = (multisig.proxy || [])?.map((item1) => {
-					const match = proxyData.find((item2) => item2.address === item1.address);
+					const match = proxyData?.find?.((item2) => item2.address === item1.address);
 					if (match) {
 						item1.name = match.name; // Update name with the name from array2
 					}
