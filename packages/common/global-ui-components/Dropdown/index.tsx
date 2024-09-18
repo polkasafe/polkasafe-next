@@ -19,4 +19,4 @@ function Dropdown({ children, ...props }: IDropdownProps) {
 	);
 }
 
-export default Dropdown;
+export { Dropdown };

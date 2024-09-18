@@ -4,35 +4,55 @@
 
 'use client';
 
+import { currencyProperties, getCurrencyLogo, getCurrencySymbolByCurrency } from '@common/constants/currencyConstants';
+import Address from '@common/global-ui-components/Address';
 import Button from '@common/global-ui-components/Button';
-import { IAsset, IMultisigAssets } from '@common/types/substrate';
+import { IMultisigAssets } from '@common/types/substrate';
 import { Table } from 'antd';
+import Image from 'next/image';
 
 interface IAssetsTableProps {
 	dataSource: Array<IMultisigAssets>;
+	currency: string;
 }
 
-function AssetsTable({ dataSource }: IAssetsTableProps) {
+function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 	const assetsColumns = [
 		{
 			title: 'Asset',
-			dataIndex: 'asset',
-			key: 'asset'
+			dataIndex: 'symbol',
+			key: 'symbol'
 		},
 		{
 			title: 'Balance',
-			dataIndex: 'balance',
-			key: 'balance'
+			dataIndex: 'free',
+			key: 'free'
 		},
 		{
 			title: 'Value',
-			dataIndex: 'value',
-			key: 'value'
+			dataIndex: 'usd',
+			key: 'usd',
+			render: (usd: string, allData: IMultisigAssets) => {
+				const currencySymbol = getCurrencySymbolByCurrency(currency);
+				return (
+					<div className='flex gap-2'>
+						{currencySymbol} {allData.allCurrency?.[allData.network]?.[currency.toLowerCase()]?.toFixed(2)}
+					</div>
+				);
+			}
 		},
 		{
 			title: 'Multisig',
-			dataIndex: 'multisig',
-			key: 'multisig'
+			dataIndex: 'address',
+			key: 'address',
+			render: (address: string, allData: IMultisigAssets) => (
+				<div>
+					<Address
+						address={address}
+						network={allData.network}
+					/>
+				</div>
+			)
 		},
 
 		{

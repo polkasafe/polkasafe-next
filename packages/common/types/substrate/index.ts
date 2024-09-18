@@ -83,6 +83,11 @@ export interface IChannelPreferences {
 export interface IAddressBook {
 	address: string;
 	name: string;
+	roles?: Array<string>;
+	email?: string;
+	discord?: string;
+	telegram?: string;
+	nickName?: string;
 }
 
 export interface ITriggerPreferences {
@@ -155,6 +160,7 @@ export interface IMultisigAssets {
 	address: string;
 	symbol: string;
 	network: ENetwork;
+	allCurrency: { [network: string]: any };
 }
 
 export interface I2FASettings {
@@ -320,6 +326,7 @@ export interface IDBOrganisation {
 	state: string;
 	tax_number: string;
 	imageURI: string;
+	addressBook: Array<IAddressBook>;
 }
 
 export interface QrState {

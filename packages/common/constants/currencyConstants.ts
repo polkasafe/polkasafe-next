@@ -49,6 +49,18 @@ export const currencySymbol = {
 	INR: 'INR'
 };
 
+export const currencySymbols = {
+	USD: '$',
+	GBP: '£',
+	EUR: '€',
+	CHF: 'CHF',
+	AED: 'AED',
+	JPY: '¥',
+	AUD: 'A$',
+	CAD: 'C$',
+	INR: '₹'
+};
+
 export const getCurrenciesBySymbol = (symbol: CurrencySymbol) => {
 	switch (symbol) {
 		case currencySymbol.USD:
@@ -71,6 +83,81 @@ export const getCurrenciesBySymbol = (symbol: CurrencySymbol) => {
 			return currencies.UNITED_ARAB_EMIRATES_DIRHAM;
 		default:
 			return currencies.UNITED_STATES_DOLLAR;
+	}
+};
+
+export const getCurrencySymbol = (currency: Currency) => {
+	switch (currency) {
+		case currencies.UNITED_STATES_DOLLAR:
+			return currencySymbol.USD;
+		case currencies.EURO:
+			return currencySymbol.EUR;
+		case currencies.BRITISH_POUND:
+			return currencySymbol.GBP;
+		case currencies.JAPANESE_YEN:
+			return currencySymbol.JPY;
+		case currencies.INDIAN_RUPEE:
+			return currencySymbol.INR;
+		case currencies.AUSTRALIAN_DOLLAR:
+			return currencySymbol.AUD;
+		case currencies.CANADIAN_DOLLAR:
+			return currencySymbol.CAD;
+		case currencies.SWISS_FRANC:
+			return currencySymbol.CHF;
+		case currencies.UNITED_ARAB_EMIRATES_DIRHAM:
+			return currencySymbol.AED;
+		default:
+			return currency;
+	}
+};
+
+export const getCurrencyLogo = (currency: Currency) => {
+	switch (currency) {
+		case currencies.UNITED_STATES_DOLLAR:
+			return usdLogo;
+		case currencies.EURO:
+			return eurLogo;
+		case currencies.BRITISH_POUND:
+			return gbpLogo;
+		case currencies.JAPANESE_YEN:
+			return jpyLogo;
+		case currencies.INDIAN_RUPEE:
+			return inrLogo;
+		case currencies.AUSTRALIAN_DOLLAR:
+			return audLogo;
+		case currencies.CANADIAN_DOLLAR:
+			return cadLogo;
+		case currencies.SWISS_FRANC:
+			return chfLogo;
+		case currencies.UNITED_ARAB_EMIRATES_DIRHAM:
+			return aedLogo;
+		default:
+			return usdLogo;
+	}
+};
+
+export const getCurrencySymbolByCurrency = (currency: Currency) => {
+	switch (currency) {
+		case currencySymbol.USD:
+			return currencySymbols.USD;
+		case currencySymbol.EUR:
+			return currencySymbols.EUR;
+		case currencySymbol.GBP:
+			return currencySymbols.GBP;
+		case currencySymbol.JPY:
+			return currencySymbols.JPY;
+		case currencySymbol.INR:
+			return currencySymbols.INR;
+		case currencySymbol.AUD:
+			return currencySymbols.AUD;
+		case currencySymbol.CAD:
+			return currencySymbols.CAD;
+		case currencySymbol.CHF:
+			return currencySymbols.CHF;
+		case currencySymbol.AED:
+			return currencySymbols.AED;
+		default:
+			return currencySymbols.USD;
 	}
 };
 

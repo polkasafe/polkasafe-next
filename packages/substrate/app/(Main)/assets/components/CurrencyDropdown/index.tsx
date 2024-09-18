@@ -4,21 +4,62 @@
 
 'use client';
 
-import Dropdown from '@common/global-ui-components/Dropdown';
+import { Select } from 'antd';
 
-export default function CurrencyDropdown({ label = true }: { label?: boolean }) {
+const currencies = [
+	{
+		label: 'USD',
+		value: 'USD'
+	},
+	{
+		label: 'GBP',
+		value: 'GBP'
+	},
+	{
+		label: 'EUR',
+		value: 'EUR'
+	},
+	{
+		label: 'CHF',
+		value: 'CHF'
+	},
+	{
+		label: 'AED',
+		value: 'AED'
+	},
+	{
+		label: 'JPY',
+		value: 'JPY'
+	},
+	{
+		label: 'AUD',
+		value: 'AUD'
+	},
+	{
+		label: 'CAD',
+		value: 'CAD'
+	},
+	{
+		label: 'INR',
+		value: 'INR'
+	}
+];
+export default function CurrencyDropdown({
+	label = true,
+	onChange
+}: {
+	label?: boolean;
+	onChange?: (value: string) => void;
+}) {
 	return (
-		<div>
-			{label ? 'Currency:' : ''}
-			<Dropdown
-				placeholder='Select Currency'
-				options={[
-					{ label: 'USD', value: 'USD' },
-					{ label: 'EUR', value: 'EUR' },
-					{ label: 'JPY', value: 'JPY' }
-				]}
-				value='USD'
-				onChange={(value) => console.log(value)}
+		<div className='flex p-3 justify-center items-center'>
+			{label ? 'Currency:' : ''} &nbsp;
+			<Select
+				size='small'
+				className='w-24'
+				options={currencies}
+				defaultValue={'USD'}
+				onChange={(value) => onChange && onChange(value)}
 			/>
 		</div>
 	);

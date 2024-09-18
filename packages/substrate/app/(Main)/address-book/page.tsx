@@ -1,7 +1,17 @@
-import React from 'react';
+import { AddressBookTable } from '@substrate/app/(Main)/address-book/components/AddressBookTable';
+import { LOGIN_URL } from '@substrate/app/global/end-points';
+import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
+import { redirect } from 'next/navigation';
 
-function AddressBook() {
-	return <div>AddressBook</div>;
+export default function AddressBook() {
+	const user = getUserFromCookie();
+	if (!user) {
+		redirect(LOGIN_URL);
+	}
+
+	return (
+		<div>
+			<AddressBookTable />
+		</div>
+	);
 }
-
-export default AddressBook;

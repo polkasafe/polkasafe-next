@@ -374,23 +374,6 @@ td {
   margin-inline-end: 10px !important;
 }
 
-:where(.css-dev-only-do-not-override-2i2tap).ant-dropdown
-  .ant-dropdown-menu
-  .ant-dropdown-menu-item-disabled:hover {
-  background-color: transparent !important;
-}
-
-:where(.css-dev-only-do-not-override-149avxh).ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
-  width: 469px !important;
-  height: 69px !important;
-  border-radius: 10px !important;
-  border: 0.8px dashed rgba(139, 139, 139, 0.70) !important;
-  background: #24272E !important;
-}
-:where(.css-dev-only-do-not-override-149avxh).ant-select .ant-select-arrow {
-  margin-top: 8px !important;
-}
-
 // :where(.css-dev-only-do-not-override-149avxh).ant-select-single:not(.ant-select-customize-input) .custom-select .ant-select-selector {
 //   width: 469px !important;
 //   height: 69px !important;

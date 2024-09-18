@@ -25,7 +25,6 @@ function Initializers({ userAddress, signature, organisations }: IInitializer) {
 			<InitializeOrganisation />
 			<InitializeAssets />
 			<InitializeAPI />
-			<InitializeCurrency />
 		</>
 	);
 }
