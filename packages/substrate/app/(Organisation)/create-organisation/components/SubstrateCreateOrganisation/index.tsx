@@ -12,13 +12,16 @@ import {
 } from '@common/types/substrate';
 import { createMultisig } from '@sdk/polkasafe-sdk/src/create-multisig';
 import { getMultisigsByAddress } from '@sdk/polkasafe-sdk/src/get-all-multisig-by-address';
-import { ECreateOrganisationSteps, ENetwork } from '@common/enum/substrate';
+import { ENetwork } from '@common/enum/substrate';
 import { useWalletAccounts } from '@substrate/app/global/hooks/useWalletAccounts';
 import { createOrganisation } from '@sdk/polkasafe-sdk/src/create-organisation';
 import { useRouter } from 'next/navigation';
 import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
+import UserPopover from '@common/global-ui-components/UserPopover';
+import { logout } from '@sdk/polkasafe-sdk/src/logout';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 
 export default function SubstrateCreateOrganisation({ user }: { user: IConnectedUser }) {
 	const availableSignatories = useWalletAccounts();
@@ -31,7 +34,6 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 		name: '',
 		description: ''
 	});
-	const [step, setStep] = useState(ECreateOrganisationSteps.ORGANISATION_DETAILS);
 
 	const onCreateMultisigSubmit = async ({
 		signatories,
@@ -74,7 +76,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 	const fetchMultisig = async (network: ENetwork) => {
 		console.log('fetchMultisig', network, user);
 		if (!user) return;
-		const data = (await getMultisigsByAddress({ address: user.address?.[0], network })) as { data: Array<IMultisig> };
+		const data = (await getMultisigsByAddress({ address: user.address, network })) as { data: Array<IMultisig> };
 
 		const leftMultisig = (data?.data || []).filter(
 			(multisig) =>
@@ -87,6 +89,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 		const payload = {
 			name: organisationDetails.name,
 			description: organisationDetails.description,
+			image: organisationDetails.image,
 			multisigs: linkedMultisigs.map((m) => ({
 				address: m.address,
 				network: m.network,
@@ -99,6 +102,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 			signature: user.signature
 		};
 		const data = (await createOrganisation(payload)) as { data: IOrganisation };
+		console.log('data', data);
 		if (data?.data?.id) {
 			return router.push(ORGANISATION_DASHBOARD_URL({ id: data?.data.id }));
 		}
@@ -106,6 +110,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 	};
 
 	const handleOrganisationDetails = (value: ICreateOrganisationDetails) => {
+		console.log('value', value);
 		if (value.name === '' || value.description === '') {
 			return;
 		}
@@ -115,8 +120,6 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 	return (
 		<div>
 			<CreateOrganisationProvider
-				step={step}
-				setStep={setStep}
 				onCreateMultisigSubmit={onCreateMultisigSubmit}
 				fetchMultisig={fetchMultisig}
 				multisigs={multisigs}
@@ -130,7 +133,21 @@ export default function SubstrateCreateOrganisation({ user }: { user: IConnected
 				onChangeOrganisationDetails={handleOrganisationDetails}
 			>
 				{context}
-				<CreateOrganisation />
+				<div className='flex flex-col'>
+					<div className='flex justify-end mb-10 pr-20'>
+						{user && user.address && (
+							<UserPopover
+								userAddress={user.address}
+								logout={async () => {
+									logout({ address: user.address, signature: user.signature });
+								}}
+							/>
+						)}
+					</div>
+					<div className='flex w-full justify-center flex-1 overflow-y-auto'>
+						<CreateOrganisation />
+					</div>
+				</div>
 			</CreateOrganisationProvider>
 		</div>
 	);

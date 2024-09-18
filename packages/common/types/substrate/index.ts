@@ -83,6 +83,11 @@ export interface IChannelPreferences {
 export interface IAddressBook {
 	address: string;
 	name: string;
+	roles?: Array<string>;
+	email?: string;
+	discord?: string;
+	telegram?: string;
+	nickName?: string;
 }
 
 export interface ITriggerPreferences {
@@ -122,13 +127,20 @@ export interface IConnectedUser {
 	organisations: Array<IOrganisation>;
 }
 
+export interface ICookieUser {
+	address: string;
+	signature: string;
+	currentOrganisation: string;
+}
+
 export interface IGenericResponse<T> {
 	data?: T;
 	error?: string;
 }
 
 export interface ICurrency {
-	[symbol: string]: { code: string; value: number };
+	tokenUsdPrice: { [network: string]: { symbol: string; value: number } };
+	allCurrencyPrices: { [symbol: string]: { code: string; value: number } };
 }
 
 export interface IAsset {
@@ -148,6 +160,8 @@ export interface IMultisigAssets {
 	usd: number;
 	address: string;
 	symbol: string;
+	network: ENetwork;
+	allCurrency: { [network: string]: any };
 }
 
 export interface I2FASettings {
@@ -189,9 +203,9 @@ export interface IUser {
 
 export interface IUserResponse {
 	address: string;
-	organisations: Array<IOrganisation>;
 	type: EUserType;
 	signature?: string;
+	currentOrganisation?: string;
 }
 export interface IResponse<T> {
 	error?: string | null;
@@ -313,6 +327,7 @@ export interface IDBOrganisation {
 	state: string;
 	tax_number: string;
 	imageURI: string;
+	addressBook: Array<IAddressBook>;
 }
 
 export interface QrState {
@@ -342,11 +357,11 @@ export interface ILinkMultisig {
 	availableMultisig: Array<IMultisig>;
 	onSubmit: (multisigs: IMultisig) => Promise<void>;
 	onRemoveSubmit: (multisigs: IMultisig) => Promise<void>;
-	fetchMultisig: (network: ENetwork) => void;
+	fetchMultisig: (network: ENetwork) => Promise<void>;
 }
 
 export interface ICreateOrganisationDetails {
 	name: string;
 	description: string;
-	logo?: File;
+	image?: string;
 }

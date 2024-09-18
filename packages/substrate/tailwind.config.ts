@@ -14,6 +14,7 @@ module.exports = {
 		extend: {
 			colors: {
 				primary: 'var(--primary)',
+				label: 'var(--label)',
 				highlight: 'var(--highlight)',
 				danger: 'var(--danger)',
 				'bg-main': 'var(--bg-main)',
@@ -26,6 +27,7 @@ module.exports = {
 				'text-secondary': 'var(--text-secondary)',
 				'text-danger': 'var(--text-danger)',
 				'text-disabled': 'var(--text-disabled)',
+				'disabled-btn-text': 'var(--disabled-btn-text)',
 				'text-success': 'var(--text-success)',
 				'network-badge': 'var(--network-badge)',
 				'proxy-pink': 'var(--proxy-pink)',

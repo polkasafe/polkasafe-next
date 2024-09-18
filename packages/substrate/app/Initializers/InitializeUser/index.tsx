@@ -5,11 +5,8 @@
 'use client';
 
 import { IOrganisation } from '@common/types/substrate';
-import { getMultisigByOrganisation } from '@sdk/polkasafe-sdk/src';
 import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
-import { useSetAtom } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
-import { PropsWithChildren, useEffect } from 'react';
 
 interface IInitializeUserProps {
 	userAddress: string;
@@ -18,26 +15,7 @@ interface IInitializeUserProps {
 }
 
 function InitializeUser({ userAddress, signature, organisations }: IInitializeUserProps) {
-	useHydrateAtoms([[userAtom, { address: userAddress, signature, organisations }]]);
-	const setAtom = useSetAtom(userAtom);
-
-	useEffect(() => {
-		if (!organisations || organisations.length === 0) {
-			return;
-		}
-		const handleUser = async () => {
-			const orgDetails = (await getMultisigByOrganisation({
-				organisations: organisations.map((org) => org.id)
-			})) as { data: Array<IOrganisation> };
-			setAtom({
-				address: userAddress,
-				signature,
-				organisations: orgDetails.data || []
-			});
-		};
-		handleUser();
-	}, [organisations]);
-
+	useHydrateAtoms([[userAtom, { address: userAddress, signature, organisations: organisations }]]);
 	return null;
 }
 

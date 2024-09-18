@@ -25,7 +25,7 @@ interface IAddressComponent {
 	isProxy?: boolean;
 	signatories?: number;
 	threshold?: number;
-	network: ENetwork;
+	network?: ENetwork;
 	showNetworkBadge?: boolean;
 	addressLength?: number;
 	fullAddress?: boolean;
@@ -43,7 +43,7 @@ const Address: React.FC<IAddressComponent> = ({
 	isProxy,
 	signatories,
 	threshold,
-	network,
+	network = ENetwork.ROCOCO,
 	addressLength,
 	fullAddress,
 	withEmail,
@@ -55,28 +55,12 @@ const Address: React.FC<IAddressComponent> = ({
 	return (
 		<div className=' flex items-center gap-x-3'>
 			{isProxy ? (
-				withBadge ? (
-					<Badge
-						count='Proxy'
-						offset={[-45, 0]}
-						className='border-none'
-						color='#FF79F2'
-					>
-						<Identicon
-							className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
-							value={address}
-							size={iconSize}
-							theme='polkadot'
-						/>
-					</Badge>
-				) : (
-					<Identicon
-						className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
-						value={address}
-						size={iconSize}
-						theme='polkadot'
-					/>
-				)
+				<Identicon
+					className='rounded-full border-2 border-primary bg-transparent p-1'
+					value={address}
+					size={iconSize}
+					theme='polkadot'
+				/>
 			) : isMultisig ? (
 				withBadge ? (
 					<Badge
@@ -114,7 +98,7 @@ const Address: React.FC<IAddressComponent> = ({
 				/>
 			)}
 			{onlyAddress ? (
-				<div className='text-text_secondary flex items-center gap-x-3 text-sm font-normal'>
+				<div className='text-text-secondary flex items-center gap-x-3 text-sm font-normal'>
 					<span className='text-white'>{name || shortenAddress(address || '', addressLength || 10)}</span>
 					<span className='flex items-center gap-x-2 max-sm:gap-0'>
 						<button onClick={() => copyText(address, true, network)}>
@@ -145,8 +129,13 @@ const Address: React.FC<IAddressComponent> = ({
 								{network}
 							</div>
 						)}
+						{isProxy && withBadge && (
+							<div className='rounded-lg py-0 px-[6px] text-highlight flex items-center justify-center bg-proxy-pink text-[10px] font-semibold'>
+								Proxy
+							</div>
+						)}
 					</div>
-					<div className='text-text_secondary flex items-center gap-x-3 text-xs font-normal max-sm:text-[8px]'>
+					<div className='text-text-secondary flex items-center gap-x-3 text-xs font-normal max-sm:text-[8px]'>
 						<span>
 							{fullAddress ? encodedMultisigAddress : shortenAddress(encodedMultisigAddress || '', addressLength)}
 						</span>
@@ -164,7 +153,7 @@ const Address: React.FC<IAddressComponent> = ({
 						</span>
 						{withEmail && email && (
 							<div>
-								<span className='text-xs text-text_secondary'>{email}</span>
+								<span className='text-xs text-text-secondary'>{email}</span>
 							</div>
 						)}
 					</div>

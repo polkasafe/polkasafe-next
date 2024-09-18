@@ -25,6 +25,7 @@ export function useHistoryTransaction({
 	};
 	return useQuery({
 		queryKey: [`getOrganisationTransactions${JSON.stringify({ multisigs: multisigIds, page, limit })}`],
-		queryFn: handleFetchHistoryTransaction
+		queryFn: handleFetchHistoryTransaction,
+		enabled: multisigIds.length > 0
 	});
 }

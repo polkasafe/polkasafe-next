@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { twMerge } from 'tailwind-merge';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
@@ -13,8 +12,8 @@ interface MenuItemProps {
 	isNew?: boolean;
 }
 const styles = {
-	linkContainer: 'flex items-center gap-x-2 flex-1 rounded-lg p-3 text-sm max-sm:p-2 font-semibold',
-	selected: 'bg-highlight text-text-outline-primary',
+	linkContainer: 'flex items-center gap-x-2 flex-1 rounded-lg p-3 text-sm max-sm:p-2 font-semibold hover:text-label',
+	selected: 'bg-highlight text-label',
 	disabled: 'pointer-events-none cursor-disabled text-text-disabled',
 	newTag: 'px-2.5 py-0.5 rounded-lg text-xs bg-primary text-text-primary'
 };
@@ -30,7 +29,7 @@ function MenuItem({ pathname, baseURL, icon, title, authenticated, isNew }: Menu
 					<Link
 						className={twMerge(
 							styles.linkContainer,
-							baseURL === pathname && styles.selected,
+							baseURL.split('?')[0] === pathname && styles.selected,
 							!authenticated && styles.disabled
 						)}
 						href={baseURL}

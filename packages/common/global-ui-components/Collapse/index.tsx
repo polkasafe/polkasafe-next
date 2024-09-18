@@ -1,20 +1,16 @@
-import React from 'react';
 import { Collapse as AntdCollapase, CollapseProps } from 'antd';
-import { CaretRightOutlined } from '@ant-design/icons';
+import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
+import './style.css';
 
-interface ICollapse extends CollapseProps {
-	items: Array<any>;
-	defaultActiveKey: Array<string>;
-}
-
-function Collapse({ items, defaultActiveKey }: ICollapse) {
+function Collapse({ ...props }: CollapseProps) {
 	return (
 		<AntdCollapase
-			bordered={false}
-			defaultActiveKey={defaultActiveKey}
+			{...props}
+			className={props.className}
 			// eslint-disable-next-line react/no-unstable-nested-components
-			expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-			items={items}
+			expandIcon={({ isActive }) => (
+				<CircleArrowDownIcon className={`text-primary text-lg ${isActive ? 'rotate-[180deg]' : ''}`} />
+			)}
 		/>
 	);
 }

@@ -4,21 +4,24 @@
 
 import Identicon from '@polkadot/react-identicon';
 import { Popover } from 'antd';
-import React from 'react';
+
 import Link from 'next/link';
 import { CircleArrowDownIcon, WarningRoundedIcon } from '@common/global-ui-components/Icons';
 import { SubstrateAddress } from '@common/global-ui-components/SubstrateAddress';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { LOGIN_URL } from '@substrate/app/global/end-points';
 
 interface IUserPopover {
 	userAddress: string;
+	logout?: () => Promise<void>;
 }
-const UserPopover = ({ userAddress }: IUserPopover) => {
-	const handleDisconnect = () => {
-		// logout();
-	};
+const UserPopover = ({ userAddress, logout }: IUserPopover) => {
+	const router = useRouter();
+	const [loading, setLoading] = useState(false);
 
 	if (!userAddress) {
 		return (
@@ -31,6 +34,19 @@ const UserPopover = ({ userAddress }: IUserPopover) => {
 			</Link>
 		);
 	}
+
+	const handleLogout = async () => {
+		try {
+			setLoading(true);
+			if (logout) {
+				await logout();
+			}
+			router.push(LOGIN_URL);
+		} catch (error) {
+			console.error(error);
+			setLoading(false);
+		}
+	};
 
 	return (
 		<SlideInMotion>
@@ -60,20 +76,23 @@ const UserPopover = ({ userAddress }: IUserPopover) => {
 								copyIcon
 							/>
 						</div>
-						<Button
-							variant={EButtonVariant.DANGER}
-							onClick={handleDisconnect}
-							className='w-full text-text-primary bg-failure p-2 text-sm font-normal mt-3'
-						>
-							Disconnect
-						</Button>
+						{Boolean(logout) && (
+							<Button
+								variant={EButtonVariant.DANGER}
+								onClick={handleLogout}
+								loading={loading}
+								className='w-full text-text-primary bg-failure p-2 text-sm font-normal mt-3'
+							>
+								Disconnect
+							</Button>
+						)}
 					</div>
 				}
 				trigger='click'
 				arrow={false}
 			>
 				<Button
-					variant={EButtonVariant.PRIMARY}
+					variant={EButtonVariant.SECONDARY}
 					className='p-2.5 h-full px-4 border-2 flex gap-4'
 				>
 					<SubstrateAddress

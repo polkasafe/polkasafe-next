@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import React from 'react';
+
 import { Doughnut } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend as ChartLegend } from 'chart.js';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';

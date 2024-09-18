@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { Divider } from 'antd';
-import React from 'react';
+
 import PolkasafeLogo from '@common/assets/icons/polkasafe-logo-white.svg';
 
 import { ExternalLinkIcon, WalletIcon } from '@common/global-ui-components/Icons';

@@ -4,7 +4,7 @@
 import { LOGIN_URL } from '@substrate/app/global/end-points';
 import { isValidAddress } from '@substrate/app/global/utils/isValidAddress';
 import { redirect } from 'next/navigation';
-import React from 'react';
+
 import { isValidNetwork } from '@substrate/app/global/utils/isValidNetwork';
 import OrganisationDashboard from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard';
 import { ISearchParams } from '@common/types/substrate';
@@ -13,11 +13,11 @@ import { getMultisigDataAndTransactions } from './ssr-actions/getMultisigDataAnd
 import MultisigDashboard from './components/MultisigDashboard';
 import { isValidOrg } from '@substrate/app/global/utils/isValidOrg';
 
-interface IDashboardProps {
+interface IDashboard {
 	searchParams: ISearchParams;
 }
 
-async function Dashboard({ searchParams }: IDashboardProps) {
+async function Dashboard({ searchParams }: IDashboard) {
 	const { _multisig, _organisation, _network, _tab } = searchParams;
 
 	if (!_organisation && !_multisig) {
@@ -25,37 +25,37 @@ async function Dashboard({ searchParams }: IDashboardProps) {
 		redirect(LOGIN_URL);
 	}
 
+	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network) && _organisation) {
+		const { multisig } = await getMultisigDataAndTransactions(_multisig, _network);
+		if (!multisig) {
+			// redirect('/404');
+			console.log('problem 2');
+			return <></>;
+		}
+
+		return (
+			<MultisigDashboard
+				multisig={multisig}
+				tab={(_tab as ETransactionTab) || ETransactionTab.QUEUE}
+				id={_organisation}
+			/>
+		);
+	}
+
 	if (_organisation && isValidOrg(_organisation)) {
 		// if organisation found then render organisation dashboard
 		return (
 			<OrganisationDashboard
 				id={_organisation}
-				selectedTab={(_tab as ETransactionTab) || ETransactionTab.HISTORY}
+				selectedTab={(_tab as ETransactionTab) || ETransactionTab.QUEUE}
 			/>
 		);
 	}
 
 	if (_multisig && (!isValidAddress(_multisig) || !isValidNetwork(_network))) {
-		redirect('/404');
-	}
-
-	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network)) {
-		const { multisig, history, queue } = await getMultisigDataAndTransactions(_multisig, _network);
-		console.log('multisig', multisig, 'history', history, 'queue', queue);
-		if (!multisig) {
-			redirect('/404');
-		}
-
-		if (!history && !queue) {
-			redirect('/404');
-		}
-		return (
-			<MultisigDashboard
-				multisig={multisig}
-				transactions={history.transactions}
-				queueTransactions={queue.transactions || []}
-			/>
-		);
+		// redirect('/404');
+		console.log('problem 1');
+		return <></>;
 	}
 }
 

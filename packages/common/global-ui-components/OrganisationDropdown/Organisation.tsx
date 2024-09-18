@@ -1,4 +1,3 @@
-import React from 'react';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import Image from 'next/image';
 import emptyImage from '@common/assets/icons/empty-image.png';

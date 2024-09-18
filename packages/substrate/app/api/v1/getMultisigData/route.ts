@@ -49,8 +49,8 @@ const getDataFromDB = async (docId: string) => {
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	const { headers } = req;
-	const address = headers.get('x-address');
-	const signature = headers.get('x-signature');
+	// const address = headers.get('x-address');
+	// const signature = headers.get('x-signature');
 	try {
 		// check if address is valid
 		// const substrateAddress = getSubstrateAddress(String(address));
@@ -77,6 +77,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			encodedMultisigAddress,
 			network
 		);
+		console.log('multisigMetaData', multisigMetaData);
 		if (multisigMetaDataErr) {
 			const data = await getDataFromDB(docId);
 			if (data) {

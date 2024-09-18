@@ -6,7 +6,6 @@
 
 import Collapse from '@common/global-ui-components/Collapse';
 import { ITransaction } from '@common/types/substrate';
-import React from 'react';
 
 interface IQueueProps {
 	transactions: Array<ITransaction>;

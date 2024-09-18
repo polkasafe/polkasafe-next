@@ -3,7 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 'use client';
 
-import React from 'react';
 import Button from '@common/global-ui-components/Button';
 import Link from 'next/link';
 import { MULTISIG_TRANSACTION_URL, ORGANISATION_TRANSACTION_URL } from '@substrate/app/global/end-points';

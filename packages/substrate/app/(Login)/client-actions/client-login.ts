@@ -5,7 +5,12 @@ import { IGenericResponse } from '@common/types/substrate';
 import { loginToPolkasafe } from '@sdk/polkasafe-sdk/src/login-to-polkasafe';
 
 export const clientLogin = async (address: string, signature: string) => {
-	const { data, error } = (await loginToPolkasafe({ address, signature })) as IGenericResponse<any>;
+	const currentOrganisation = localStorage.getItem('currentOrganisation');
+	const { data, error } = (await loginToPolkasafe({
+		address,
+		signature,
+		currentOrganisation
+	})) as IGenericResponse<any>;
 	console.log('clientLogin', data, error);
 	return { data, error };
 };

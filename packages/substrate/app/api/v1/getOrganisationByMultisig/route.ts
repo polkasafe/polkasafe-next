@@ -19,15 +19,32 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS }, { status: 400 });
 		}
 
-		const { organisationId } = await req.json();
+		const { multisig, network } = await req.json();
 
-		if (!organisationId) {
+		if (!multisig || !network) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ORGANISATION_ID }, { status: 400 });
 		}
 
 		// check if signature is valid
 		const { isValid, error } = await isValidRequest(substrateAddress, signature);
 		if (!isValid) return NextResponse.json({ error }, { status: 400 });
+		const multisigData = await MULTISIG_COLLECTION.doc(`${multisig}_${network}`).get();
+		console.log('multisigData', multisigData.data());
+		if (!multisigData.exists) {
+			return NextResponse.json({ error: ResponseMessages.ADDRESS_NOT_IN_DB }, { status: 400 });
+		}
+		const organisationId = multisigData.data()?.organisationId;
+
+		if (!organisationId) {
+			const organisation = await ORGANISATION_COLLECTION.where(
+				'multisigs',
+				'array-contains',
+				`${multisig}_${network}`
+			).get();
+			if (organisation.empty) {
+				return NextResponse.json({ error: ResponseMessages.ADDRESS_NOT_IN_DB }, { status: 400 });
+			}
+		}
 
 		const organisation = await ORGANISATION_COLLECTION.doc(organisationId).get();
 

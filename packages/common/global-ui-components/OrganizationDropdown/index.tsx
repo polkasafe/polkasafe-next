@@ -1,5 +1,4 @@
 import Dropdown from '@common/global-ui-components/Dropdown';
-import React from 'react';
 
 interface IOrganizationDropdown {
 	organizationList: Array<{ label: string; value: string }>;

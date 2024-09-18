@@ -133,7 +133,9 @@ export enum ETxType {
 	TRANSFER = 'Transfer',
 	APPROVE = 'Approve',
 	FUND = 'Fund',
-	CANCEL = 'Cancel'
+	CANCEL = 'Cancel',
+	ADD_PROXY = 'Add Proxy',
+	REMOVE_PROXY = 'Remove Proxy'
 }
 
 export enum ETransactionTab {
@@ -142,6 +144,14 @@ export enum ETransactionTab {
 	MEMBERS = 'members',
 	ASSETS = 'assets',
 	MULTISIGS = 'multisigs'
+}
+
+export enum ESettingsTab {
+	SIGNATORIES = 'signatories',
+	NOTIFICATIONS = 'notifications',
+	TRANSACTION_FIELDS = 'transaction_fields',
+	ADMIN = 'admin',
+	OVERVIEW = 'overview'
 }
 
 export enum WcPolkadotMethods {

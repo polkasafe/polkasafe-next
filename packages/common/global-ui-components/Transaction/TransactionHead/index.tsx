@@ -6,6 +6,7 @@ import ReceivedIcon from '@common/assets/icons/arrow-up-right.svg';
 import SentIcon from '@common/assets/icons/sent-icon.svg';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import { OutlineCheckIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 
 interface ITransactionHeadProps {
 	type: ETransactionOptions;
@@ -23,14 +24,14 @@ function TransactionIcon({ type }: { type: ETransactionOptions }) {
 	switch (type) {
 		case ETransactionOptions.SENT: {
 			return (
-				<div className='bg bg-bg-success p-2.5 rounded-lg text-red-500'>
+				<div className='bg bg-[#e63946]/[0.1] p-2.5 rounded-lg text-failure'>
 					<SentIcon />
 				</div>
 			);
 		}
 		case ETransactionOptions.RECEIVED: {
 			return (
-				<div className='bg bg-bg-success p-2.5 rounded-lg text-green-500'>
+				<div className='bg bg-bg-success p-2.5 rounded-lg text-success'>
 					<ReceivedIcon />
 				</div>
 			);
@@ -63,20 +64,20 @@ export function TransactionHead({
 	onAction
 }: ITransactionHeadProps) {
 	return (
-		<div className='bg-bg-secondary rounded-xl p-3 mr-2'>
+		<div className='border-b border-text-secondary p-3 mr-2'>
 			<div className='flex items-center max-sm:flex max-sm:flex-wrap max-sm:gap-2'>
 				<Typography
 					variant={ETypographyVariants.p}
-					className='flex items-center gap-x-3 basis-1/6 justify-start text-text-primary'
+					className='flex items-center gap-x-3 basis-1/5 justify-start text-text-primary'
 				>
 					<TransactionIcon type={type} />
 					{label ? (
-						<div className='flex flex-col'>
+						<div className='flex'>
 							<Typography
 								variant={ETypographyVariants.p}
 								className='capitalize text-[10px]'
 							>
-								{label[0]}
+								{label[0]}.
 							</Typography>
 							<Typography
 								variant={ETypographyVariants.p}
@@ -88,6 +89,11 @@ export function TransactionHead({
 					) : (
 						<span className='capitalize'>{type}</span>
 					)}
+				</Typography>
+				<Typography
+					variant={ETypographyVariants.p}
+					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
+				>
 					{Boolean(amountToken) && Number(amountToken) && (
 						<Typography
 							variant={ETypographyVariants.p}
@@ -105,7 +111,7 @@ export function TransactionHead({
 				</Typography>
 				<Typography
 					variant={ETypographyVariants.p}
-					className='basis-1/6 justify-start text-text-primary flex items-center gap-2'
+					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
 				>
 					<Address
 						address={from}
@@ -116,7 +122,7 @@ export function TransactionHead({
 				</Typography>
 				<Typography
 					variant={ETypographyVariants.p}
-					className='basis-1/6 justify-start text-text-primary flex items-center gap-2'
+					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
 				>
 					{to ? (
 						<Address
@@ -129,42 +135,27 @@ export function TransactionHead({
 						<Typography variant={ETypographyVariants.h1}>-</Typography>
 					)}
 				</Typography>
-				<Typography
-					variant={ETypographyVariants.p}
-					className='basis-1/6 justify-start text-text-primary'
-				>
-					{createdAt.toLocaleString()}
-				</Typography>
-				{/* TODO: need to add category */}
-				<Typography
-					variant={ETypographyVariants.p}
-					className='flex items-center gap-x-4 basis-1/6 justify-start'
-				>
-					Category
-				</Typography>
 				{ETransactionType.HISTORY_TRANSACTION === transactionType && (
 					<Typography
 						variant={ETypographyVariants.p}
-						className='flex items-center gap-x-4 basis-1/6 justify-start'
+						className='flex items-center gap-x-4 basis-1/5 justify-start'
 					>
 						<span className='text-success'>Success</span>
 					</Typography>
 				)}
 				{ETransactionType.QUEUE_TRANSACTION === transactionType && (
-					<div className='flex items-center gap-x-4 basis-1/6 justify-start'>
+					<div className='flex items-center gap-x-4 basis-1/5 justify-start'>
 						<Button
-							variant={EButtonVariant.PRIMARY}
-							className='px-2 py-1'
 							onClick={() => onAction(ETxType.APPROVE)}
+							className='text-success bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 border-none outline-none'
 						>
-							Approve
+							<OutlineCheckIcon />
 						</Button>
 						<Button
-							variant={EButtonVariant.DANGER}
-							className='px-2 py-1'
 							onClick={() => onAction(ETxType.CANCEL)}
+							className='text-failure bg-[#e63946]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 border-none outline-none'
 						>
-							Cancel
+							<OutlineCloseIcon />
 						</Button>
 					</div>
 				)}

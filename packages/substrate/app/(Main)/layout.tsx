@@ -4,7 +4,6 @@
 import '@common/styles/globals.scss';
 import NextTopLoader from 'nextjs-toploader';
 import React, { PropsWithChildren } from 'react';
-import { Layout } from '@common/global-ui-components/Layout';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 import { LOGIN_URL } from '@substrate/app/global/end-points';
 import { redirect } from 'next/navigation';
@@ -13,14 +12,24 @@ import Initializers from '@substrate/app/Initializers';
 import QueryProvider from '@substrate/app/providers/QueryClient';
 import { LayoutWrapper } from '@common/global-ui-components/LayoutWrapper';
 import SubstrateLayout from '@substrate/app/(Main)/SubstrateLayout';
+import { getOrganisationsByUser } from '@sdk/polkasafe-sdk/src';
+import { IOrganisation } from '@common/types/substrate';
+import { getOrganisationById } from '@sdk/polkasafe-sdk/src/get-organisation-by-id';
 // import InitializeAssets from '@substrate/app/Initializers/InializeAssets';
 // const inter = Inter({ subsets: ['latin'] })
 
-export default function MainLayout({ children }: PropsWithChildren) {
+export default async function MainLayout({ children }: PropsWithChildren) {
 	const user = getUserFromCookie();
 	if (!user) {
 		redirect(LOGIN_URL);
 	}
+	if (!user.currentOrganisation) {
+		redirect('/create-organisation');
+	}
+	const { data: organisations } = (await getOrganisationsByUser({
+		address: user.address
+	})) as { data: Array<IOrganisation> };
+
 	return (
 		<html lang='en'>
 			<body>
@@ -28,17 +37,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
 					<LayoutWrapper>
 						<QueryProvider>
 							<Initializers
-								userAddress={user.address[0]}
+								userAddress={user.address}
 								signature={user.signature}
-								organisations={user.organisations}
+								organisations={organisations}
 							/>
 							<NextTopLoader />
-							<SubstrateLayout
-								userAddress={user.address[0]}
-								organisations={user.organisations}
-							>
-								{children}
-							</SubstrateLayout>
+							<SubstrateLayout userAddress={user.address}>{children}</SubstrateLayout>
 						</QueryProvider>
 					</LayoutWrapper>
 				</Provider>

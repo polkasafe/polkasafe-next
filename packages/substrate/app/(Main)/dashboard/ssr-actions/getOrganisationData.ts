@@ -52,7 +52,7 @@ export const getOrganisationData = async (organisationId: string) => {
 		return { error: ERROR_MESSAGES.USER_NOT_LOGGED_IN };
 	}
 	const organisationPromise = getOrganisationById({
-		address: user.address[0],
+		address: user.address,
 		signature: user.signature,
 		organisationId
 	}) as Promise<{ data: IOrganisation }>;

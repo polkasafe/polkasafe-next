@@ -14,6 +14,7 @@ import { useState } from 'react';
 export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICreateMultisig) => {
 	const [loading, setLoading] = useState(false);
 	const [notification, context] = useNotification();
+	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
 
 	const signatoriesOptions = availableSignatories?.map((signatory) => ({
 		label: <p>{signatory.name || signatory.address}</p>,
@@ -27,7 +28,7 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 		threshold: number;
 	}) => {
 		try {
-			const { name, signatories, network, threshold } = values;
+			const { name, signatories, threshold } = values;
 			if (!signatories) {
 				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select signatories' });
 				return;
@@ -43,12 +44,17 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please enter a name' });
 				return;
 			}
-			if (!network) {
+			if (!selectedNetwork) {
 				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select a network' });
 				return;
 			}
 			setLoading(true);
-			await onSubmit({ name, signatories, network, threshold });
+			await onSubmit({
+				name,
+				signatories,
+				network: selectedNetwork,
+				threshold
+			});
 			notification.success(SUCCESS_MESSAGES.CREATE_MULTISIG_SUCCESS);
 		} catch (e) {
 			notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: e || e.message });
@@ -68,7 +74,11 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 					layout='vertical'
 					onFinish={handleSubmit}
 				>
-					<SelectNetwork networks={networks} />
+					<SelectNetwork
+						networks={networks}
+						selectedNetwork={selectedNetwork}
+						onChange={(network) => setSelectedNetwork(network)}
+					/>
 
 					{createMultisigFormFields.map((field) => (
 						<Form.Item

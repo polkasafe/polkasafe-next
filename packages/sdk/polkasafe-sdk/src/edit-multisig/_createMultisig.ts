@@ -10,7 +10,11 @@ interface CreateMultisigResponse {
 	error?: string;
 }
 
-export default function _createMultisig(signatories: string[], threshold: number, ss58Format: number ): CreateMultisigResponse {
+export default function _createMultisig(
+	signatories: string[],
+	threshold: number,
+	ss58Format: number
+): CreateMultisigResponse {
 	try {
 		const encodedSignatories = signatories.map((signatory) => encodeAddress(signatory, ss58Format));
 		const multisigAddress = encodeMultiAddress(encodedSignatories, threshold);

@@ -11,16 +11,27 @@ const getDataFromDB = async (docId: string) => {
 	if (orgRef.exists) {
 		const orgData = orgRef.data();
 
-		const multisigsData = (orgData?.multisigs || []).map(async (multisigId: string | any) => {
-			let id = multisigId;
-			if (typeof multisigId !== 'string' && multisigId.address && multisigId.network) {
-				id = `${multisigId.address}_${multisigId.network}`;
-			}
+		const multisigIds = (orgData?.multisigs || [])
+			.map((multisigId: string | any) => {
+				let id = multisigId;
+				if (typeof multisigId !== 'string' && multisigId.address && multisigId.network) {
+					id = `${multisigId.address}_${multisigId.network}`;
+				}
 
-			if (id.split('_').length <= 1) {
+				if (id.split('_').length <= 1) {
+					return null;
+				}
+				return id;
+			})
+			.filter((a: string | null) => Boolean(a));
+
+		const uniqueMultisigIds = [...new Set(multisigIds)] as Array<string>;
+
+		const multisigsData = uniqueMultisigIds.map(async (multisigId: string | any) => {
+			if (multisigId.split('_').length <= 1) {
 				return null;
 			}
-			const multisigRef = await MULTISIG_COLLECTION.doc(id).get();
+			const multisigRef = await MULTISIG_COLLECTION.doc(multisigId).get();
 			if (multisigRef.exists) {
 				return multisigRef.data();
 			}

@@ -1,21 +1,23 @@
-type Props = {
-    name:string,
-    addressToRemove:string
-}
+import { handleHeaders } from '../utils/handleHeaders';
+import { request } from '../utils/request';
 
-export function removeFromAddressBook({name, addressToRemove}:Props){
-    if(!addressToRemove){
-        throw new Error('address is required');
-    }
-    if(!name){
-        throw new Error('name is required');
-    }
-    const body = JSON.stringify({
-        address:addressToRemove,
-        name
-    })
-    
-    return {
-        endpoint: '/removeFromAddressBook', headers:{}, options: { method: 'POST', body }
-    }
+type Props = {
+	address: string;
+	signature: string;
+	addressToDelete: string;
+	organisationId: string;
+};
+
+export function removeFromAddressBook({ address, signature, addressToDelete, organisationId }: Props) {
+	if (!addressToDelete) {
+		throw new Error('address is required');
+	}
+
+	const body = JSON.stringify({
+		address: addressToDelete,
+		organisationId
+	});
+
+	const headers = handleHeaders({ address, signature });
+	return request('/addressBook', headers, { method: 'DELETE', body });
 }

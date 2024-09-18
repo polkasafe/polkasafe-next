@@ -1,23 +1,23 @@
 'use client';
 
 import { Layout } from '@common/global-ui-components/Layout';
-import { IOrganisation } from '@common/types/substrate';
-import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
-import { useAtomValue } from 'jotai';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import React, { PropsWithChildren } from 'react';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
+import { logout } from '@sdk/polkasafe-sdk/src/logout';
 
 interface ISubstrateLayout {
 	userAddress: string;
-	organisations: Array<IOrganisation>;
 }
 
-function SubstrateLayout({ userAddress, organisations, children }: PropsWithChildren<ISubstrateLayout>) {
-	const organisation = useAtomValue(organisationAtom);
-
+function SubstrateLayout({ userAddress, children }: PropsWithChildren<ISubstrateLayout>) {
+	const [organisation] = useOrganisation();
+	const [user] = useUser();
 	return (
 		<Layout
 			userAddress={userAddress}
-			organisations={organisations}
+			organisations={user?.organisations || []}
+			logout={() => logout({ address: userAddress, signature: user?.signature || '' })}
 			selectedOrganisation={organisation}
 		>
 			{children}

@@ -5,8 +5,8 @@
 'use client';
 
 import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
-import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
-import { useAtomValue, useSetAtom } from 'jotai/react';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
+import { useSetAtom } from 'jotai/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { getOrganisationById } from '@sdk/polkasafe-sdk/src/get-organisation-by-id';
@@ -15,11 +15,10 @@ import { IOrganisation } from '@common/types/substrate';
 function InitializeOrganisation() {
 	const searchParams = useSearchParams();
 	const organisationId = searchParams.get('_organisation');
-	const user = useAtomValue(userAtom);
+	const [user] = useUser();
 	const setAtom = useSetAtom(organisationAtom);
 
 	const handleOrganisation = async () => {
-		console.log('user', user, 'page initializeOrg Line: 20');
 		if (!user || !organisationId) return;
 		const organisation = (await getOrganisationById({
 			address: user.address,
@@ -30,9 +29,6 @@ function InitializeOrganisation() {
 		if (!organisation.data) {
 			return;
 		}
-
-		// TODO: Remove console.log
-		console.log('organisation', organisation, 'page initializeOrg Line: 23');
 		setAtom(organisation.data);
 	};
 

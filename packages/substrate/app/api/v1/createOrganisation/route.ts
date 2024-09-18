@@ -15,25 +15,19 @@ import getEncodedAddress from '@common/utils/getEncodedAddress';
 const updateDB = async (organisation: IDBOrganisation, multisigs: Array<IDBMultisig>) => {
 	try {
 		const orgRef = ORGANISATION_COLLECTION.doc();
-		await Promise.all([
-			orgRef.set(organisation),
-			Promise.all(
-				multisigs.map(async (multisig) => {
-					const docId = `${multisig.address}_${multisig.network}`;
-					await MULTISIG_COLLECTION.doc(docId).set({ multisigs }, { merge: true });
-					await Promise.all(
-						(multisig.proxy || [])?.map(async (proxy) => {
-							const proxyId = `${proxy.address}_${docId}`;
-							const proxyRef = await PROXY_COLLECTION.doc(proxyId).get();
-							if (!proxyRef.exists) {
-								const newProxyRef = PROXY_COLLECTION.doc(proxyId);
-								await newProxyRef.set({ multisigId: docId, address: proxy.address, name: proxy.name });
-							}
-						})
-					);
-				})
-			)
-		]);
+		console.log('orgRef', orgRef.id);
+		await orgRef.set(organisation);
+		console.log('orgRef set the data');
+		await Promise.all(
+			multisigs.map(async (multisig) => {
+				console.log('multisig', multisig);
+				const docId = `${multisig.address}_${multisig.network}`;
+				const multisigRef = MULTISIG_COLLECTION.doc(docId);
+				await multisigRef.set(multisig, { merge: true });
+				return docId;
+			})
+		);
+		console.log('orgRef setting done');
 		return orgRef.id;
 	} catch (err: unknown) {
 		console.log('Error in updateDB:', err);
@@ -98,7 +92,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 				address: multisig.address,
 				threshold: multisig.threshold,
 				type: EUserType.SUBSTRATE,
-				proxy: multisig.proxy,
+				proxy: multisig.proxy || [],
 				description,
 				created_at: new Date(),
 				updated_at: new Date()
@@ -121,9 +115,10 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			tax_number: taxNumber,
 			members,
 			created_at: new Date(),
-			updated_at: new Date()
+			updated_at: new Date(),
+			addressBook: []
 		};
-
+		console.log('newOrganisation', multisigPayload, newOrganisation);
 		const docId = await updateDB(newOrganisation, multisigPayload);
 		return NextResponse.json({ data: { ...newOrganisation, id: docId }, error: null });
 	} catch (err: unknown) {

@@ -1,0 +1,15 @@
+.ant-collapse-header {
+    align-items: center !important;
+}
+
+.ant-collapse-header {
+    border: 1px solid #1573fe !important;
+    border-radius: 0.75rem !important;
+    background-color: #1b2028 !important;
+    z-index: 20;
+}
+
+.ant-collapse-content {
+    background-color: transparent !important;
+    border-top: none !important;
+}

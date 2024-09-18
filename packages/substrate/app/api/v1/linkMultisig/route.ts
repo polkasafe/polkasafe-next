@@ -6,8 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION, PROXY_COLLECTION } from '@common/db/collections';
 import { IDBMultisig, IOrganisation } from '@common/types/substrate';
-import { ENetwork, EUserType } from '@common/enum/substrate';
-import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { EUserType } from '@common/enum/substrate';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 

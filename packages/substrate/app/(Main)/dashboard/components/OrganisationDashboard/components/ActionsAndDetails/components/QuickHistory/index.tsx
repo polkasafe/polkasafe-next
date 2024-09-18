@@ -5,6 +5,7 @@
 'use client';
 
 import { ETransactionType } from '@common/enum/substrate';
+import { Empty } from '@common/global-ui-components/Empty';
 import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
 import { TransactionList } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList';
 import { useHistoryTransaction } from '@substrate/app/global/hooks/queryHooks/useHistoryTransaction';
@@ -36,11 +37,15 @@ export function QuickHistory({ multisigs }: IQuickHistory) {
 		return null;
 	}
 
-	if (isLoading) {
+	if (isLoading || !transactions) {
 		return <Skeleton active />;
 	}
 	if (error) {
 		return <div>Error: {error.message}</div>;
+	}
+
+	if (transactions.length === 0) {
+		return <Empty description='No Transaction Found' />;
 	}
 	return (
 		<TransactionList

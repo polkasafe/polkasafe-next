@@ -8,7 +8,7 @@ import { ApiPromise } from '@polkadot/api';
 import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
 import { QrSigner } from '@common/utils/QrSigner';
 import { QrState } from '@common/types/substrate';
-import React from 'react';
+
 import sendTxnWithSignature from '@common/utils/sendTxnWithSignature';
 import { SUBSCAN_API_HEADERS } from '@substrate/app/api/constants/subscane';
 import { isHex } from '@polkadot/util';

@@ -185,20 +185,18 @@ export function SubstrateLoginForm() {
 				setLoading(false);
 				setSigning(false);
 
-				console.log('USER DATA', userData);
-
 				// Update atom state
 				setAtom({
 					address: substrateAddress,
 					signature,
-					organisations: userData.organisations
+					organisations: []
 				});
 
-				if (userData.organisations.length > 0) {
-					router.push(ORGANISATION_DASHBOARD_URL({ id: userData.organisations[0].id }));
+				if (userData.currentOrganisation) {
+					router.push(ORGANISATION_DASHBOARD_URL({ id: userData.currentOrganisation }));
 					return;
 				}
-				router.push(CREATE_ORGANISATION_URL({ address: substrateAddress }));
+				router.push(CREATE_ORGANISATION_URL);
 			}
 		} catch (error) {
 			console.log('ERROR OCCURED', error);
@@ -323,7 +321,7 @@ export function SubstrateLoginForm() {
 							<QrDisplayPayload
 								cmd={isQrHashed ? 1 : 2}
 								address={address}
-								genesisHash={apis[vaultNetwork]?.api?.genesisHash}
+								genesisHash={apis[vaultNetwork]?.api?.genesisHash as Uint8Array}
 								payload={qrPayload}
 							/>
 						</div>

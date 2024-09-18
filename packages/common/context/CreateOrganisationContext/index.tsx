@@ -1,10 +1,8 @@
-import { ECreateOrganisationSteps, ENetwork } from '@common/enum/substrate';
+import { ENetwork } from '@common/enum/substrate';
 import { IAddressBook, ICreateOrganisationDetails, IMultisig, IMultisigCreate } from '@common/types/substrate';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 
 interface ICreateOrganisationProvider extends PropsWithChildren {
-	step: ECreateOrganisationSteps;
-	setStep: (newStep: ECreateOrganisationSteps) => void;
 	onCreateOrganisation: () => Promise<void>;
 	multisigs: Array<IMultisig>;
 	linkedMultisig: Array<IMultisig>;
@@ -21,8 +19,6 @@ interface ICreateOrganisationProvider extends PropsWithChildren {
 export const CreateOrganisationContext = createContext({} as ICreateOrganisationProvider);
 
 export function CreateOrganisationProvider({
-	step,
-	setStep,
 	onCreateOrganisation,
 	multisigs,
 	networks,
@@ -38,8 +34,6 @@ export function CreateOrganisationProvider({
 }: ICreateOrganisationProvider) {
 	const value = useMemo(
 		() => ({
-			step,
-			setStep,
 			onCreateOrganisation,
 			multisigs,
 			linkedMultisig,
@@ -53,8 +47,6 @@ export function CreateOrganisationProvider({
 			fetchMultisig
 		}),
 		[
-			step,
-			setStep,
 			onRemoveMultisig,
 			availableSignatories,
 			fetchMultisig,

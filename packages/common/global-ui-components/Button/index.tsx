@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+
 import { Button as AntDButton, ButtonProps } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import { ScaleMotion } from '@common/global-ui-components/Motion/Scale';
@@ -16,20 +16,15 @@ interface IButtonProps extends ButtonProps {
 	className?: string;
 }
 
-export default function Button({
-	variant = EButtonVariant.PRIMARY,
-	className,
-	fullWidth,
-	children,
-	...props
-}: IButtonProps) {
+export default function Button({ variant, className, fullWidth, children, ...props }: IButtonProps) {
 	switch (variant) {
 		case EButtonVariant.PRIMARY:
 			return (
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'bg-bg-secondary text-text-primary border-primary p-3 h-full rounded-lg',
+							'bg-primary text-white rounded-lg border-none min-w-[120px] flex justify-center items-center gap-x-2 text-sm',
+							props.disabled && 'bg-opacity-60 text-disabled-btn-text',
 							fullWidth && 'w-full',
 							className
 						)}
@@ -44,7 +39,7 @@ export default function Button({
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'bg-bg-secondary text-text-primary border-secondary p-3 h-full rounded-lg',
+							'bg-highlight text-text-primary border-secondary p-3 h-full rounded-lg',
 							fullWidth && 'w-full',
 							className
 						)}
@@ -59,7 +54,7 @@ export default function Button({
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'bg-bg-secondary text-text-danger border-danger bg-failure/75 p-3 h-full rounded-lg',
+							'flex items-center text-failure text-sm font-normal bg-[#e63946]/[0.1] border-none outline-none rounded-lg justify-center',
 							fullWidth && 'w-full',
 							className
 						)}
@@ -74,7 +69,7 @@ export default function Button({
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'bg-bg-secondary text-text-primary border-default p-3 h-full rounded-lg',
+							'bg-bg-secondary text-text-primary border-primary rounded-lg',
 							fullWidth && 'w-full',
 							className
 						)}

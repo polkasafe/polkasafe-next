@@ -5,7 +5,7 @@ import { LOGIN_URL } from '@substrate/app/global/end-points';
 import { isValidAddress } from '@substrate/app/global/utils/isValidAddress';
 import { isValidNetwork } from '@substrate/app/global/utils/isValidNetwork';
 import { redirect } from 'next/navigation';
-import React from 'react';
+
 import { ISearchParams } from '@common/types/substrate';
 import { getMultisigAssetsByOrg } from '@substrate/app/(Main)/assets/ssr-actions/getMultisigAssetsByOrg';
 import Secure from '@substrate/app/(Main)/Secure';
@@ -30,19 +30,17 @@ async function Assets({ searchParams }: IAssetsProps) {
 	}
 
 	if (_organisation) {
-		const { assets } = await getMultisigAssetsByOrg(_organisation);
 		return (
 			<Secure organisation={_organisation}>
-				<AssetsTemplate assets={assets} />
+				<AssetsTemplate />
 			</Secure>
 		);
 	}
 
 	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network)) {
-		const { assets } = await getMultisigAssets(_multisig, _network);
-		return <AssetsTemplate assets={assets} />;
+		return <AssetsTemplate />;
 	}
-	return null;
+	return <></>;
 }
 
 export default Assets;

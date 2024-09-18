@@ -1,3 +1,4 @@
+import { ESettingsTab, ETransactionTab } from '@common/enum/substrate';
 import {
 	AddressBookIcon,
 	AppsIcon,
@@ -13,12 +14,14 @@ export const menuItems = [
 	{
 		baseURL: '/dashboard',
 		icon: <HomeIcon />,
-		title: 'Home'
+		title: 'Home',
+		tab: ETransactionTab.QUEUE
 	},
 	{
 		baseURL: '/transactions',
 		icon: <TransactionIcon />,
-		title: 'Transactions'
+		title: 'Transactions',
+		tab: ETransactionTab.QUEUE
 	},
 	{
 		baseURL: '/assets',
@@ -32,7 +35,7 @@ export const menuItems = [
 		title: 'Exchange'
 	},
 	{
-		baseURL: '/watchlist',
+		baseURL: '/watch-list',
 		icon: <StarIcon />,
 		authenticated: true,
 		title: 'Watchlist'
@@ -63,16 +66,18 @@ export const menuItems = [
 		icon: <AppsIcon />,
 		title: 'Apps'
 	},
-	{
-		baseURL: '/settings/notifications',
-		authenticated: true,
-		icon: <TreasuryAnalyticsIcon />,
-		title: 'Notifications'
-	},
+	// {
+	// baseURL: '/settings',
+	// authenticated: true,
+	// icon: <TreasuryAnalyticsIcon />,
+	// title: 'Notifications',
+	// tab: ESettingsTab.NOTIFICATIONS
+	// },
 	{
 		baseURL: '/settings',
 		authenticated: true,
 		icon: <TreasuryAnalyticsIcon />,
-		title: 'Settings'
+		title: 'Settings',
+		tab: ESettingsTab.SIGNATORIES
 	}
 ];

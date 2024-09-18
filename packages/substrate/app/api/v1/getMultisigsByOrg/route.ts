@@ -15,6 +15,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 	const signature = headers.get('x-signature');
 	try {
 		// check if address is valid
+		console.log('address', address, 'signature', signature);
 		const substrateAddress = getSubstrateAddress(String(address));
 		if (!substrateAddress) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });
@@ -35,11 +36,25 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		}
 
 		const orgData = organisation.data();
-		const multisigs = [...new Set(orgData?.multisigs || [])];
+		const multisigIds = (orgData?.multisigs || [])
+			.map((multisigId: string | any) => {
+				let id = multisigId;
+				if (typeof multisigId !== 'string' && multisigId.address && multisigId.network) {
+					id = `${multisigId.address}_${multisigId.network}`;
+				}
+
+				if (id.split('_').length <= 1) {
+					return null;
+				}
+				return id;
+			})
+			.filter((a: string | null) => Boolean(a));
+
+		const uniqueMultisigIds = [...new Set(multisigIds)] as Array<string>;
 
 		return NextResponse.json(
 			{
-				data: [...multisigs],
+				data: uniqueMultisigIds,
 				error: null
 			},
 			{ status: 200 }

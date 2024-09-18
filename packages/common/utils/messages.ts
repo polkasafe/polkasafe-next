@@ -52,6 +52,22 @@ export const ERROR_MESSAGES = {
 	CREATE_ORGANISATION_FAILED: {
 		message: 'Create Organisation failed',
 		description: 'Create Organisation failed'
+	},
+	INVALID_ADDRESS: {
+		message: 'Invalid Address',
+		description: 'Address is invalid'
+	},
+	UPDATE_MULTISIG_FAILED: {
+		message: 'Update Multisig failed',
+		description: 'Update Multisig failed'
+	},
+	ADD_ADDRESS_FAILED: {
+		message: 'Add Address failed',
+		description: 'Address failed to add'
+	},
+	REMOVE_ADDRESS_FAILED: {
+		message: 'Remove Address failed',
+		description: 'Address failed to remove'
 	}
 };
 
@@ -71,5 +87,13 @@ export const SUCCESS_MESSAGES = {
 	CREATE_ORGANISATION_SUCCESS: {
 		message: 'Create Organisation Success',
 		description: 'Create Organisation has been sent successfully'
+	},
+	ADD_ADDRESS_SUCCESS: {
+		message: 'Add Address Success',
+		description: 'Address has been added successfully'
+	},
+	REMOVE_ADDRESS_SUCCESS: {
+		message: 'Remove Address Success',
+		description: 'Address has been removed successfully'
 	}
 };

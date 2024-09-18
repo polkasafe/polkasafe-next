@@ -1,5 +1,4 @@
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
-import React from 'react';
 
 interface IActionButton {
 	label: string;

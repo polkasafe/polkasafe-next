@@ -11,17 +11,9 @@ import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import { ORGANISATION_COLLECTION, USER_COLLECTION } from '@common/db/collections';
 
-const getOrganisations = async (address: string) => {
-	const organisations = await ORGANISATION_COLLECTION.where('members', 'array-contains', address).get();
-	return organisations.docs.map((doc: any) => {
-		const data = doc.data();
-		return {
-			name: data.name,
-			id: doc.id,
-			image: data.imageUri,
-			members: [...new Set(...[data.members])]
-		} as IOrganisation;
-	});
+const getOrganisation = async (address: string) => {
+	const organisations = await ORGANISATION_COLLECTION.where('members', 'array-contains', address).limit(1).get();
+	return organisations.docs.map((doc) => doc.id as string)[0];
 };
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
@@ -40,6 +32,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (!isValid) return NextResponse.json({ error }, { status: 400 });
 
 		const cookie = cookies();
+		const { currentOrganisation = null } = await req.json();
 
 		// default notification preferences
 		const DEFAULT_NOTIFICATION_PREFERENCES: INotificationPreferences = {
@@ -61,12 +54,16 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (doc.exists) {
 			const data = doc.data();
 			if (data && data.created_at) {
-				const organisations = await getOrganisations(substrateAddress);
+				let orgId = currentOrganisation;
+				if (!orgId) {
+					orgId = await getOrganisation(substrateAddress);
+				}
+
 				const resUser: IUserResponse = {
-					address: data?.address || substrateAddress,
-					organisations: organisations || null,
+					address: data?.address?.[0] || substrateAddress,
 					type: EUserType.SUBSTRATE,
-					signature: signature as string
+					signature: signature as string,
+					currentOrganisation: orgId
 				};
 
 				if (!data.notification_preferences) {
@@ -93,9 +90,9 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		};
 		const newUserResponse: IUserResponse = {
 			address: substrateAddress,
-			organisations: [],
 			type: EUserType.SUBSTRATE,
-			signature: signature as string
+			signature: signature as string,
+			currentOrganisation
 		};
 
 		await USER_COLLECTION.doc(substrateAddress).set(newUser, { merge: true });

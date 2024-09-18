@@ -3712,6 +3712,11 @@
     "@typescript-eslint/types" "7.2.0"
     eslint-visitor-keys "^3.4.1"
 
+"@uiw/react-json-view@^2.0.0-alpha.27":
+  version "2.0.0-alpha.27"
+  resolved "https://registry.yarnpkg.com/@uiw/react-json-view/-/react-json-view-2.0.0-alpha.27.tgz#516286d76639c2907933161bb30d012e42e7b207"
+  integrity sha512-WeR3SZiwr1jnJSPr53Hij4uz05rsd4MiNbOVhpz0kR4CWqGPGmF4ieQZtU92dWLn2Wqh5auVMKkRhf/1WYUDig==
+
 "@ungap/structured-clone@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
@@ -10178,6 +10183,7 @@ word-wrap@^1.2.5, word-wrap@~1.2.3:
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==

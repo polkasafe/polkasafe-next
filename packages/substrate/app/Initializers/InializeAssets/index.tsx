@@ -4,8 +4,8 @@
 
 'use client';
 
-import { organisationAtom } from '@substrate/app/atoms/organisation/organisationAtom';
-import { useAtomValue, useSetAtom } from 'jotai/react';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
+import { useSetAtom } from 'jotai/react';
 import { useCallback, useEffect } from 'react';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 // import axios from 'axios';
@@ -13,9 +13,10 @@ import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 // import { ENetwork } from '@common/enum/substrate';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
+import axios from 'axios';
 
 function InitializeAssets() {
-	const organisation = useAtomValue(organisationAtom);
+	const [organisation] = useOrganisation();
 	const { getApi } = useAllAPI();
 	const setAtom = useSetAtom(assetsAtom);
 
@@ -23,9 +24,9 @@ function InitializeAssets() {
 		if (!organisation) {
 			return;
 		}
-		// const usedValueData = await axios.get(
-		// 	`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(ENetwork).join(',')}&vs_currencies=usd`
-		// );
+		const {
+			data: { data: currencyData }
+		} = await axios.get(window.location.origin + '/api/v1/currencyData');
 
 		const { multisigs } = organisation;
 		const assetsPromise = multisigs.map(async (m) => {
@@ -43,25 +44,36 @@ function InitializeAssets() {
 			};
 			const balance = {} as any;
 			// eslint-disable-next-line no-restricted-syntax
-			for (const [key, value] of Object.entries(JSON.parse(balanceWithDecimals.toString()))) {
-				balance[key] = formatBalance(String(value), networkConstants[network].tokenDecimals, {
-					numberAfterComma: 3,
-					withThousandDelimitor: false
-				});
-			}
-			const usedValue =
-				// Number(usedValueData?.data?.[network]?.usd || 0) *
-				Number(0) *
-				Number(
-					formatBalance(balance.free, networkConstants[network].tokenDecimals, {
+			for (const [key, value] of Object.entries(JSON.parse(JSON.stringify(balanceWithDecimals.toHuman())))) {
+				balance[key] = formatBalance(
+					String(value),
+					{
 						numberAfterComma: 3,
-						withThousandDelimitor: false
-					})
+						withThousandDelimitor: true
+					},
+					network
 				);
-			return { ...balance, usd: usedValue, address, symbol: networkConstants[network].tokenSymbol };
+			}
+			const usdValue = Number(currencyData?.[network]?.usd || 0) * Number(balance.free);
+			const allCurrency: any = {};
+			Object.keys(currencyData).map((network) => {
+				const allCurrencyValue: any = {};
+				Object.keys(currencyData?.[network] || {}).map((currency) => {
+					allCurrencyValue[currency] = Number(currencyData?.[network]?.[currency] || 0) * Number(balance.free);
+				});
+				allCurrency[network] = allCurrencyValue;
+			});
+			return {
+				...balance,
+				usd: Number(usdValue.toFixed(3)),
+				allCurrency,
+				address,
+				network,
+				symbol: networkConstants[network].tokenSymbol
+			};
 		});
 
-		const assets = await Promise.all(assetsPromise);
+		const assets = (await Promise.all(assetsPromise)).filter((a) => Boolean(a));
 		setAtom(assets);
 	}, [getApi, organisation, setAtom]);
 
