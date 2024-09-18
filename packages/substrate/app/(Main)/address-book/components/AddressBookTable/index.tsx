@@ -85,6 +85,16 @@ export const AddressBookTable = () => {
 			title: 'Address',
 			dataIndex: 'address',
 			key: 'address',
+			width: 400,
+			className: 'text-white',
+			render: (text: string) => (
+				<Address
+					address={text}
+					onlyAddress
+					isMultisig
+					withBadge={false}
+				/>
+			)
 		},
 		{
 			title: 'Email',
@@ -127,14 +137,7 @@ export const AddressBookTable = () => {
 	}
 
 	const dataSource = organisation?.addressBook.map((item, index) => ({
-		address: (
-			<Address
-				address={item.address}
-				onlyAddress
-				isMultisig
-				withBadge={false}
-			/>
-		),
+		address: item.address,
 		name: item.name || DEFAULT_ADDRESS_NAME,
 		email: item.email || '-',
 		discord: item.discord || '-',
