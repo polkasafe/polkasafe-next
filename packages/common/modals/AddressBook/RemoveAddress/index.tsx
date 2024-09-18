@@ -1,8 +1,9 @@
-import Button from '@common/global-ui-components/Button';
+import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import React, { useState } from 'react';
 import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { ConfirmationModal } from '@common/modals/ConfirmationModal';
+import { DeleteIcon } from '@common/global-ui-components/Icons';
 
 export const RemoveAddress = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
 	const [openModal, setOpenModal] = useState(false);
@@ -25,11 +26,13 @@ export const RemoveAddress = ({ onSubmit }: { onSubmit: () => Promise<void> }) =
 		<>
 			{context}
 			<Button
-				type='primary'
+				size='small'
+				variant={EButtonVariant.SECONDARY}
 				onClick={() => setOpenModal(true)}
 				loading={loading}
+				className='bg bg-[#e63946]/[0.1] p-2.5 rounded-lg text-failure border-none'
 			>
-				delete
+				<DeleteIcon />
 			</Button>
 			<ConfirmationModal
 				openModal={openModal}

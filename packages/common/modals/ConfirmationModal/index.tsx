@@ -18,7 +18,7 @@ export const ConfirmationModal = ({ openModal, setOpenModal, title, message, onS
 			title={title}
 		>
 			<div className='flex flex-col gap-5'>{message}</div>
-			<div className='flex justify-end gap-4'>
+			<div className='mt-6 flex justify-end gap-4'>
 				<Button
 					variant={EButtonVariant.PRIMARY}
 					onClick={() => {
@@ -29,7 +29,7 @@ export const ConfirmationModal = ({ openModal, setOpenModal, title, message, onS
 					Yes
 				</Button>
 				<Button
-					variant={EButtonVariant.SECONDARY}
+					variant={EButtonVariant.PRIMARY}
 					onClick={() => setOpenModal(false)}
 				>
 					No
