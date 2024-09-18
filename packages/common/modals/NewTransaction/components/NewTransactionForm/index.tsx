@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Spin } from 'antd';
+import { Form, Spin, AutoComplete } from 'antd';
 import { newTransactionFormFields } from '@common/modals/NewTransaction/utils/form';
 import { IMultisig, ISendTransactionForm } from '@common/types/substrate';
 import { useDashboardContext } from '@common/context/DashboarcContext';
 import { findMultisig } from '@common/utils/findMultisig';
 import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
-import { AutoComplete } from 'antd';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { CircleArrowDownIcon, CirclePlusIcon, DeleteIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import BN from 'bn.js';
+import { Dropdown } from '@common/global-ui-components/Dropdown';
 import Address from '@common/global-ui-components/Address';
 import { ENetwork } from '@common/enum/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
@@ -18,8 +18,8 @@ import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import BalanceInput from '@common/global-ui-components/BalanceInput';
 import formatBnBalance from '@common/utils/formatBnBalance';
 import './style.css';
-import { Dropdown } from '@common/global-ui-components/Dropdown';
 import Collapse from '@common/global-ui-components/Collapse';
+
 export interface IRecipientAndAmount {
 	recipient: string;
 	amount: BN;
@@ -35,10 +35,7 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 
 	const [tip, setTip] = useState<BN>(new BN(0));
 
-	const [network, setNetwork] = useState<ENetwork>(
-		multisigs[0].network ||
-		ENetwork.POLKADOT
-	);
+	const [network, setNetwork] = useState<ENetwork>(multisigs[0].network || ENetwork.POLKADOT);
 
 	const [selectedProxyAddress, setSelectedProxyAddress] = useState<string>('');
 
@@ -48,7 +45,6 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 			recipient: ''
 		}
 	]);
-
 
 	// const multisigOptionsWithProxy: IMultisig[] = [];
 
@@ -84,74 +80,98 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 	multisigs?.forEach((item) => {
 		multisigOptions.push({
 			key: JSON.stringify({ ...item }),
-			label: (
-				item.proxy && item.proxy.length > 0 ? 
-				<Collapse
-					plain
-					className={`border-none rounded-xl ${selectedMultisigAddress === item.address ? 'selected' : ''}`}
-					expandIconPosition='end'
-					collapsible='icon'
-					defaultActiveKey={[item.address]}
-					items={[
-						{
-							key: item.address,
-							label: (
-								<div className='flex gap-x-3 items-center' onClick={() => {
-									setSelectedMultisigAddress(item?.address);
-									setNetwork(item?.network);
-								}}>
-									<div className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}>
-										<div className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}></div>
-									</div>
-									<Address
-										isMultisig
-										showNetworkBadge
-										network={item.network}
-										withBadge={false}
-										address={item.address}
-									/>
-								</div>
-							),
-							children: item.proxy && (
-								<div className='flex flex-col gap-y-3 p-4 pl-10 relative'>
-									{item.proxy.map((p, i) => (
-										<div onClick={() => {
-											setSelectedMultisigAddress(p.address);
-											setSelectedProxyAddress(p.address);
-										}} className={`${selectedMultisigAddress === p.address ? 'bg-highlight' : ''} p-2 rounded-xl flex gap-x-3 items-center relative`}>
-											<div className={`absolute w-[16px] ${i === 0 ? 'h-[56px] top-[-28px]' : 'h-[76px] top-[-48px]'} rounded-es-[11px] border-b-[2px] border-l-[2px] border-text-secondary left-[-17px]`} />
-											<div className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === p.address ? 'border-primary' : 'border-text-secondary'}`}>
-												<div className={`w-full h-full rounded-full ${selectedMultisigAddress === p.address ? 'bg-primary' : 'bg-transparent'}`}></div>
-											</div>
-											<Address
-												address={p.address}
-												network={item.network}
-												name={p.name}
-												isProxy
+			label:
+				item.proxy && item.proxy.length > 0 ? (
+					<Collapse
+						plain
+						className={`border-none rounded-xl ${selectedMultisigAddress === item.address ? 'selected' : ''}`}
+						expandIconPosition='end'
+						collapsible='icon'
+						defaultActiveKey={[item.address]}
+						items={[
+							{
+								key: item.address,
+								label: (
+									<div
+										className='flex gap-x-3 items-center'
+										onClick={() => {
+											setSelectedMultisigAddress(item?.address);
+											setNetwork(item?.network);
+										}}
+									>
+										<div
+											className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}
+										>
+											<div
+												className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}
 											/>
 										</div>
-									))}
-								</div>
-							)
-						}
-					]}
-				/> :
-				<div className={`flex gap-x-3 items-center px-4 py-3 rounded-xl ${selectedMultisigAddress === item.address ? 'bg-highlight' : ''}`} onClick={() => {
-					setSelectedMultisigAddress(item?.address);
-					setNetwork(item?.network);
-				}}>
-					<div className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}>
-						<div className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}></div>
-					</div>
-					<Address
-						isMultisig
-						showNetworkBadge
-						network={item.network}
-						withBadge={false}
-						address={item.address}
+										<Address
+											isMultisig
+											showNetworkBadge
+											network={item.network}
+											withBadge={false}
+											address={item.address}
+										/>
+									</div>
+								),
+								children: item.proxy && (
+									<div className='flex flex-col gap-y-3 p-4 pl-10 relative'>
+										{item.proxy.map((p, i) => (
+											<div
+												onClick={() => {
+													setSelectedMultisigAddress(p.address);
+													setSelectedProxyAddress(p.address);
+												}}
+												className={`${selectedMultisigAddress === p.address ? 'bg-highlight' : ''} p-2 rounded-xl flex gap-x-3 items-center relative`}
+											>
+												<div
+													className={`absolute w-[16px] ${i === 0 ? 'h-[56px] top-[-28px]' : 'h-[76px] top-[-48px]'} rounded-es-[11px] border-b-[2px] border-l-[2px] border-text-secondary left-[-17px]`}
+												/>
+												<div
+													className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === p.address ? 'border-primary' : 'border-text-secondary'}`}
+												>
+													<div
+														className={`w-full h-full rounded-full ${selectedMultisigAddress === p.address ? 'bg-primary' : 'bg-transparent'}`}
+													/>
+												</div>
+												<Address
+													address={p.address}
+													network={item.network}
+													name={p.name}
+													isProxy
+												/>
+											</div>
+										))}
+									</div>
+								)
+							}
+						]}
 					/>
-				</div>
-			)
+				) : (
+					<div
+						className={`flex gap-x-3 items-center px-4 py-3 rounded-xl ${selectedMultisigAddress === item.address ? 'bg-highlight' : ''}`}
+						onClick={() => {
+							setSelectedMultisigAddress(item?.address);
+							setNetwork(item?.network);
+						}}
+					>
+						<div
+							className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}
+						>
+							<div
+								className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}
+							/>
+						</div>
+						<Address
+							isMultisig
+							showNetworkBadge
+							network={item.network}
+							withBadge={false}
+							address={item.address}
+						/>
+					</div>
+				)
 		});
 	});
 
@@ -248,7 +268,7 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 							trigger={['click']}
 							className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'
 							menu={{
-								items: multisigOptions,
+								items: multisigOptions
 								// onClick: (e) => {
 								// 	const data = JSON.parse(e.key);
 								// 	setSelectedMultisigAddress(data?.address);
@@ -275,118 +295,114 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 					<div>
 						<div className='flex flex-col gap-y-3 mb-2'>
 							{recipientAndAmount.map(({ recipient }, i) => (
-														<article
-															key={recipient}
-															className='w-[500px] flex items-start gap-x-2 max-sm:w-full max-sm:flex-col'
+								<article
+									key={recipient}
+									className='w-[500px] flex items-start gap-x-2 max-sm:w-full max-sm:flex-col'
+								>
+									<div className='w-[55%] max-sm:w-full'>
+										<label className='text-label font-normal text-xs leading-[13px] block mb-[5px]'>Recipient*</label>
+										<Form.Item
+											name='recipient'
+											rules={[{ required: true }]}
+											help={
+												!recipient && 'Recipient Address is Required'
+												// (!validRecipient[i] && 'Please add a valid Address')
+											}
+											className='border-0 outline-0 my-0 p-0'
+											validateStatus={recipient ? 'success' : 'error'}
+										>
+											<div className='h-[50px]'>
+												{recipient &&
+												autocompleteAddresses.some(
+													(item) =>
+														item.value && getSubstrateAddress(String(item.value)) === getSubstrateAddress(recipient)
+												) ? (
+													<div className='border border-solid border-primary rounded-lg px-2 h-full flex justify-between items-center'>
+														{
+															autocompleteAddresses.find(
+																(item) =>
+																	item.value &&
+																	getSubstrateAddress(String(item.value)) === getSubstrateAddress(recipient)
+															)?.label
+														}
+														<button
+															className='outline-none border-none bg-highlight w-6 h-6 rounded-full flex items-center justify-center z-100'
+															onClick={() => {
+																onRecipientChange('', i);
+															}}
 														>
-															<div className='w-[55%] max-sm:w-full'>
-																<label className='text-label font-normal text-xs leading-[13px] block mb-[5px]'>
-																	Recipient*
-																</label>
-																<Form.Item
-																	name='recipient'
-																	rules={[{ required: true }]}
-																	help={
-																		(!recipient && 'Recipient Address is Required')
-																		// (!validRecipient[i] && 'Please add a valid Address')
-																	}
-																	className='border-0 outline-0 my-0 p-0'
-																	validateStatus={recipient ? 'success' : 'error'}
-																>
-																	<div className='h-[50px]'>
-																		{recipient &&
-																		autocompleteAddresses.some(
-																			(item) =>
-																				item.value &&
-																				getSubstrateAddress(String(item.value)) === getSubstrateAddress(recipient)
-																		) ? (
-																			<div className='border border-solid border-primary rounded-lg px-2 h-full flex justify-between items-center'>
-																				{
-																					autocompleteAddresses.find(
-																						(item) =>
-																							item.value &&
-																							getSubstrateAddress(String(item.value)) === getSubstrateAddress(recipient)
-																					)?.label
-																				}
-																				<button
-																					className='outline-none border-none bg-highlight w-6 h-6 rounded-full flex items-center justify-center z-100'
-																					onClick={() => {
-																						onRecipientChange('', i);
-																					}}
-																				>
-																					<OutlineCloseIcon className='text-primary w-2 h-2' />
-																				</button>
-																			</div>
-																		) : (
-																			<AutoComplete
-																				// autoFocus
-																				// defaultOpen
-																				className='[&>div>span>input]:px-[12px]'
-																				filterOption={(inputValue, options) => {
-																					return inputValue && options?.value
-																						? getSubstrateAddress(String(options?.value) || '') ===
-																								getSubstrateAddress(inputValue)
-																						: true;
-																				}}
-																				// notFoundContent={
-																				// 	validRecipient[i] && (
-																				// 		<Button
-																				// 			icon={<PlusCircleOutlined className='text-primary' />}
-																				// 			className='bg-transparent border-none outline-none text-primary text-sm flex items-center'
-																				// 			onClick={() => setShowAddressModal(true)}
-																				// 		>
-																				// 			Add Address to Address Book
-																				// 		</Button>
-																				// 	)
-																				// }
-																				options={
-																					autocompleteAddresses
-																					// filter duplicate address
-																					// .filter(
-																					// (item) =>
-																					// !recipientAndAmount.some(
-																					// (r) =>
-																					// r.recipient &&
-																					// item.value &&
-																					// getSubstrateAddress(r.recipient) ===
-																					// getSubstrateAddress(String(item.value) || '')
-																					// )
-																					// )
-																				}
-																				id='recipient'
-																				placeholder='Send to Address..'
-																				onChange={(value) => onRecipientChange(value, i)}
-																				value={recipientAndAmount[i].recipient}
-																				defaultValue={''}
-																			/>
-																		)}
-																	</div>
-																</Form.Item>
-															</div>
-															<div className='flex items-center gap-x-2 w-[45%]'>
-																<BalanceInput
-																	network={network}
-																	multipleCurrency
-																	label='Amount*'
-																	defaultValue={formatBnBalance(
-																		recipientAndAmount[i].amount.toString(),
-																		{ numberAfterComma: 0, withThousandDelimitor: false },
-																		network
-																	)}
-																	// fromBalance={multisigBalance}
-																	onChange={(balance) => onAmountChange(balance, i)}
-																	currencyValues={currencyValues}
-																/>
-																{i !== 0 && (
-																	<Button
-																		onClick={() => onRemoveRecipient(i)}
-																		className='text-failure border-none outline-none bg-[#e63946]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8'
-																	>
-																		<DeleteIcon />
-																	</Button>
-																)}
-															</div>
-														</article>
+															<OutlineCloseIcon className='text-primary w-2 h-2' />
+														</button>
+													</div>
+												) : (
+													<AutoComplete
+														// autoFocus
+														// defaultOpen
+														className='[&>div>span>input]:px-[12px]'
+														filterOption={(inputValue, options) => {
+															return inputValue && options?.value
+																? getSubstrateAddress(String(options?.value) || '') === getSubstrateAddress(inputValue)
+																: true;
+														}}
+														// notFoundContent={
+														// 	validRecipient[i] && (
+														// 		<Button
+														// 			icon={<PlusCircleOutlined className='text-primary' />}
+														// 			className='bg-transparent border-none outline-none text-primary text-sm flex items-center'
+														// 			onClick={() => setShowAddressModal(true)}
+														// 		>
+														// 			Add Address to Address Book
+														// 		</Button>
+														// 	)
+														// }
+														options={
+															autocompleteAddresses
+															// filter duplicate address
+															// .filter(
+															// (item) =>
+															// !recipientAndAmount.some(
+															// (r) =>
+															// r.recipient &&
+															// item.value &&
+															// getSubstrateAddress(r.recipient) ===
+															// getSubstrateAddress(String(item.value) || '')
+															// )
+															// )
+														}
+														id='recipient'
+														placeholder='Send to Address..'
+														onChange={(value) => onRecipientChange(value, i)}
+														value={recipientAndAmount[i].recipient}
+														defaultValue=''
+													/>
+												)}
+											</div>
+										</Form.Item>
+									</div>
+									<div className='flex items-center gap-x-2 w-[45%]'>
+										<BalanceInput
+											network={network}
+											multipleCurrency
+											label='Amount*'
+											defaultValue={formatBnBalance(
+												recipientAndAmount[i].amount.toString(),
+												{ numberAfterComma: 0, withThousandDelimitor: false },
+												network
+											)}
+											// fromBalance={multisigBalance}
+											onChange={(balance) => onAmountChange(balance, i)}
+											currencyValues={currencyValues}
+										/>
+										{i !== 0 && (
+											<Button
+												onClick={() => onRemoveRecipient(i)}
+												className='text-failure border-none outline-none bg-[#e63946]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8'
+											>
+												<DeleteIcon />
+											</Button>
+										)}
+									</div>
+								</article>
 							))}
 						</div>
 						<div className='flex'>
@@ -410,10 +426,25 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 					</div>
 					<div className='flex items-center gap-x-4 w-full'>
 						<div className='w-full'>
-							<Button fullWidth size='large' onClick={onClose} variant={EButtonVariant.DANGER} icon={<OutlineCloseIcon className='text-failure' />}>Cancel</Button>
+							<Button
+								fullWidth
+								size='large'
+								onClick={onClose}
+								variant={EButtonVariant.DANGER}
+								icon={<OutlineCloseIcon className='text-failure' />}
+							>
+								Cancel
+							</Button>
 						</div>
 						<div className='w-full'>
-							<Button fullWidth size='large' onClick={handleSubmit} variant={EButtonVariant.PRIMARY}>Next</Button>
+							<Button
+								fullWidth
+								size='large'
+								onClick={handleSubmit}
+								variant={EButtonVariant.PRIMARY}
+							>
+								Next
+							</Button>
 						</div>
 					</div>
 				</Form>
