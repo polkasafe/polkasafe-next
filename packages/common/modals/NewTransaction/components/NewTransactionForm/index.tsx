@@ -35,7 +35,13 @@ export function NewTransactionForm({
 	step: ETransactionSteps;
 	setStep: React.Dispatch<React.SetStateAction<ETransactionSteps>>;
 }) {
-	const { multisigs, onNewTransaction, addressBook = [] } = useDashboardContext();
+	const {
+		multisigs,
+		onNewTransaction,
+		addressBook = [],
+		ReviewTransactionComponent,
+		getCallData
+	} = useDashboardContext();
 	const [notification, context] = useNotification();
 	const [form] = Form.useForm();
 
@@ -99,30 +105,44 @@ export function NewTransactionForm({
 					className='flex flex-col gap-y-6'
 					form={form}
 				>
-					<div>
-						<p className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
-							Sending from
-						</p>
-						<MultisigDropdown
-							multisigs={multisigs}
-							onChange={(value: { address: string; network: ENetwork; name: string; proxy?: string }) =>
-								setSelectedMultisigDetails(value)
-							}
-						/>
-					</div>
-					<RecipientsInputs
-						form={form}
-						autocompleteAddresses={autocompleteAddresses}
-						network={selectedMultisigDetails.network}
-					/>
+					{step === ETransactionSteps.BUILD_TRANSACTION ? (
+						<div className='flex flex-col gap-y-6'>
+							<div>
+								<p className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
+									Sending from
+								</p>
+								<MultisigDropdown
+									multisigs={multisigs}
+									onChange={(value: { address: string; network: ENetwork; name: string; proxy?: string }) =>
+										setSelectedMultisigDetails(value)
+									}
+								/>
+							</div>
+							<RecipientsInputs
+								form={form}
+								autocompleteAddresses={autocompleteAddresses}
+								network={selectedMultisigDetails.network}
+							/>
 
-					<BalanceInput
-						network={selectedMultisigDetails.network}
-						label='Tip'
-						onChange={(balance) => console.log(balance)}
-						formName='tipBalance'
-						required={false}
-					/>
+							<BalanceInput
+								network={selectedMultisigDetails.network}
+								label='Tip'
+								onChange={(balance) => console.log(balance)}
+								formName='tipBalance'
+								required={false}
+							/>
+						</div>
+					) : (
+						<ReviewTransactionComponent
+							callData={getCallData({
+								multisigDetails: selectedMultisigDetails,
+								recipientAndAmount: form.getFieldValue('recipients')
+							})}
+							from={selectedMultisigDetails.address}
+							network={selectedMultisigDetails.network}
+							to={form.getFieldValue('recipients')[0].recipient}
+						/>
+					)}
 
 					<div className='flex items-center gap-x-4 w-full'>
 						<div className='w-full'>

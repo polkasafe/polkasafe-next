@@ -4,7 +4,7 @@
 
 'use client';
 
-import { ETxType, Wallet } from '@common/enum/substrate';
+import { ENetwork, ETxType, Wallet } from '@common/enum/substrate';
 import DashboardCard from '@common/global-ui-components/DashboardCard';
 import { ICurrency, IMultisig, ISendTransaction } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
@@ -18,6 +18,8 @@ import { currencyAtom, selectedCurrencyAtom } from '@substrate/app/atoms/currenc
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { BN } from '@polkadot/util';
 import NewTransaction from '@common/modals/NewTransaction';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import ReviewTransaction from '@substrate/app/(Main)/components/ReviewTransaction';
 
 export function DashboardOverview() {
 	const [assets] = useAssets();
@@ -27,6 +29,33 @@ export function DashboardOverview() {
 	const org = organisation;
 	const { getApi, allApi } = useAllAPI();
 	const [user] = useUser();
+
+	const getCallData = ({ multisigDetails, recipientAndAmount }: { multisigDetails: { address: string; network: ENetwork, name: string; proxy?: string }, recipientAndAmount: { recipient: string; amount: BN }[] }): string => {
+		if (
+			!allApi ||
+			!multisigDetails ||
+			!allApi[multisigDetails.network] ||
+			!allApi[multisigDetails.network].apiReady ||
+			!recipientAndAmount ||
+			recipientAndAmount.some((item) => item.recipient === '' || item.amount.isZero())
+		)
+			return '';
+
+		const { network } = multisigDetails;
+
+		const batch = allApi[network].api.tx.utility.batchAll(
+			recipientAndAmount.map((item) =>
+				allApi[network].api.tx.balances.transferKeepAlive(item.recipient, item.amount.toString())
+			)
+		);
+		let tx: SubmittableExtrinsic<'promise'>;
+		if (multisigDetails.proxy) {
+			tx = allApi[network].api.tx.proxy.proxy(multisigDetails.proxy, null, batch);
+			return tx.method.toHex();
+		} else {
+			return batch.method.toHex();
+		}
+	}
 
 	const handleNewTransaction = async (values: ISendTransaction) => {
 		if (!user) {
@@ -93,6 +122,8 @@ export function DashboardOverview() {
 			multisigs={org?.multisigs || []}
 			addressBook={org?.addressBook || []}
 			allApi={allApi}
+			getCallData={getCallData}
+			ReviewTransactionComponent={(values) => <ReviewTransaction { ...values } />}
 		>
 			<div className='flex flex-col gap-y-6'>
 				<DashboardCard />

@@ -1,3 +1,4 @@
+import { ENetwork } from '@common/enum/substrate';
 import {
 	IAddressBook,
 	ICurrency,
@@ -6,7 +7,7 @@ import {
 	IMultisigAssets,
 	ISendTransaction
 } from '@common/types/substrate';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, PropsWithChildren, ReactNode, useContext, useMemo } from 'react';
 
 interface IDashboardProvider extends PropsWithChildren {
 	onNewTransaction: (values: ISendTransaction) => Promise<void>;
@@ -17,6 +18,8 @@ interface IDashboardProvider extends PropsWithChildren {
 	multisigs: Array<IMultisig>;
 	addressBook: IAddressBook[];
 	allApi: any;
+	getCallData: (data: any) => string;
+	ReviewTransactionComponent: (props: { callData: string; from: string; to: string; network: ENetwork }) => ReactNode;
 }
 
 export const DashboardContext = createContext({} as IDashboardProvider);
@@ -30,7 +33,9 @@ export function DashboardProvider({
 	multisigs,
 	children,
 	addressBook,
-	allApi
+	allApi,
+	getCallData,
+	ReviewTransactionComponent
 }: IDashboardProvider) {
 	const value = useMemo(
 		() => ({
@@ -41,9 +46,22 @@ export function DashboardProvider({
 			multisigs,
 			addressBook,
 			currencyValues,
-			allApi
+			allApi,
+			getCallData,
+			ReviewTransactionComponent
 		}),
-		[addressBook, allApi, assets, currency, currencyValues, multisigs, onFundMultisig, onNewTransaction]
+		[
+			ReviewTransactionComponent,
+			addressBook,
+			allApi,
+			assets,
+			currency,
+			currencyValues,
+			getCallData,
+			multisigs,
+			onFundMultisig,
+			onNewTransaction
+		]
 	);
 	return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;
 }

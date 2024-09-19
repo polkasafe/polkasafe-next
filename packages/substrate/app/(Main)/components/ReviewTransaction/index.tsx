@@ -1,21 +1,23 @@
 import { ENetwork } from '@common/enum/substrate';
 import Address from '@common/global-ui-components/Address';
 import CallDataJsonView from '@common/global-ui-components/CallDataJsonView';
+import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import React from 'react';
 
 const ReviewTransaction = ({
 	callData,
 	from,
 	to,
-	api,
 	network
 }: {
 	callData: string;
 	from: string;
 	to: string;
-	api: any;
 	network: ENetwork;
 }) => {
+	const { allApi } = useAllAPI();
+
+	const api = allApi[network].api;
 	return (
 		<div className='flex flex-col gap-y-4'>
 			<div className='w-[500px] max-h-[200px] overflow-auto'>
