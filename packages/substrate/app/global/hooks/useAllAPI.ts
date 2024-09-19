@@ -29,7 +29,7 @@ export const useAllAPI = () => {
 	const assethubPolkadot = useAtomValue(assethubPolkadotApi);
 	const assethubKusama = useAtomValue(assethubKusamaApi);
 	const assethubRococo = useAtomValue(assethubRococoApi);
-	const availTuring = useAtomValue(availTuringApi);
+	// const availTuring = useAtomValue(availTuringApi);
 	const westend = useAtomValue(westendApi);
 
 	const getApi = (network: ENetwork) => {
@@ -54,8 +54,8 @@ export const useAllAPI = () => {
 				return assethubKusama;
 			case ENetwork.ROCOCO_ASSETHUB:
 				return assethubRococo;
-			case ENetwork.AVAIL:
-				return availTuring;
+			// case ENetwork.AVAIL:
+			// 	return availTuring;
 			case ENetwork.WESTEND:
 				return westend;
 			default:
@@ -65,18 +65,17 @@ export const useAllAPI = () => {
 
 	return {
 		allApi: {
-			polkadotApi: polkadot,
-			astarApi: astar,
-			availApi: avail,
-			khalaApi: khala,
-			kusamaApi: kusama,
-			phalaApi: phala,
-			rococoApi: rococo,
-			assethubPolkadotApi: assethubPolkadot,
-			assethubKusamaApi: assethubKusama,
-			assethubRococoApi: assethubRococo,
-			availTuringApi: availTuring,
-			westendApi: westend
+			[ENetwork.POLKADOT]: polkadot,
+			[ENetwork.ASTAR]: astar,
+			[ENetwork.AVAIL]: avail,
+			[ENetwork.KHALA]: khala,
+			[ENetwork.KUSAMA]: kusama,
+			[ENetwork.PHALA]: phala,
+			[ENetwork.ROCOCO]: rococo,
+			[ENetwork.POLKADOT_ASSETHUB]: assethubPolkadot,
+			[ENetwork.KUSAMA_ASSETHUB]: assethubKusama,
+			[ENetwork.ROCOCO_ASSETHUB]: assethubRococo,
+			[ENetwork.WESTEND]: westend
 		},
 		getApi
 	};

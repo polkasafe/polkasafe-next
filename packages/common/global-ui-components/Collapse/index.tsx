@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react/jsx-props-no-spreading */
 import { Collapse as AntdCollapase, CollapseProps } from 'antd';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { twMerge } from 'tailwind-merge';

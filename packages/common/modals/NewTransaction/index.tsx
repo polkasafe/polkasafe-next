@@ -4,10 +4,12 @@ import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Modal from '@common/global-ui-components/Modal';
 import React, { useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { NewTransactionForm } from '@common/modals/NewTransaction/components/NewTransactionForm';
+import { ETransactionSteps, NewTransactionForm } from '@common/modals/NewTransaction/components/NewTransactionForm';
 
 function NewTransaction() {
 	const [openModal, setOpenModal] = useState(false);
+	const [step, setStep] = useState<ETransactionSteps>(ETransactionSteps.BUILD_TRANSACTION);
+
 	return (
 		<div className='w-full'>
 			<Button
@@ -22,10 +24,14 @@ function NewTransaction() {
 			<Modal
 				open={openModal}
 				onCancel={() => setOpenModal(false)}
-				title='New Transaction'
+				title={step}
 			>
 				<div className='flex flex-col gap-5'>
-					<NewTransactionForm onClose={() => setOpenModal(false)} />
+					<NewTransactionForm
+						setStep={setStep}
+						step={step}
+						onClose={() => setOpenModal(false)}
+					/>
 				</div>
 			</Modal>
 		</div>

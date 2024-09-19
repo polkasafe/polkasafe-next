@@ -3,7 +3,9 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 /* eslint-disable no-tabs */
 import { ENetwork, ETransactionOptions, ETransactionType, ETxType, Wallet } from '@common/enum/substrate';
+import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { TransactionHead } from '@common/global-ui-components/Transaction/TransactionHead';
+import TransactionDetails from '@common/global-ui-components/Transaction/TransactionDetails';
 import { findMultisig } from '@common/utils/findMultisig';
 import { ApiPromise } from '@polkadot/api';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
@@ -12,6 +14,9 @@ import { useDecodeCallData } from '@substrate/app/global/hooks/queryHooks/useDec
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
+import { Collapse } from 'antd';
+import { twMerge } from 'tailwind-merge';
+import getEncodedAddress from '@common/utils/getEncodedAddress';
 
 interface ITransactionRow {
 	callData?: string;
@@ -24,6 +29,7 @@ interface ITransactionRow {
 	type: ETransactionOptions;
 	transactionType: ETransactionType;
 	multisig: string;
+	approvals: string[];
 }
 
 function TransactionRow({
@@ -36,7 +42,8 @@ function TransactionRow({
 	from,
 	type,
 	transactionType,
-	multisig
+	multisig,
+	approvals
 }: ITransactionRow) {
 	const { getApi } = useAllAPI();
 	const [user] = useUser();
@@ -48,9 +55,12 @@ function TransactionRow({
 		apiData: getApi(network)
 	});
 
+	const txMultisig = findMultisig(organisation?.multisigs || [], `${multisig}_${network}`);
+
+	const hasApproved = txMultisig?.signatories.includes(getEncodedAddress(user?.address || '', network) || '');
+
 	const onActionClick = (type: ETxType) => {
 		const api = getApi(network);
-		const txMultisig = findMultisig(organisation?.multisigs || [], `${multisig}_${network}`);
 
 		if (!api?.api || !user?.address || !txMultisig) {
 			console.log('API not found', api, user, txMultisig, callData);
@@ -91,16 +101,51 @@ function TransactionRow({
 		: amountToken;
 
 	return (
-		<TransactionHead
-			createdAt={createdAt}
-			to={data?.to || to}
-			network={network}
-			amountToken={value}
-			from={from}
-			label={label.split('_')}
-			type={type}
-			transactionType={transactionType}
-			onAction={onActionClick}
+		<Collapse
+			className={'bg-bg-secondary rounded-xl'}
+			expandIconPosition='end'
+			expandIcon={
+				(({ isActive }) => (
+					<CircleArrowDownIcon className={twMerge('text-primary text-lg', isActive && 'rotate-[180deg]')} />
+				))
+			}
+			// defaultActiveKey={[item.address]}
+			items={[
+				{
+					key: callHash,
+					label: (
+						<TransactionHead
+							createdAt={createdAt}
+							to={data?.to || to}
+							network={network}
+							amountToken={value}
+							from={from}
+							label={label.split('_')}
+							type={type}
+							transactionType={transactionType}
+							onAction={onActionClick}
+							approvals={approvals}
+							threshold={txMultisig?.threshold || 2}
+							hasApproved={hasApproved}
+						/>
+					),
+					children: <TransactionDetails 
+									createdAt={createdAt}
+									to={data?.to || to}
+									network={network}
+									amountToken={value}
+									from={from}
+									type={type}
+									transactionType={transactionType}
+									onAction={onActionClick}
+									approvals={approvals}
+									threshold={txMultisig?.threshold || 2}
+									hasApproved={hasApproved}
+									callHash={callHash}
+									callData={callData}
+								/>
+				}
+			]}
 		/>
 	);
 }

@@ -23,7 +23,7 @@ interface ITransactionTemplateProps {
 
 const styles = {
 	selectedTab: 'bg-highlight text-label border-0 py-3 px-5 text-sm font-medium',
-	tab: 'bg-bg-main text-text-primary border-0 py-3 px-5 text-sm shadow-none',
+	tab: 'bg-transparent text-text-primary border-0 py-3 px-5 text-sm shadow-none',
 	filterButton: 'py-3 px-5 font-bold border-2 text-text-outline-primary flex gap-2 items-center'
 };
 
@@ -72,7 +72,7 @@ function TransactionTemplate({ organisationId, network, multisig, tab: selectedT
 	];
 
 	return (
-		<div className='flex flex-col gap-1'>
+		<div className='flex flex-col gap-y-6 h-full'>
 			<div className='flex justify-between items-center'>
 				<div className='flex gap-x-4 items-center'>
 					<div className='flex gap-x-4 items-center'>
@@ -96,8 +96,10 @@ function TransactionTemplate({ organisationId, network, multisig, tab: selectedT
 					</div>
 				</div>
 			</div>
-			{selectedTab === ETransactionTab.QUEUE && <Queue multisigs={multisigs} />}
-			{selectedTab === ETransactionTab.HISTORY && <History multisigs={multisigs} />}
+			<div className='flex-1 overflow-y-auto'>
+				{selectedTab === ETransactionTab.QUEUE && <Queue multisigs={multisigs} />}
+				{selectedTab === ETransactionTab.HISTORY && <History multisigs={multisigs} />}
+			</div>
 		</div>
 	);
 }

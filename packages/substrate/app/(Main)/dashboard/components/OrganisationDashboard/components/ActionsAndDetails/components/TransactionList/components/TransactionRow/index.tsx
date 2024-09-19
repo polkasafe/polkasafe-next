@@ -101,6 +101,7 @@ function TransactionRow({
 			type={type}
 			transactionType={transactionType}
 			onAction={onActionClick}
+			isHomePage
 		/>
 	);
 }
