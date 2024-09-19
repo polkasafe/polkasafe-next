@@ -1,7 +1,8 @@
 import { ESettingsTab } from '@common/enum/substrate';
-import { Notifications } from '@substrate/app/(Main)/settings/components/Actions/components/Notifications';
 import { Signatories } from '@substrate/app/(Main)/settings/components/Actions/components/Signatories';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
+import { NotificationsUI } from '@common/global-ui-components/Notifications/index.tsx';
+import { AdminPanel } from '@common/global-ui-components/AdminPanel/index';
 import React from 'react';
 
 interface IActionItems {
@@ -19,7 +20,8 @@ export const ActionItems = ({ selectedTab }: IActionItems) => {
 	return (
 		<>
 			{selectedTab === ESettingsTab.SIGNATORIES && <Signatories multisigs={organisation.multisigs} />}
-			{selectedTab === ESettingsTab.NOTIFICATIONS && <Notifications />}
+			{selectedTab === ESettingsTab.NOTIFICATIONS && <NotificationsUI />}
+			{selectedTab === ESettingsTab.ADMIN && <AdminPanel />}
 		</>
 	);
 };

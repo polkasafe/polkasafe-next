@@ -19,6 +19,7 @@ module.exports = {
 				'text-primary': 'var(--text-primary)',
 				'text-outline-primary': 'var(--text-outline-primary)',
 				'text-secondary': 'var(--text-secondary)',
+				'text-tertiary': 'var(--text-tertiary)',
 				'text-danger': 'var(--text-danger)',
 				'text-disabled': 'var(--text-disabled)',
 				'text-success': 'var(--text-success)',
