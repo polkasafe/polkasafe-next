@@ -25,7 +25,7 @@ export function DashboardOverview() {
 	const currencyValues = useAtomValue(currencyAtom);
 	const [organisation] = useOrganisation();
 	const org = organisation;
-	const { getApi } = useAllAPI();
+	const { getApi, allApi } = useAllAPI();
 	const [user] = useUser();
 
 	const handleNewTransaction = async (values: ISendTransaction) => {
@@ -92,6 +92,7 @@ export function DashboardOverview() {
 			currencyValues={currencyValues || {} as ICurrency}
 			multisigs={org?.multisigs || []}
 			addressBook={org?.addressBook || []}
+			allApi={allApi}
 		>
 			<div className='flex flex-col gap-y-6'>
 				<DashboardCard />

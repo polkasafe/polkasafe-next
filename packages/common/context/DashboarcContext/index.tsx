@@ -16,6 +16,7 @@ interface IDashboardProvider extends PropsWithChildren {
 	currencyValues: ICurrency;
 	multisigs: Array<IMultisig>;
 	addressBook: IAddressBook[];
+	allApi: any;
 }
 
 export const DashboardContext = createContext({} as IDashboardProvider);
@@ -28,7 +29,8 @@ export function DashboardProvider({
 	currencyValues,
 	multisigs,
 	children,
-	addressBook
+	addressBook,
+	allApi
 }: IDashboardProvider) {
 	const value = useMemo(
 		() => ({
@@ -38,9 +40,10 @@ export function DashboardProvider({
 			currency,
 			multisigs,
 			addressBook,
-			currencyValues
+			currencyValues,
+			allApi
 		}),
-		[addressBook, assets, currency, currencyValues, multisigs, onFundMultisig, onNewTransaction]
+		[addressBook, allApi, assets, currency, currencyValues, multisigs, onFundMultisig, onNewTransaction]
 	);
 	return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;
 }
