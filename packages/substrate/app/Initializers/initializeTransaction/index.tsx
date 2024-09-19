@@ -47,6 +47,7 @@ function InitializeTransaction() {
 			const payload = (queueTransaction ? [...(queueTransaction?.transactions || []), ...queueData] : queueData).sort(
 				(a, b) => b.createdAt - a.createdAt
 			);
+
 			setQueueTransaction({ transactions: payload, currentIndex: queueCurrentIndex });
 			// Move to the next ID if there are more left
 			if (queueCurrentIndex < multisigIds.length - 1) {

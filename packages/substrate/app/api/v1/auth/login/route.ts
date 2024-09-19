@@ -72,8 +72,16 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 					});
 				}
 
-				cookie.set('user', JSON.stringify(resUser));
-				return NextResponse.json({ data: resUser }, { status: 200 });
+				const response = NextResponse.json({ data: resUser }, { status: 200 });
+				response.cookies.set('__session', JSON.stringify(resUser), {
+					httpOnly: false,
+					secure: true,
+					sameSite: 'strict',
+					maxAge: 60 * 60 * 24 * 365,
+					path: '/'
+				});
+
+				return response;
 			}
 		}
 
@@ -96,10 +104,16 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		};
 
 		await USER_COLLECTION.doc(substrateAddress).set(newUser, { merge: true });
+		const response = NextResponse.json({ data: newUserResponse }, { status: 200 });
+		response.cookies.set('__session', JSON.stringify(newUserResponse), {
+			httpOnly: false,
+			secure: true,
+			sameSite: 'strict',
+			maxAge: 60 * 60 * 24 * 365,
+			path: '/'
+		});
 
-		cookie.set('user', JSON.stringify(newUserResponse));
-
-		return NextResponse.json({ data: newUserResponse }, { status: 200 });
+		return response;
 	} catch (err: unknown) {
 		console.error(err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });

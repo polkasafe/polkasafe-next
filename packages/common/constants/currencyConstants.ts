@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 /* eslint-disable sort-keys */
+/* eslint-disable @typescript-eslint/no-shadow */
 
 import aedLogo from '@common/assets/currency-flags/aed.png';
 import audLogo from '@common/assets/currency-flags/aud.png';
@@ -35,6 +36,18 @@ export const currencies = {
 	AUSTRALIAN_DOLLAR: 'Australian Dollar',
 	CANADIAN_DOLLAR: 'Canadian Dollar',
 	INDIAN_RUPEE: 'Indian Rupee'
+};
+
+export const currency = {
+	USD: 'USD',
+	GBP: 'GBP',
+	EUR: 'EUR',
+	CHF: 'CHF',
+	AED: 'AED',
+	JPY: 'JPY',
+	AUD: 'AUD',
+	CAD: 'CAD',
+	INR: 'INR'
 };
 
 export const currencySymbol = {
@@ -197,5 +210,53 @@ export const currencyProperties: CurrencyPropType = {
 	[currencies.INDIAN_RUPEE]: {
 		logo: inrLogo,
 		symbol: currencySymbol.INR
+	}
+};
+
+export const allCurrencies = {
+	[currency.USD]: {
+		logo: usdLogo,
+		symbol: currencySymbols.USD,
+		name: currencies.UNITED_STATES_DOLLAR
+	},
+	[currency.GBP]: {
+		logo: gbpLogo,
+		symbol: currencySymbols.GBP,
+		name: currencies.BRITISH_POUND
+	},
+	[currency.EUR]: {
+		logo: eurLogo,
+		symbol: currencySymbols.EUR,
+		name: currencies.EURO
+	},
+	[currency.CHF]: {
+		logo: chfLogo,
+		symbol: currencySymbols.CHF,
+		name: currencies.SWISS_FRANC
+	},
+	[currency.AED]: {
+		logo: aedLogo,
+		symbol: currencySymbols.AED,
+		name: currencies.UNITED_ARAB_EMIRATES_DIRHAM
+	},
+	[currency.JPY]: {
+		logo: jpyLogo,
+		symbol: currencySymbols.JPY,
+		name: currencies.JAPANESE_YEN
+	},
+	[currency.AUD]: {
+		logo: audLogo,
+		symbol: currencySymbols.AUD,
+		name: currencies.AUSTRALIAN_DOLLAR
+	},
+	[currency.CAD]: {
+		logo: cadLogo,
+		symbol: currencySymbols.CAD,
+		name: currencies.CANADIAN_DOLLAR
+	},
+	[currency.INR]: {
+		logo: inrLogo,
+		symbol: currencySymbols.INR,
+		name: currencies.INDIAN_RUPEE
 	}
 };

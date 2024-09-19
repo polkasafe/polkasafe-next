@@ -3,7 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
@@ -23,11 +22,9 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const { isValid, error } = await isValidRequest(substrateAddress, signature);
 		if (!isValid) return NextResponse.json({ error }, { status: 400 });
 
-		const cookie = cookies();
-
-		cookie.delete('user');
-
-		return NextResponse.json({ data: ResponseMessages.SUCCESS }, { status: 200 });
+		const response = NextResponse.json({ data: ResponseMessages.SUCCESS }, { status: 200 });
+		response.cookies.delete('__session');
+		return response;
 	} catch (err: unknown) {
 		console.error(err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });

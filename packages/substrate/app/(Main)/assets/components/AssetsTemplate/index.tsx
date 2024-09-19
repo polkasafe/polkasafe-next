@@ -4,13 +4,12 @@
 
 'use client';
 
-import { IAsset } from '@common/types/substrate';
 import CurrencyDropdown from '../CurrencyDropdown';
 import AssetsTable from '../AssetsTable';
 import { useAssets } from '@substrate/app/atoms/assets/assetsAtom';
 import { Skeleton } from 'antd';
 import { useCurrency } from '@substrate/app/atoms/currency/currencyAtom';
-import { currencyProperties, getCurrencySymbol } from '@common/constants/currencyConstants';
+import { getCurrencySymbol } from '@common/constants/currencyConstants';
 
 function AssetsTemplate() {
 	const [assets] = useAssets();

@@ -61,7 +61,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 			throw new Error('API not found');
 		}
 
-		const wallet = (localStorage.getItem('wallet') as Wallet) || Wallet.POLKADOT;
+		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
 		// add proxy to new multisig
 		await initiateTransaction({
 			wallet,

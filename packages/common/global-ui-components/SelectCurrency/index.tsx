@@ -2,14 +2,14 @@
 
 import { Dropdown } from 'antd';
 import { twMerge } from 'tailwind-merge';
-import { currencies, currencyProperties, getCurrenciesBySymbol } from '@common/constants/currencyConstants';
-import Image from 'next/image';
+import { allCurrencies, currencySymbol } from '@common/constants/currencyConstants';
+import Image, { StaticImageData } from 'next/image';
 import { useAtom } from 'jotai';
 import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { ItemType } from 'antd/es/menu/interface';
 
-export const CurrencyFlag = ({ src, className }: { src: string; className?: string }) => {
+export const CurrencyFlag = ({ src, className }: { src: string | StaticImageData; className?: string }) => {
 	return (
 		<Image
 			className={twMerge('block rounded-sm', className)}
@@ -29,20 +29,20 @@ interface ISelectCurrencyProps {
 function SelectCurrency({ transparent, classNames }: ISelectCurrencyProps) {
 	const [currency, setCurrency] = useAtom(selectedCurrencyAtom);
 
-	const currencyOptions: ItemType[] = Object.values(currencies).map((c) => ({
+	const currencyOptions: ItemType[] = Object.values(currencySymbol).map((c) => ({
 		key: c,
 		label: (
 			<span className='text-white flex items-center gap-x-2'>
-				<CurrencyFlag src={currencyProperties[c]?.logo} />
-				{transparent ? currencyProperties[c].symbol : `${c} (${currencyProperties[c].symbol})`}
+				<CurrencyFlag src={allCurrencies[c]?.logo} />
+				{c}
 			</span>
 		)
 	}));
 
 	const onCurrencyChange = (e: any) => {
-		setCurrency(currencyProperties[e.key].symbol);
+		setCurrency(e.key);
 		if (typeof window !== 'undefined') {
-			localStorage.setItem('currency', currencyProperties[e.key].symbol);
+			localStorage.setItem('currency', e.key);
 		}
 	};
 
@@ -68,10 +68,8 @@ function SelectCurrency({ transparent, classNames }: ISelectCurrencyProps) {
 				)}
 			>
 				<span className='flex items-center gap-x-2'>
-					<CurrencyFlag src={currencyProperties[getCurrenciesBySymbol(currency)]?.logo} />
-					{transparent
-						? currencyProperties[getCurrenciesBySymbol(currency)]?.symbol
-						: `${currency} (${currencyProperties[getCurrenciesBySymbol(currency)]?.symbol})`}
+					<CurrencyFlag src={allCurrencies[currency]?.logo} />
+					{currency}
 				</span>
 				<CircleArrowDownIcon className='text-primary' />
 			</div>

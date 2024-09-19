@@ -14,11 +14,13 @@ import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import axios from 'axios';
+import { useAllCurrencyPrice } from '@substrate/app/atoms/currency/currencyAtom';
 
 function InitializeAssets() {
 	const [organisation] = useOrganisation();
 	const { getApi } = useAllAPI();
 	const setAtom = useSetAtom(assetsAtom);
+	const [allCurrencyData, setAllCurrencyData] = useAllCurrencyPrice();
 
 	useEffect(() => {
 		if (!organisation) {
@@ -28,13 +30,18 @@ function InitializeAssets() {
 			if (!organisation) {
 				return;
 			}
-			const {
-				data: { data: currencyData }
-			} = await axios.get(window.location.origin + '/api/v1/currencyData');
+			let currencyData = allCurrencyData;
+			if (!currencyData) {
+				const {
+					data: { data }
+				} = await axios.get(window.location.origin + '/api/v1/currencyData');
+				setAllCurrencyData(data);
+				currencyData = data;
+			}
 
 			const { multisigs } = organisation;
 			const assetsPromise = multisigs.map(async (m) => {
-				const { address, network } = m;
+				const { address, network, proxy } = m;
 				const networkApi = getApi(network);
 				if (!networkApi) {
 					return null;
@@ -67,21 +74,62 @@ function InitializeAssets() {
 					});
 					allCurrency[network] = allCurrencyValue;
 				});
-				return {
-					...balance,
-					usd: Number(usdValue.toFixed(3)),
-					allCurrency,
-					address,
-					network,
-					symbol: networkConstants[network].tokenSymbol
-				};
+				const proxyAssetsPromise = (proxy || []).map(async (p) => {
+					const { address: proxyAddress } = p;
+					const { data: proxyBalanceWithDecimals } = (await api.query.system.account(proxyAddress)) as unknown as {
+						data: any;
+					};
+					const proxyBalance = {} as any;
+					// eslint-disable-next-line no-restricted-syntax
+					for (const [key, value] of Object.entries(JSON.parse(JSON.stringify(proxyBalanceWithDecimals.toHuman())))) {
+						proxyBalance[key] = formatBalance(
+							String(value),
+							{
+								numberAfterComma: 3,
+								withThousandDelimitor: true
+							},
+							network
+						);
+					}
+					const usdValue = Number(currencyData?.[network]?.usd || 0) * Number(proxyBalance.free);
+					const allCurrency: any = {};
+					Object.keys(currencyData).map((network) => {
+						const allCurrencyValue: any = {};
+						Object.keys(currencyData?.[network] || {}).map((currency) => {
+							allCurrencyValue[currency] = Number(currencyData?.[network]?.[currency] || 0) * Number(proxyBalance.free);
+						});
+						allCurrency[network] = allCurrencyValue;
+					});
+					return {
+						...proxyBalance,
+						usd: Number(usdValue.toFixed(3)),
+						allCurrency,
+						address: proxyAddress,
+						network,
+						symbol: networkConstants[network].tokenSymbol
+					};
+				});
+				const proxyAssets = (await Promise.all(proxyAssetsPromise)).filter((a) => Boolean(a));
+
+				return [
+					...proxyAssets,
+					{
+						...balance,
+						usd: Number(usdValue.toFixed(3)),
+						allCurrency,
+						address,
+						network,
+						symbol: networkConstants[network].tokenSymbol
+					}
+				];
 			});
 
-			const assets = (await Promise.all(assetsPromise)).filter((a) => Boolean(a));
+			const assets = (await Promise.all(assetsPromise)).flat().filter((a) => Boolean(a));
+			console.log('assets', assets);
 			setAtom(assets);
 		};
 		handleOrganisationAssets();
-	}, [organisation]);
+	}, [getApi, organisation]);
 
 	return null;
 }

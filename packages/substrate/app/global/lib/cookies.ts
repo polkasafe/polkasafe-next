@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 import { deepParseJson } from 'deep-parse-json';
 
 export const getUserFromCookie = () => {
-	const stringifyUser = cookies().get('user');
+	const stringifyUser = cookies().get('__session');
 	if (!stringifyUser) return null;
 	const user = deepParseJson(stringifyUser.value);
 	return user as ICookieUser;

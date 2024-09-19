@@ -20,6 +20,7 @@ import { getOrganisationById } from '@sdk/polkasafe-sdk/src/get-organisation-by-
 
 export default async function MainLayout({ children }: PropsWithChildren) {
 	const user = getUserFromCookie();
+	console.log('user', user);
 	if (!user) {
 		redirect(LOGIN_URL);
 	}

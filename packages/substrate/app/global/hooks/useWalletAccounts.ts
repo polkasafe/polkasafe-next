@@ -8,7 +8,7 @@ export const useWalletAccounts = () => {
 	const [availableSignatories, setAvailableSignatories] = useState<Array<IAddressBook>>([]);
 
 	const getAvailableSignatories = async () => {
-		const wallet = localStorage.getItem('wallet') || Wallet.POLKADOT;
+		const wallet = localStorage.getItem('logged_in_wallet') || Wallet.POLKADOT;
 		const { accounts } = await getWalletAccounts(wallet as Wallet);
 		return accounts.map((account) => ({ address: account.address, name: account.name || DEFAULT_ADDRESS_NAME }));
 	};

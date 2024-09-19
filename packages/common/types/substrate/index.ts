@@ -295,6 +295,8 @@ export interface ISendTransaction {
 	recipients: Array<IRecipient>;
 	note: string;
 	sender: IMultisig;
+	selectedProxy?: string;
+	transactionFields?: ITxnCategory;
 }
 
 export interface IGenericObject {

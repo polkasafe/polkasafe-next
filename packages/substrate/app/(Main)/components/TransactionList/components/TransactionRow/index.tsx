@@ -57,7 +57,7 @@ function TransactionRow({
 			return;
 		}
 
-		const wallet = (localStorage.getItem('wallet') as Wallet) || Wallet.POLKADOT;
+		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
 
 		initiateTransaction({
 			calldata: callData,

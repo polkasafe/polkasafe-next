@@ -33,8 +33,9 @@ export function DashboardOverview() {
 			return;
 		}
 		const { address } = user;
-		const { recipients, sender: multisig } = values;
-		const wallet = (localStorage.getItem('wallet') as Wallet) || Wallet.POLKADOT;
+		const { recipients, sender: multisig, selectedProxy } = values;
+		console.log('values', values);
+		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
 		const apiAtom = getApi(multisig.network);
 		if (!apiAtom) {
 			return;
@@ -52,8 +53,8 @@ export function DashboardOverview() {
 			type: ETxType.TRANSFER,
 			api,
 			data,
-			isProxy: false,
-			proxyAddress: '',
+			isProxy: Boolean(selectedProxy),
+			proxyAddress: selectedProxy,
 			multisig,
 			sender: address
 		});
@@ -63,7 +64,7 @@ export function DashboardOverview() {
 			return;
 		}
 		const { address } = user;
-		const wallet = (localStorage.getItem('wallet') as Wallet) || Wallet.POLKADOT;
+		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
 		const apiAtom = getApi(multisigAddress.network);
 		if (!apiAtom) {
 			return;
@@ -89,7 +90,7 @@ export function DashboardOverview() {
 			onFundMultisig={handleFundTransaction}
 			assets={assets}
 			currency={currency}
-			currencyValues={currencyValues || {} as ICurrency}
+			currencyValues={currencyValues || ({} as ICurrency)}
 			multisigs={org?.multisigs || []}
 			addressBook={org?.addressBook || []}
 		>
