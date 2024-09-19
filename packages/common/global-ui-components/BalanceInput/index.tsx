@@ -35,7 +35,7 @@ interface Props {
 	multipleCurrency?: boolean;
 	requestedAmount?: string;
 	network: ENetwork;
-    currencyValues: ICurrency;
+	currencyValues: ICurrency;
 }
 
 const BalanceInput: React.FC<Props> = ({
@@ -48,7 +48,7 @@ const BalanceInput: React.FC<Props> = ({
 	multipleCurrency = false,
 	requestedAmount,
 	network,
-    currencyValues
+	currencyValues
 }: Props) => {
 	const [isValidInput, setIsValidInput] = useState(true);
 	const [balance, setBalance] = useState<string>(defaultValue || '');
@@ -58,13 +58,9 @@ const BalanceInput: React.FC<Props> = ({
 
 	const [currency, setCurrency] = useState<string>(network);
 
-	// useEffect(() => {
-	// setCurrency(network);
-	// setBalance(defaultValue || '');
-	// }, [defaultValue, network]);
-
 	const tokenCurrencyPrice = !Object.values(ENetwork).includes(currency as any)
-		? Number(currencyValues.tokenUsdPrice[network]?.value) * (currencyValues.allCurrencyPrices[currencyProperties[currency]?.symbol]?.value || 1)
+		? Number(currencyValues.tokenUsdPrice[network]?.value) *
+			(currencyValues.allCurrencyPrices[currencyProperties[currency]?.symbol]?.value || 1)
 		: 1;
 
 	useEffect(() => {
