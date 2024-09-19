@@ -1,4 +1,4 @@
-import Input from "@common/global-ui-components/Input";
+import Input from '@common/global-ui-components/Input';
 
 export const createMultisigFormFields = [
 	{
@@ -27,6 +27,6 @@ export const createMultisigFormFields = [
 				message: 'Please input the threshold!'
 			}
 		],
-		input: <Input placeholder="2" />
+		input: <Input placeholder='2' />
 	}
 ];

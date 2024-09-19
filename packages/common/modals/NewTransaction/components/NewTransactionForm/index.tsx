@@ -1,7 +1,7 @@
+/* eslint-disable no-tabs */
 import React, { useEffect, useState } from 'react';
 import { Form, Spin, AutoComplete } from 'antd';
-import { newTransactionFormFields } from '@common/modals/NewTransaction/utils/form';
-import { IMultisig, ISendTransactionForm } from '@common/types/substrate';
+import { IMultisig } from '@common/types/substrate';
 import { useDashboardContext } from '@common/context/DashboarcContext';
 import { findMultisig } from '@common/utils/findMultisig';
 import useNotification from 'antd/es/notification/useNotification';
@@ -19,6 +19,7 @@ import formatBnBalance from '@common/utils/formatBnBalance';
 import './style.css';
 import { Dropdown } from '@common/global-ui-components/Dropdown';
 import Collapse from '@common/global-ui-components/Collapse';
+
 export interface IRecipientAndAmount {
 	recipient: string;
 	amount: BN;
@@ -32,12 +33,10 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 
 	const [autocompleteAddresses, setAutoCompleteAddresses] = useState<DefaultOptionType[]>([]);
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [tip, setTip] = useState<BN>(new BN(0));
 
-	const [network, setNetwork] = useState<ENetwork>(
-		multisigs[0].network ||
-		ENetwork.POLKADOT
-	);
+	const [network, setNetwork] = useState<ENetwork>(multisigs[0].network || ENetwork.POLKADOT);
 
 	const [selectedProxyAddress, setSelectedProxyAddress] = useState<string>('');
 
@@ -82,74 +81,98 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 	multisigs?.forEach((item) => {
 		multisigOptions.push({
 			key: JSON.stringify({ ...item }),
-			label: (
-				item.proxy && item.proxy.length > 0 ? 
-				<Collapse
-					plain
-					className={`border-none rounded-xl ${selectedMultisigAddress === item.address ? 'selected' : ''}`}
-					expandIconPosition='end'
-					collapsible='icon'
-					defaultActiveKey={[item.address]}
-					items={[
-						{
-							key: item.address,
-							label: (
-								<div className='flex gap-x-3 items-center' onClick={() => {
-									setSelectedMultisigAddress(item?.address);
-									setNetwork(item?.network);
-								}}>
-									<div className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}>
-										<div className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}></div>
-									</div>
-									<Address
-										isMultisig
-										showNetworkBadge
-										network={item.network}
-										withBadge={false}
-										address={item.address}
-									/>
-								</div>
-							),
-							children: item.proxy && (
-								<div className='flex flex-col gap-y-3 p-4 pl-10 relative'>
-									{item.proxy.map((p, i) => (
-										<div onClick={() => {
-											setSelectedMultisigAddress(p.address);
-											setSelectedProxyAddress(p.address);
-										}} className={`${selectedMultisigAddress === p.address ? 'bg-highlight' : ''} p-2 rounded-xl flex gap-x-3 items-center relative`}>
-											<div className={`absolute w-[16px] ${i === 0 ? 'h-[56px] top-[-28px]' : 'h-[76px] top-[-48px]'} rounded-es-[11px] border-b-[2px] border-l-[2px] border-text-secondary left-[-17px]`} />
-											<div className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === p.address ? 'border-primary' : 'border-text-secondary'}`}>
-												<div className={`w-full h-full rounded-full ${selectedMultisigAddress === p.address ? 'bg-primary' : 'bg-transparent'}`}></div>
-											</div>
-											<Address
-												address={p.address}
-												network={item.network}
-												name={p.name}
-												isProxy
+			label:
+				item.proxy && item.proxy.length > 0 ? (
+					<Collapse
+						plain
+						className={`border-none rounded-xl ${selectedMultisigAddress === item.address ? 'selected' : ''}`}
+						expandIconPosition='end'
+						collapsible='icon'
+						defaultActiveKey={[item.address]}
+						items={[
+							{
+								key: item.address,
+								label: (
+									<div
+										className='flex gap-x-3 items-center'
+										onClick={() => {
+											setSelectedMultisigAddress(item?.address);
+											setNetwork(item?.network);
+										}}
+									>
+										<div
+											className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}
+										>
+											<div
+												className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}
 											/>
 										</div>
-									))}
-								</div>
-							)
-						}
-					]}
-				/> :
-				<div className={`flex gap-x-3 items-center px-4 py-3 rounded-xl ${selectedMultisigAddress === item.address ? 'bg-highlight' : ''}`} onClick={() => {
-					setSelectedMultisigAddress(item?.address);
-					setNetwork(item?.network);
-				}}>
-					<div className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}>
-						<div className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}></div>
-					</div>
-					<Address
-						isMultisig
-						showNetworkBadge
-						network={item.network}
-						withBadge={false}
-						address={item.address}
+										<Address
+											isMultisig
+											showNetworkBadge
+											network={item.network}
+											withBadge={false}
+											address={item.address}
+										/>
+									</div>
+								),
+								children: item.proxy && (
+									<div className='flex flex-col gap-y-3 p-4 pl-10 relative'>
+										{item.proxy.map((p, i) => (
+											<div
+												onClick={() => {
+													setSelectedMultisigAddress(p.address);
+													setSelectedProxyAddress(p.address);
+												}}
+												className={`${selectedMultisigAddress === p.address ? 'bg-highlight' : ''} p-2 rounded-xl flex gap-x-3 items-center relative`}
+											>
+												<div
+													className={`absolute w-[16px] ${i === 0 ? 'h-[56px] top-[-28px]' : 'h-[76px] top-[-48px]'} rounded-es-[11px] border-b-[2px] border-l-[2px] border-text-secondary left-[-17px]`}
+												/>
+												<div
+													className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === p.address ? 'border-primary' : 'border-text-secondary'}`}
+												>
+													<div
+														className={`w-full h-full rounded-full ${selectedMultisigAddress === p.address ? 'bg-primary' : 'bg-transparent'}`}
+													/>
+												</div>
+												<Address
+													address={p.address}
+													network={item.network}
+													name={p.name}
+													isProxy
+												/>
+											</div>
+										))}
+									</div>
+								)
+							}
+						]}
 					/>
-				</div>
-			)
+				) : (
+					<div
+						className={`flex gap-x-3 items-center px-4 py-3 rounded-xl ${selectedMultisigAddress === item.address ? 'bg-highlight' : ''}`}
+						onClick={() => {
+							setSelectedMultisigAddress(item?.address);
+							setNetwork(item?.network);
+						}}
+					>
+						<div
+							className={`h-[16px] w-[16px] p-1 rounded-full border ${selectedMultisigAddress === item.address ? 'border-primary' : 'border-text-secondary'}`}
+						>
+							<div
+								className={`w-full h-full rounded-full ${selectedMultisigAddress === item.address ? 'bg-primary' : 'bg-transparent'}`}
+							/>
+						</div>
+						<Address
+							isMultisig
+							showNetworkBadge
+							network={item.network}
+							withBadge={false}
+							address={item.address}
+						/>
+					</div>
+				)
 		});
 	});
 
@@ -246,7 +269,7 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 							trigger={['click']}
 							className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'
 							menu={{
-								items: multisigOptions,
+								items: multisigOptions
 								// onClick: (e) => {
 								// 	const data = JSON.parse(e.key);
 								// 	setSelectedMultisigAddress(data?.address);
