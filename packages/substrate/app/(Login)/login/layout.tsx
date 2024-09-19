@@ -13,9 +13,9 @@ export default function LoginLayout({ children }: PropsWithChildren) {
 	const user = getUserFromCookie();
 
 	if (user) {
-		const { organisations } = user;
-		if (organisations.length > 0) {
-			redirect(ORGANISATION_DASHBOARD_URL({ id: organisations[0].id }));
+		const { currentOrganisation } = user;
+		if (currentOrganisation) {
+			redirect(ORGANISATION_DASHBOARD_URL({ id: currentOrganisation }));
 		}
 	}
 	return (

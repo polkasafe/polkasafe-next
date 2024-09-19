@@ -48,7 +48,7 @@ export const SubstrateAddress: React.FC<IAddressProps> = ({
 					className='image identicon'
 					value={getSubstrateAddress(address)}
 					size={identiconSize}
-					theme='polkadot'
+					theme='substrate'
 				/>
 			)}
 			<p className={styles.textContainer}>

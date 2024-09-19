@@ -38,3 +38,5 @@ next-env.d.ts
 # hardhat
 artifacts
 cache
+
+firebase-debug.log
