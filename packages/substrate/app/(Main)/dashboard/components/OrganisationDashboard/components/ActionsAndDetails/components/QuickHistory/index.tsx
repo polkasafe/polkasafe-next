@@ -9,7 +9,6 @@ import { Empty } from '@common/global-ui-components/Empty';
 import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
 import { TransactionList } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList';
 import { useHistoryAtom } from '@substrate/app/atoms/transaction/transactionAtom';
-import { useHistoryTransaction } from '@substrate/app/global/hooks/queryHooks/useHistoryTransaction';
 import { Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
 
