@@ -22,8 +22,8 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 		}
 		const { api } = apiData as { api: ApiPromise };
 		const call = api.createType('Call', callData);
-		const callJSONData = call.toJSON();
-		const metaData = call.meta.toJSON();
+		const callJSONData = call.toHuman();
+		const metaData = call.meta.toHuman();
 		payload.method = call.method;
 		payload.section = call.section;
 		console.log('callJSONData', callJSONData);
@@ -34,7 +34,7 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 				const value = (batchCall.args as IGenericObject)?.value;
 				if (dest && value && (dest?.id || dest?.address20)) {
 					payload.to = getEncodedAddress(value.address20 ? value.address20 : value.id, apiData.network);
-					payload.value = value;
+					payload.value = value.split(',').join('');
 					break;
 				}
 			}
@@ -46,7 +46,7 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 				payload.to = getEncodedAddress(value.address20 ? value.address20 : value.id, apiData.network);
 			}
 			if (key === 'value') {
-				payload.value = value;
+				payload.value = value.split(',').join('');
 			}
 			if (payload.to && payload.value) {
 				break;

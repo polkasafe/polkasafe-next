@@ -5,7 +5,7 @@ import { ENetwork, ETransactionOptions, ETransactionType, ETxType } from '@commo
 import ReceivedIcon from '@common/assets/icons/arrow-up-right.svg';
 import SentIcon from '@common/assets/icons/sent-icon.svg';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
-import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import Button from '@common/global-ui-components/Button';
 import { OutlineCheckIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 
 interface ITransactionHeadProps {
@@ -94,7 +94,7 @@ export function TransactionHead({
 					variant={ETypographyVariants.p}
 					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
 				>
-					{Boolean(amountToken) && Number(amountToken) && (
+					{Boolean(amountToken) && Number(amountToken) ? (
 						<Typography
 							variant={ETypographyVariants.p}
 							className='flex items-center gap-x-2 justify-start text-text-primary'
@@ -107,6 +107,8 @@ export function TransactionHead({
 								{Boolean(amountToken) || networkConstants[network].tokenSymbol}
 							</span>
 						</Typography>
+					) : (
+						<Typography variant={ETypographyVariants.h1}>-</Typography>
 					)}
 				</Typography>
 				<Typography

@@ -5,11 +5,16 @@ import EyeIcon from '@common/assets/icons/eye.svg';
 import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
 import SelectCurrency from '@common/global-ui-components/SelectCurrency';
 import { useDashboardContext } from '@common/context/DashboarcContext';
+import { Skeleton } from 'antd';
+import { useState } from 'react';
+import { EyeOutlined } from '@ant-design/icons';
 
 function DashboardCard() {
 	const { assets, currency } = useDashboardContext();
 	const totalBalance = assets?.reduce((acc, asset) => acc + (Number(asset?.usd) || 0), 0);
 	const symbol = getCurrencySymbol(currency);
+	const show = (localStorage.getItem('showBalance') || 'yes') as 'yes' | 'no';
+	const [showBalance, setShowBalance] = useState<'yes' | 'no'>(show);
 
 	return (
 		<div className='overflow-hidden relative'>
@@ -28,15 +33,37 @@ function DashboardCard() {
 						</Typography>
 						<SelectCurrency transparent />
 					</div>
-					<div className='flex gap-4 items-baseline'>
+					<div className='flex gap-4 items-center'>
 						<Typography
 							variant={ETypographyVariants.p}
 							className='text-4xl text-text-primary capitalize font-raleway'
 						>
-							{symbol}
-							{totalBalance}
+							{showBalance === 'yes' ? (
+								<>
+									{symbol}{' '}
+									{totalBalance || (
+										<Skeleton.Button
+											size='small'
+											active
+										/>
+									)}
+								</>
+							) : (
+								'******'
+							)}
 						</Typography>
-						<EyeIcon />
+						<span
+							onClick={() => {
+								setShowBalance(showBalance === 'yes' ? 'no' : 'yes');
+								localStorage.setItem('showBalance', showBalance === 'yes' ? 'no' : 'yes');
+							}}
+						>
+							{showBalance === 'yes' ? (
+								<EyeIcon />
+							) : (
+								<EyeOutlined style={{ fontSize: '24px', color: 'var(--text-secondary)' }} />
+							)}
+						</span>
 					</div>
 				</div>
 				<div className='flex gap-3 items-center'>

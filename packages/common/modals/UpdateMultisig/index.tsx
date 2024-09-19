@@ -23,7 +23,7 @@ export const UpdateMultisig = ({ multisig, proxyAddress, onSubmit, addresses, cl
 				onClick={() => setOpenModal(true)}
 				size='large'
 			>
-				Update Multisig
+				Edit Multisig
 			</Button>
 
 			<Modal

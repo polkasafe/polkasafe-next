@@ -1,4 +1,4 @@
-import { Input } from 'antd';
+import Input from '@common/global-ui-components/Input';
 
 export const createMultisigFormFields = [
 	{

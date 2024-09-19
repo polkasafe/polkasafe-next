@@ -1,5 +1,5 @@
+import Input from '@common/global-ui-components/Input';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-import { Input } from 'antd';
 
 export const addAddressFormFields = [
 	{
@@ -64,19 +64,4 @@ export const addAddressFormFields = [
 		placeholder: 'Enter telegram',
 		input: <Input />
 	}
-	// nickName
-	// {
-	// 	label: 'Roles',
-	// 	name: 'roles',
-	// 	type: 'text',
-	// 	required: false,
-	// 	placeholder: 'Enter nick name',
-	// 	rules: [
-	// 		{
-	// 			required: true,
-	// 			message: 'Please input the nick name!'
-	// 		}
-	// 	],
-	// 	input: <Input />
-	// }
 ];
