@@ -10,9 +10,10 @@ interface IAddMultisig {
 	networks: Array<ENetwork>;
 	availableSignatories: Array<IAddressBook>;
 	onSubmit: (values: IMultisigCreate) => Promise<void>;
+	userAddress: string;
 }
 
-export const AddMultisig = ({ networks, availableSignatories, onSubmit }: IAddMultisig) => {
+export const AddMultisig = ({ networks, availableSignatories, onSubmit, userAddress }: IAddMultisig) => {
 	const [openModal, setOpenModal] = useState(false);
 	return (
 		<div className='w-full mb-4'>
@@ -36,9 +37,11 @@ export const AddMultisig = ({ networks, availableSignatories, onSubmit }: IAddMu
 			>
 				<div className='flex flex-col gap-5'>
 					<CreateMultisig
+						userAddress={userAddress}
 						networks={networks}
 						availableSignatories={availableSignatories}
 						onSubmit={onSubmit}
+						onClose={() => setOpenModal(false)}
 					/>
 				</div>
 			</Modal>

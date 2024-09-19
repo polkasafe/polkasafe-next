@@ -56,7 +56,7 @@ const Address: React.FC<IAddressComponent> = ({
 		<div className=' flex items-center gap-x-3'>
 			{isProxy ? (
 				<Identicon
-					className='rounded-full border-2 border-primary bg-transparent p-1'
+					className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
 					value={address}
 					size={iconSize}
 					theme='polkadot'

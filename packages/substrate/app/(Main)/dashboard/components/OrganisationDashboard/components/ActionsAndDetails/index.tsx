@@ -28,8 +28,7 @@ interface IDashboardTransactionProps {
 
 const styles = {
 	selectedTab: 'bg-highlight text-label border-0 py-3 px-5 text-sm font-medium',
-	tab: 'bg-bg-main text-text-primary border-0 py-3 px-5 text-sm shadow-none',
-	filterButton: 'py-3 px-5 font-bold border-2 text-text-outline-primary flex gap-2 items-center'
+	tab: 'bg-bg-main text-text-primary border-0 py-3 px-5 text-sm shadow-none'
 };
 
 export function ActionAndDetails({

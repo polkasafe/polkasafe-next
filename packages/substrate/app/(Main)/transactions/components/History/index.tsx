@@ -4,25 +4,48 @@
 
 'use client';
 
-import Collapse from '@common/global-ui-components/Collapse';
-import { ITransaction } from '@common/types/substrate';
+import { ETransactionType } from '@common/enum/substrate';
+import { Empty } from '@common/global-ui-components/Empty';
+import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
+import { TransactionList } from '@substrate/app/(Main)/components/TransactionList';
+import { useHistoryAtom } from '@substrate/app/atoms/transaction/transactionAtom';
+import { Skeleton } from 'antd';
+import { useEffect, useState } from 'react';
 
-interface IHistoryProps {
-	transactions: Array<ITransaction>;
+interface IHistory {
+	multisigs: Array<IMultisig>;
 }
 
-function History({ transactions }: IHistoryProps) {
-	const collapseItems = transactions.map((tx) => ({
-		key: tx.callHash,
-		label: <p>{tx.callHash}</p>,
-		children: <p>{tx.callData}</p>
-	}));
+export function History({ multisigs }: IHistory) {
+	const multisigIds = multisigs.map((multisig) => `${multisig.address}_${multisig.network}`);
+
+	const [data] = useHistoryAtom();
+
+	const [isMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	if (!isMounted) {
+		return null;
+	}
+
+	if (!data?.transactions) {
+		return <Skeleton active />;
+	}
+
+	if (data.transactions.length === 0 && data.currentIndex !== multisigIds.length - 1) {
+		return <Skeleton active />;
+	}
+
+	if (data.transactions.length === 0 && data.currentIndex === multisigIds.length - 1) {
+		return <Empty description='No Transaction Found' />;
+	}
 	return (
-		<Collapse
-			items={collapseItems}
-			defaultActiveKey={[]}
+		<TransactionList
+			transactions={(data.transactions || []) as Array<IDashboardTransaction>}
+			txType={ETransactionType.HISTORY_TRANSACTION}
 		/>
 	);
 }
-
-export default History;
