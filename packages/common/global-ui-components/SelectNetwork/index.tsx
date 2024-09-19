@@ -1,5 +1,5 @@
 import { ENetwork } from '@common/enum/substrate';
-import Dropdown from '@common/global-ui-components/Dropdown';
+import { Dropdown } from '@common/global-ui-components/Dropdown';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';

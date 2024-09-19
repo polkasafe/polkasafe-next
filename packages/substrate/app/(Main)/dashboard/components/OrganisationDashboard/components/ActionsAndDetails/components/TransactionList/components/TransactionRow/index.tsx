@@ -10,6 +10,7 @@ import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { useDecodeCallData } from '@substrate/app/global/hooks/queryHooks/useDecodeCallData';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
+import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
 
 interface ITransactionRow {
@@ -78,13 +79,23 @@ function TransactionRow({
 	if (error) {
 		return <div>Error: {error.message}</div>;
 	}
+	const value = data?.value
+		? formatBalance(
+				data?.value,
+				{
+					numberAfterComma: 2,
+					withThousandDelimitor: false
+				},
+				network
+			)
+		: amountToken;
 
 	return (
 		<TransactionHead
 			createdAt={createdAt}
 			to={data?.to || to}
 			network={network}
-			amountToken={data?.value || amountToken}
+			amountToken={value}
 			from={from}
 			label={label.split('_')}
 			type={type}

@@ -42,7 +42,7 @@ export function ActionAndDetails({
 	const [organisation] = useOrganisation();
 	const isSingleMultisig = multisig && network;
 	const multisigData = multisigs.find((item) => item.address === multisig);
-	const members = (!isSingleMultisig ? multisigData?.signatories : organisation?.members) || [];
+	const members = (isSingleMultisig ? multisigData?.signatories : organisation?.members) || [];
 
 	const tabs = [
 		{
@@ -97,15 +97,16 @@ export function ActionAndDetails({
 						</Link>
 					))}
 				</div>
-				<div>
+				{/* <div>
 					<Button
+						icon={<DownIcon />}
+						iconPosition='end'
 						variant={EButtonVariant.SECONDARY}
 						className='px-5 border-primary'
 					>
 						Filters
-						<DownIcon />
 					</Button>
-				</div>
+				</div> */}
 			</div>
 			{selectedTab === ETransactionTab.QUEUE && <QuickQueue multisigs={multisigs} />}
 			{selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs multisigs={multisigs} />}

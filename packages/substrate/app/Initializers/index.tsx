@@ -4,8 +4,8 @@
 import { IOrganisation } from '@common/types/substrate';
 import InitializeAssets from '@substrate/app/Initializers/InializeAssets';
 import InitializeAPI from '@substrate/app/Initializers/InitializeAPI';
-import InitializeCurrency from '@substrate/app/Initializers/InitializeCurrency';
 import InitializeOrganisation from '@substrate/app/Initializers/InitializeOrganisation';
+import InitializeTransaction from '@substrate/app/Initializers/initializeTransaction';
 import InitializeUser from '@substrate/app/Initializers/InitializeUser';
 
 interface IInitializer {
@@ -25,6 +25,7 @@ function Initializers({ userAddress, signature, organisations }: IInitializer) {
 			<InitializeOrganisation />
 			<InitializeAssets />
 			<InitializeAPI />
+			<InitializeTransaction />
 		</>
 	);
 }
