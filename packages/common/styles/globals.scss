@@ -482,3 +482,7 @@ td {
 .ant-form-item-label label, .ant-form-item-required::before {
   color: var(--label) !important;
 }
+
+.ant-collapse-header {
+  align-items: center !important;
+}

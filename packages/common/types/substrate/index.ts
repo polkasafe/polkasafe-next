@@ -52,6 +52,7 @@ export interface IDashboardTransaction {
 	multisigAddress: string;
 	from: string;
 	to?: string;
+	approvals: string[];
 }
 
 export interface ITransaction {
