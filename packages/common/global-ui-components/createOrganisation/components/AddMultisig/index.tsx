@@ -14,7 +14,8 @@ export const AddMultisigsToOrganisation = () => {
 		multisigs,
 		onRemoveMultisig,
 		fetchMultisig,
-		onLinkedMultisig
+		onLinkedMultisig,
+		userAddress
 	} = useOrganisationContext();
 	const { setStep } = useOrgStepsContext();
 
@@ -25,6 +26,7 @@ export const AddMultisigsToOrganisation = () => {
 				MultiSig is a secure digital wallet that requires one or multiple owners to authorize the transaction.
 			</p>
 			<AddMultisig
+				userAddress={userAddress}
 				networks={networks}
 				availableSignatories={availableSignatories}
 				onSubmit={onCreateMultisigSubmit}

@@ -20,26 +20,26 @@ export const MULTISIG_TRANSACTION_URL = ({
 	page,
 	limit,
 	network,
-	type
+	tab
 }: {
 	multisig: string;
 	page: number;
 	limit: number;
 	network: string;
-	type: ETransactionType;
-}) => `/transactions?_multisig=${multisig}&_page=${page}&_limit=${limit}&_network=${network}&_type=${type}`;
+	tab: ETransactionTab;
+}) => `/transactions?_multisig=${multisig}&_page=${page}&_limit=${limit}&_network=${network}&_tab=${tab}`;
 
 export const ORGANISATION_TRANSACTION_URL = ({
 	organisationId,
 	page,
 	limit,
-	type
+	tab
 }: {
 	organisationId: string;
 	page: number;
 	limit: number;
-	type: ETransactionType;
-}) => `/transactions?_organisation=${organisationId}&_page=${page}&_limit=${limit}&_type=${type}`;
+	tab: ETransactionTab;
+}) => `/transactions?_organisation=${organisationId}&_page=${page}&_limit=${limit}&_tab=${tab}`;
 
 export const MULTISIG_DASHBOARD_URL = ({
 	multisig,

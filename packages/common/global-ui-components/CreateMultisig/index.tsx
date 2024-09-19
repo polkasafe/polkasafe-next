@@ -2,19 +2,25 @@
 
 import { ENetwork } from '@common/enum/substrate';
 import ActionButton from '@common/global-ui-components/ActionButton';
+import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import SelectSignatories from '@common/global-ui-components/CreateMultisig/SelectSignatories';
 import { createMultisigFormFields } from '@common/global-ui-components/CreateMultisig/utils/form';
+import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
+import InfoBox from '@common/global-ui-components/InfoBox';
 import { SelectNetwork } from '@common/global-ui-components/SelectNetwork';
 import { ICreateMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
-import { Checkbox, Form, Spin } from 'antd';
+import { Form, Spin } from 'antd';
 import useNotification from 'antd/es/notification/useNotification';
 import { useState } from 'react';
 
 // use availableSignatories to populate the select options
-export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICreateMultisig) => {
+export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userAddress, onClose }: ICreateMultisig) => {
 	const [loading, setLoading] = useState(false);
 	const [notification, context] = useNotification();
 	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
+
+	const [signatories, setSignatories] = useState<string[]>([userAddress]);
 
 	const signatoriesOptions = availableSignatories?.map((signatory) => ({
 		label: <p>{signatory.name || signatory.address}</p>,
@@ -28,7 +34,7 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 		threshold: number;
 	}) => {
 		try {
-			const { name, signatories, threshold } = values;
+			const { name, threshold } = values;
 			if (!signatories) {
 				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select signatories' });
 				return;
@@ -60,25 +66,28 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 			notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: e || e.message });
 		} finally {
 			setLoading(false);
+			onClose?.();
 		}
 	};
 	return (
-		<div className='w-full h-full flex flex-col justify-center items-center'>
+		<div className='w-[600px] h-full flex flex-col justify-center items-center'>
 			{context}
 			<Spin
 				spinning={loading}
 				size='large'
-				className='w-full h-full'
 			>
 				<Form
 					layout='vertical'
 					onFinish={handleSubmit}
 				>
+					<h1 className='text-label mb-2 max-sm:text-xs'>Select Network</h1>
 					<SelectNetwork
 						networks={networks}
 						selectedNetwork={selectedNetwork}
 						onChange={(network) => setSelectedNetwork(network)}
 					/>
+
+					<SelectSignatories network={selectedNetwork} signatories={signatories} setSignatories={setSignatories} userAddress={userAddress} />
 
 					{createMultisigFormFields.map((field) => (
 						<Form.Item
@@ -90,7 +99,7 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 							{field.input}
 						</Form.Item>
 					))}
-					{availableSignatories && (
+					{/* {availableSignatories && (
 						<Form.Item
 							label='Signatories'
 							name='signatories'
@@ -98,12 +107,16 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit }: ICr
 						>
 							<Checkbox.Group options={signatoriesOptions} />
 						</Form.Item>
-					)}
-					<ActionButton
-						disabled={false}
-						loading={loading}
-						label='Create Multisig'
-					/>
+					)} */}
+					<InfoBox message='The address balance should be greater than the existential deposit for successful creation of Multisig on-chain' />
+					<div className='flex items-center gap-x-4 w-full'>
+						<div className='w-full'>
+							<Button fullWidth size='large' onClick={onClose} variant={EButtonVariant.DANGER} icon={<OutlineCloseIcon className='text-failure' />}>Cancel</Button>
+						</div>
+						<div className='w-full'>
+							<Button htmlType='submit' fullWidth size='large' variant={EButtonVariant.PRIMARY}>Create</Button>
+						</div>
+					</div>
 				</Form>
 			</Spin>
 		</div>

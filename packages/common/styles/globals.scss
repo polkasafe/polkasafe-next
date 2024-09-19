@@ -477,3 +477,7 @@ td {
 .ant-empty-description{
   color: var(--text-secondary) !important;
 }
+
+.ant-form-item-label label, .ant-form-item-required::before {
+  color: var(--label) !important;
+}

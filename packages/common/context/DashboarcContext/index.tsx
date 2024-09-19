@@ -1,4 +1,11 @@
-import { IAddressBook, ICurrency, IFundMultisig, IMultisig, IMultisigAssets, ISendTransaction } from '@common/types/substrate';
+import {
+	IAddressBook,
+	ICurrency,
+	IFundMultisig,
+	IMultisig,
+	IMultisigAssets,
+	ISendTransaction
+} from '@common/types/substrate';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 
 interface IDashboardProvider extends PropsWithChildren {
@@ -33,7 +40,7 @@ export function DashboardProvider({
 			addressBook,
 			currencyValues
 		}),
-		[assets, currency, multisigs, onFundMultisig, onNewTransaction]
+		[addressBook, assets, currency, currencyValues, multisigs, onFundMultisig, onNewTransaction]
 	);
 	return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;
 }
