@@ -31,12 +31,14 @@ export default async function Transaction({ searchParams }: ITransactionProps) {
 		(_multisig && isValidAddress(_multisig) && isValidNetwork(_network))
 	) {
 		return (
-			<TransactionTemplate
-				organisationId={_organisation}
-				tab={_tab as ETransactionTab}
-				multisig={_multisig}
-				network={_network}
-			/>
+			<div className='rounded-3xl bg-bg-main p-8 h-full'>
+				<TransactionTemplate
+					organisationId={_organisation}
+					tab={_tab as ETransactionTab}
+					multisig={_multisig}
+					network={_network}
+				/>
+			</div>
 		);
 	}
 

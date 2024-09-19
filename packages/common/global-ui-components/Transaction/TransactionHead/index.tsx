@@ -7,6 +7,7 @@ import SentIcon from '@common/assets/icons/sent-icon.svg';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import Button from '@common/global-ui-components/Button';
 import { OutlineCheckIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
+import dayjs from 'dayjs';
 
 interface ITransactionHeadProps {
 	type: ETransactionOptions;
@@ -18,6 +19,10 @@ interface ITransactionHeadProps {
 	label: Array<string>;
 	transactionType: ETransactionType;
 	onAction: (actionType: ETxType) => void;
+	isHomePage?: boolean;
+	approvals?: string[];
+	threshold?: number;
+	hasApproved?: boolean;
 }
 
 function TransactionIcon({ type }: { type: ETransactionOptions }) {
@@ -61,10 +66,14 @@ export function TransactionHead({
 	createdAt,
 	network,
 	transactionType,
-	onAction
+	onAction,
+	isHomePage = false,
+	approvals,
+	threshold,
+	hasApproved
 }: ITransactionHeadProps) {
 	return (
-		<div className='border-b border-text-secondary p-3 mr-2'>
+		<div className={isHomePage ? 'border-b border-text-secondary p-3 mr-2' : ''}>
 			<div className='flex items-center max-sm:flex max-sm:flex-wrap max-sm:gap-2'>
 				<Typography
 					variant={ETypographyVariants.p}
@@ -111,17 +120,19 @@ export function TransactionHead({
 						<Typography variant={ETypographyVariants.h1}>-</Typography>
 					)}
 				</Typography>
-				<Typography
-					variant={ETypographyVariants.p}
-					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
-				>
-					<Address
-						address={from}
-						network={network}
-						withBadge={false}
-						isMultisig
-					/>
-				</Typography>
+				{isHomePage && (
+					<Typography
+						variant={ETypographyVariants.p}
+						className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
+					>
+						<Address
+							address={from}
+							network={network}
+							withBadge={false}
+							isMultisig
+						/>
+					</Typography>
+				)}
 				<Typography
 					variant={ETypographyVariants.p}
 					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
@@ -137,6 +148,14 @@ export function TransactionHead({
 						<Typography variant={ETypographyVariants.h1}>-</Typography>
 					)}
 				</Typography>
+				{!isHomePage && (
+					<Typography
+						variant={ETypographyVariants.p}
+						className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
+					>
+						{dayjs(createdAt).format('MM/DD/YYYY, hh:mm A')}
+					</Typography>
+				)}
 				{ETransactionType.HISTORY_TRANSACTION === transactionType && (
 					<Typography
 						variant={ETypographyVariants.p}
@@ -146,19 +165,33 @@ export function TransactionHead({
 					</Typography>
 				)}
 				{ETransactionType.QUEUE_TRANSACTION === transactionType && (
-					<div className='flex items-center gap-x-4 basis-1/5 justify-start'>
-						<Button
-							onClick={() => onAction(ETxType.APPROVE)}
-							className='text-success bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 border-none outline-none'
-						>
-							<OutlineCheckIcon />
-						</Button>
-						<Button
-							onClick={() => onAction(ETxType.CANCEL)}
-							className='text-failure bg-[#e63946]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 border-none outline-none'
-						>
-							<OutlineCloseIcon />
-						</Button>
+					<div className='flex items-center gap-x-4 basis-1/5 justify-end'>
+						<div className='flex items-center gap-x-4'>
+							{!isHomePage && (
+								<Typography
+									variant={ETypographyVariants.p}
+									className='text-waiting'
+								>
+									{!hasApproved ? 'Awaiting your Confirmation' : `(${approvals?.length}/${threshold})`}
+								</Typography>
+							)}
+							{!hasApproved && 
+								<Button
+									onClick={() => onAction(ETxType.APPROVE)}
+									className='text-success bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 border-none outline-none'
+								>
+									<OutlineCheckIcon />
+								</Button>
+							}
+						</div>
+						{isHomePage && (
+							<Button
+								onClick={() => onAction(ETxType.CANCEL)}
+								className='text-failure bg-[#e63946]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 border-none outline-none'
+							>
+								<OutlineCloseIcon />
+							</Button>
+						)}
 					</div>
 				)}
 			</div>

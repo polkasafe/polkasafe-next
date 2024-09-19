@@ -14,6 +14,7 @@ export const parseTransaction = (transaction: any) => {
 		network: transaction.network,
 		createdAt: new Date(transaction.created_at),
 		callData: transaction.callData,
-		callHash: transaction.callHash
+		callHash: transaction.callHash,
+		approvals: transaction.approvals
 	} as unknown as IDashboardTransaction;
 };
