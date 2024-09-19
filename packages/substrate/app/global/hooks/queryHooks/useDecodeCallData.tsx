@@ -26,23 +26,23 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 		const metaData = call.meta.toHuman();
 		payload.method = call.method;
 		payload.section = call.section;
-		console.log('callJSONData', callJSONData);
-		if (metaData.name === 'batch_all') {
+		if (metaData.name === 'batch_all' || metaData.name === 'batch') {
 			const calls = (callJSONData?.args as IGenericObject)?.calls as Array<IGenericObject>;
 			for (const batchCall of calls) {
 				const dest = (batchCall.args as IGenericObject)?.dest;
 				const value = (batchCall.args as IGenericObject)?.value;
-				if (dest && value && (dest?.id || dest?.address20)) {
+				if (dest && value && dest.id) {
 					payload.to = getEncodedAddress(value.address20 ? value.address20 : value.id, apiData.network);
 					payload.value = value.split(',').join('');
 					break;
 				}
 			}
+			console.log('payload', payload);
 			return payload;
 		}
 		const calls = Object.entries(callJSONData?.args || {});
 		for (const [key, value] of calls) {
-			if (key === 'dest' && (value?.id || value?.address20)) {
+			if (key === 'dest' && value.id) {
 				payload.to = getEncodedAddress(value.address20 ? value.address20 : value.id, apiData.network);
 			}
 			if (key === 'value') {
