@@ -28,6 +28,63 @@ import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 import { Skeleton, Spin, Tooltip } from 'antd';
 import { useAtomValue } from 'jotai';
 
+const ExternalLink = ({ network, address }: { network: ENetwork; address: string }) => (
+	<div className='absolute right-5 top-5'>
+		<div className='flex gap-x-4 items-center'>
+			{/* <Tooltip title='Copy Share Link'>
+						<button
+							className='text-text_secondary text-lg'
+							onClick={() =>
+								copyText(`${baseURL}/watch?multisig=${activeMultisig}&network=${currentMultisig?.network}`)
+							}
+						>
+							<ShareAltOutlined />
+						</button>
+					</Tooltip> */}
+			<a
+				className='w-5'
+				target='_blank'
+				href='https://polkadot.js.org/apps/#/accounts'
+				rel='noreferrer'
+			>
+				<PolkadotIcon />
+			</a>
+			<a
+				className='w-5'
+				target='_blank'
+				href={`https://explorer.polkascan.io/${network}/account/${address}`}
+				rel='noreferrer'
+			>
+				<BrainIcon />
+			</a>
+			<a
+				className='w-5'
+				target='_blank'
+				href={`https://dotscanner.com/${network}/account/${address}?utm_source=polkadotjs`}
+				rel='noreferrer'
+			>
+				<DonateIcon />
+			</a>
+			<a
+				className='w-5'
+				target='_blank'
+				href={`https://${network}.polkaholic.io/account/${address}?group=overview&chainfilters=all`}
+				rel='noreferrer'
+			>
+				<ChainIcon />
+			</a>
+			<a
+				className='w-5'
+				target='_blank'
+				href={`https://${network}.subscan.io/account/${address}`}
+				rel='noreferrer'
+			>
+				<SubscanIcon />
+			</a>
+		</div>
+	</div>
+);
+
 interface IOverviewCardProps {
 	name: string;
 	address: string;
@@ -63,60 +120,10 @@ function OverviewCard({
 			<div
 				className={`${className} relative bg-bg-main flex flex-col justify-between rounded-lg p-5 shadow-lg h-[17rem] scale-90 w-[111%] origin-top-left`}
 			>
-				<div className='absolute right-5 top-5'>
-					<div className='flex gap-x-4 items-center'>
-						{/* <Tooltip title='Copy Share Link'>
-						<button
-							className='text-text_secondary text-lg'
-							onClick={() =>
-								copyText(`${baseURL}/watch?multisig=${activeMultisig}&network=${currentMultisig?.network}`)
-							}
-						>
-							<ShareAltOutlined />
-						</button>
-					</Tooltip> */}
-						<a
-							className='w-5'
-							target='_blank'
-							href='https://polkadot.js.org/apps/#/accounts'
-							rel='noreferrer'
-						>
-							<PolkadotIcon />
-						</a>
-						<a
-							className='w-5'
-							target='_blank'
-							href={`https://explorer.polkascan.io/${network}/account/${address}`}
-							rel='noreferrer'
-						>
-							<BrainIcon />
-						</a>
-						<a
-							className='w-5'
-							target='_blank'
-							href={`https://dotscanner.com/${network}/account/${address}?utm_source=polkadotjs`}
-							rel='noreferrer'
-						>
-							<DonateIcon />
-						</a>
-						<a
-							className='w-5'
-							target='_blank'
-							href={`https://${network}.polkaholic.io/account/${address}?group=overview&chainfilters=all`}
-							rel='noreferrer'
-						>
-							<ChainIcon />
-						</a>
-						<a
-							className='w-5'
-							target='_blank'
-							href={`https://${network}.subscan.io/account/${address}`}
-							rel='noreferrer'
-						>
-							<SubscanIcon />
-						</a>
-					</div>
-				</div>
+				<ExternalLink
+					address={address}
+					network={network}
+				/>
 				<div className='w-full'>
 					<div className='flex gap-x-3 items-center'>
 						<div className='relative'>
@@ -124,7 +131,7 @@ function OverviewCard({
 								className={`border-2 rounded-full bg-transparent ${'border-primary'} p-1.5`}
 								value={address}
 								size={50}
-								theme='polkadot'
+								theme='substrate'
 							/>
 							<div className={`${'bg-primary text-white'} text-sm rounded-lg absolute -bottom-0 left-[16px] px-2`}>
 								{threshold}/{signatories.length}

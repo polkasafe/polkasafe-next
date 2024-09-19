@@ -5,7 +5,6 @@
 import { NotificationStatus } from '@common/enum/substrate';
 import { queueNotification } from '@common/global-ui-components/QueueNotification';
 import { ApiPromise } from '@polkadot/api';
-import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
 import { QrSigner } from '@common/utils/QrSigner';
 import { QrState } from '@common/types/substrate';
 
@@ -14,7 +13,7 @@ import { SUBSCAN_API_HEADERS } from '@substrate/app/api/constants/subscane';
 import { isHex } from '@polkadot/util';
 
 interface IPolkadotVaultSign {
-	api: ApiPromise | AvailApiPromise | null;
+	api: any;
 	token: string;
 	setQrState: React.Dispatch<React.SetStateAction<QrState>>;
 	substrateAddress: string;

@@ -24,6 +24,7 @@ export function request<T>(endpoint: string, reqHeaders?: any, options?: Request
 			return response.json();
 		})
 		.catch((error) => {
+			console.log('error', error);
 			throw new Error(error.message);
 		});
 }

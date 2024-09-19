@@ -96,16 +96,6 @@ export function ActionAndDetails({
 						</Link>
 					))}
 				</div>
-				{/* <div>
-					<Button
-						icon={<DownIcon />}
-						iconPosition='end'
-						variant={EButtonVariant.SECONDARY}
-						className='px-5 border-primary'
-					>
-						Filters
-					</Button>
-				</div> */}
 			</div>
 			{selectedTab === ETransactionTab.QUEUE && <QuickQueue multisigs={multisigs} />}
 			{selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs multisigs={multisigs} />}

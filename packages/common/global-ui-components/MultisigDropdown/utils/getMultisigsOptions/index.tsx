@@ -67,6 +67,7 @@ export function getMultisigOptions({
 												network={item.network}
 												withBadge={false}
 												address={item.address}
+												name={item.name}
 											/>
 										</div>
 									),

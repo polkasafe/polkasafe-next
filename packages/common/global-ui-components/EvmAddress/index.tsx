@@ -40,7 +40,7 @@ export const EvmAddress: React.FC<IAddressProps> = ({
 						className='image identicon'
 						value={address}
 						size={identiconSize || 30}
-						theme='polkadot'
+						theme='substrate'
 					/>
 				)}
 				<p className={styles.textContainer}>
@@ -60,7 +60,7 @@ export const EvmAddress: React.FC<IAddressProps> = ({
             className={styles.imageIdenticon}
             value={address}
             size={identiconSize || 30}
-            theme='polkadot'
+            theme='substrate'
           />
         ) : null} */}
 				<p className={styles.textContainer}>

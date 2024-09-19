@@ -59,7 +59,7 @@ const Address: React.FC<IAddressComponent> = ({
 					className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
 					value={address}
 					size={iconSize}
-					theme='polkadot'
+					theme='substrate'
 				/>
 			) : isMultisig ? (
 				withBadge ? (
@@ -73,7 +73,7 @@ const Address: React.FC<IAddressComponent> = ({
 							className='border-primary rounded-full border-2 bg-transparent p-1'
 							value={address}
 							size={iconSize}
-							theme='polkadot'
+							theme='substrate'
 						/>
 					</Badge>
 				) : (
@@ -81,7 +81,7 @@ const Address: React.FC<IAddressComponent> = ({
 						<Identicon
 							value={address}
 							size={iconSize}
-							theme='polkadot'
+							theme='substrate'
 						/>
 						{!!threshold && !!signatories && (
 							<div className=' bg-primary text-white text-xs rounded-md absolute bottom-0 px-2'>
@@ -94,7 +94,7 @@ const Address: React.FC<IAddressComponent> = ({
 				<Identicon
 					value={address}
 					size={iconSize}
-					theme='polkadot'
+					theme='substrate'
 				/>
 			)}
 			{onlyAddress ? (

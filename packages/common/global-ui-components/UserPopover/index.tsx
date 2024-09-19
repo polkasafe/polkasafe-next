@@ -57,7 +57,7 @@ const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 						<div className='flex flex-col items-center gap-2'>
 							<Identicon
 								value={userAddress}
-								theme='polkadot'
+								theme='substrate'
 								size={50}
 								className='rounded-full border-2 border-primary p-1'
 							/>

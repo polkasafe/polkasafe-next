@@ -5,6 +5,7 @@ import Address from '@common/global-ui-components/Address';
 import { getMultisigOptions } from '@common/global-ui-components/MultisigDropdown/utils/getMultisigsOptions';
 import { ENetwork } from '@common/enum/substrate';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
+import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
 
 interface IMultisigDropdown {
 	multisigs: Array<IMultisig>;
@@ -56,7 +57,7 @@ export const MultisigDropdown = ({ multisigs, onChange }: IMultisigDropdown) => 
 					<Address
 						isMultisig
 						isProxy={Boolean(proxy)}
-						name={proxyName || name}
+						name={(Boolean(proxy) && (proxyName || DEFAULT_ADDRESS_NAME)) || name}
 						showNetworkBadge
 						network={network as ENetwork}
 						withBadge={false}

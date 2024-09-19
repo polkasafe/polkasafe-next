@@ -40,6 +40,10 @@ const nextConfig = {
 		);
 
 		return config;
+	},
+	env: {
+		NEXT_PUBLIC_DEPLOYMENT: process.env.NEXT_PUBLIC_DEPLOYMENT,
+		NEXT_PUBLIC_SDK_BASE_URL: process.env.NEXT_PUBLIC_SDK_BASE_URL
 	}
 };
 
