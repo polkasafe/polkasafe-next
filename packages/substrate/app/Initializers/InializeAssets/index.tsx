@@ -20,69 +20,68 @@ function InitializeAssets() {
 	const { getApi } = useAllAPI();
 	const setAtom = useSetAtom(assetsAtom);
 
-	const handleOrganisationAssets = useCallback(async () => {
-		if (!organisation) {
-			return;
-		}
-		const {
-			data: { data: currencyData }
-		} = await axios.get(window.location.origin + '/api/v1/currencyData');
-
-		const { multisigs } = organisation;
-		const assetsPromise = multisigs.map(async (m) => {
-			const { address, network } = m;
-			const networkApi = getApi(network);
-			if (!networkApi) {
-				return null;
-			}
-			const { api, apiReady } = networkApi;
-			if (!api || !apiReady) {
-				return null;
-			}
-			const { data: balanceWithDecimals } = (await api.query.system.account(address)) as unknown as {
-				data: any;
-			};
-			const balance = {} as any;
-			// eslint-disable-next-line no-restricted-syntax
-			for (const [key, value] of Object.entries(JSON.parse(JSON.stringify(balanceWithDecimals.toHuman())))) {
-				balance[key] = formatBalance(
-					String(value),
-					{
-						numberAfterComma: 3,
-						withThousandDelimitor: true
-					},
-					network
-				);
-			}
-			const usdValue = Number(currencyData?.[network]?.usd || 0) * Number(balance.free);
-			const allCurrency: any = {};
-			Object.keys(currencyData).map((network) => {
-				const allCurrencyValue: any = {};
-				Object.keys(currencyData?.[network] || {}).map((currency) => {
-					allCurrencyValue[currency] = Number(currencyData?.[network]?.[currency] || 0) * Number(balance.free);
-				});
-				allCurrency[network] = allCurrencyValue;
-			});
-			return {
-				...balance,
-				usd: Number(usdValue.toFixed(3)),
-				allCurrency,
-				address,
-				network,
-				symbol: networkConstants[network].tokenSymbol
-			};
-		});
-
-		const assets = (await Promise.all(assetsPromise)).filter((a) => Boolean(a));
-		setAtom(assets);
-	}, [getApi, organisation, setAtom]);
-
 	useEffect(() => {
 		if (!organisation) {
 			return;
 		}
+		const handleOrganisationAssets = async () => {
+			if (!organisation) {
+				return;
+			}
+			const {
+				data: { data: currencyData }
+			} = await axios.get(window.location.origin + '/api/v1/currencyData');
+
+			const { multisigs } = organisation;
+			const assetsPromise = multisigs.map(async (m) => {
+				const { address, network } = m;
+				const networkApi = getApi(network);
+				if (!networkApi) {
+					return null;
+				}
+				const { api, apiReady } = networkApi;
+				if (!api || !apiReady) {
+					return null;
+				}
+				const { data: balanceWithDecimals } = (await api.query.system.account(address)) as unknown as {
+					data: any;
+				};
+				const balance = {} as any;
+				// eslint-disable-next-line no-restricted-syntax
+				for (const [key, value] of Object.entries(JSON.parse(JSON.stringify(balanceWithDecimals.toHuman())))) {
+					balance[key] = formatBalance(
+						String(value),
+						{
+							numberAfterComma: 3,
+							withThousandDelimitor: true
+						},
+						network
+					);
+				}
+				const usdValue = Number(currencyData?.[network]?.usd || 0) * Number(balance.free);
+				const allCurrency: any = {};
+				Object.keys(currencyData).map((network) => {
+					const allCurrencyValue: any = {};
+					Object.keys(currencyData?.[network] || {}).map((currency) => {
+						allCurrencyValue[currency] = Number(currencyData?.[network]?.[currency] || 0) * Number(balance.free);
+					});
+					allCurrency[network] = allCurrencyValue;
+				});
+				return {
+					...balance,
+					usd: Number(usdValue.toFixed(3)),
+					allCurrency,
+					address,
+					network,
+					symbol: networkConstants[network].tokenSymbol
+				};
+			});
+
+			const assets = (await Promise.all(assetsPromise)).filter((a) => Boolean(a));
+			setAtom(assets);
+		};
 		handleOrganisationAssets();
-	}, [handleOrganisationAssets, organisation]);
+	}, [organisation]);
 
 	return null;
 }

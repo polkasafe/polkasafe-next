@@ -1,8 +1,11 @@
 import fetchPonyfill from 'fetch-ponyfill';
+import { NEXT_PUBLIC_DEPLOYMENT, NEXT_PUBLIC_SDK_BASE_URL } from '@common/envs';
+import { EDevelopment } from '@common/enum/sdk';
 
 const { fetch: fetchPF } = fetchPonyfill();
 
-const baseUrl = 'https://polkasafe-a8042.web.app/api/v1';
+const baseUrl =
+	NEXT_PUBLIC_DEPLOYMENT === EDevelopment.PRODUCTION ? NEXT_PUBLIC_SDK_BASE_URL : 'http://localhost:3000/api/v1';
 
 export function request<T>(endpoint: string, reqHeaders?: any, options?: RequestInit): Promise<T> {
 	const url = `${baseUrl}${endpoint}`;
@@ -21,6 +24,7 @@ export function request<T>(endpoint: string, reqHeaders?: any, options?: Request
 			return response.json();
 		})
 		.catch((error) => {
+			console.log('error', error);
 			throw new Error(error.message);
 		});
 }
