@@ -349,6 +349,8 @@ export interface ICreateMultisig {
 	networks: Array<ENetwork>;
 	availableSignatories: Array<IAddressBook>;
 	onSubmit: (values: IMultisigCreate) => Promise<void>;
+	userAddress: string;
+	onClose?: () => void;
 }
 
 export interface ILinkMultisig {

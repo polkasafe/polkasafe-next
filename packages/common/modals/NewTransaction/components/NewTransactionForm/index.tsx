@@ -1,15 +1,14 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import React, { useEffect, useState } from 'react';
 import { Form, Spin, AutoComplete } from 'antd';
-import { newTransactionFormFields } from '@common/modals/NewTransaction/utils/form';
-import { IMultisig, ISendTransactionForm } from '@common/types/substrate';
+import { IMultisig } from '@common/types/substrate';
 import { useDashboardContext } from '@common/context/DashboarcContext';
 import { findMultisig } from '@common/utils/findMultisig';
 import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
-import { CircleArrowDownIcon, CirclePlusIcon, DeleteIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
+import { CirclePlusIcon, DeleteIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import BN from 'bn.js';
-import { Dropdown } from '@common/global-ui-components/Dropdown';
 import Address from '@common/global-ui-components/Address';
 import { ENetwork } from '@common/enum/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
@@ -18,6 +17,7 @@ import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import BalanceInput from '@common/global-ui-components/BalanceInput';
 import formatBnBalance from '@common/utils/formatBnBalance';
 import './style.css';
+import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown';
 
 export interface IRecipientAndAmount {
 	recipient: string;
@@ -26,18 +26,22 @@ export interface IRecipientAndAmount {
 
 export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 	const { multisigs, onNewTransaction, addressBook, currencyValues } = useDashboardContext();
-	const [loading, setLoading] = useState(false);
 	const [notification, context] = useNotification();
-	const [selectedMultisigAddress, setSelectedMultisigAddress] = useState<string>('');
+	const [form] = Form.useForm();
 
+	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
+		address: string;
+		network: ENetwork;
+		name: string;
+		proxy?: string;
+	}>({
+		address: multisigs[0].address,
+		network: multisigs[0].network,
+		name: multisigs[0].name
+	});
+
+	const [loading, setLoading] = useState(false);
 	const [autocompleteAddresses, setAutoCompleteAddresses] = useState<DefaultOptionType[]>([]);
-
-	const [tip, setTip] = useState<BN>(new BN(0));
-
-	const [network, setNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
-
-	const [selectedProxyAddress, setSelectedProxyAddress] = useState<string>('');
-
 	const [recipientAndAmount, setRecipientAndAmount] = useState<IRecipientAndAmount[]>([
 		{
 			amount: new BN('0'),
@@ -45,57 +49,11 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 		}
 	]);
 
-	// const multisigOptionsWithProxy: IMultisig[] = [];
-
-	// multisigs?.forEach((item) => {
-	// 	if (item.proxy) {
-	// 		if (typeof item.proxy === 'string') {
-	// 			multisigOptionsWithProxy.push({ ...item, proxy: item.proxy });
-	// 		} else {
-	// 			item.proxy.map((mp) =>
-	// 				multisigOptionsWithProxy.push({ ...item, name: mp.name || item.name, proxy: mp.address })
-	// 			);
-	// 		}
-	// 	}
-	// });
-
-	const multisigOptions: any[] = [];
-
-	// const multisigOptions = multisigOptionsWithProxy?.map((item) => ({
-	// 	key: JSON.stringify({ ...item, isProxy: true }),
-	// 	label: (
-	// 		<Address
-	// 			isMultisig
-	// 			isProxy
-	// 			name={item.name}
-	// 			showNetworkBadge
-	// 			network={item.network}
-	// 			withBadge={false}
-	// 			address={item.proxy as string}
-	// 		/>
-	// 	)
-	// }));
-
-	multisigs?.forEach((item) => {
-		multisigOptions.push({
-			key: JSON.stringify({ ...item, isProxy: false }),
-			label: (
-				<Address
-					isMultisig
-					showNetworkBadge
-					network={item.network}
-					withBadge={false}
-					address={item.address}
-				/>
-			)
-		});
-	});
-
 	useEffect(() => {
 		if (!addressBook || addressBook.length === 0) return;
 		const allAddresses: string[] = [];
 		addressBook.forEach((item) => {
-			if (!allAddresses.includes(getEncodedAddress(item.address, network) || item.address)) {
+			if (!allAddresses.includes(getEncodedAddress(item.address, selectedMultisigDetails.network) || item.address)) {
 				allAddresses.push(item.address);
 			}
 		});
@@ -103,14 +61,14 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 			allAddresses.map((a) => ({
 				label: (
 					<Address
-						network={network}
+						network={selectedMultisigDetails.network}
 						address={a}
 					/>
 				),
 				value: a
 			}))
 		);
-	}, [network]);
+	}, [addressBook, selectedMultisigDetails.network]);
 
 	const onRecipientChange = (value: string, i: number) => {
 		setRecipientAndAmount((prevState) => {
@@ -147,10 +105,11 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 
 	const handleSubmit = async () => {
 		try {
+			const multisigId = `${selectedMultisigDetails.address}_${selectedMultisigDetails.network}`;
 			const payload = {
 				recipients: recipientAndAmount.map((item) => ({ address: item.recipient, amount: item.amount })),
-				sender: findMultisig(multisigs, selectedMultisigAddress) as IMultisig,
-				selectedProxy: selectedProxyAddress,
+				sender: findMultisig(multisigs, multisigId) as IMultisig,
+				selectedProxy: selectedMultisigDetails.proxy,
 				note: ''
 			};
 			setLoading(true);
@@ -175,41 +134,21 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 				<Form
 					layout='vertical'
 					className='flex flex-col gap-y-6'
+					form={form}
 				>
 					<div>
 						<p className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
 							Sending from
 						</p>
-						<Dropdown
-							trigger={['click']}
-							className='border border-dashed border-text-secondary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'
-							menu={{
-								items: multisigOptions,
-								onClick: (e) => {
-									const data = JSON.parse(e.key);
-									setSelectedMultisigAddress(data?.isProxy ? data?.proxy : data?.address);
-									setNetwork(data?.network);
-									// setIsProxy(data?.isProxy);
-									// setSelectedProxyName(data.name);
-								}
-							}}
-						>
-							<div className='flex justify-between gap-x-4 items-center text-white text-[16px]'>
-								<Address
-									isMultisig
-									// isProxy={isProxy}
-									// name={}
-									showNetworkBadge
-									network={network}
-									withBadge={false}
-									address={selectedMultisigAddress}
-								/>
-								<CircleArrowDownIcon className='text-primary' />
-							</div>
-						</Dropdown>
+						<MultisigDropdown
+							multisigs={multisigs}
+							onChange={(value: { address: string; network: ENetwork; name: string; proxy?: string }) =>
+								setSelectedMultisigDetails(value)
+							}
+						/>
 					</div>
 					<div>
-						<div className='flex flex-col gap-y-3 mb-2'>
+						<div className='flex flex-col gap-y-3 mb-2 max-h-72 overflow-y-auto pr-2'>
 							{recipientAndAmount.map(({ recipient }, i) => (
 								<article
 									key={recipient}
@@ -252,44 +191,17 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 													</div>
 												) : (
 													<AutoComplete
-														// autoFocus
-														// defaultOpen
 														className='[&>div>span>input]:px-[12px]'
 														filterOption={(inputValue, options) => {
 															return inputValue && options?.value
 																? getSubstrateAddress(String(options?.value) || '') === getSubstrateAddress(inputValue)
 																: true;
 														}}
-														// notFoundContent={
-														// 	validRecipient[i] && (
-														// 		<Button
-														// 			icon={<PlusCircleOutlined className='text-primary' />}
-														// 			className='bg-transparent border-none outline-none text-primary text-sm flex items-center'
-														// 			onClick={() => setShowAddressModal(true)}
-														// 		>
-														// 			Add Address to Address Book
-														// 		</Button>
-														// 	)
-														// }
-														options={
-															autocompleteAddresses
-															// filter duplicate address
-															// .filter(
-															// (item) =>
-															// !recipientAndAmount.some(
-															// (r) =>
-															// r.recipient &&
-															// item.value &&
-															// getSubstrateAddress(r.recipient) ===
-															// getSubstrateAddress(String(item.value) || '')
-															// )
-															// )
-														}
+														options={autocompleteAddresses}
 														id='recipient'
 														placeholder='Send to Address..'
-														onChange={(value) => onRecipientChange(value, i)}
-														value={recipientAndAmount[i].recipient}
-														defaultValue=''
+														// onChange={(value) => onRecipientChange(value, i)}
+														// value={recipientAndAmount[i].recipient}
 													/>
 												)}
 											</div>
@@ -297,13 +209,13 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 									</div>
 									<div className='flex items-center gap-x-2 w-[45%]'>
 										<BalanceInput
-											network={network}
+											network={selectedMultisigDetails.network}
 											multipleCurrency
 											label='Amount*'
 											defaultValue={formatBnBalance(
 												recipientAndAmount[i].amount.toString(),
 												{ numberAfterComma: 0, withThousandDelimitor: false },
-												network
+												selectedMultisigDetails.network
 											)}
 											// fromBalance={multisigBalance}
 											onChange={(balance) => onAmountChange(balance, i)}
@@ -333,10 +245,10 @@ export function NewTransactionForm({ onClose }: { onClose: () => void }) {
 					</div>
 					<div>
 						<BalanceInput
-							network={network}
+							network={selectedMultisigDetails.network}
 							label='Tip'
 							// fromBalance={multisigBalance}
-							onChange={(balance) => setTip(balance)}
+							onChange={(balance) => console.log(balance)}
 							currencyValues={currencyValues}
 						/>
 					</div>

@@ -4,24 +4,50 @@
 
 'use client';
 
-import Collapse from '@common/global-ui-components/Collapse';
-import { ITransaction } from '@common/types/substrate';
+import { ETransactionType } from '@common/enum/substrate';
+import { Empty } from '@common/global-ui-components/Empty';
+import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
+import { TransactionList } from '@substrate/app/(Main)/components/TransactionList';
+import { useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
+import { Skeleton } from 'antd';
+import { useEffect, useState } from 'react';
 
-interface IQueueProps {
-	transactions: Array<ITransaction>;
+interface IQueue {
+	multisigs: Array<IMultisig>;
 }
 
-function Queue({ transactions }: IQueueProps) {
-	console.log(transactions);
-	const collapseItems = transactions.map((tx) => ({
-		key: tx.callHash,
-		label: <p>{tx.callHash}</p>,
-		children: <p>{tx.callData}</p>
-	}));
+function Queue({ multisigs }: IQueue) {
+	const multisigIds = multisigs.map((multisig) => `${multisig.address}_${multisig.network}`);
+
+	const [data] = useQueueAtom();
+
+	const [isMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	if (!isMounted) {
+		return null;
+	}
+
+	if (!data?.transactions) {
+		return <Skeleton />;
+	}
+
+	if (data.transactions.length === 0 && data.currentIndex !== multisigIds.length - 1) {
+		return <Skeleton />;
+	}
+
+	if (data.transactions.length === 0 && data.currentIndex === multisigIds.length - 1) {
+		return <Empty description='No Transaction Found' />;
+	}
+
 	return (
-		<Collapse
-			items={collapseItems}
-			defaultActiveKey={[]}
+		<TransactionList
+			transactions={(data.transactions || []) as Array<IDashboardTransaction>}
+			txType={ETransactionType.QUEUE_TRANSACTION}
+			className='max-h-full'
 		/>
 	);
 }
