@@ -22,12 +22,12 @@ interface NotificationArticleProps {
 
 const NotificationArticle: React.FC<NotificationArticleProps> = ({ icon, title, platform, input, buttonText }) => {
 	return (
-		<article className='bg-[#24272E] rounded-lg px-1 py-4 flex items-center justify-start gap-x-8'>
+		<article className='bg-bg-secondary rounded-lg px-1 py-4 flex items-center justify-start gap-x-8'>
 			<Button
 				htmlType='submit'
 				icon={icon}
 				variant={EButtonVariant.PRIMARY}
-				className='bg-transparent text-[#8B8B8B] border-none shadow-none text-sm flex items-center justify-start w-[250px]'
+				className='bg-transparent text-text-secondary border-none shadow-none text-sm flex items-center justify-start w-[250px]'
 				fullWidth
 			>
 				{title} Notifications
@@ -45,7 +45,6 @@ const NotificationArticle: React.FC<NotificationArticleProps> = ({ icon, title, 
 							}}
 						>
 							<Input
-								className='bg-red'
 								placeholder='Enter email'
 								width={353}
 							/>
@@ -97,19 +96,19 @@ export const NotificationsUI: React.FC = () => {
 	];
 
 	return (
-		<section className='mt-4 flex flex-col gap-y-4'>
-			<article className='bg-[#24272E] rounded-lg px-1 py-4 flex items-start justify-start gap-x-8'>
+		<section className='mt-4 max-h-[700px] flex flex-col gap-y-4 overflow-y-auto'>
+			<article className='bg-bg-secondaryrounded-lg px-1 py-4 flex items-start justify-start gap-x-8'>
 				<Button
 					htmlType='submit'
 					icon={<NotificationIcon />}
 					variant={EButtonVariant.PRIMARY}
-					className='bg-transparent text-[#8B8B8B] border-none shadow-none text-sm flex items-center justify-start w-[250px]'
+					className='bg-transparent text-text-secondary border-none shadow-none text-sm flex items-center justify-start w-[250px]'
 					fullWidth
 				>
 					General
 				</Button>
 				<div className='flex flex-col gap-y-2 items-start'>
-					<p className='m-0 p-0 text-[#8B8B8B]'>
+					<p className='m-0 p-0 text-text-secondary'>
 						Configure the notifications you want Polkasafe to send in your linked channels
 					</p>
 					<div className='flex flex-col gap-y-2 mt-2'>
@@ -128,13 +127,13 @@ export const NotificationsUI: React.FC = () => {
 									For Pending Transactions remind signers every{' '}
 									<Dropdown
 										trigger={['click']}
-										className='-mt-1 border border-[#8B8B8B] flex items-center justify-center rounded-lg w-[93px] h-[31px] p-2.5 bg-bg-secondary cursor-pointer'
+										className='-mt-1 border border-text-secondary flex items-center justify-center rounded-lg w-[93px] h-[31px] p-2.5 bg-bg-secondary cursor-pointer'
 										menu={{
 											items
 										}}
 									>
 										<div className='flex justify-between gap-x-2 items-center text-white text-[16px]'>
-											<p className='text-[#757575] text-sm'>{selectedOption}</p>
+											<p className='text-text-tertiary text-sm'>{selectedOption}</p>
 											<CircleArrowDownIcon className='text-primary' />
 										</div>
 									</Dropdown>
@@ -156,9 +155,9 @@ export const NotificationsUI: React.FC = () => {
 				/>
 			))}
 
-			<div className='mt-8 h-[54px] flex items-center justify-start gap-x-2 px-5 py-4 bg-[#24272E] rounded-lg'>
-				<InfoCircleOutlined className='text-[#FF9F1C]' />
-				<p className='m-0 p-0 text-[#FF9F1C] text-sm flex items-center gap-x-1'>
+			<div className='h-[54px] flex items-center justify-start gap-x-2 px-5 py-4 bg-bg-secondary rounded-lg'>
+				<InfoCircleOutlined className='text-waiting' />
+				<p className='m-0 p-0 text-waiting text-sm flex items-center gap-x-1'>
 					Not receiving notifications? <span className='m-0 p-0 text-primary'>Contact Us</span>
 				</p>
 			</div>
