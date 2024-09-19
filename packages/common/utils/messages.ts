@@ -97,3 +97,10 @@ export const SUCCESS_MESSAGES = {
 		description: 'Address has been removed successfully'
 	}
 };
+
+export const INFO_MESSAGES = {
+	TRANSACTION_IN_BLOCK: {
+		message: 'Transaction in Block',
+		description: 'Transaction has been sent and is in block'
+	}
+};

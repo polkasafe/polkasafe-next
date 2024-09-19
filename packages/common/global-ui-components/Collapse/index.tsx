@@ -1,20 +1,24 @@
 import { Collapse as AntdCollapase, CollapseProps } from 'antd';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
+import { twMerge } from 'tailwind-merge';
 import './style.css';
 
 interface ICollapse extends CollapseProps {
 	plain?: boolean;
 }
 
-function Collapse({ plain = false,  ...props }: ICollapse) {
+function Collapse({ plain = false, expandIcon, ...props }: ICollapse) {
 	return (
 		<AntdCollapase
 			{...props}
 			className={`${plain ? 'plain' : 'border'} ${props.className}`}
 			// eslint-disable-next-line react/no-unstable-nested-components
-			expandIcon={({ isActive }) => (
-				<CircleArrowDownIcon className={`text-primary text-lg ${isActive ? 'rotate-[180deg]' : ''}`} />
-			)}
+			expandIcon={
+				expandIcon ||
+				(({ isActive }) => (
+					<CircleArrowDownIcon className={twMerge('text-primary text-lg', isActive && 'rotate-[180deg]')} />
+				))
+			}
 		/>
 	);
 }
