@@ -55,7 +55,7 @@ export function TransactionList({ transactions = [], txType }: ITransactionList)
 	const network = useSearchParams().get('_network') as ENetwork;
 
 	return (
-		<>
+		<div className='h-full'>
 			<div className='flex bg-bg-secondary my-1 p-3 rounded-lg mr-1'>
 				{columns.map((column) => (
 					<Typography
@@ -87,6 +87,6 @@ export function TransactionList({ transactions = [], txType }: ITransactionList)
 						/>
 					))}
 			</div>
-		</>
+		</div>
 	);
 }

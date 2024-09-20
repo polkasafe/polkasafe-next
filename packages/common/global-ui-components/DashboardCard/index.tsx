@@ -15,7 +15,7 @@ function DashboardCard() {
 	const symbol = getCurrencySymbol(currency);
 	const show = (localStorage.getItem('showBalance') || 'yes') as 'yes' | 'no';
 	const [showBalance, setShowBalance] = useState<'yes' | 'no'>(show);
-
+	console.log('showBalance', totalBalance);
 	return (
 		<div className='overflow-hidden relative'>
 			<div className='h-[150px] w-[150px] rounded-full absolute -bottom-20 left-[10%] z-10 bg-circle-1-gradient' />
@@ -41,11 +41,13 @@ function DashboardCard() {
 							{showBalance === 'yes' ? (
 								<>
 									{symbol}{' '}
-									{totalBalance || (
+									{totalBalance === null ? (
 										<Skeleton.Button
 											size='small'
 											active
 										/>
+									) : (
+										totalBalance
 									)}
 								</>
 							) : (

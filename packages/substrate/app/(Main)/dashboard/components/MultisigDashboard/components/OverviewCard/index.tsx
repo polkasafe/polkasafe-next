@@ -37,6 +37,8 @@ import ReviewTransaction from '@substrate/app/(Main)/components/ReviewTransactio
 import { getReviewTxCallData } from '@substrate/app/global/utils/getReviewCallData';
 import { newTransaction } from '@substrate/app/global/utils/newTransaction';
 import { useSearchParams } from 'next/navigation';
+import { twMerge } from 'tailwind-merge';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 
 const ExternalLink = ({ network, address }: { network: ENetwork; address: string }) => (
 	<div className='absolute right-5 top-5'>
@@ -91,20 +93,22 @@ interface IOverviewCardProps {
 	threshold: number;
 	signatories: Array<string>;
 	network: ENetwork;
-	proxy?: Array<IProxy>;
 	className?: string;
 }
 
-function OverviewCard({ address, name, threshold, signatories, network, proxy, className }: IOverviewCardProps) {
+function OverviewCard({ address, name, threshold, signatories, network, className }: IOverviewCardProps) {
 	const [assets] = useAssets();
-	const multiSigAssets = assets?.find((asset) => asset?.address === address && asset?.network === network);
+	const [user] = useUser();
+	const [organisation] = useOrganisation();
 	const currency = useAtomValue(selectedCurrencyAtom);
 	const currencyValues = useAtomValue(currencyAtom);
-	const [organisation] = useOrganisation();
-	const multisig = organisation?.multisigs?.find((item) => item.address === address && item.network === network);
+
 	const { getApi, allApi } = useAllAPI();
-	const [user] = useUser();
 	const proxyAddress = useSearchParams().get('_proxy');
+
+	const multisig = organisation?.multisigs?.find((item) => item.address === address && item.network === network);
+	const allProxies = multisig?.proxy || [];
+	const proxy = allProxies.find((item) => item.address === proxyAddress);
 
 	const getCallData = ({
 		multisigDetails,
@@ -126,6 +130,7 @@ function OverviewCard({ address, name, threshold, signatories, network, proxy, c
 		}
 		await newTransaction(values, user, getApi);
 	};
+
 	const handleFundTransaction = async ({
 		multisigAddress,
 		amount,
@@ -159,46 +164,66 @@ function OverviewCard({ address, name, threshold, signatories, network, proxy, c
 			sender: address
 		});
 	};
+
+	const selectedAddress = proxy?.address || address;
+	const multiSigAssets = assets?.find((asset) => asset?.address === selectedAddress && asset?.network === network);
+
 	return (
-		<>
-			<h2 className='text-base font-bold text-white mb-2'>Overview</h2>
+		<div className='flex flex-col h-full gap-4'>
+			<Typography variant={ETypographyVariants.h1}>Overview</Typography>
 			<div
-				className={`${className} relative bg-bg-main flex flex-col justify-between rounded-lg p-5 shadow-lg h-[17rem] scale-90 w-[111%] origin-top-left`}
+				className={twMerge(
+					'relative bg-bg-main flex flex-col justify-between rounded-3xl p-5 shadow-lg origin-top-left h-full',
+					className
+				)}
 			>
 				<ExternalLink
-					address={address}
+					address={selectedAddress}
 					network={network}
 				/>
 				<div className='w-full'>
 					<div className='flex gap-x-3 items-center'>
 						<div className='relative'>
 							<Identicon
-								className={`border-2 rounded-full bg-transparent ${'border-primary'} p-1.5`}
-								value={address}
+								className={twMerge(
+									`border-2 rounded-full bg-transparent border-primary p-1.5`,
+									proxy && 'border-proxy-pink'
+								)}
+								value={selectedAddress}
 								size={50}
 								theme='substrate'
 							/>
-							<div className={`${'bg-primary text-white'} text-sm rounded-lg absolute -bottom-0 left-[16px] px-2`}>
+							<div
+								className={twMerge(
+									`bg-primary text-white text-sm rounded-lg absolute -bottom-0 left-[16px] px-2`,
+									proxy && 'bg-proxy-pink'
+								)}
+							>
 								{threshold}/{signatories.length}
 							</div>
 						</div>
 						<div>
 							<div className='text-base font-bold text-white flex items-center gap-x-2'>
 								{name || DEFAULT_MULTISIG_NAME}
-								<div className={`px-2 py-[2px] rounded-md text-xs font-medium ${'bg-primary text-white'}`}>
-									{'Multisig'}
+								<div
+									className={twMerge(
+										`px-2 py-[2px] rounded-md text-xs font-medium bg-primary text-white`,
+										proxy && 'bg-proxy-pink text-black'
+									)}
+								>
+									{proxy ? 'Proxy' : 'Multisig'}
 								</div>
 							</div>
 							<div className='flex text-xs'>
 								<div
-									title={(address && getEncodedAddress(address, network)) || ''}
+									title={(selectedAddress && getEncodedAddress(selectedAddress, network)) || ''}
 									className=' font-normal text-text_secondary'
 								>
-									{address && shortenAddress(getEncodedAddress(address, network) || '')}
+									{selectedAddress && shortenAddress(getEncodedAddress(selectedAddress, network) || '')}
 								</div>
 								<button
 									className='ml-2 mr-1'
-									onClick={() => copyText(address, true, network)}
+									onClick={() => copyText(selectedAddress, true, network)}
 								>
 									<CopyIcon className='text-primary' />
 								</button>
@@ -261,7 +286,7 @@ function OverviewCard({ address, name, threshold, signatories, network, proxy, c
 					</DashboardProvider>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
 

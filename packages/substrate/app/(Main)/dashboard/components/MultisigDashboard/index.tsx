@@ -18,8 +18,8 @@ interface IMultisigDashboardProps {
 function MultisigDashboard({ multisig, id, tab }: IMultisigDashboardProps) {
 	return (
 		<div className='flex flex-col gap-5 h-full'>
-			<div className='grid grid-cols-3 gap-x-6'>
-				<div className='col-span-2'>
+			<div className='flex gap-5'>
+				<div className='flex flex-col gap-4 basis-[65%]'>
 					<OverviewCard
 						address={multisig.address}
 						network={multisig.network}
@@ -28,10 +28,14 @@ function MultisigDashboard({ multisig, id, tab }: IMultisigDashboardProps) {
 						name={multisig.name}
 					/>
 				</div>
-				<div className='col-span-1'>
-					<SelectAccount multisig={multisig} />
+				<div className='flex flex-col gap-4 basis-[35%]'>
+					<SelectAccount
+						multisig={multisig}
+						organisationId={id}
+					/>
 				</div>
 			</div>
+
 			<div className='bg-bg-main rounded-3xl p-5 h-full'>
 				<Suspense key={JSON.stringify(multisig)}>
 					<ActionAndDetails

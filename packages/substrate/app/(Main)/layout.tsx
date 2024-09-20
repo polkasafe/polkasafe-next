@@ -14,13 +14,11 @@ import { LayoutWrapper } from '@common/global-ui-components/LayoutWrapper';
 import SubstrateLayout from '@substrate/app/(Main)/SubstrateLayout';
 import { getOrganisationsByUser } from '@sdk/polkasafe-sdk/src';
 import { IOrganisation } from '@common/types/substrate';
-import { getOrganisationById } from '@sdk/polkasafe-sdk/src/get-organisation-by-id';
 // import InitializeAssets from '@substrate/app/Initializers/InializeAssets';
 // const inter = Inter({ subsets: ['latin'] })
 
 export default async function MainLayout({ children }: PropsWithChildren) {
 	const user = getUserFromCookie();
-	console.log('user', user);
 	if (!user) {
 		redirect(LOGIN_URL);
 	}
