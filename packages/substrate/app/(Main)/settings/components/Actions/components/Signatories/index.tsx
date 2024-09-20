@@ -101,7 +101,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 			</div>
 			<div className='-mt-[92px] flex gap-x-[60px] items-start w-full'>
 				<div
-					className={`${selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 ? '' : 'mt-[66px]'} flex flex-col gap-y-3 items-start justify-start`}
+						className={`${selectedMultisig && selectedMultisig?.proxy && selectedMultisig.proxy.length > 0 ? '' : 'mt-[66px]'} flex flex-col gap-y-3 items-start justify-start w-full`}
 				>
 					<Typography
 						variant={ETypographyVariants.p}
