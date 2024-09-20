@@ -68,6 +68,8 @@ export function NewTransactionForm({
 		value: item.address
 	}));
 
+	const getFormFieldValues = (field: string) => form.getFieldValue(field);
+
 	const handleSubmit = async () => {
 		try {
 			const multisigId = `${selectedMultisigDetails.address}_${selectedMultisigDetails.network}`;
