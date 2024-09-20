@@ -14,7 +14,7 @@ module.exports = {
 		extend: {
 			colors: {
 				primary: 'var(--primary)',
-				'text-label': 'var(--label)',
+				'label': 'var(--label)',
 				highlight: 'var(--highlight)',
 				danger: 'var(--danger)',
 				'bg-main': 'var(--bg-main)',

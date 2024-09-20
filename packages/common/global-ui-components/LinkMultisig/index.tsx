@@ -11,6 +11,7 @@ import { Divider, Spin } from 'antd';
 import { Empty } from '@common/global-ui-components/Empty';
 import useNotification from 'antd/es/notification/useNotification';
 import { useState } from 'react';
+import { LinkIcon, UnlinkIcon } from '@common/global-ui-components/Icons';
 // use availableSignatories to populate the select options
 export const LinkMultisig = ({
 	networks,
@@ -79,7 +80,7 @@ export const LinkMultisig = ({
 
 				{/* {Boolean(linkedMultisig.length) && <Typography className='text-text-secondary' variant={ETypographyVariants.h3}>Linked Multisig</Typography>} */}
 
-				<div className='flex flex-col gap-y-3 mb-4'>
+				<div className='flex flex-col gap-y-3 mb-4 px-3'>
 					{linkedMultisig.map((multisig) =>
 						multisig.proxy && multisig.proxy.length > 0 ? (
 							<Collapse
@@ -109,6 +110,7 @@ export const LinkMultisig = ({
 															withBadge={false}
 														/>
 														<Button
+															icon={<UnlinkIcon className='text-white' />}
 															className='bg-bg-secondary border-none text-white'
 															onClick={() => handleRemoveSubmit({ multisig })}
 														>
@@ -120,6 +122,7 @@ export const LinkMultisig = ({
 										),
 										extra: (
 											<Button
+												icon={<UnlinkIcon className='text-white' />}
 												className='bg-bg-secondary border-none text-white'
 												onClick={() => handleRemoveSubmit({ multisig })}
 											>
@@ -139,6 +142,7 @@ export const LinkMultisig = ({
 									withBadge={false}
 								/>
 								<Button
+									icon={<UnlinkIcon className='text-white' />}
 									className='bg-bg-secondary border-none text-white'
 									onClick={() => handleRemoveSubmit({ multisig })}
 								>
@@ -151,7 +155,7 @@ export const LinkMultisig = ({
 				<Divider variant='solid' />
 
 				<Spin spinning={loading}>
-					<div className='flex flex-col gap-y-2 max-h-80 overflow-x-auto px-3'>
+					<div className='flex flex-col gap-y-3 max-h-80 overflow-x-auto px-3'>
 						{availableMultisig.length === 0 && <Empty description='No onChain Multisig available on this network' />}
 						{availableMultisig.length > 0 &&
 							availableMultisig.map((multisig) =>
@@ -184,6 +188,7 @@ export const LinkMultisig = ({
 																	isProxy
 																/>
 																<Button
+																	icon={<LinkIcon className='text-label' />}
 																	className='bg-highlight border-none text-label'
 																	onClick={() => handleSubmit({ multisig })}
 																>
@@ -195,6 +200,7 @@ export const LinkMultisig = ({
 												),
 												extra: (
 													<Button
+														icon={<LinkIcon className='text-label' />}
 														className='bg-highlight border-none text-label'
 														onClick={() => handleSubmit({ multisig })}
 													>
@@ -214,6 +220,7 @@ export const LinkMultisig = ({
 											withBadge={false}
 										/>
 										<Button
+											icon={<LinkIcon className='text-label' />}
 											className='bg-highlight border-none text-label'
 											onClick={() => handleSubmit({ multisig })}
 										>

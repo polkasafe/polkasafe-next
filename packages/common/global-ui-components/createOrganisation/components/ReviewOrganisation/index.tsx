@@ -23,9 +23,9 @@ export const ReviewOrganisation = () => {
 					<div className='relative z-20 flex justify-between items-center text-white gap-x-2 px-2 py-3 bg-[#281A47]/25 backdrop-blur-xl rounded-xl cursor-pointer drop-shadow-[0_0_40px_#201047] border border-[#8558F2]'>
 						<div className='flex items-center gap-x-3'>
 							<Image
-								width={30}
-								height={30}
-								className='rounded-full h-[30px] w-[30px]'
+								width={45}
+								height={45}
+								className='rounded-full h-[45px] w-[45px]'
 								src={emptyImage}
 								alt='empty profile image'
 							/>
@@ -37,8 +37,9 @@ export const ReviewOrganisation = () => {
 							</div>
 						</div>
 						<Button
-							variant={EButtonVariant.PRIMARY}
-							icon={<EditIcon />}
+							className='bg-primary border-none'
+							icon={<EditIcon className='text-xs' />}
+							onClick={() => setStep(ECreateOrganisationSteps.ORGANISATION_DETAILS)}
 						>
 							Edit
 						</Button>
@@ -55,9 +56,12 @@ export const ReviewOrganisation = () => {
 						{linkedMultisig.map((multisig) => (
 							<div className='flex p-2 rounded-xl border border-[#505050]'>
 								<Address
+									showNetworkBadge
 									address={multisig.address}
 									network={multisig.network}
 									name={multisig.name}
+									isMultisig
+									withBadge={false}
 								/>
 							</div>
 						))}

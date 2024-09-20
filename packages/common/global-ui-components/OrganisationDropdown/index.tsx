@@ -77,6 +77,9 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 												address={m.address}
 												name={m.name}
 												network={m.network || ENetwork.POLKADOT}
+												isMultisig
+												showNetworkBadge
+												withBadge={false}
 											/>
 										</span>
 									</Link>

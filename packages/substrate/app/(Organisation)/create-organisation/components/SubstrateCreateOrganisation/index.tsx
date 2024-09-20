@@ -145,7 +145,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 							/>
 						)}
 					</div>
-					<div className='flex w-full justify-center flex-1 overflow-y-auto'>
+					<div className='flex w-full justify-center flex-1'>
 						<CreateOrganisation />
 					</div>
 				</div>
