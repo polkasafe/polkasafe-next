@@ -5,9 +5,7 @@
 'use client';
 
 import { DEFAULT_MULTISIG_NAME } from '@common/constants/defaults';
-import { ENetwork } from '@common/enum/substrate';
-import AddressQr from '@common/global-ui-components/AddressQR';
-import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import { ENetwork, ETxType, Wallet } from '@common/enum/substrate';
 import {
 	BrainIcon,
 	ChainIcon,
@@ -15,32 +13,34 @@ import {
 	DonateIcon,
 	PolkadotIcon,
 	QRIcon,
-	SubscanIcon,
-	WalletIcon
+	SubscanIcon
 } from '@common/global-ui-components/Icons';
 import NewTransaction from '@common/modals/NewTransaction';
-import { IProxy } from '@common/types/substrate';
+import FundMultisig from '@common/modals/FundMultisig';
+import { ICurrency, IMultisig, IProxy, ISendTransaction } from '@common/types/substrate';
 import copyText from '@common/utils/copyText';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import shortenAddress from '@common/utils/shortenAddress';
 import Identicon from '@polkadot/react-identicon';
-import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
+import { useAssets } from '@substrate/app/atoms/assets/assetsAtom';
 import { Skeleton, Spin, Tooltip } from 'antd';
 import { useAtomValue } from 'jotai';
+import { DashboardProvider } from '@common/context/DashboarcContext';
+import { currencyAtom, selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
+import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
+import { BN } from '@polkadot/util';
+import { ApiPromise } from '@polkadot/api';
+import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
+import ReviewTransaction from '@substrate/app/(Main)/components/ReviewTransaction';
+import { getReviewTxCallData } from '@substrate/app/global/utils/getReviewCallData';
+import { newTransaction } from '@substrate/app/global/utils/newTransaction';
+import { useSearchParams } from 'next/navigation';
 
 const ExternalLink = ({ network, address }: { network: ENetwork; address: string }) => (
 	<div className='absolute right-5 top-5'>
 		<div className='flex gap-x-4 items-center'>
-			{/* <Tooltip title='Copy Share Link'>
-						<button
-							className='text-text_secondary text-lg'
-							onClick={() =>
-								copyText(`${baseURL}/watch?multisig=${activeMultisig}&network=${currentMultisig?.network}`)
-							}
-						>
-							<ShareAltOutlined />
-						</button>
-					</Tooltip> */}
 			<a
 				className='w-5'
 				target='_blank'
@@ -90,30 +90,75 @@ interface IOverviewCardProps {
 	address: string;
 	threshold: number;
 	signatories: Array<string>;
-	balance: string;
 	network: ENetwork;
-	createdAt?: Date;
-	updatedAt?: Date;
 	proxy?: Array<IProxy>;
 	className?: string;
 }
 
-function OverviewCard({
-	address,
-	name,
-	threshold,
-	signatories,
-	balance,
-	network,
-	createdAt,
-	updatedAt,
-	proxy,
-	className
-}: IOverviewCardProps) {
-	const assets = useAtomValue(assetsAtom);
+function OverviewCard({ address, name, threshold, signatories, network, proxy, className }: IOverviewCardProps) {
+	const [assets] = useAssets();
 	const multiSigAssets = assets?.find((asset) => asset?.address === address && asset?.network === network);
+	const currency = useAtomValue(selectedCurrencyAtom);
+	const currencyValues = useAtomValue(currencyAtom);
+	const [organisation] = useOrganisation();
+	const multisig = organisation?.multisigs?.find((item) => item.address === address && item.network === network);
+	const { getApi, allApi } = useAllAPI();
+	const [user] = useUser();
+	const proxyAddress = useSearchParams().get('_proxy');
 
-	console.log('assets', assets);
+	const getCallData = ({
+		multisigDetails,
+		recipientAndAmount
+	}: {
+		multisigDetails: { address: string; network: ENetwork; name: string; proxy?: string };
+		recipientAndAmount: { recipient: string; amount: BN }[];
+	}): string => {
+		return getReviewTxCallData({
+			multisigDetails,
+			recipientAndAmount,
+			getApi
+		});
+	};
+
+	const handleNewTransaction = async (values: ISendTransaction) => {
+		if (!user) {
+			return;
+		}
+		await newTransaction(values, user, getApi);
+	};
+	const handleFundTransaction = async ({
+		multisigAddress,
+		amount,
+		selectedProxy
+	}: {
+		amount: string;
+		multisigAddress: IMultisig;
+		selectedProxy?: string;
+	}) => {
+		if (!user) {
+			return;
+		}
+		const { address } = user;
+		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
+		const apiAtom = getApi(multisigAddress.network);
+		if (!apiAtom) {
+			return;
+		}
+		const { api } = apiAtom as { api: ApiPromise };
+		if (!api || !api.isReady) {
+			return;
+		}
+		await initiateTransaction({
+			wallet,
+			type: ETxType.FUND,
+			api,
+			data: [{ amount: new BN(amount), recipient: multisigAddress.address }],
+			isProxy: !!selectedProxy,
+			proxyAddress: selectedProxy,
+			multisig: multisigAddress,
+			sender: address
+		});
+	};
 	return (
 		<>
 			<h2 className='text-base font-bold text-white mb-2'>Overview</h2>
@@ -143,81 +188,6 @@ function OverviewCard({
 								<div className={`px-2 py-[2px] rounded-md text-xs font-medium ${'bg-primary text-white'}`}>
 									{'Multisig'}
 								</div>
-								{/* {hasProxy && (
-								<Tooltip title='Switch Account'>
-									{hasProxy &&
-									currentMultisig.proxy &&
-									typeof currentMultisig.proxy !== 'string' &&
-									currentMultisig.proxy.length > 0 ? (
-										<Popover
-											placement='bottomLeft'
-											trigger='click'
-											content={
-												<>
-													<span
-														onClick={(e) => {
-															e.stopPropagation();
-															setUserDetailsContextState((prev) => ({
-																...prev,
-																isProxy: false
-															}));
-														}}
-														className='cursor-pointer'
-													>
-														<AddressComponent
-															address={currentMultisig.address}
-															showNetworkBadge
-															withBadge={false}
-															network={currentMultisig?.network}
-														/>
-													</span>
-													{currentMultisig.proxy?.map(({ address, name }) => (
-														<>
-															<div />
-															<span
-																onClick={(e) => {
-																	e.stopPropagation();
-																	setUserDetailsContextState((prev) => ({
-																		...prev,
-																		isProxy: true,
-																		selectedProxy: address
-																	}));
-																}}
-															>
-																<AddressComponent
-																	address={address}
-																	isProxy
-																	name={name}
-																	showNetworkBadge
-																	withBadge={false}
-																	network={currentMultisig?.network}
-																/>
-															</span>
-														</>
-													))}
-												</>
-											}
-										>
-											<Button className='border-none outline-none w-auto rounded-full p-0'>
-												<SyncOutlined className='text-text_secondary text-base' />
-											</Button>
-										</Popover>
-									) : (
-										<Button
-											className='border-none outline-none w-auto rounded-full p-0'
-											onClick={() =>
-												setUserDetailsContextState((prev) => ({
-													...prev,
-													isProxy: !prev.isProxy,
-													selectedProxy: currentMultisig.proxy as string
-												}))
-											}
-										>
-											<SyncOutlined className='text-text_secondary text-base' />
-										</Button>
-									)}
-								</Tooltip>
-							)} */}
 							</div>
 							<div className='flex text-xs'>
 								<div
@@ -268,33 +238,27 @@ function OverviewCard({
 									{!multiSigAssets ? <Spin size='default' /> : multiSigAssets.free}
 								</div>
 							</div>
-							{/* <div>
-							<div className='text-white'>{currencyProperties[currency].symbol} Amount</div>
-							<div className='font-bold text-lg text-primary'>
-								{loadingAssets ? (
-									<Spin size='default' />
-								) : (
-									(
-										Number(allAssets?.[`${activeMultisig}_${activeNetwork}`]?.fiatTotal || 0) * Number(currencyPrice)
-									).toFixed(2) || 'N/A'
-								)}
-							</div>
-						</div> */}
 						</>
 					)}
 				</div>
 				<div className='flex justify-around w-full mt-5 gap-x-6'>
-					<NewTransaction />
-					<div className='w-full'>
-						<Button
-							variant={EButtonVariant.SECONDARY}
-							className='text-sm text-[#8AB9FF] border-none'
-							fullWidth
-							icon={<WalletIcon fill='#8AB9FF' />}
-						>
-							Fund Multisig
-						</Button>
-					</div>
+					<DashboardProvider
+						onNewTransaction={handleNewTransaction}
+						onFundMultisig={handleFundTransaction}
+						assets={assets}
+						currency={currency}
+						currencyValues={currencyValues || ({} as ICurrency)}
+						multisigs={multisig ? [multisig] : []}
+						addressBook={organisation?.addressBook || []}
+						allApi={allApi}
+						getCallData={getCallData}
+						ReviewTransactionComponent={(values) => <ReviewTransaction {...values} />}
+					>
+						<div className='flex w-full gap-6'>
+							<NewTransaction />
+							<FundMultisig />
+						</div>
+					</DashboardProvider>
 				</div>
 			</div>
 		</>

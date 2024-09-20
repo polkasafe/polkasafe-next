@@ -20,6 +20,7 @@ import { BN } from '@polkadot/util';
 import NewTransaction from '@common/modals/NewTransaction';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import ReviewTransaction from '@substrate/app/(Main)/components/ReviewTransaction';
+import { newTransaction } from '@substrate/app/global/utils/newTransaction';
 
 export function DashboardOverview() {
 	const [assets] = useAssets();
@@ -68,32 +69,7 @@ export function DashboardOverview() {
 		if (!user) {
 			return;
 		}
-		const { address } = user;
-		const { recipients, sender: multisig, selectedProxy } = values;
-		console.log('values', values);
-		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
-		const apiAtom = getApi(multisig.network);
-		if (!apiAtom) {
-			return;
-		}
-		const { api } = apiAtom as { api: ApiPromise };
-		if (!api || !api.isReady) {
-			return;
-		}
-		const data = recipients.map((recipient) => ({
-			amount: recipient.amount,
-			recipient: recipient.address
-		}));
-		await initiateTransaction({
-			wallet,
-			type: ETxType.TRANSFER,
-			api,
-			data,
-			isProxy: Boolean(selectedProxy),
-			proxyAddress: selectedProxy,
-			multisig,
-			sender: address
-		});
+		await newTransaction(values, user, getApi);
 	};
 	const handleFundTransaction = async ({ multisigAddress, amount }: { amount: string; multisigAddress: IMultisig }) => {
 		if (!user) {

@@ -14,7 +14,7 @@ module.exports = {
 		extend: {
 			colors: {
 				primary: 'var(--primary)',
-				label: 'var(--label)',
+				'text-label': 'var(--label)',
 				highlight: 'var(--highlight)',
 				danger: 'var(--danger)',
 				'bg-main': 'var(--bg-main)',
@@ -46,7 +46,7 @@ module.exports = {
 				'circle-1-gradient': 'linear-gradient(129deg, #701A75 11.01%, #C026D3 95%)',
 				'circle-2-gradient': 'linear-gradient(76deg, #4C1D95 -15.25%, #7C3AED 100%)',
 				'circle-3-gradient': 'linear-gradient(129deg, #312E81 11.01%, #4F46E5 95%)',
-				'circle-4-gradient': 'linear-gradient(129deg, #655600 11.01%, #00CCE3 95%)',
+				'circle-4-gradient': 'linear-gradient(129deg, #655600 11.01%, #00CCE3 95%)'
 			}
 		}
 	},

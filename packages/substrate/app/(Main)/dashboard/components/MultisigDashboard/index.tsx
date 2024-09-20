@@ -3,8 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import OverviewCard from './components/OverviewCard';
-import TransactionCard from '../TransactionCard';
-import { IMultisig, ITransaction } from '@common/types/substrate';
+import { IMultisig } from '@common/types/substrate';
 import SelectAccount from '@substrate/app/(Main)/dashboard/components/MultisigDashboard/components/SelectAccount';
 import { ActionAndDetails } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails';
 import { ETransactionTab } from '@common/enum/substrate';
@@ -24,7 +23,6 @@ function MultisigDashboard({ multisig, id, tab }: IMultisigDashboardProps) {
 					<OverviewCard
 						address={multisig.address}
 						network={multisig.network}
-						balance={multisig.balance}
 						signatories={multisig.signatories}
 						threshold={multisig.threshold}
 						name={multisig.name}

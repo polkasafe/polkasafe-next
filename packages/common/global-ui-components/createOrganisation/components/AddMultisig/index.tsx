@@ -3,6 +3,7 @@ import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
 import { ECreateOrganisationSteps } from '@common/enum/substrate';
 import { LinkMultisigOrganisation } from '@common/global-ui-components/createOrganisation/components/AddMultisig/components/LinkMultisig';
 import { CreateOrganisationActionButtons } from '@common/global-ui-components/createOrganisation/components/CreateOrganisationActionButtons';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { AddMultisig } from '@common/modals/AddMultisig';
 
 export const AddMultisigsToOrganisation = () => {
@@ -21,10 +22,18 @@ export const AddMultisigsToOrganisation = () => {
 
 	return (
 		<div>
-			<p className='text-lg font-bold mb-2 text-white'>Create/Link Multisig</p>
-			<p className='text-sm text-text-secondary mb-5'>
+			<Typography
+				variant={ETypographyVariants.p}
+				className='text-lg font-bold mb-2 text-white'
+			>
+				Create/Link Multisig
+			</Typography>
+			<Typography
+				variant={ETypographyVariants.p}
+				className='text-sm text-text-secondary mb-5'
+			>
 				MultiSig is a secure digital wallet that requires one or multiple owners to authorize the transaction.
-			</p>
+			</Typography>
 			<AddMultisig
 				userAddress={userAddress}
 				networks={networks}

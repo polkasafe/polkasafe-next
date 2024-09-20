@@ -10,10 +10,11 @@ function FundMultisig() {
 	return (
 		<div className='w-full'>
 			<Button
-				variant={EButtonVariant.PRIMARY}
 				onClick={() => setOpenModal(true)}
+				variant={EButtonVariant.SECONDARY}
+				size='large'
+				className='text-sm text-text-label border-none'
 				fullWidth
-				className='text-text-outline-primary bg-primary/75'
 			>
 				Fund Multisig
 			</Button>

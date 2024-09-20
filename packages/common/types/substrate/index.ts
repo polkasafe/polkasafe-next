@@ -307,6 +307,7 @@ export interface IGenericObject {
 export interface IFundMultisig {
 	multisigAddress: IMultisig;
 	amount: string;
+	selectedProxy?: string;
 }
 
 export interface IMultisigCreate {

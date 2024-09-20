@@ -2,6 +2,7 @@ import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
 import { ENetwork } from '@common/enum/substrate';
 import Address from '@common/global-ui-components/Address';
 import CallDataJsonView from '@common/global-ui-components/CallDataJsonView';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import React from 'react';
 
@@ -32,9 +33,12 @@ const ReviewTransaction = ({
 				/>
 			</div>
 			<div>
-				<p className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
+				<Typography
+					variant={ETypographyVariants.p}
+					className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'
+				>
 					Sending from
-				</p>
+				</Typography>
 				<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
 					<Address
 						address={from}
