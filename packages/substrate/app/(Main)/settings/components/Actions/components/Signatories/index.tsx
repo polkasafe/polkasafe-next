@@ -14,8 +14,7 @@ import { ETxType, Wallet } from '@common/enum/substrate';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { ApiPromise } from '@polkadot/api';
-import Button, { EButtonVariant } from '@common/global-ui-components/Button';
-import { DeleteIcon, EditIcon } from '@common/global-ui-components/Icons';
+import { DefaultOptionType } from 'antd/es/select';
 
 interface ISignatories {
 	multisigs: Array<IMultisig>;
@@ -168,23 +167,25 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 								value={selectedProxy}
 								className='flex items-center justify-start w-[469px] bg-[#141414]'
 								onChange={(value) => setSelectedProxy(value)}
-								options={selectedMultisig.proxy
-									.map((proxy) =>
-										proxy.address
-											? {
-													value: `${proxy.address}`,
-													label: (
-														<Address
-															address={proxy.address}
-															network={selectedMultisig.network}
-															isProxy={true}
-															isMultisig={false}
-														/>
-													)
-												}
-											: null
-									)
-									.filter((proxy) => proxy !== null)}
+								options={
+									(selectedMultisig.proxy || [])
+										.map((proxy) =>
+											proxy.address
+												? {
+														value: `${proxy.address}`,
+														label: (
+															<Address
+																address={proxy.address}
+																network={selectedMultisig.network}
+																isProxy={true}
+																isMultisig={false}
+															/>
+														)
+													}
+												: null
+										)
+										.filter((proxy) => proxy !== null) as Array<DefaultOptionType>
+								}
 							/>
 						</div>
 					</div>
