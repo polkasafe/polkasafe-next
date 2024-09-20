@@ -59,13 +59,6 @@ export function ActionAndDetails({
 				: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.HISTORY })
 		},
 		{
-			label: 'Multisig',
-			tab: ETransactionTab.MULTISIGS,
-			link: isSingleMultisig
-				? MULTISIG_DASHBOARD_URL({ multisig, network, organisationId, tab: ETransactionTab.MULTISIGS })
-				: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MULTISIGS })
-		},
-		{
 			label: 'Members',
 			tab: ETransactionTab.MEMBERS,
 			link: isSingleMultisig
@@ -73,6 +66,13 @@ export function ActionAndDetails({
 				: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MEMBERS })
 		}
 	];
+
+	if (!isSingleMultisig)
+		tabs.push({
+			label: 'Multisigs',
+			tab: ETransactionTab.MULTISIGS,
+			link: ORGANISATION_DASHBOARD_URL({ id: organisationId, tab: ETransactionTab.MULTISIGS })
+		});
 
 	return (
 		<div className='flex flex-col gap-4'>
@@ -98,7 +98,7 @@ export function ActionAndDetails({
 				</div>
 			</div>
 			{selectedTab === ETransactionTab.QUEUE && <QuickQueue multisigs={multisigs} />}
-			{selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs multisigs={multisigs} />}
+			{!isSingleMultisig && selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs multisigs={multisigs} />}
 			{selectedTab === ETransactionTab.MEMBERS && <Members members={members} />}
 			{selectedTab === ETransactionTab.HISTORY && <QuickHistory multisigs={multisigs} />}
 		</div>

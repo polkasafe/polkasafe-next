@@ -16,7 +16,7 @@ const ReviewTransaction = ({
 }: {
 	callData: string;
 	from: string;
-	to: string;
+	to?: string;
 	network: ENetwork;
 	isProxy?: boolean;
 	name: string;
@@ -49,17 +49,19 @@ const ReviewTransaction = ({
 					/>
 				</div>
 			</div>
-			<div>
-				<p className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
-					Sending To
-				</p>
-				<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
-					<Address
-						address={to}
-						network={network}
-					/>
+			{to && (
+				<div>
+					<p className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
+						Sending To
+					</p>
+					<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
+						<Address
+							address={to}
+							network={network}
+						/>
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };

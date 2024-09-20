@@ -15,3 +15,6 @@
 .customSelect .ant-select .ant-select-arrow {
   margin-top: 8px !important;
 }
+.ant-select-selection-search {
+  background: #24272E !important;
+}

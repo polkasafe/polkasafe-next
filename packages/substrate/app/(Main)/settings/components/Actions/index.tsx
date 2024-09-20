@@ -15,8 +15,8 @@ interface IActions {
 }
 
 const styles = {
-	selectedTab: 'bg-highlight text-text-outline-primary border-0 py-3 px-5 text-sm font-bold',
-	tab: 'bg-bg-main text-text-primary border-0 py-3 px-5 text-sm font-bold'
+	selectedTab: 'bg-highlight text-label border-0 py-3 px-5 text-sm font-medium',
+	tab: 'bg-bg-main text-text-primary border-0 py-3 px-5 text-sm shadow-none'
 };
 
 export const Actions = ({ organisation, selectedTab }: IActions) => {
@@ -49,15 +49,16 @@ export const Actions = ({ organisation, selectedTab }: IActions) => {
 	];
 
 	return (
-		<div>
+		<div className='flex flex-col gap-5'>
 			<div className='flex justify-between items-center'>
-				<div className='flex gap-2 items-center'>
+				<div className='flex gap-x-4 items-center'>
 					{tabs.map((tab) => (
 						<Link
 							key={tab.tab}
 							href={tab.link}
 						>
 							<Button
+								size='large'
 								variant={EButtonVariant.PRIMARY}
 								className={twMerge(
 									selectedTab === tab.tab && styles.selectedTab,
@@ -68,7 +69,6 @@ export const Actions = ({ organisation, selectedTab }: IActions) => {
 							</Button>
 						</Link>
 					))}
-					
 				</div>
 			</div>
 			<ActionItems selectedTab={selectedTab} />

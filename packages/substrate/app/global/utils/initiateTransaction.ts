@@ -48,12 +48,18 @@ export const initiateTransaction = async ({
 	newSignatories,
 	newThreshold
 }: IGetTransaction) => {
+	// Multisig info
 	const { address, network, threshold, signatories: allSignatories } = multisig;
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+
+	// Sort signatories
 	const signatories = sortAddresses(
 		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
 		networkConstants[network].ss58Format
 	);
+
+	// Zero weight
+	const ZERO_WEIGHT = new Uint8Array(0);
 
 	const getTransaction = async (tx: SubmittableExtrinsic<'promise'>) => {
 		const MAX_WEIGHT = (await tx.paymentInfo(address)).weight;
@@ -143,6 +149,25 @@ export const initiateTransaction = async ({
 			const tx = api.tx.balances.transferKeepAlive(address, new BN(data?.[0]?.amount || '0'));
 			await setSigner(api, wallet, network);
 			const mainTx = await getTransaction(tx);
+			return executeTx({
+				api,
+				apiReady: true,
+				tx: mainTx as SubmittableExtrinsic<'promise'>,
+				address: sender,
+				onSuccess: () => {},
+				onFailed: () => {},
+				network,
+				errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+			});
+		}
+
+		case ETxType.CREATE_PROXY: {
+			if (!api || !api.isReady) {
+				throw new Error(ERROR_MESSAGES.API_NOT_CONNECTED);
+			}
+			const proxyTx = api.tx.proxy.createPure('Any', 0, new Date().getMilliseconds());
+			const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, ZERO_WEIGHT);
+			await setSigner(api, wallet, network);
 			return executeTx({
 				api,
 				apiReady: true,

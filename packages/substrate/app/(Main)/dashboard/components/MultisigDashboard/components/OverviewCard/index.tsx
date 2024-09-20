@@ -279,7 +279,7 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 						getCallData={getCallData}
 						ReviewTransactionComponent={(values) => <ReviewTransaction {...values} />}
 					>
-						<div className='flex w-full gap-6'>
+						<div className='flex w-full gap-6 justify-center items-center'>
 							<NewTransaction />
 							<FundMultisig />
 						</div>

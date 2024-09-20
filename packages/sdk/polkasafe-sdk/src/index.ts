@@ -8,6 +8,7 @@ import {
 	IGetOrganisationTransactionProps
 } from '@common/types/sdk';
 import { ETransactionType } from '@common/enum/sdk';
+import { ENetwork } from '@common/enum/substrate';
 import CURRENCY_API_KEY from './constants/currencyApiKey';
 import { currencySymbols } from './constants/currencyConstants';
 import { connectAddress } from './connect-address';
@@ -21,7 +22,6 @@ import { getTransactionsForMultisigs } from './get-transactions-for-multisigs';
 import { handleHeaders } from './utils/handleHeaders';
 import { request } from './utils/request';
 import { networkConstants } from './utils/constants/network_constants';
-import { ENetwork } from '@common/enum/substrate';
 import { SUBSCAN_API_HEADERS } from './utils/constants/subscan_consts';
 
 export const getConnectAddressToken = ({ address }: IConnectAddressTokenProps) => getAddressToken(address);
@@ -103,14 +103,14 @@ export const fetchTokenToUSDPrice = async (token: number, network: ENetwork) => 
 		const responseJSON = await response.json();
 
 		if (responseJSON.message === 'Success' && responseJSON.data) {
-			return (responseJSON.data.output || '0');
+			return responseJSON.data.output || '0';
 		}
 	} catch (e) {
 		console.log(e);
 		return '0';
 	}
 	return '0';
-}
+};
 
 export const createMultisig = async ({
 	name,

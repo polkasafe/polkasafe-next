@@ -96,8 +96,8 @@ export const NotificationsUI: React.FC = () => {
 	];
 
 	return (
-		<section className='mt-4 max-h-[700px] flex flex-col gap-y-4 overflow-y-auto'>
-			<article className='bg-bg-secondaryrounded-lg px-1 py-4 flex items-start justify-start gap-x-8'>
+		<section className='flex flex-col gap-y-4 overflow-y-auto'>
+			<article className='bg-bg-secondary rounded-lg px-1 py-4 flex items-start justify-start gap-x-8'>
 				<Button
 					htmlType='submit'
 					icon={<NotificationIcon />}

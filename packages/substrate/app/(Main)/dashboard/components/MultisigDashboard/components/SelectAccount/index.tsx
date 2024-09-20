@@ -8,7 +8,8 @@ import Address from '@common/global-ui-components/Address';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IMultisig } from '@common/types/substrate';
-import { PROXY_URL } from '@substrate/app/global/end-points';
+import { MULTISIG_DASHBOARD_URL, PROXY_URL } from '@substrate/app/global/end-points';
+import { CreateProxyModal } from '@substrate/app/modal/CreateProxy';
 import { Divider } from 'antd';
 import Link from 'next/link';
 import React from 'react';
@@ -28,7 +29,13 @@ const SelectAccount = ({
 			<div
 				className={`${className} relative bg-bg-main flex flex-col gap-y-3 rounded-3xl p-5 shadow-lg h-60 origin-top-left`}
 			>
-				<div>
+				<Link
+					href={MULTISIG_DASHBOARD_URL({
+						organisationId,
+						multisig: multisig.address,
+						network: multisig.network
+					})}
+				>
 					<Address
 						address={multisig.address}
 						network={multisig.network}
@@ -38,7 +45,7 @@ const SelectAccount = ({
 						isMultisig
 						withBadge={false}
 					/>
-				</div>
+				</Link>
 				<Divider className='m-1'></Divider>
 				<div className='flex-1 flex flex-col gap-y-3 pl-2 overflow-y-auto'>
 					{multisig.proxy &&
@@ -62,13 +69,7 @@ const SelectAccount = ({
 						))}
 				</div>
 				<div className='w-full'>
-					<Button
-						variant={EButtonVariant.SECONDARY}
-						className='text-sm text-text-label border-none'
-						fullWidth
-					>
-						Create Proxy
-					</Button>
+					<CreateProxyModal multisig={multisig} />
 				</div>
 			</div>
 		</div>

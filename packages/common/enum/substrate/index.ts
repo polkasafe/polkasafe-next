@@ -135,7 +135,8 @@ export enum ETxType {
 	FUND = 'Fund',
 	CANCEL = 'Cancel',
 	ADD_PROXY = 'Add Proxy',
-	REMOVE_PROXY = 'Remove Proxy'
+	REMOVE_PROXY = 'Remove Proxy',
+	CREATE_PROXY = 'Create Proxy'
 }
 
 export enum ETransactionTab {
@@ -163,4 +164,8 @@ export enum ECreateOrganisationSteps {
 	ORGANISATION_DETAILS = 'organisation_details',
 	ADD_MULTISIG = 'add_multisig',
 	REVIEW = 'review'
+}
+
+export enum ETransactionCalls {
+	PROXY = 'proxy'
 }

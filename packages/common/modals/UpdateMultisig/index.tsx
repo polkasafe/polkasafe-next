@@ -4,6 +4,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import Modal from '@common/global-ui-components/Modal';
 import { IAddressBook, IMultisig } from '@common/types/substrate';
 import { UpdateMultisigForm } from '@common/modals/UpdateMultisig/components/UpdateMultisigForm';
+import { twMerge } from 'tailwind-merge';
 
 interface IUpdateMultisig {
 	multisig: IMultisig;
@@ -16,7 +17,7 @@ interface IUpdateMultisig {
 export const UpdateMultisig = ({ multisig, proxyAddress, onSubmit, addresses, className }: IUpdateMultisig) => {
 	const [openModal, setOpenModal] = useState(false);
 	return (
-		<div className={`w-full mb-4 ${className}`}>
+		<div className={twMerge('w-full mb-4', className)}>
 			<Button
 				variant={EButtonVariant.PRIMARY}
 				icon={<PlusCircleOutlined />}
