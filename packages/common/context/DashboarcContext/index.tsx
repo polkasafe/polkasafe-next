@@ -19,7 +19,14 @@ interface IDashboardProvider extends PropsWithChildren {
 	addressBook: IAddressBook[];
 	allApi: any;
 	getCallData: (data: any) => string;
-	ReviewTransactionComponent: (props: { callData: string; from: string; to: string; network: ENetwork }) => ReactNode;
+	ReviewTransactionComponent: (props: {
+		callData: string;
+		from: string;
+		to: string;
+		network: ENetwork;
+		name: string;
+		isProxy?: boolean;
+	}) => ReactNode;
 }
 
 export const DashboardContext = createContext({} as IDashboardProvider);

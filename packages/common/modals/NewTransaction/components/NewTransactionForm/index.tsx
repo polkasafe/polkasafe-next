@@ -138,9 +138,11 @@ export function NewTransactionForm({
 								multisigDetails: selectedMultisigDetails,
 								recipientAndAmount: form.getFieldValue('recipients')
 							})}
-							from={selectedMultisigDetails.address}
+							from={selectedMultisigDetails.proxy || selectedMultisigDetails.address}
+							isProxy={!!selectedMultisigDetails.proxy}
 							network={selectedMultisigDetails.network}
-							to={form.getFieldValue('recipients')[0].recipient}
+							name={selectedMultisigDetails.name}
+							to={form.getFieldValue('recipients')?.[0].recipient}
 						/>
 					)}
 

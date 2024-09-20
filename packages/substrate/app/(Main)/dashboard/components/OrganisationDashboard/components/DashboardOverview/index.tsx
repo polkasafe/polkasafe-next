@@ -30,12 +30,19 @@ export function DashboardOverview() {
 	const { getApi, allApi } = useAllAPI();
 	const [user] = useUser();
 
-	const getCallData = ({ multisigDetails, recipientAndAmount }: { multisigDetails: { address: string; network: ENetwork, name: string; proxy?: string }, recipientAndAmount: { recipient: string; amount: BN }[] }): string => {
+	const getCallData = ({
+		multisigDetails,
+		recipientAndAmount
+	}: {
+		multisigDetails: { address: string; network: ENetwork; name: string; proxy?: string };
+		recipientAndAmount: { recipient: string; amount: BN }[];
+	}): string => {
 		if (
-			!allApi ||
-			!multisigDetails ||
-			!allApi[multisigDetails.network] ||
-			!allApi[multisigDetails.network].apiReady ||
+			!getApi ||
+			!Boolean(multisigDetails) ||
+			!Boolean(getApi(multisigDetails.network)) ||
+			!Boolean(getApi(multisigDetails.network)?.apiReady) ||
+			!Boolean(getApi(multisigDetails.network)?.api) ||
 			!recipientAndAmount ||
 			recipientAndAmount.some((item) => item.recipient === '' || item.amount.isZero())
 		)
@@ -43,19 +50,19 @@ export function DashboardOverview() {
 
 		const { network } = multisigDetails;
 
-		const batch = allApi[network].api.tx.utility.batchAll(
+		const batch = getApi(network)?.api?.tx.utility.batchAll(
 			recipientAndAmount.map((item) =>
-				allApi[network].api.tx.balances.transferKeepAlive(item.recipient, item.amount.toString())
+				getApi(network)?.api?.tx.balances.transferKeepAlive(item.recipient, item.amount.toString())
 			)
-		);
+		) as SubmittableExtrinsic<'promise'>;
 		let tx: SubmittableExtrinsic<'promise'>;
 		if (multisigDetails.proxy) {
-			tx = allApi[network].api.tx.proxy.proxy(multisigDetails.proxy, null, batch);
+			tx = getApi(network)?.api?.tx.proxy.proxy(multisigDetails.proxy, null, batch) as SubmittableExtrinsic<'promise'>;
 			return tx.method.toHex();
 		} else {
 			return batch.method.toHex();
 		}
-	}
+	};
 
 	const handleNewTransaction = async (values: ISendTransaction) => {
 		if (!user) {
@@ -124,7 +131,7 @@ export function DashboardOverview() {
 			addressBook={org?.addressBook || []}
 			allApi={allApi}
 			getCallData={getCallData}
-			ReviewTransactionComponent={(values) => <ReviewTransaction { ...values } />}
+			ReviewTransactionComponent={(values) => <ReviewTransaction {...values} />}
 		>
 			<div className='flex flex-col gap-y-6'>
 				<DashboardCard />

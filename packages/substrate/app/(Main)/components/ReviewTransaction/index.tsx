@@ -1,3 +1,4 @@
+import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
 import { ENetwork } from '@common/enum/substrate';
 import Address from '@common/global-ui-components/Address';
 import CallDataJsonView from '@common/global-ui-components/CallDataJsonView';
@@ -8,16 +9,20 @@ const ReviewTransaction = ({
 	callData,
 	from,
 	to,
-	network
+	network,
+	isProxy,
+	name
 }: {
 	callData: string;
 	from: string;
 	to: string;
 	network: ENetwork;
+	isProxy?: boolean;
+	name: string;
 }) => {
-	const { allApi } = useAllAPI();
+	const { getApi } = useAllAPI();
 
-	const api = allApi[network].api;
+	const api = getApi?.(network)?.api;
 	return (
 		<div className='flex flex-col gap-y-4'>
 			<div className='w-[500px] max-h-[200px] overflow-auto'>
@@ -34,6 +39,9 @@ const ReviewTransaction = ({
 					<Address
 						address={from}
 						network={network}
+						isProxy={isProxy}
+						showNetworkBadge
+						name={name || DEFAULT_ADDRESS_NAME}
 					/>
 				</div>
 			</div>
