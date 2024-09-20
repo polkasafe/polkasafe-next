@@ -25,6 +25,13 @@ jobs:
       run: yarn install
 
     - name: Build Next.js app
+      env:
+        POLKASAFE_FIREBASE_CONFIG: ${{ secrets.POLKASAFE_FIREBASE_CONFIG }}
+        POLKASAFE_CURRENCY_API_KEY: ${{ secrets.POLKASAFE_CURRENCY_API_KEY }}
+        NEXT_PUBLIC_POLKASAFE_TRANSAK_API_KEY: ${{ secrets.NEXT_PUBLIC_POLKASAFE_TRANSAK_API_KEY }}
+        NEXT_PUBLIC_DEPLOYMENT: ${{ secrets.NEXT_PUBLIC_DEPLOYMENT }}
+        NEXT_PUBLIC_SDK_BASE_URL: ${{ secrets.NEXT_PUBLIC_SDK_BASE_URL }}
+        SUBSCAN_API_KEY: ${{ secrets.SUBSCAN_API_KEY }}
       run: yarn build:substrate
 
     - name: Deploy to Firebase
