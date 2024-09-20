@@ -3,7 +3,7 @@ import { addAddressFormFields } from '@common/modals/AddressBook/AddAddress/util
 import { IAddressBook } from '@common/types/substrate';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { Form, Spin } from 'antd';
-import useNotification from 'antd/es/notification/useNotification';
+import { notification } from '@common/utils/notification';
 import { useState } from 'react';
 
 export const AddAddressForm = ({
@@ -14,7 +14,6 @@ export const AddAddressForm = ({
 	onSubmit: (value: IAddressBook) => Promise<void>;
 }) => {
 	const [loading, setLoading] = useState(false);
-	const [notification, context] = useNotification();
 	const handleSubmit = async (values: IAddressBook) => {
 		try {
 			const { address, name, email, discord, telegram } = values;
@@ -31,9 +30,9 @@ export const AddAddressForm = ({
 			};
 			setLoading(true);
 			await onSubmit(payload);
-			notification.success(SUCCESS_MESSAGES.ADD_ADDRESS_SUCCESS);
+			notification(SUCCESS_MESSAGES.ADD_ADDRESS_SUCCESS);
 		} catch (error) {
-			notification.error({ ...ERROR_MESSAGES.ADD_ADDRESS_FAILED, description: error || error.message });
+			notification({ ...ERROR_MESSAGES.ADD_ADDRESS_FAILED, description: error || error.message });
 		} finally {
 			setLoading(false);
 		}
@@ -41,7 +40,6 @@ export const AddAddressForm = ({
 
 	return (
 		<Spin spinning={loading}>
-			{context}
 			<Form
 				initialValues={initialValue}
 				layout='vertical'

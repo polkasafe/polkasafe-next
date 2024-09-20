@@ -4,17 +4,16 @@ import ActionButton from '@common/global-ui-components/ActionButton';
 import { IMultisig } from '@common/types/substrate';
 import { useDashboardContext } from '@common/context/DashboarcContext';
 import { findMultisig } from '@common/utils/findMultisig';
-import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { fundFormFields } from '@common/modals/FundMultisig/utils/form';
 import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown';
 import { ENetwork } from '@common/enum/substrate';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+import { notification } from '@common/utils/notification';
 
 export function FundMultisigForm() {
 	const { multisigs, onFundMultisig } = useDashboardContext();
 	const [loading, setLoading] = useState(false);
-	const [notification, context] = useNotification();
 	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
 		address: string;
 		network: ENetwork;
@@ -35,10 +34,10 @@ export function FundMultisigForm() {
 			};
 			setLoading(true);
 			await onFundMultisig(payload);
-			notification.success(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+			notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
 		} catch (e) {
 			console.log(e);
-			notification.error({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });
+			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });
 		} finally {
 			setLoading(false);
 		}
@@ -46,7 +45,6 @@ export function FundMultisigForm() {
 
 	return (
 		<div className='w-full h-full flex flex-col justify-center items-center'>
-			{context}
 			<Spin
 				spinning={loading}
 				size='large'

@@ -16,16 +16,15 @@ import { ENetwork } from '@common/enum/substrate';
 import { useWalletAccounts } from '@substrate/app/global/hooks/useWalletAccounts';
 import { createOrganisation } from '@sdk/polkasafe-sdk/src/create-organisation';
 import { useRouter } from 'next/navigation';
-import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import UserPopover from '@common/global-ui-components/UserPopover';
 import { logout } from '@sdk/polkasafe-sdk/src/logout';
+import { notification } from '@common/utils/notification';
 
 export default function SubstrateCreateOrganisation({ user }: { user: ICookieUser }) {
 	const availableSignatories = useWalletAccounts();
 	const router = useRouter();
-	const [notification, context] = useNotification();
 
 	const [multisigs, setMultisigs] = useState<Array<IMultisig>>([]);
 	const [linkedMultisigs, setLinkedMultisigs] = useState<Array<IMultisig>>([]);
@@ -106,7 +105,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 		if (data?.data?.id) {
 			return router.push(ORGANISATION_DASHBOARD_URL({ id: data?.data.id }));
 		}
-		notification.error(ERROR_MESSAGES.CREATE_ORGANISATION_FAILED);
+		notification(ERROR_MESSAGES.CREATE_ORGANISATION_FAILED);
 	};
 
 	const handleOrganisationDetails = (value: ICreateOrganisationDetails) => {
@@ -133,7 +132,6 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 				onChangeOrganisationDetails={handleOrganisationDetails}
 				userAddress={user.address}
 			>
-				{context}
 				<div className='flex flex-col'>
 					<div className='flex justify-end mb-10 pr-20'>
 						{user && user.address && (

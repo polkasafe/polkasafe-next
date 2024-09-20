@@ -10,13 +10,12 @@ import { SelectNetwork } from '@common/global-ui-components/SelectNetwork';
 import { ICreateMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { Form, Spin } from 'antd';
-import useNotification from 'antd/es/notification/useNotification';
+import { notification } from '@common/utils/notification';
 import { useState } from 'react';
 
 // use availableSignatories to populate the select options
 export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userAddress, onClose }: ICreateMultisig) => {
 	const [loading, setLoading] = useState(false);
-	const [notification, context] = useNotification();
 	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
 
 	const [signatories, setSignatories] = useState<string[]>([userAddress]);
@@ -36,22 +35,22 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 		try {
 			const { name, threshold } = values;
 			if (!signatories) {
-				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select signatories' });
+				notification({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select signatories' });
 				return;
 			}
 			if (signatories.length < 2) {
-				notification.error({
+				notification({
 					...ERROR_MESSAGES.CREATE_MULTISIG_FAILED,
 					description: 'Please select at least 2 signatories'
 				});
 				return;
 			}
 			if (!name) {
-				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please enter a name' });
+				notification({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please enter a name' });
 				return;
 			}
 			if (!selectedNetwork) {
-				notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select a network' });
+				notification({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select a network' });
 				return;
 			}
 			setLoading(true);
@@ -61,9 +60,9 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 				network: selectedNetwork,
 				threshold
 			});
-			notification.success(SUCCESS_MESSAGES.CREATE_MULTISIG_SUCCESS);
+			notification(SUCCESS_MESSAGES.CREATE_MULTISIG_SUCCESS);
 		} catch (e) {
-			notification.error({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: e || e.message });
+			notification({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: e || e.message });
 		} finally {
 			setLoading(false);
 			onClose?.();
@@ -71,7 +70,6 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 	};
 	return (
 		<div className='w-[600px] h-full flex flex-col justify-center items-center'>
-			{context}
 			<Spin
 				spinning={loading}
 				size='large'

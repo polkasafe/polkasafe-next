@@ -4,7 +4,7 @@ import { Form, Spin } from 'antd';
 import { IMultisig } from '@common/types/substrate';
 import { useDashboardContext } from '@common/context/DashboarcContext';
 import { findMultisig } from '@common/utils/findMultisig';
-import useNotification from 'antd/es/notification/useNotification';
+import { notification } from '@common/utils/notification';
 import { ERROR_MESSAGES, INFO_MESSAGES } from '@common/utils/messages';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
@@ -42,7 +42,6 @@ export function NewTransactionForm({
 		ReviewTransactionComponent,
 		getCallData
 	} = useDashboardContext();
-	const [notification, context] = useNotification();
 	const [form] = Form.useForm();
 
 	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
@@ -83,10 +82,10 @@ export function NewTransactionForm({
 			};
 			setLoading(true);
 			await onNewTransaction(payload);
-			notification.info(INFO_MESSAGES.TRANSACTION_IN_BLOCK);
+			notification(INFO_MESSAGES.TRANSACTION_IN_BLOCK);
 		} catch (e) {
 			console.log(e);
-			notification.error({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });
+			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });
 		} finally {
 			setLoading(false);
 		}
@@ -94,7 +93,6 @@ export function NewTransactionForm({
 
 	return (
 		<div className='w-full h-full flex flex-col justify-center items-center'>
-			{context}
 			<Spin
 				spinning={loading}
 				size='large'

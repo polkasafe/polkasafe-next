@@ -6,7 +6,7 @@ import Typography, { ETypographyVariants } from '@common/global-ui-components/Ty
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import Address from '@common/global-ui-components/Address';
 import { DeleteIcon } from '@common/global-ui-components/Icons';
-import useNotification from 'antd/es/notification/useNotification';
+import { notification } from '@common/utils/notification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import ActionButton from '@common/global-ui-components/ActionButton';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
@@ -26,8 +26,6 @@ export const UpdateMultisigForm = ({
 	onSubmit,
 	addresses: addressesOptions
 }: IUpdateMultisigForm) => {
-	const [notification, context] = useNotification();
-
 	const [addresses, setAddresses] = useState<Array<string>>([...multisig.signatories.map((signatory) => signatory)]);
 	const [loading, setLoading] = useState(false);
 
@@ -45,9 +43,9 @@ export const UpdateMultisigForm = ({
 				threshold,
 				proxyAddress
 			});
-			notification.success(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+			notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
 		} catch (e) {
-			notification.error({ ...ERROR_MESSAGES.UPDATE_MULTISIG_FAILED, description: e.message || e });
+			notification({ ...ERROR_MESSAGES.UPDATE_MULTISIG_FAILED, description: e.message || e });
 		} finally {
 			setLoading(false);
 		}
@@ -59,7 +57,6 @@ export const UpdateMultisigForm = ({
 			className='w-full mb-4 flex flex-col gap-2'
 			spinning={loading}
 		>
-			{context}
 			<div className='flex flex-col gap-2 mb-6'>
 				<Typography
 					variant={ETypographyVariants.h1}
@@ -92,7 +89,7 @@ export const UpdateMultisigForm = ({
 								variant={EButtonVariant.DANGER}
 								onClick={() => {
 									if (addresses.length === 2) {
-										notification.error({
+										notification({
 											...ERROR_MESSAGES.INVALID_ADDRESS,
 											description: 'Cannot remove the last 2 signatories'
 										});
@@ -141,14 +138,14 @@ export const UpdateMultisigForm = ({
 								const value = form.getFieldsValue();
 								const address = getEncodedAddress(value.address, multisig.network);
 								if (!address) {
-									notification.error({
+									notification({
 										...ERROR_MESSAGES.INVALID_ADDRESS,
 										description: 'Please enter a valid address'
 									});
 									return;
 								}
 								if (addresses.includes(address)) {
-									notification.error({
+									notification({
 										...ERROR_MESSAGES.INVALID_ADDRESS,
 										description: 'Address already exists'
 									});

@@ -28,9 +28,7 @@ async function Dashboard({ searchParams }: IDashboard) {
 	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network) && _organisation) {
 		const { multisig } = await getMultisigDataAndTransactions(_multisig, _network);
 		if (!multisig) {
-			// redirect('/404');
-			console.log('problem 2');
-			return <></>;
+			redirect('/404');
 		}
 
 		return (
