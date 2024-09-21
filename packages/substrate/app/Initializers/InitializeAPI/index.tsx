@@ -125,34 +125,34 @@ function InitializeAPI() {
 		}
 	};
 
-	const doApiHealthCheck = async () => {
-		try {
-			const data = Object.values(ENetwork).map(async (network) => {
-				const api = getApiValue(network);
-				if (!api) {
-					return;
-				}
-				const { api: apiInstance } = api;
-				if (!apiInstance) {
-					return;
-				}
-				await apiInstance.isReady;
-				await apiInstance.query.system.number();
-			});
-			await Promise.all(data);
-		} catch (error) {
-			//do nothing
-		}
-	};
+	// const doApiHealthCheck = async () => {
+	// 	try {
+	// 		const data = Object.values(ENetwork).map(async (network) => {
+	// 			const api = getApiValue(network);
+	// 			if (!api) {
+	// 				return;
+	// 			}
+	// 			const { api: apiInstance } = api;
+	// 			if (!apiInstance) {
+	// 				return;
+	// 			}
+	// 			await apiInstance.isReady;
+	// 			await apiInstance.query.system.number();
+	// 		});
+	// 		await Promise.all(data);
+	// 	} catch (error) {
+	// 		//do nothing
+	// 	}
+	// };
 
 	useEffect(() => {
 		setAllNetworkApi();
-		const interval = setInterval(() => {
-			doApiHealthCheck();
-		}, 6000);
-		return () => {
-			clearInterval(interval);
-		};
+		// const interval = setInterval(() => {
+		// 	doApiHealthCheck();
+		// }, 6000);
+		// return () => {
+		// 	clearInterval(interval);
+		// };
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return null;

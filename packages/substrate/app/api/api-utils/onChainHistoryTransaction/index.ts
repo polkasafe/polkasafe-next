@@ -68,8 +68,7 @@ const getAllHistoryResponse = async (multisigAddress: string, network: string, p
 			address: multisigAddress,
 			currency: 'token',
 			page: page - 1 || 0, // pages start from 0
-			row: 1,
-			limit: entries
+			row: entries
 		},
 		{ headers: SUBSCAN_API_HEADERS }
 	);

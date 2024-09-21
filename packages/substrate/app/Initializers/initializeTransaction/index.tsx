@@ -5,74 +5,100 @@
 'use client';
 
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useHistoryAtom, useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
 import { useTransactions } from '@substrate/app/global/hooks/queryHooks/useTransactions';
-import { ETransactionType } from '@common/enum/substrate';
+import { ENetwork, ETransactionType } from '@common/enum/substrate';
+import { useSearchParams } from 'next/navigation';
 
 function InitializeTransaction() {
 	const [organisation] = useOrganisation();
 	const [queueTransaction, setQueueTransaction] = useQueueAtom();
 	const [historyTransaction, setHistoryTransaction] = useHistoryAtom();
+	const address = useSearchParams().get('_multisig');
+	const network = useSearchParams().get('_network') as ENetwork;
+	const singleMultisigId = `${address}_${network}`;
+
 	const multisigs = organisation?.multisigs || [];
 	const multisigIds = multisigs.map((multisig) => `${multisig.address}_${multisig.network}`);
+
+	// get All the data for the all multisig on multisig
+	const allMultisigIds = multisigIds.includes(singleMultisigId)
+		? [...new Set([singleMultisigId, ...multisigIds])]
+		: multisigIds;
 
 	const [queueCurrentIndex, setQueueCurrentIndex] = useState<number>(0);
 	const [historyCurrentIndex, setHistoryCurrentIndex] = useState<number>(0);
 
 	const { data: historyData, isSuccess: historySuccess } = useTransactions({
-		multisigId: multisigIds[historyCurrentIndex],
+		multisigId: allMultisigIds[historyCurrentIndex],
 		type: ETransactionType.HISTORY_TRANSACTION
 	});
 	const { data: queueData, isSuccess: queueSuccess } = useTransactions({
-		multisigId: multisigIds[queueCurrentIndex],
+		multisigId: allMultisigIds[queueCurrentIndex],
 		type: ETransactionType.QUEUE_TRANSACTION
 	});
 
-	useEffect(() => {
+	const getHistoryData = useCallback(() => {
 		if (historySuccess && historyData) {
-			const payload = (
-				historyTransaction ? [...(historyTransaction?.transactions || []), ...historyData] : historyData
-			).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-			setHistoryTransaction({ transactions: payload, currentIndex: historyCurrentIndex });
+			// Use a Set to filter for unique callHash
+			const payload = historyTransaction ? [...(historyTransaction?.transactions || []), ...historyData] : historyData;
+			const uniqueTransactions = Array.from(new Map(payload.map((tx) => [tx.callHash, tx])).values());
+
+			const transactions = uniqueTransactions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+			setHistoryTransaction({ transactions: transactions, currentIndex: historyCurrentIndex });
 			// Move to the next ID if there are more left
-			if (historyCurrentIndex < multisigIds.length - 1) {
+			if (historyCurrentIndex < allMultisigIds.length - 1) {
 				setHistoryCurrentIndex((prev) => prev + 1);
 			}
 		}
-	}, [historyData, historySuccess, historyCurrentIndex, multisigs.length]);
+	}, [historyData, historySuccess, historyCurrentIndex]);
 
-	useEffect(() => {
+	const getQueueData = useCallback(() => {
 		if (queueSuccess && queueData) {
-			const payload = (queueTransaction ? [...(queueTransaction?.transactions || []), ...queueData] : queueData).sort(
-				(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-			);
+			// Use a Set to filter for unique callHash
+			const payload = queueTransaction ? [...(queueTransaction?.transactions || []), ...queueData] : queueData;
+			const uniqueTransactions = Array.from(new Map(payload.map((tx) => [tx.callHash, tx])).values());
 
-			setQueueTransaction({ transactions: payload, currentIndex: queueCurrentIndex });
+			const transactions = uniqueTransactions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+			setQueueTransaction({ transactions: transactions, currentIndex: queueCurrentIndex });
 			// Move to the next ID if there are more left
-			if (queueCurrentIndex < multisigIds.length - 1) {
+			if (queueCurrentIndex < allMultisigIds.length - 1) {
 				setQueueCurrentIndex((prev) => prev + 1);
 			}
 		}
-	}, [queueData, queueSuccess, queueCurrentIndex, multisigs.length]);
+	}, [queueData, queueSuccess, queueCurrentIndex]);
 
 	useEffect(() => {
-		if (!organisation) {
+		if (!Boolean(multisigs.length)) {
 			return;
 		}
-		// when organisation changes, reset the transaction state
+		getHistoryData();
+	}, [getHistoryData]);
+
+	useEffect(() => {
+		if (!Boolean(multisigs.length)) {
+			return;
+		}
+		getQueueData();
+	}, [getQueueData]);
+
+	// Reset transaction states when URL parameters change
+	useEffect(() => {
 		if (
-			historyCurrentIndex === 0 &&
-			historyTransaction?.transactions?.length === 0 &&
-			queueCurrentIndex === 0 &&
-			queueTransaction?.transactions?.length === 0
+			!organisation ||
+			queueCurrentIndex === 0 ||
+			historyCurrentIndex === 0 ||
+			!queueTransaction ||
+			!historyTransaction
 		) {
 			return;
 		}
-		setHistoryCurrentIndex(0);
-		setHistoryTransaction(null);
 		setQueueCurrentIndex(0);
+		setHistoryCurrentIndex(0);
 		setQueueTransaction(null);
+		setHistoryTransaction(null);
 	}, [organisation]);
 
 	return null;

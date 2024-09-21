@@ -52,6 +52,17 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 				payload.value = value.split(',').join('');
 			}
 
+			const assets = currentPoint?.assets as IGenericObject;
+			const beneficiary = currentPoint?.beneficiary as IGenericObject;
+			const dest = currentPoint?.dest as IGenericObject;
+			if (assets && beneficiary && dest) {
+				payload.xcm = {
+					assets: assets,
+					beneficiary: beneficiary,
+					dest
+				};
+			}
+
 			allCalls.push(payload);
 			// check is there any call or calls
 			const callOrCalls = currentPoint?.call || currentPoint?.calls;
