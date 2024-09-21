@@ -44,6 +44,7 @@ function TransactionTemplate({ organisationId, network, multisig, tab: selectedT
 						tab: ETransactionTab.QUEUE
 					})
 				: MULTISIG_TRANSACTION_URL({
+						organisationId,
 						multisig,
 						page: DEFAULT_PAGE,
 						limit: DEFAULT_PAGE_SIZE,
@@ -62,6 +63,7 @@ function TransactionTemplate({ organisationId, network, multisig, tab: selectedT
 						tab: ETransactionTab.HISTORY
 					})
 				: MULTISIG_TRANSACTION_URL({
+						organisationId,
 						multisig,
 						page: DEFAULT_PAGE,
 						limit: DEFAULT_PAGE_SIZE,

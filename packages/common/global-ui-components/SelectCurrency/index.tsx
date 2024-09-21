@@ -4,8 +4,7 @@ import { Dropdown } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import { allCurrencies, currencySymbol } from '@common/constants/currencyConstants';
 import Image, { StaticImageData } from 'next/image';
-import { useAtom } from 'jotai';
-import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
+import { useCurrency } from '@substrate/app/atoms/currency/currencyAtom';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { ItemType } from 'antd/es/menu/interface';
 
@@ -27,7 +26,7 @@ interface ISelectCurrencyProps {
 }
 
 function SelectCurrency({ transparent, classNames }: ISelectCurrencyProps) {
-	const [currency, setCurrency] = useAtom(selectedCurrencyAtom);
+	const [selectedCurrency, setSelectedCurrency] = useCurrency();
 
 	const currencyOptions: ItemType[] = Object.values(currencySymbol).map((c) => ({
 		key: c,
@@ -40,7 +39,7 @@ function SelectCurrency({ transparent, classNames }: ISelectCurrencyProps) {
 	}));
 
 	const onCurrencyChange = (e: any) => {
-		setCurrency(e.key);
+		setSelectedCurrency(e.key);
 		if (typeof window !== 'undefined') {
 			localStorage.setItem('currency', e.key);
 		}
@@ -68,8 +67,8 @@ function SelectCurrency({ transparent, classNames }: ISelectCurrencyProps) {
 				)}
 			>
 				<span className='flex items-center gap-x-2'>
-					<CurrencyFlag src={allCurrencies[currency]?.logo} />
-					{currency}
+					<CurrencyFlag src={allCurrencies[selectedCurrency]?.logo} />
+					{selectedCurrency}
 				</span>
 				<CircleArrowDownIcon className='text-primary' />
 			</div>

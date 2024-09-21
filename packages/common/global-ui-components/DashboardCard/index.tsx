@@ -11,11 +11,14 @@ import { EyeOutlined } from '@ant-design/icons';
 
 function DashboardCard() {
 	const { assets, currency } = useDashboardContext();
-	const totalBalance = assets?.reduce((acc, asset) => acc + (Number(asset?.usd) || 0), 0);
+	console.log('showBalance', assets);
+	const totalBalance = assets?.reduce(
+		(acc, asset) => acc + (Number(asset?.allCurrency?.[asset.network]?.[currency.toLowerCase()]?.toFixed(2)) || 0),
+		0
+	);
 	const symbol = getCurrencySymbol(currency);
 	const show = (localStorage.getItem('showBalance') || 'yes') as 'yes' | 'no';
 	const [showBalance, setShowBalance] = useState<'yes' | 'no'>(show);
-	console.log('showBalance', totalBalance);
 	return (
 		<div className='overflow-hidden relative'>
 			<div className='h-[150px] w-[150px] rounded-full absolute -bottom-20 left-[10%] z-10 bg-circle-1-gradient' />
@@ -47,7 +50,7 @@ function DashboardCard() {
 											active
 										/>
 									) : (
-										totalBalance
+										totalBalance?.toFixed(2)
 									)}
 								</>
 							) : (

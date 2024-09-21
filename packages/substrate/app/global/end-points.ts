@@ -19,18 +19,21 @@ export const CREATE_ORGANISATION_URL = `/create-organisation`;
 export const ASSETS_ORGANISATION_URL = ({ id }: { id: string }) => `/assets?_organisation=${id}`;
 
 export const MULTISIG_TRANSACTION_URL = ({
+	organisationId,
 	multisig,
 	page,
 	limit,
 	network,
 	tab
 }: {
+	organisationId: string;
 	multisig: string;
 	page: number;
 	limit: number;
 	network: string;
 	tab: ETransactionTab;
-}) => `/transactions?_multisig=${multisig}&_page=${page}&_limit=${limit}&_network=${network}&_tab=${tab}`;
+}) =>
+	`/transactions?_multisig=${multisig}&_page=${page}&_limit=${limit}&_network=${network}&_tab=${tab}&_organisation=${organisationId}`;
 
 export const ORGANISATION_TRANSACTION_URL = ({
 	organisationId,

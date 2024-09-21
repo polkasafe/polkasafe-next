@@ -1,4 +1,4 @@
-import { currencyProperties, currencySymbol } from '@common/constants/currencyConstants';
+import { currencySymbol } from '@common/constants/currencyConstants';
 
 export const getCurrencySymbol = (currency: string) => {
 	switch (currency) {

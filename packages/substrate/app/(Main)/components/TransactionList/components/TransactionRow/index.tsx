@@ -33,7 +33,8 @@ interface ITransactionRow {
 	type: ETransactionOptions;
 	transactionType: ETransactionType;
 	multisig: string;
-	approvals: string[];
+	approvals: Array<string>;
+	onlyHeader: boolean;
 }
 
 function TransactionRow({
@@ -47,7 +48,8 @@ function TransactionRow({
 	type,
 	transactionType,
 	multisig,
-	approvals
+	approvals = [],
+	onlyHeader = false
 }: ITransactionRow) {
 	const { getApi } = useAllAPI();
 	const [user] = useUser();
@@ -153,6 +155,23 @@ function TransactionRow({
 				network
 			)
 		: amountToken;
+
+	if (onlyHeader) {
+		return (
+			<TransactionHead
+				createdAt={createdAt}
+				to={data?.to || to}
+				network={network}
+				amountToken={value}
+				from={from}
+				label={label.split('_')}
+				type={type}
+				transactionType={transactionType}
+				onAction={onActionClick}
+				isHomePage
+			/>
+		);
+	}
 
 	return (
 		<Collapse

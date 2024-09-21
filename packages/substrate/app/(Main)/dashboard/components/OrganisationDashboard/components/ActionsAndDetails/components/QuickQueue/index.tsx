@@ -7,10 +7,10 @@
 import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
 import { Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { TransactionList } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList';
 import { ETransactionType } from '@common/enum/substrate';
 import { Empty } from '@common/global-ui-components/Empty';
 import { useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
+import { TransactionList } from '@substrate/app/(Main)/components/TransactionList';
 
 interface IQuickHistory {
 	multisigs: Array<IMultisig>;
@@ -47,6 +47,7 @@ export function QuickQueue({ multisigs }: IQuickHistory) {
 		<TransactionList
 			transactions={(data.transactions || []) as Array<IDashboardTransaction>}
 			txType={ETransactionType.QUEUE_TRANSACTION}
+			onlyHeader={true}
 		/>
 	);
 }

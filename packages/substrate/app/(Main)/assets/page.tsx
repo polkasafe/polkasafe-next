@@ -7,9 +7,7 @@ import { isValidNetwork } from '@substrate/app/global/utils/isValidNetwork';
 import { redirect } from 'next/navigation';
 
 import { ISearchParams } from '@common/types/substrate';
-import { getMultisigAssetsByOrg } from '@substrate/app/(Main)/assets/ssr-actions/getMultisigAssetsByOrg';
 import Secure from '@substrate/app/(Main)/Secure';
-import { getMultisigAssets } from './ssr-actions/getMultisigAssets';
 import AssetsTemplate from './components/AssetsTemplate';
 
 interface IAssetsProps {

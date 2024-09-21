@@ -4,10 +4,10 @@
 
 'use client';
 
-import { currencyProperties, getCurrencyLogo, getCurrencySymbolByCurrency } from '@common/constants/currencyConstants';
 import Address from '@common/global-ui-components/Address';
 import Button from '@common/global-ui-components/Button';
 import { IMultisigAssets } from '@common/types/substrate';
+import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
 import { Table } from 'antd';
 import Image from 'next/image';
 
@@ -33,10 +33,10 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			dataIndex: 'usd',
 			key: 'usd',
 			render: (usd: string, allData: IMultisigAssets) => {
-				const currencySymbol = getCurrencySymbolByCurrency(currency);
+				const symbol = getCurrencySymbol(currency);
 				return (
 					<div className='flex gap-2'>
-						{currencySymbol} {allData.allCurrency?.[allData.network]?.[currency.toLowerCase()]?.toFixed(2)}
+						{symbol} {allData.allCurrency?.[allData.network]?.[currency.toLowerCase()]?.toFixed(2)}
 					</div>
 				);
 			}
@@ -78,6 +78,7 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			className='w-full bg-bg-main'
 			columns={assetsColumns}
 			dataSource={dataSource}
+			scroll={{ x: 950, y: 'calc(100vh - 400px)' }}
 		/>
 	);
 }
