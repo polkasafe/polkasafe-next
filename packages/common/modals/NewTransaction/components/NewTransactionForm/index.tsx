@@ -82,7 +82,7 @@ export function NewTransactionForm({
 			};
 			setLoading(true);
 			await onNewTransaction(payload);
-			notification(INFO_MESSAGES.TRANSACTION_IN_BLOCK);
+			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
 		} catch (e) {
 			console.log(e);
 			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });

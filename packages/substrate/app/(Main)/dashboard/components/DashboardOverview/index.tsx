@@ -6,7 +6,7 @@
 
 import { ENetwork, ETxType, Wallet } from '@common/enum/substrate';
 import DashboardCard from '@common/global-ui-components/DashboardCard';
-import { ICurrency, IMultisig, ISendTransaction } from '@common/types/substrate';
+import { ICurrency, IGenericObject, IMultisig, ISendTransaction } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { useAssets } from '@substrate/app/atoms/assets/assetsAtom';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
@@ -18,18 +18,33 @@ import { currencyAtom, selectedCurrencyAtom } from '@substrate/app/atoms/currenc
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { BN } from '@polkadot/util';
 import NewTransaction from '@common/modals/NewTransaction';
-import { SubmittableExtrinsic } from '@polkadot/api/types';
 import ReviewTransaction from '@substrate/app/(Main)/components/ReviewTransaction';
 import { newTransaction } from '@substrate/app/global/utils/newTransaction';
+import { useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
+import { notification } from '@common/utils/notification';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
+import { useSearchParams } from 'next/navigation';
+import { getReviewTxCallData } from '@substrate/app/global/utils/getReviewCallData';
+import OverviewCard from '@substrate/app/(Main)/dashboard/components/OverviewCard';
 
 export function DashboardOverview() {
 	const [assets] = useAssets();
 	const currency = useAtomValue(selectedCurrencyAtom);
 	const currencyValues = useAtomValue(currencyAtom);
 	const [organisation] = useOrganisation();
-	const org = organisation;
+
+	const proxyAddress = useSearchParams().get('_proxy');
+	const address = useSearchParams().get('_multisig');
+	const network = useSearchParams().get('_network') as ENetwork;
+
+	const multisig = organisation?.multisigs?.find((item) => item.address === address && item.network === network);
+
+	const allProxies = multisig?.proxy || [];
+	const proxy = allProxies.find((item) => item.address === proxyAddress);
+
 	const { getApi, allApi } = useAllAPI();
 	const [user] = useUser();
+	const [queueTransaction, setQueueTransactions] = useQueueAtom();
 
 	const getCallData = ({
 		multisigDetails,
@@ -38,40 +53,44 @@ export function DashboardOverview() {
 		multisigDetails: { address: string; network: ENetwork; name: string; proxy?: string };
 		recipientAndAmount: { recipient: string; amount: BN }[];
 	}): string => {
-		if (
-			!getApi ||
-			!Boolean(multisigDetails) ||
-			!Boolean(getApi(multisigDetails.network)) ||
-			!Boolean(getApi(multisigDetails.network)?.apiReady) ||
-			!Boolean(getApi(multisigDetails.network)?.api) ||
-			!recipientAndAmount ||
-			recipientAndAmount.some((item) => item.recipient === '' || item.amount.isZero())
-		)
-			return '';
-
-		const { network } = multisigDetails;
-
-		const batch = getApi(network)?.api?.tx.utility.batchAll(
-			recipientAndAmount.map((item) =>
-				getApi(network)?.api?.tx.balances.transferKeepAlive(item.recipient, item.amount.toString())
-			)
-		) as SubmittableExtrinsic<'promise'>;
-		let tx: SubmittableExtrinsic<'promise'>;
-		if (multisigDetails.proxy) {
-			tx = getApi(network)?.api?.tx.proxy.proxy(multisigDetails.proxy, null, batch) as SubmittableExtrinsic<'promise'>;
-			return tx.method.toHex();
-		} else {
-			return batch.method.toHex();
-		}
+		return getReviewTxCallData({
+			multisigDetails,
+			recipientAndAmount,
+			getApi
+		});
 	};
 
 	const handleNewTransaction = async (values: ISendTransaction) => {
 		if (!user) {
 			return;
 		}
-		await newTransaction(values, user, getApi);
+		// After successful transaction add the transaction to the queue with the latest transaction on top
+		const onSuccess = ({ newTransaction }: IGenericObject) => {
+			try {
+				if (!queueTransaction) {
+					return;
+				}
+				const payload = [newTransaction, ...(queueTransaction?.transactions || [])];
+				setQueueTransactions({ ...queueTransaction, transactions: payload });
+				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+			} catch (error) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
+			}
+		};
+
+		// Initiate the transaction
+		await newTransaction(values, user, getApi, onSuccess);
 	};
-	const handleFundTransaction = async ({ multisigAddress, amount }: { amount: string; multisigAddress: IMultisig }) => {
+
+	const handleFundTransaction = async ({
+		multisigAddress,
+		amount,
+		selectedProxy
+	}: {
+		amount: string;
+		multisigAddress: IMultisig;
+		selectedProxy?: string;
+	}) => {
 		if (!user) {
 			return;
 		}
@@ -90,12 +109,13 @@ export function DashboardOverview() {
 			type: ETxType.FUND,
 			api,
 			data: [{ amount: new BN(amount), recipient: multisigAddress.address }],
-			isProxy: false,
-			proxyAddress: '',
+			isProxy: !!selectedProxy,
+			proxyAddress: selectedProxy,
 			multisig: multisigAddress,
 			sender: address
 		});
 	};
+
 	return (
 		<DashboardProvider
 			onNewTransaction={handleNewTransaction}
@@ -103,16 +123,26 @@ export function DashboardOverview() {
 			assets={assets}
 			currency={currency}
 			currencyValues={currencyValues || ({} as ICurrency)}
-			multisigs={org?.multisigs || []}
-			addressBook={org?.addressBook || []}
+			multisigs={multisig ? [multisig] : organisation?.multisigs || []}
+			addressBook={organisation?.addressBook || []}
 			allApi={allApi}
 			getCallData={getCallData}
 			ReviewTransactionComponent={(values) => <ReviewTransaction {...values} />}
 		>
-			<div className='flex flex-col gap-y-6'>
-				<DashboardCard />
-				<NewTransaction />
-			</div>
+			{multisig && network ? (
+				<OverviewCard
+					name={multisig.name}
+					address={multisig.address}
+					network={multisig.network}
+					threshold={multisig.threshold}
+					signatories={multisig.signatories}
+				/>
+			) : (
+				<div className='flex flex-col gap-y-6'>
+					<DashboardCard />
+					<NewTransaction />
+				</div>
+			)}
 		</DashboardProvider>
 	);
 }

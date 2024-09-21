@@ -10,7 +10,7 @@ export function request<T>(endpoint: string, reqHeaders?: any, options?: Request
 			? 'http://localhost:3000/api/v1'
 			: 'https://polkasafe-a8042.web.app/api/v1';
 
-	console.log('baseUrl', baseUrl);
+	// console.log('baseUrl', baseUrl);
 	const url = `${baseUrl}${endpoint}`;
 	const headers = {
 		Accept: 'application/json',

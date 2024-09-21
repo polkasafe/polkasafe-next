@@ -3,6 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 /* eslint-disable sort-keys */
+import Loader from '@common/global-ui-components/Loder';
 import { NotificationStatus } from '@common/types/substrate';
 import { notification as antdNotification } from 'antd';
 import type { NotificationPlacement } from 'antd/es/notification/interface';
@@ -32,7 +33,8 @@ export const notification = ({
 		message,
 		description,
 		duration: durationInSeconds,
-		placement: placement || 'topRight'
+		placement: placement || 'topRight',
+		...(status === NotificationStatus.INFO ? { icon: <Loader /> } : {})
 	};
 
 	// queues notifcation

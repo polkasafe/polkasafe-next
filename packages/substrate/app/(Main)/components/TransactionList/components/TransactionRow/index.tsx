@@ -16,7 +16,11 @@ import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
 import { Collapse } from 'antd';
 import { twMerge } from 'tailwind-merge';
-import getEncodedAddress from '@common/utils/getEncodedAddress';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { useHistoryAtom, useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
+import { IGenericObject } from '@common/types/substrate';
+import { notification } from '@common/utils/notification';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 
 interface ITransactionRow {
 	callData?: string;
@@ -48,6 +52,8 @@ function TransactionRow({
 	const { getApi } = useAllAPI();
 	const [user] = useUser();
 	const [organisation] = useOrganisation();
+	const [queueTransaction, setQueueTransactions] = useQueueAtom();
+	const [historyTransaction, setHistoryTransaction] = useHistoryAtom();
 
 	const { data, isLoading, error } = useDecodeCallData({
 		callData,
@@ -57,7 +63,9 @@ function TransactionRow({
 
 	const txMultisig = findMultisig(organisation?.multisigs || [], `${multisig}_${network}`);
 
-	const hasApproved = txMultisig?.signatories.includes(getEncodedAddress(user?.address || '', network) || '');
+	const hasApproved = approvals
+		.map((a) => getSubstrateAddress(a))
+		.includes(getSubstrateAddress(user?.address || '') || '');
 
 	const onActionClick = (type: ETxType) => {
 		const api = getApi(network);
@@ -69,6 +77,51 @@ function TransactionRow({
 
 		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
 
+		// After successful transaction add the transaction to the queue with the latest transaction on top
+		const onSuccess = ({ callHash }: IGenericObject) => {
+			try {
+				if (!callHash || !queueTransaction) {
+					return;
+				}
+				if (type === ETxType.APPROVE) {
+					const payload = (queueTransaction?.transactions || []).map((tx) => {
+						if (tx.callHash === callHash) {
+							const approvals = tx.approvals || [];
+							if (!approvals.includes(user.address)) {
+								approvals.push(user.address);
+							}
+							const multisig = findMultisig(organisation?.multisigs || [], `${tx.multisigAddress}_${tx.network}`);
+							if (approvals.length === multisig?.threshold) {
+								if (!historyTransaction) {
+									return null;
+								}
+								setHistoryTransaction({
+									...historyTransaction,
+									transactions: [tx, ...historyTransaction.transactions]
+								});
+								return null;
+							}
+
+							return { ...tx, approvals };
+						}
+						return tx;
+					});
+
+					const transactions = payload.filter((tx) => tx !== null);
+
+					setQueueTransactions({ ...queueTransaction, transactions });
+				} else {
+					const payload = (queueTransaction?.transactions || []).filter((tx) => tx.callHash !== callHash);
+					const transactions = payload;
+					setQueueTransactions({ ...queueTransaction, transactions });
+				}
+
+				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+			} catch (error) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
+			}
+		};
+
 		initiateTransaction({
 			calldata: callData,
 			callHash,
@@ -78,7 +131,8 @@ function TransactionRow({
 			isProxy: false,
 			sender: user.address,
 			wallet,
-			multisig: txMultisig
+			multisig: txMultisig,
+			onSuccess
 		});
 	};
 
@@ -104,11 +158,9 @@ function TransactionRow({
 		<Collapse
 			className={'bg-bg-secondary rounded-xl'}
 			expandIconPosition='end'
-			expandIcon={
-				(({ isActive }) => (
-					<CircleArrowDownIcon className={twMerge('text-primary text-lg', isActive && 'rotate-[180deg]')} />
-				))
-			}
+			expandIcon={({ isActive }) => (
+				<CircleArrowDownIcon className={twMerge('text-primary text-lg', isActive && 'rotate-[180deg]')} />
+			)}
 			// defaultActiveKey={[item.address]}
 			items={[
 				{
@@ -129,21 +181,23 @@ function TransactionRow({
 							hasApproved={hasApproved}
 						/>
 					),
-					children: <TransactionDetails 
-									createdAt={createdAt}
-									to={data?.to || to}
-									network={network}
-									amountToken={value}
-									from={from}
-									type={type}
-									transactionType={transactionType}
-									onAction={onActionClick}
-									approvals={approvals}
-									threshold={txMultisig?.threshold || 2}
-									hasApproved={hasApproved}
-									callHash={callHash}
-									callData={callData}
-								/>
+					children: (
+						<TransactionDetails
+							createdAt={createdAt}
+							to={data?.to || to}
+							network={network}
+							amountToken={value}
+							from={from}
+							type={type}
+							transactionType={transactionType}
+							onAction={onActionClick}
+							approvals={approvals}
+							threshold={txMultisig?.threshold || 2}
+							hasApproved={hasApproved}
+							callHash={callHash}
+							callData={callData}
+						/>
+					)
 				}
 			]}
 		/>

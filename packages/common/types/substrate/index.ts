@@ -48,7 +48,7 @@ export interface IDashboardTransaction {
 	callData: string;
 	amountToken: string;
 	network: string;
-	createdAt: number;
+	createdAt: Date;
 	multisigAddress: string;
 	from: string;
 	to?: string;
@@ -274,8 +274,8 @@ export interface ISubstrateExecuteProps {
 	address: string;
 	params?: Partial<SignerOptions>;
 	errorMessageFallback: string;
-	onSuccess: (txHash?: string, txIndex?: number) => Promise<void> | void;
-	onFailed: (errorMessageFallback?: string) => Promise<void> | void;
+	onSuccess?: (data: IGenericObject) => Promise<void> | void;
+	onFailed?: (errorMessageFallback?: string) => Promise<void> | void;
 	setStatus?: (pre: string) => void;
 }
 

@@ -175,14 +175,14 @@ export function TransactionHead({
 									{!hasApproved ? 'Awaiting your Confirmation' : `(${approvals?.length}/${threshold})`}
 								</Typography>
 							)}
-							{!hasApproved && 
+							{!hasApproved && (
 								<Button
 									onClick={() => onAction(ETxType.APPROVE)}
 									className='text-success bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 border-none outline-none'
 								>
 									<OutlineCheckIcon />
 								</Button>
-							}
+							)}
 						</div>
 						{isHomePage && (
 							<Button

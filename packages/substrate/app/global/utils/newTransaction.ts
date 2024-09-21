@@ -1,5 +1,5 @@
 import { ENetwork, ETxType, Wallet } from '@common/enum/substrate';
-import { IConnectedUser, ISendTransaction } from '@common/types/substrate';
+import { IConnectedUser, IGenericObject, ISendTransaction } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { IApiAtom } from '@substrate/app/atoms/api/apiAtom';
 import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
@@ -7,7 +7,8 @@ import { initiateTransaction } from '@substrate/app/global/utils/initiateTransac
 export const newTransaction = async (
 	values: ISendTransaction,
 	user: IConnectedUser,
-	getApi: (network: ENetwork) => IApiAtom | null
+	getApi: (network: ENetwork) => IApiAtom | null,
+	onSuccess: (data: IGenericObject) => void
 ) => {
 	if (!user) {
 		return;
@@ -35,6 +36,7 @@ export const newTransaction = async (
 		isProxy: Boolean(selectedProxy),
 		proxyAddress: selectedProxy,
 		multisig,
-		sender: address
+		sender: address,
+		onSuccess
 	});
 };

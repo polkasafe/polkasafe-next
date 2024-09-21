@@ -60,7 +60,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "packages/substrate/app/Initializers/InitializeUser"  ],
+, "packages/substrate/app/Initializers/InitializeUser", "packages/substrate/app/global/hooks/queryHooks/test.js"  ],
   "exclude": [
     "node_modules"
   ]

@@ -33,7 +33,7 @@ function InitializeTransaction() {
 		if (historySuccess && historyData) {
 			const payload = (
 				historyTransaction ? [...(historyTransaction?.transactions || []), ...historyData] : historyData
-			).sort((a, b) => b.createdAt - a.createdAt);
+			).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 			setHistoryTransaction({ transactions: payload, currentIndex: historyCurrentIndex });
 			// Move to the next ID if there are more left
 			if (historyCurrentIndex < multisigIds.length - 1) {
@@ -45,7 +45,7 @@ function InitializeTransaction() {
 	useEffect(() => {
 		if (queueSuccess && queueData) {
 			const payload = (queueTransaction ? [...(queueTransaction?.transactions || []), ...queueData] : queueData).sort(
-				(a, b) => b.createdAt - a.createdAt
+				(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
 			);
 
 			setQueueTransaction({ transactions: payload, currentIndex: queueCurrentIndex });

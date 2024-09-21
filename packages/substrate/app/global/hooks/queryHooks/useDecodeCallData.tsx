@@ -20,12 +20,57 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 		if (!apiData || !apiData.api || !callData) {
 			return payload;
 		}
+
 		const { api } = apiData as { api: ApiPromise };
+
 		const call = api.createType('Call', callData);
 		const callJSONData = call.toHuman();
 		const metaData = call.meta.toHuman();
-		payload.method = call.method;
-		payload.section = call.section;
+		const allCalls: any = [];
+		function decodeCallData(call: IGenericObject, payload: IGenericObject = {}) {
+			if (!call) {
+				return;
+			}
+			payload.method = call.method;
+			payload.section = call.section;
+
+			const currentPoint = call?.args as IGenericObject;
+			// check is there a proxy address
+			const proxyAddress = currentPoint?.real?.Id;
+			if (proxyAddress) {
+				payload.proxyAddress = proxyAddress;
+			}
+
+			// check if there is a dest address
+			const destAddress = currentPoint?.dest?.Id;
+			if (destAddress) {
+				payload.to = destAddress;
+			}
+			// check if there is a value
+			const value = currentPoint?.value;
+			if (value) {
+				payload.value = value.split(',').join('');
+			}
+
+			allCalls.push(payload);
+			// check is there any call or calls
+			const callOrCalls = currentPoint?.call || currentPoint?.calls;
+
+			// if callOrCalls is an object
+			if (!Array.isArray(callOrCalls)) {
+				const call = callOrCalls as IGenericObject;
+				decodeCallData(call);
+			}
+			// if callOrCalls is an array
+			if (Array.isArray(callOrCalls)) {
+				for (const call of callOrCalls) {
+					decodeCallData(call);
+				}
+			}
+		}
+
+		decodeCallData(callJSONData);
+
 		if (metaData.name === 'batch_all' || metaData.name === 'batch') {
 			const calls = (callJSONData?.args as IGenericObject)?.calls as Array<IGenericObject>;
 			for (const batchCall of calls) {
@@ -37,7 +82,6 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 					break;
 				}
 			}
-			console.log('payload', payload);
 			return payload;
 		}
 		const calls = Object.entries(callJSONData?.args || {});

@@ -136,7 +136,8 @@ export enum ETxType {
 	CANCEL = 'Cancel',
 	ADD_PROXY = 'Add Proxy',
 	REMOVE_PROXY = 'Remove Proxy',
-	CREATE_PROXY = 'Create Proxy'
+	CREATE_PROXY = 'Create Proxy',
+	EDIT_MULTISIG = 'Edit Multisig'
 }
 
 export enum ETransactionTab {

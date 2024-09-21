@@ -8,6 +8,7 @@ import AssetsCard from '@common/global-ui-components/AssetsCard';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 import { useAtomValue } from 'jotai';
 import React, { useEffect, useState } from 'react';
+import { Skeleton } from 'antd';
 
 function AssetsOverview() {
 	const assets = useAtomValue(assetsAtom);
@@ -21,7 +22,12 @@ function AssetsOverview() {
 		return null;
 	}
 	if (!assets) {
-		return null;
+		return (
+			<Skeleton.Button
+				size='large'
+				active
+			/>
+		);
 	}
 
 	return <AssetsCard assets={assets} />;
