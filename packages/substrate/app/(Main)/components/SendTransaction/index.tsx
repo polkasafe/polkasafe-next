@@ -133,13 +133,13 @@ export function SendTransaction({
 			);
 
 			const reviewData = {
-				tx: transaction.tx.method.toJSON(),
+				tx: transaction.tx.toHuman(),
 				from: values.sender.address,
 				to: values.recipients[0].address,
 				proxyAddress: values.selectedProxy,
 				txCost: formattedFee.toString(),
 				network: values.sender.network
-			};
+			} as IReviewTransaction;
 			setExecutableTransaction(transaction);
 			setReviewTransaction(reviewData);
 			setTransactionState(ETransactionState.REVIEW);
@@ -156,7 +156,7 @@ export function SendTransaction({
 				return;
 			}
 			const wallet = localStorage.getItem('logged_in_wallet') as Wallet;
-			await setSigner(executableTransaction.api, wallet, executableTransaction.network);
+			await setSigner(executableTransaction.api, wallet);
 			await executeTx(executableTransaction);
 			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
 			setTransactionState(ETransactionState.CONFIRM);

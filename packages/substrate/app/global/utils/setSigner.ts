@@ -1,16 +1,15 @@
-// Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
+// Copyright 2019-2025 @blobscriptions/marketplace authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-/* eslint-disable security/detect-object-injection */
+/* eslint-disable no-console */
 
 import APP_NAME from '@common/constants/appName';
-import { ENetwork, Wallet } from '@common/enum/substrate';
-import { Injected, InjectedWindow } from '@polkadot/extension-inject/types';
+import { Wallet } from '@common/enum/substrate';
+import { Injected, InjectedWindow, MetadataDef } from '@polkadot/extension-inject/types';
 import { isNumber } from '@polkadot/util';
-import { checkAvailNetwork } from '@substrate/app/global/utils/checkAvailNetwork';
-import { signedExtensions, types } from 'avail-js-sdk';
+import { ApiPromise, signedExtensions, types } from 'avail-js-sdk';
 
-const getInjectorMetadata = (api: any) => {
+const getInjectorMetadata = (api: ApiPromise) => {
 	return {
 		chain: api.runtimeChain.toString(),
 		chainType: 'substrate' as const,
@@ -20,18 +19,26 @@ const getInjectorMetadata = (api: any) => {
 		ss58Format: isNumber(api.registry.chainSS58) ? api.registry.chainSS58 : 0,
 		tokenDecimals: api.registry.chainDecimals[0] || 18,
 		tokenSymbol: api.registry.chainTokens[0] || 'AVAIL',
-		types: types as any,
+		types,
 		userExtensions: signedExtensions
 	};
 };
 
-export async function setSigner(api: any, chosenWallet: Wallet, network: ENetwork) {
+export async function setSigner(api: any, chosenWallet: Wallet) {
+	if (!api || !chosenWallet) throw new Error('Please select an address');
+
 	const injectedWindow = (typeof window !== 'undefined' && window) as Window & InjectedWindow;
+
+	if (!injectedWindow) {
+		console.log('Injected Window is null', injectedWindow);
+		throw new Error('Injected Window is null');
+	}
 
 	const wallet = injectedWindow.injectedWeb3[String(chosenWallet)];
 
 	if (!wallet) {
-		return;
+		console.log('console.log', wallet);
+		throw new Error('Wallet not found');
 	}
 
 	let injected: Injected | undefined;
@@ -44,39 +51,37 @@ export async function setSigner(api: any, chosenWallet: Wallet, network: ENetwor
 			if (wallet && wallet.enable) {
 				wallet
 					.enable(APP_NAME)
-					.then((value) => {
+					.then((value: Injected | PromiseLike<Injected | undefined> | undefined) => {
 						clearTimeout(timeoutId);
 						resolve(value);
 					})
-					.catch((error) => {
+					.catch((error: unknown) => {
 						reject(error);
 					});
 			}
 		});
 	} catch (err) {
-		console.log(err?.message);
+		console.log(err);
 	}
 	if (!injected) {
+		throw new Error('Wallet not injected');
+	}
+	const metadata = getInjectorMetadata(api);
+	const prevMetadatas = await injected.metadata?.get();
+	if (
+		prevMetadatas &&
+		prevMetadatas.some((item) => item.specVersion === metadata.specVersion && item.genesisHash === metadata.genesisHash)
+	) {
+		api.setSigner(injected.signer);
 		return;
 	}
-	if (checkAvailNetwork(network)) {
-		const metadata = getInjectorMetadata(api);
-		const prevMetadatas = await injected.metadata?.get();
-		if (
-			prevMetadatas &&
-			prevMetadatas.some(
-				(item) => item.specVersion === metadata.specVersion && item.genesisHash === metadata.genesisHash
-			)
-		) {
-			api.setSigner(injected.signer);
-			return;
-		}
-		await injected.metadata?.provide(metadata);
-		const inj = injected;
-		if (inj?.signer) {
-			api.setSigner(inj.signer);
-			return;
-		}
+
+	if (!metadata) {
+		throw new Error('Metadata not found');
 	}
-	api.setSigner(injected.signer);
+	await injected.metadata?.provide(metadata as unknown as MetadataDef);
+	const inj = injected;
+	if (inj?.signer) {
+		api.setSigner(inj.signer);
+	}
 }

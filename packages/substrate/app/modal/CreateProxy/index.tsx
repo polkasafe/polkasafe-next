@@ -100,7 +100,7 @@ export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
 				notification({ ...ERROR_MESSAGES.WALLET_NOT_FOUND });
 				return { error: true };
 			}
-			await setSigner(executableTransaction.api, wallet, executableTransaction.network);
+			await setSigner(executableTransaction.api, wallet);
 			await executeTx(executableTransaction);
 			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
 			return { error: false };

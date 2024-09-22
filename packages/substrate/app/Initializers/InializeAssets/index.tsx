@@ -126,7 +126,6 @@ function InitializeAssets() {
 			});
 
 			const assets = (await Promise.all(assetsPromise)).flat().filter((a) => Boolean(a));
-			console.log('assets', JSON.stringify(assets));
 			setAtom({ assets: assets, refetch: handleOrganisationAssets });
 		};
 		handleOrganisationAssets();
