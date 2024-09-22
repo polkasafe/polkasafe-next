@@ -1,33 +1,20 @@
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
-import { ETxType, Wallet } from '@common/enum/substrate';
-import { IDashboardTransaction, IGenericObject, IMultisig, ISubstrateExecuteProps } from '@common/types/substrate';
+import { ETxType } from '@common/enum/substrate';
+import {
+	IApproveTransaction,
+	ICancelTransaction,
+	ICreateProxyTransaction,
+	IDashboardTransaction,
+	IGenericObject,
+	ITransferTransaction
+} from '@common/types/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-import { ApiPromise } from '@polkadot/api';
-import { SignerOptions, SubmittableExtrinsic } from '@polkadot/api/types';
-import { BN, u8aToHex } from '@polkadot/util';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
+import { u8aToHex } from '@polkadot/util';
 import { decodeAddress, sortAddresses } from '@polkadot/util-crypto';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
-
-interface IGetTransaction {
-	type: ETxType;
-	api: ApiPromise;
-	data: Array<{
-		amount: BN;
-		recipient: string;
-	}> | null;
-	multisig: IMultisig;
-	sender: string;
-	proxyAddress?: string;
-	isProxy?: boolean;
-	calldata?: string;
-	callHash?: string;
-	newSignatories?: Array<string>;
-	params?: Partial<SignerOptions>;
-	newThreshold?: number;
-	onSuccess?: (data: IGenericObject) => void;
-	onFailed?: () => void;
-}
+import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
 
 const transfer = async ({
 	api,
@@ -39,7 +26,7 @@ const transfer = async ({
 	sender: substrateSender,
 	onSuccess,
 	onFailed
-}: IGetTransaction) => {
+}: ITransferTransaction) => {
 	const { address, network, threshold, signatories: allSignatories } = multisig;
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
 
@@ -101,8 +88,139 @@ const transfer = async ({
 	};
 };
 
+const createProxy = async ({
+	api,
+	multisig,
+	sender: substrateSender,
+	onSuccess,
+	onFailed
+}: ICreateProxyTransaction) => {
+	// Multisig info
+	const { address, network, threshold, signatories: allSignatories } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+	// Zero weight
+	const ZERO_WEIGHT = new Uint8Array(0);
+
+	// Sort signatories
+	const signatories = sortAddresses(
+		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+
+	if (!api || !api.isReady) {
+		throw new Error(ERROR_MESSAGES.API_NOT_CONNECTED);
+	}
+	const proxyTx = api.tx.proxy.createPure('Any', 0, new Date().getMilliseconds());
+	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, ZERO_WEIGHT);
+
+	const afterSuccess = (tx: IGenericObject) => {
+		console.log(tx);
+		const newTransaction = {
+			callData: proxyTx.method.toHex(),
+			callHash: proxyTx.method.hash.toString(),
+			network,
+			amountToken: '0',
+			createdAt: new Date(),
+			multisigAddress: address,
+			from: address,
+			approvals: [sender]
+		} as IDashboardTransaction;
+		onSuccess && onSuccess({ newTransaction });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: mainTx as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		onSuccess: afterSuccess,
+		onFailed: onFailed,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
+};
+
+const cancelTransaction = async ({ api, multisig, sender, callHash, onSuccess, onFailed }: ICancelTransaction) => {
+	const { network, signatories: allSignatories } = multisig;
+	const signatories = sortAddresses(
+		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+
+	if (!callHash) {
+		console.log('invalid callHash');
+		return;
+	}
+	const info: any = await api.query.multisig.multisigs(multisig.address, callHash);
+	const TIME_POINT = info.unwrap().when;
+
+	const tx = api.tx.multisig.cancelAsMulti(multisig.threshold, signatories, TIME_POINT, callHash);
+
+	const afterSuccess = () => {
+		onSuccess && onSuccess({ callHash });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: tx as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		onSuccess: afterSuccess,
+		onFailed: onFailed,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
+};
+
+const approveTransaction = async ({
+	api,
+	multisig,
+	sender,
+	calldata,
+	callHash,
+	onSuccess,
+	onFailed
+}: IApproveTransaction) => {
+	const { network, signatories: allSignatories, threshold } = multisig;
+	const signatories = sortAddresses(
+		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+
+	if (!calldata) {
+		console.log('invalid calldata');
+		return;
+	}
+	const callDataHex = api.createType('Call', calldata);
+	const { weight } = await calcWeight(callDataHex, api);
+
+	const info: any = await api.query.multisig.multisigs(multisig.address, callHash);
+	const TIME_POINT = info.unwrap().when;
+
+	const approveTx = api.tx.multisig.asMulti(threshold, signatories, TIME_POINT, callDataHex, weight);
+
+	const afterSuccess = () => {
+		onSuccess && onSuccess({ callHash });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: approveTx as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		onSuccess: afterSuccess,
+		onFailed: onFailed,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
+};
+
 const TRANSACTION_BUILDER = {
-	[ETxType.TRANSFER]: transfer
+	[ETxType.TRANSFER]: transfer,
+	[ETxType.CREATE_PROXY]: createProxy,
+	[ETxType.CANCEL]: cancelTransaction,
+	[ETxType.APPROVE]: approveTransaction
+	// [ETxType.EDIT_MULTISIG]: editMultisig
 };
 
 export { TRANSACTION_BUILDER };

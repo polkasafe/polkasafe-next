@@ -25,9 +25,13 @@ import { Collapse } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { useHistoryAtom, useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
-import { IGenericObject } from '@common/types/substrate';
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
+import { IGenericObject, IReviewTransaction, ISubstrateExecuteProps } from '@common/types/substrate';
+import { ERROR_MESSAGES, INFO_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
+import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuilder';
+import { useState } from 'react';
+import { setSigner } from '@substrate/app/global/utils/setSigner';
+import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 
 interface ITransactionRow {
 	callData?: string;
@@ -71,22 +75,30 @@ function TransactionRow({
 		apiData: getApi(network)
 	});
 
+	const [executableTransaction, setExecutableTransaction] = useState<ISubstrateExecuteProps | null>(null);
+	const [reviewTransaction, setReviewTransaction] = useState<IReviewTransaction | null>(null);
+
 	const txMultisig = findMultisig(organisation?.multisigs || [], `${multisig}_${network}`);
 
 	const hasApproved = approvals
 		.map((a) => getSubstrateAddress(a))
 		.includes(getSubstrateAddress(user?.address || '') || '');
 
-	const onActionClick = (type: ETxType) => {
-		const api = getApi(network);
+	const buildTransaction = async (type: ETxType) => {
+		const api = getApi(network)?.api;
 
-		if (!api?.api || !user?.address || !txMultisig) {
-			console.log('API not found', api, user, txMultisig, callData);
-			return;
+		if (!api) {
+			notification({ ...ERROR_MESSAGES.API_NOT_CONNECTED });
+			return { error: true };
 		}
-
-		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
-
+		if (!user?.address) {
+			notification({ ...ERROR_MESSAGES.INVALID_TRANSACTION });
+			return { error: true };
+		}
+		if (!txMultisig) {
+			notification({ ...ERROR_MESSAGES.WALLET_NOT_FOUND });
+			return { error: true };
+		}
 		// After successful transaction add the transaction to the queue with the latest transaction on top
 		const onSuccess = ({ callHash }: IGenericObject) => {
 			try {
@@ -131,19 +143,77 @@ function TransactionRow({
 				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			}
 		};
+		try {
+			const transaction = await (type === ETxType.APPROVE
+				? TRANSACTION_BUILDER[ETxType.APPROVE]({
+						calldata: callData as string,
+						callHash,
+						api: api as ApiPromise,
+						sender: user.address,
+						multisig: txMultisig,
+						onSuccess,
+						onFailed: () => {}
+					})
+				: TRANSACTION_BUILDER[ETxType.CANCEL]({
+						callHash,
+						api: api as ApiPromise,
+						sender: user.address,
+						multisig: txMultisig,
+						onSuccess,
+						onFailed: () => {}
+					}));
 
-		initiateTransaction({
-			calldata: callData,
-			callHash,
-			type,
-			api: api.api as ApiPromise,
-			data: null,
-			isProxy: false,
-			sender: user.address,
-			wallet,
-			multisig: txMultisig,
-			onSuccess
-		});
+			if (!transaction) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+				return { error: true };
+			}
+
+			const fee = (await transaction.tx.paymentInfo(user.address)).partialFee;
+			console.log(fee.toString());
+			const formattedFee = formatBalance(
+				fee.toString(),
+				{
+					numberAfterComma: 3,
+					withThousandDelimitor: false
+				},
+				txMultisig.network
+			);
+
+			const reviewData = {
+				tx: transaction.tx.method.toJSON(),
+				from: txMultisig.address,
+				txCost: formattedFee.toString(),
+				network: txMultisig.network,
+				name: txMultisig.name
+			};
+			setExecutableTransaction(transaction);
+			setReviewTransaction(reviewData);
+			return { error: false };
+		} catch (error) {
+			notification(ERROR_MESSAGES.CREATE_MULTISIG_FAILED);
+			return { error: true };
+		}
+	};
+
+	const signTransaction = async () => {
+		try {
+			if (!executableTransaction) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+				return { error: true };
+			}
+			const wallet = localStorage.getItem('logged_in_wallet') as Wallet;
+			if (!wallet) {
+				notification({ ...ERROR_MESSAGES.WALLET_NOT_FOUND });
+				return { error: true };
+			}
+			await setSigner(executableTransaction.api, wallet, executableTransaction.network);
+			await executeTx(executableTransaction);
+			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
+			return { error: false };
+		} catch (e) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });
+			return { error: true };
+		}
 	};
 
 	const label = data?.method && data?.section ? `${data.section}_${data.method}` : '';
@@ -175,11 +245,13 @@ function TransactionRow({
 				label={label.split('_')}
 				type={type}
 				transactionType={transactionType}
-				onAction={onActionClick}
 				approvals={approvals}
 				isHomePage
 				threshold={txMultisig?.threshold || 2}
 				hasApproved={hasApproved}
+				signTransaction={signTransaction}
+				reviewTransaction={reviewTransaction}
+				onAction={buildTransaction}
 			/>
 		);
 	}
@@ -205,10 +277,12 @@ function TransactionRow({
 							label={label.split('_')}
 							type={type}
 							transactionType={transactionType}
-							onAction={onActionClick}
 							approvals={approvals}
 							threshold={txMultisig?.threshold || 2}
 							hasApproved={hasApproved}
+							signTransaction={signTransaction}
+							reviewTransaction={reviewTransaction}
+							onAction={buildTransaction}
 						/>
 					),
 					children: (
@@ -220,12 +294,14 @@ function TransactionRow({
 							from={from}
 							type={type}
 							transactionType={transactionType}
-							onAction={onActionClick}
 							approvals={approvals}
 							threshold={txMultisig?.threshold || 2}
 							hasApproved={hasApproved}
 							callHash={callHash}
 							callData={callData}
+							signTransaction={signTransaction}
+							reviewTransaction={reviewTransaction}
+							onAction={buildTransaction}
 						/>
 					)
 				}

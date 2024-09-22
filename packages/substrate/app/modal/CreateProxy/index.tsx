@@ -1,117 +1,124 @@
-import { ETransactionCalls, ETxType, Wallet } from '@common/enum/substrate';
-import { ActionButtons } from '@common/global-ui-components/ActionButtons';
-import Button, { EButtonVariant } from '@common/global-ui-components/Button';
-import Modal from '@common/global-ui-components/Modal';
-import { IMultisig } from '@common/types/substrate';
+import { ETxType, Wallet } from '@common/enum/substrate';
+import { IGenericObject, IMultisig, IReviewTransaction, ISubstrateExecuteProps } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
-import { ERROR_CODES } from '@substrate/app/global/genericErrors';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
-import { generateCallData } from '@substrate/app/global/utils/generateCallData';
-import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
-import { ReviewCreateProxy } from '@substrate/app/modal/CreateProxy/ReviewCreateProxy';
-import { Spin } from 'antd';
-import { useEffect, useState } from 'react';
-import { ERROR_MESSAGES } from '@common/utils/messages';
+import { useState } from 'react';
+import { ERROR_MESSAGES, INFO_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
+import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuilder';
+import { useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
+import { formatBalance } from '@substrate/app/global/utils/formatBalance';
+import { setSigner } from '@substrate/app/global/utils/setSigner';
+import { executeTx } from '@substrate/app/global/utils/executeTransaction';
+import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 interface ICreateProxyModal {
 	multisig: IMultisig;
 }
 
 export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
-	const [openModal, setOpenModal] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [callData, setCallData] = useState<string | null>(null);
 	const [user] = useUser();
 	const notification = useNotification();
+	const [queueTransaction, setQueueTransactions] = useQueueAtom();
+	const [executableTransaction, setExecutableTransaction] = useState<ISubstrateExecuteProps | null>(null);
+	const [reviewTransaction, setReviewTransaction] = useState<IReviewTransaction | null>(null);
 
 	const { getApi } = useAllAPI();
-
 	const api = getApi(multisig.network)?.api;
 
-	const handleCreate = async () => {
-		if (!api || !api.isReady) {
-			throw new Error(ERROR_CODES.API_NOT_CONNECTED);
-		}
-		if (!callData) {
-			throw new Error(ERROR_CODES.TRANSACTION_FAILED);
-		}
-		if (!user) {
-			throw new Error(ERROR_CODES.USER_NOT_FOUND_ERROR);
-		}
-		try {
-			setLoading(true);
-			const wallet = localStorage.getItem('logged_in_wallet') as Wallet;
-			if (!wallet) {
-				throw new Error('Wallet not found');
+	const buildTransaction = async () => {
+		const onSuccess = ({ newTransaction }: IGenericObject) => {
+			try {
+				if (!queueTransaction) {
+					return;
+				}
+				const payload = [newTransaction, ...(queueTransaction?.transactions || [])];
+				setQueueTransactions({ ...queueTransaction, transactions: payload });
+				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+			} catch (error) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			}
-			await initiateTransaction({
-				wallet,
-				type: ETxType.CREATE_PROXY,
+		};
+		try {
+			if (!api || !api.isReady) {
+				notification({ ...ERROR_MESSAGES.API_NOT_CONNECTED });
+				return { error: true };
+			}
+			if (!user) {
+				notification({ ...ERROR_MESSAGES.INVALID_TRANSACTION });
+				return { error: true };
+			}
+
+			const transaction = await TRANSACTION_BUILDER[ETxType.CREATE_PROXY]({
 				api: api as ApiPromise,
-				data: null,
 				multisig,
 				sender: user.address,
-				isProxy: false,
-				calldata: callData
+				onSuccess,
+				onFailed: () => {}
 			});
-			setOpenModal(false);
+			if (!transaction) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+				return { error: true };
+			}
+
+			const fee = (await transaction.tx.paymentInfo(user.address)).partialFee;
+			console.log(fee.toString());
+			const formattedFee = formatBalance(
+				fee.toString(),
+				{
+					numberAfterComma: 3,
+					withThousandDelimitor: false
+				},
+				multisig.network
+			);
+
+			const reviewData = {
+				tx: transaction.tx.method.toJSON(),
+				from: multisig.address,
+				txCost: formattedFee.toString(),
+				network: multisig.network,
+				name: multisig.name
+			};
+			setExecutableTransaction(transaction);
+			setReviewTransaction(reviewData);
+			return { error: false };
 		} catch (error) {
 			notification(ERROR_MESSAGES.CREATE_MULTISIG_FAILED);
-		} finally {
-			setLoading(false);
+			return { error: true };
 		}
 	};
 
-	useEffect(() => {
-		console.log('callData', callData);
-		if (callData || !api || !api.isReady) {
-			return;
-		}
-		(async () => {
-			const callData = await generateCallData({
-				multisig: multisig.address,
-				api: api as ApiPromise,
-				type: ETransactionCalls.PROXY
-			});
+	const signTransaction = async () => {
+		try {
+			if (!executableTransaction) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+				return { error: true };
+			}
+			const wallet = localStorage.getItem('logged_in_wallet') as Wallet;
 
-			setCallData(callData);
-		})();
-	}, [callData, api]);
+			if (!wallet) {
+				notification({ ...ERROR_MESSAGES.WALLET_NOT_FOUND });
+				return { error: true };
+			}
+			await setSigner(executableTransaction.api, wallet, executableTransaction.network);
+			await executeTx(executableTransaction);
+			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
+			return { error: false };
+		} catch (e) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });
+			return { error: true };
+		}
+	};
 
 	return (
 		<div className='w-full'>
-			<Button
-				onClick={() => setOpenModal(true)}
-				variant={EButtonVariant.SECONDARY}
-				className='text-sm text-text-label border-none'
-				fullWidth
-				size='large'
+			<ReviewModal
+				buildTransaction={buildTransaction}
+				signTransaction={signTransaction}
+				reviewTransaction={reviewTransaction}
 			>
 				Create Proxy
-			</Button>
-			<Modal
-				open={openModal}
-				onCancel={() => setOpenModal(false)}
-				title='Create Proxy'
-			>
-				<Spin spinning={loading || !callData}>
-					<div className='flex flex-col gap-5 justify-between items-stretch'>
-						{callData && (
-							<ReviewCreateProxy
-								multisig={multisig}
-								callData={callData}
-							/>
-						)}
-						<ActionButtons
-							label='Create Proxy'
-							disabled={!callData || loading}
-							loading={loading}
-							onClick={handleCreate}
-						/>
-					</div>
-				</Spin>
-			</Modal>
+			</ReviewModal>
 		</div>
 	);
 };

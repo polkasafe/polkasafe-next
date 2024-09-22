@@ -103,8 +103,7 @@ export function SendTransaction({
 				recipient: recipient.address
 			}));
 
-			const transaction = (await TRANSACTION_BUILDER.Transfer({
-				type: ETxType.TRANSFER,
+			const transaction = (await TRANSACTION_BUILDER[ETxType.TRANSFER]({
 				api,
 				data,
 				params: {
@@ -135,10 +134,11 @@ export function SendTransaction({
 
 			const reviewData = {
 				tx: transaction.tx.method.toJSON(),
-				from: values.sender,
+				from: values.sender.address,
 				to: values.recipients[0].address,
 				proxyAddress: values.selectedProxy,
-				txCost: formattedFee.toString()
+				txCost: formattedFee.toString(),
+				network: values.sender.network
 			};
 			setExecutableTransaction(transaction);
 			setReviewTransaction(reviewData);

@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { ECHANNEL, ENetwork, EUserType } from '@common/enum/substrate';
+import { ECHANNEL, ENetwork, ETxType, EUserType } from '@common/enum/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
 import { SignerOptions, SubmittableExtrinsic, SignerResult } from '@polkadot/api/types';
@@ -380,8 +380,72 @@ export interface ICreateOrganisationDetails {
 
 export interface IReviewTransaction {
 	tx: IGenericObject;
-	from: IMultisig;
+	from: string;
 	to?: string;
+	name?: string;
 	proxyAddress?: string;
 	txCost?: string;
+	network: ENetwork;
+}
+
+export interface IGetTransaction {
+	type: ETxType;
+	api: ApiPromise;
+	data: Array<{
+		amount: BN;
+		recipient: string;
+	}> | null;
+	multisig: IMultisig;
+	sender: string;
+	proxyAddress?: string;
+	isProxy?: boolean;
+	calldata?: string;
+	callHash?: string;
+	newSignatories?: Array<string>;
+	params?: Partial<SignerOptions>;
+	newThreshold?: number;
+	onSuccess?: (data: IGenericObject) => void;
+	onFailed?: () => void;
+}
+
+export interface ITransferTransaction {
+	api: ApiPromise;
+	data: Array<{
+		amount: BN;
+		recipient: string;
+	}> | null;
+	multisig: IMultisig;
+	proxyAddress?: string;
+	isProxy?: boolean;
+	params?: Partial<SignerOptions>;
+	sender: string;
+	onSuccess?: (data: IGenericObject) => void;
+	onFailed?: () => void;
+}
+
+export interface ICreateProxyTransaction {
+	api: ApiPromise;
+	multisig: IMultisig;
+	sender: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
+}
+
+export interface ICancelTransaction {
+	api: ApiPromise;
+	multisig: IMultisig;
+	sender: string;
+	callHash: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
+}
+
+export interface IApproveTransaction {
+	api: ApiPromise;
+	multisig: IMultisig;
+	sender: string;
+	calldata: string;
+	callHash: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
 }

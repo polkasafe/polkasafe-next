@@ -9,10 +9,11 @@ import { useDashboardContext } from '@common/context/DashboarcContext';
 import { ETransactionState } from '@common/enum/substrate';
 import { ReviewTransaction } from '@common/global-ui-components/ReviewTransaction';
 import { Form } from 'antd';
+import { IReviewTransaction } from '@common/types/substrate';
 
 function NewTransaction({ label, className }: { label?: string; className?: string }) {
 	const [openModal, setOpenModal] = useState(false);
-	const { transactionState, setTransactionState } = useDashboardContext();
+	const { transactionState, setTransactionState, signTransaction, reviewTransaction } = useDashboardContext();
 	const [form] = Form.useForm();
 
 	return (
@@ -43,8 +44,14 @@ function NewTransaction({ label, className }: { label?: string; className?: stri
 						/>
 					</div>
 				)}
-				{transactionState === ETransactionState.REVIEW && <ReviewTransaction />}
-				{transactionState === ETransactionState.CONFIRM && <div>Confirm</div>}
+				{transactionState === ETransactionState.REVIEW && (
+					<ReviewTransaction
+						onSubmit={signTransaction}
+						onClose={() => setTransactionState(ETransactionState.BUILD)}
+						reviewTransaction={reviewTransaction as IReviewTransaction}
+					/>
+				)}
+				{transactionState === ETransactionState.CONFIRM && <div>Success</div>}
 				{transactionState === ETransactionState.FAILED && <div>Failed</div>}
 			</Modal>
 		</div>

@@ -65,6 +65,16 @@ export const ERROR_MESSAGES = {
 		message: 'No Recipient',
 		description: 'No recipient found OR amount is 0',
 		status: NotificationStatus.ERROR
+	},
+	INVALID_TRANSACTION: {
+		message: 'Invalid Transaction',
+		description: 'Invalid Transaction',
+		status: NotificationStatus.ERROR
+	},
+	WALLET_NOT_FOUND: {
+		message: 'Wallet not found',
+		description: 'Wallet not found',
+		status: NotificationStatus.ERROR
 	}
 };
 

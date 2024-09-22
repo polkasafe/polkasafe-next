@@ -1,6 +1,4 @@
 import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
-import { useDashboardContext } from '@common/context/DashboarcContext';
-import { ETransactionState } from '@common/enum/substrate';
 import { ActionButtons } from '@common/global-ui-components/ActionButtons';
 import Address from '@common/global-ui-components/Address';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
@@ -11,16 +9,21 @@ import { Spin } from 'antd';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
 
-export const ReviewTransaction = () => {
-	const { signTransaction, setTransactionState, reviewTransaction } = useDashboardContext();
-	const { tx, from, to, proxyAddress, txCost } = reviewTransaction as IReviewTransaction;
+interface IReviewTransactionProps {
+	onSubmit: () => Promise<void>;
+	onClose: () => void;
+	reviewTransaction: IReviewTransaction;
+}
+
+export const ReviewTransaction = ({ onSubmit, onClose, reviewTransaction }: IReviewTransactionProps) => {
+	const { tx, from, to, network, name, proxyAddress, txCost } = reviewTransaction;
 	const [loading, setLoading] = useState(false);
 	const notification = useNotification();
 
 	const handleSignTransaction = async () => {
 		try {
 			setLoading(true);
-			await signTransaction();
+			await onSubmit();
 		} catch (error) {
 			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			console.error(error);
@@ -32,8 +35,8 @@ export const ReviewTransaction = () => {
 	return (
 		<Spin spinning={loading}>
 			<div className='flex flex-col gap-y-4'>
-				<div className='max-h-52 overflow-auto'>
-					<div className='p-2 w-full bg-bg-secondary rounded-xl'>
+				<div className='p-2 bg-bg-secondary rounded-xl'>
+					<div className='max-w-[480px] overflow-y-auto max-h-52'>
 						<ReactJson
 							src={tx}
 							collapseStringsAfterLength={15}
@@ -51,11 +54,11 @@ export const ReviewTransaction = () => {
 					</Typography>
 					<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
 						<Address
-							address={proxyAddress || from.address}
-							network={from.network}
+							address={proxyAddress || from}
+							network={network}
 							isProxy={Boolean(proxyAddress)}
 							showNetworkBadge
-							name={from.name || DEFAULT_ADDRESS_NAME}
+							name={name || DEFAULT_ADDRESS_NAME}
 						/>
 					</div>
 				</div>
@@ -70,7 +73,7 @@ export const ReviewTransaction = () => {
 						<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
 							<Address
 								address={to}
-								network={from.network}
+								network={network}
 							/>
 						</div>
 					</div>
@@ -98,7 +101,7 @@ export const ReviewTransaction = () => {
 						label='Sign Transaction'
 						onClick={handleSignTransaction}
 						disabled={false}
-						onCancel={() => setTransactionState(ETransactionState.BUILD)}
+						onCancel={onClose}
 					/>
 				</div>
 			</div>

@@ -5,9 +5,10 @@ import { ENetwork, ETransactionOptions, ETransactionType, ETxType } from '@commo
 import ReceivedIcon from '@common/assets/icons/arrow-up-right.svg';
 import SentIcon from '@common/assets/icons/sent-icon.svg';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
-import Button from '@common/global-ui-components/Button';
 import { OutlineCheckIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import dayjs from 'dayjs';
+import { ReviewModal } from '@common/global-ui-components/ReviewModal';
+import { IReviewTransaction } from '@common/types/substrate';
 
 interface ITransactionHeadProps {
 	type: ETransactionOptions;
@@ -18,11 +19,13 @@ interface ITransactionHeadProps {
 	from: string;
 	label: Array<string>;
 	transactionType: ETransactionType;
-	onAction: (actionType: ETxType) => void;
 	isHomePage?: boolean;
 	approvals?: string[];
 	threshold?: number;
 	hasApproved?: boolean;
+	onAction: (actionType: ETxType) => Promise<{ error: boolean }>;
+	reviewTransaction: IReviewTransaction | null;
+	signTransaction: () => Promise<{ error: boolean }>;
 }
 
 function TransactionIcon({ type }: { type: ETransactionOptions }) {
@@ -66,11 +69,13 @@ export function TransactionHead({
 	createdAt,
 	network,
 	transactionType,
-	onAction,
 	isHomePage = false,
 	approvals,
 	threshold,
-	hasApproved
+	hasApproved,
+	onAction,
+	reviewTransaction,
+	signTransaction
 }: ITransactionHeadProps) {
 	return (
 		<div className={isHomePage ? 'border-b border-text-secondary p-3 mr-2' : ''}>
@@ -176,21 +181,27 @@ export function TransactionHead({
 								</Typography>
 							)}
 							{!hasApproved && (
-								<Button
-									onClick={() => onAction(ETxType.APPROVE)}
-									className='text-success bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 border-none outline-none'
+								<ReviewModal
+									buildTransaction={() => onAction(ETxType.APPROVE)}
+									reviewTransaction={reviewTransaction}
+									signTransaction={signTransaction}
+									className='w-auto min-w-0'
+									size='middle'
 								>
 									<OutlineCheckIcon />
-								</Button>
+								</ReviewModal>
 							)}
 						</div>
 						{isHomePage && (
-							<Button
-								onClick={() => onAction(ETxType.CANCEL)}
-								className='text-failure bg-[#e63946]/[0.1] flex items-center justify-center p-1 sm:p-2 rounded-md sm:rounded-lg text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 border-none outline-none'
+							<ReviewModal
+								buildTransaction={() => onAction(ETxType.CANCEL)}
+								reviewTransaction={reviewTransaction}
+								signTransaction={signTransaction}
+								className='w-auto min-w-0 bg-[#e63946]/[0.1] text-text-danger'
+								size='middle'
 							>
 								<OutlineCloseIcon />
-							</Button>
+							</ReviewModal>
 						)}
 					</div>
 				)}
