@@ -143,6 +143,7 @@ function TransactionRow({
 				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			}
 		};
+		console.log('callData', callData, callHash);
 		try {
 			const transaction = await (type === ETxType.APPROVE
 				? TRANSACTION_BUILDER[ETxType.APPROVE]({
