@@ -35,13 +35,9 @@ jobs:
       run: yarn build:substrate
 
     - name: Deploy to Firebase
-      env:
-        FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-      run: |
-        echo "${FIREBASE_SERVICE_ACCOUNT}" > firebase-service-account.json
-        yarn global add firebase-tools
-        firebase login:ci --token "${FIREBASE_TOKEN}" # Log in to Firebase using the token
-        firebase deploy --project $FIREBASE_PROJECT_ID --token "${FIREBASE_TOKEN}" --non-interactive
-        rm firebase-service-account.json
+    - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_POLKASAFE_A8042 }}
+          channelId: live
+          projectId: polkasafe-a8042
