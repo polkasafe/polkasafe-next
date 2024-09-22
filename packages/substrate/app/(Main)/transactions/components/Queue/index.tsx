@@ -4,7 +4,7 @@
 
 'use client';
 
-import { ETransactionType } from '@common/enum/substrate';
+import { ETransactionType, ETransactionVariant } from '@common/enum/substrate';
 import { Empty } from '@common/global-ui-components/Empty';
 import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
 import { TransactionList } from '@substrate/app/(Main)/components/TransactionList';
@@ -48,6 +48,7 @@ function Queue({ multisigs }: IQueue) {
 			transactions={(data.transactions || []) as Array<IDashboardTransaction>}
 			txType={ETransactionType.QUEUE_TRANSACTION}
 			className='max-h-full'
+			variant={ETransactionVariant.DETAILED}
 		/>
 	);
 }

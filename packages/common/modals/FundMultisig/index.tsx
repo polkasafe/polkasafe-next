@@ -13,7 +13,7 @@ function FundMultisig() {
 				onClick={() => setOpenModal(true)}
 				variant={EButtonVariant.SECONDARY}
 				size='large'
-				className='text-sm text-text-label border-none'
+				className='text-sm bg-highlight '
 				fullWidth
 			>
 				Fund Multisig

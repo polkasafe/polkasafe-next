@@ -61,9 +61,12 @@ export const ReviewTransaction = () => {
 				</div>
 				{to && (
 					<div>
-						<p className='text-label font-normal mb-2 text-xs leading-3 flex items-center justify-between max-sm:w-full'>
+						<Typography
+							variant={ETypographyVariants.p}
+							className='text-label font-normal mb-2 text-xs leading-3 flex items-center justify-between max-sm:w-full'
+						>
 							Sending To
-						</p>
+						</Typography>
 						<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
 							<Address
 								address={to}
@@ -74,10 +77,13 @@ export const ReviewTransaction = () => {
 				)}
 				{txCost && (
 					<div>
-						<p className='text-label font-normal mb-2 text-xs leading-3 flex items-center justify-between max-sm:w-full'>
+						<Typography
+							variant={ETypographyVariants.p}
+							className='text-label font-normal mb-2 text-xs leading-3 flex items-center justify-between max-sm:w-full'
+						>
 							Transaction Cost
-						</p>
-						<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
+						</Typography>
+						<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-full'>
 							<Typography
 								variant={ETypographyVariants.p}
 								className='text-text-primary'

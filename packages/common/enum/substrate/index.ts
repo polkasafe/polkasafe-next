@@ -165,3 +165,8 @@ export enum ETransactionState {
 	CONFIRM = 'confirm',
 	FAILED = 'failed'
 }
+
+export enum ETransactionVariant {
+	DETAILED = 'detailed',
+	SIMPLE = 'simple'
+}

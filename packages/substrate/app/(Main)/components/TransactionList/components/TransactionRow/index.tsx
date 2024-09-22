@@ -2,7 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 /* eslint-disable no-tabs */
-import { ENetwork, ETransactionOptions, ETransactionType, ETxType, Wallet } from '@common/enum/substrate';
+import {
+	ENetwork,
+	ETransactionOptions,
+	ETransactionType,
+	ETransactionVariant,
+	ETxType,
+	Wallet
+} from '@common/enum/substrate';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { TransactionHead } from '@common/global-ui-components/Transaction/TransactionHead';
 import TransactionDetails from '@common/global-ui-components/Transaction/TransactionDetails';
@@ -34,7 +41,7 @@ interface ITransactionRow {
 	transactionType: ETransactionType;
 	multisig: string;
 	approvals: Array<string>;
-	onlyHeader: boolean;
+	variant: ETransactionVariant;
 }
 
 function TransactionRow({
@@ -49,7 +56,7 @@ function TransactionRow({
 	transactionType,
 	multisig,
 	approvals = [],
-	onlyHeader = false
+	variant = ETransactionVariant.SIMPLE
 }: ITransactionRow) {
 	const { getApi } = useAllAPI();
 	const [user] = useUser();
@@ -157,7 +164,7 @@ function TransactionRow({
 			)
 		: amountToken;
 
-	if (onlyHeader) {
+	if (variant === ETransactionVariant.SIMPLE) {
 		return (
 			<TransactionHead
 				createdAt={createdAt}
@@ -169,7 +176,10 @@ function TransactionRow({
 				type={type}
 				transactionType={transactionType}
 				onAction={onActionClick}
+				approvals={approvals}
 				isHomePage
+				threshold={txMultisig?.threshold || 2}
+				hasApproved={hasApproved}
 			/>
 		);
 	}

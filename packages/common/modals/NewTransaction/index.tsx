@@ -23,7 +23,6 @@ function NewTransaction({ label, className }: { label?: string; className?: stri
 				className={className}
 				icon={<PlusCircleOutlined />}
 				onClick={() => setOpenModal(true)}
-				size='large'
 			>
 				{label || 'New Transaction'}
 			</Button>

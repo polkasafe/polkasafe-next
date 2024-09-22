@@ -84,7 +84,7 @@ interface IOverviewCardProps {
 }
 
 function OverviewCard({ address, name, threshold, signatories, network, className }: IOverviewCardProps) {
-	const [assets] = useAssets();
+	const [data] = useAssets();
 	const [organisation] = useOrganisation();
 
 	const proxyAddress = useSearchParams().get('_proxy');
@@ -95,7 +95,7 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 
 	const selectedAddress = proxy?.address || address;
 	const isProxy = !!proxy?.address;
-
+	const assets = data?.assets;
 	const proxyMultiSigAssets = assets
 		?.map((a) => a.proxy || [])
 		.flat()

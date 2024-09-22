@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { IDashboardTransaction } from '@common/types/substrate';
-import { ENetwork, ETransactionOptions, ETransactionType } from '@common/enum/substrate';
+import { ENetwork, ETransactionOptions, ETransactionType, ETransactionVariant } from '@common/enum/substrate';
 import { useSearchParams } from 'next/navigation';
 import TransactionRow from '@substrate/app/(Main)/components/TransactionList/components/TransactionRow';
 import { twMerge } from 'tailwind-merge';
@@ -13,7 +13,7 @@ interface ITransactionList {
 	transactions: Array<IDashboardTransaction>;
 	txType: ETransactionType;
 	className?: string;
-	onlyHeader?: boolean;
+	variant: ETransactionVariant;
 }
 
 const columns = [
@@ -52,13 +52,13 @@ const filterTransactions = (
 	);
 };
 
-export function TransactionList({ transactions = [], txType, className, onlyHeader }: ITransactionList) {
+export function TransactionList({ transactions = [], txType, className, variant }: ITransactionList) {
 	const multisig = useSearchParams().get('_multisig');
 	const network = useSearchParams().get('_network') as ENetwork;
-
+	const isSimple = variant === ETransactionVariant.SIMPLE;
 	return (
 		<div className='h-full'>
-			{onlyHeader && (
+			{isSimple && (
 				<div className='flex bg-bg-secondary my-1 p-3 rounded-lg mr-1'>
 					{columns.map((column) => (
 						<Typography
@@ -73,7 +73,7 @@ export function TransactionList({ transactions = [], txType, className, onlyHead
 			)}
 			<div
 				className={
-					onlyHeader
+					isSimple
 						? 'max-h-72 overflow-x-hidden overflow-y-auto flex flex-col gap-3'
 						: twMerge('flex flex-col gap-3 border-none', className)
 				}
@@ -95,7 +95,7 @@ export function TransactionList({ transactions = [], txType, className, onlyHead
 							transactionType={txType}
 							multisig={transaction.multisigAddress}
 							approvals={transaction.approvals}
-							onlyHeader={onlyHeader || false}
+							variant={variant}
 						/>
 					))}
 			</div>

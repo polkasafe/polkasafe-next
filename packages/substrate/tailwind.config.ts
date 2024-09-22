@@ -48,6 +48,10 @@ module.exports = {
 				'circle-3-gradient': 'linear-gradient(129deg, #312E81 11.01%, #4F46E5 95%)',
 				'circle-4-gradient': 'linear-gradient(129deg, #655600 11.01%, #00CCE3 95%)'
 			}
+		},
+		fontSize: {
+			'2xs': '0.625rem',
+			'3xs': '0.5rem'
 		}
 	},
 	plugins: []

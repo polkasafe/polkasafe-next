@@ -28,7 +28,7 @@ export interface IRecipientAndAmount {
 }
 
 export function NewTransactionForm({ onClose, form }: { onClose: () => void; form: FormInstance }) {
-	const { multisigs, buildTransaction, addressBook = [] } = useDashboardContext();
+	const { multisigs, buildTransaction, addressBook = [], assets } = useDashboardContext();
 	const notification = useNotification();
 	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
 		address: string;
@@ -104,6 +104,7 @@ export function NewTransactionForm({ onClose, form }: { onClose: () => void; for
 								onChange={(value: { address: string; network: ENetwork; name: string; proxy?: string }) =>
 									setSelectedMultisigDetails(value)
 								}
+								assets={assets || null}
 							/>
 						</div>
 						<RecipientsInputs

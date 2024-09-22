@@ -29,6 +29,7 @@ import { setSigner } from '@substrate/app/global/utils/setSigner';
 import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuilder';
 import { useNotification } from '@common/utils/notification';
+import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 
 interface ISendTransactionProps {
 	address: string | null;
@@ -43,7 +44,7 @@ export function SendTransaction({
 	proxyAddress
 }: PropsWithChildren<ISendTransactionProps>) {
 	// Atoms Hooks
-	const [assets] = useAssets();
+	const [data] = useAssets();
 	const currency = useAtomValue(selectedCurrencyAtom);
 	const [organisation] = useOrganisation();
 	const { getApi, allApi } = useAllAPI();
@@ -61,6 +62,7 @@ export function SendTransaction({
 	const multisig = organisation?.multisigs?.find((item) => item.address === address && item.network === network);
 	const allProxies = multisig?.proxy || [];
 	const proxy = allProxies.find((item) => item.address === proxyAddress);
+	const assets = data?.assets;
 
 	const buildTransaction = async (values: ISendTransaction) => {
 		// After successful transaction add the transaction to the queue with the latest transaction on top
@@ -122,21 +124,21 @@ export function SendTransaction({
 
 			const fee = (await transaction.tx.paymentInfo(address)).partialFee;
 			console.log(fee.toString());
-			// const formattedFee = formatBalance(
-			// 	fee.toString(),
-			// 	{
-			// 		numberAfterComma: 3,
-			// 		withThousandDelimitor: false
-			// 	},
-			// 	network
-			// );
+			const formattedFee = formatBalance(
+				fee.toString(),
+				{
+					numberAfterComma: 3,
+					withThousandDelimitor: false
+				},
+				multisig.network
+			);
 
 			const reviewData = {
 				tx: transaction.tx.method.toJSON(),
 				from: values.sender,
 				to: values.recipients[0].address,
 				proxyAddress: values.selectedProxy,
-				txCost: fee.toString()
+				txCost: formattedFee.toString()
 			};
 			setExecutableTransaction(transaction);
 			setReviewTransaction(reviewData);
@@ -204,7 +206,7 @@ export function SendTransaction({
 			signTransaction={signTransaction}
 			onFundMultisig={fundTransaction}
 			reviewTransaction={reviewTransaction}
-			assets={assets}
+			assets={assets || null}
 			currency={currency}
 			multisigs={multisig ? [multisig] : organisation?.multisigs || []}
 			addressBook={organisation?.addressBook || []}

@@ -5,12 +5,10 @@
 'use client';
 
 import Address from '@common/global-ui-components/Address';
-import Button from '@common/global-ui-components/Button';
 import { IMultisigAssets } from '@common/types/substrate';
 import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
 import { TransferByMultisig } from '@substrate/app/(Main)/assets/components/AssetsTable/components/Transfer';
 import { Table } from 'antd';
-import Image from 'next/image';
 
 interface IAssetsTableProps {
 	dataSource: Array<IMultisigAssetsWithProxy>;
@@ -41,7 +39,7 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 				const symbol = getCurrencySymbol(currency);
 				return (
 					<div className='flex gap-2'>
-						{symbol} {allData.allCurrency?.[allData.network]?.[currency.toLowerCase()]?.toFixed(2)}
+						{symbol} {(allData.allCurrency?.[allData.network]?.[currency.toLowerCase()] || 0).toFixed(2)}
 					</div>
 				);
 			}
@@ -92,7 +90,7 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 					dataSource={record.proxy}
 					pagination={false}
 					showHeader={false}
-					rowKey='free' // or any unique key in proxy
+					rowKey={`${record.address}_${record.proxy}_${record.network}`}
 				/>
 			);
 		}
