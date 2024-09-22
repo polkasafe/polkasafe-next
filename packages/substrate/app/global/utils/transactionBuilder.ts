@@ -5,6 +5,7 @@ import {
 	ICancelTransaction,
 	ICreateProxyTransaction,
 	IDashboardTransaction,
+	IEditMultisigTransaction,
 	IGenericObject,
 	ITransferTransaction
 } from '@common/types/substrate';
@@ -12,7 +13,7 @@ import getEncodedAddress from '@common/utils/getEncodedAddress';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { u8aToHex } from '@polkadot/util';
-import { decodeAddress, sortAddresses } from '@polkadot/util-crypto';
+import { decodeAddress, encodeAddress, encodeMultiAddress, sortAddresses } from '@polkadot/util-crypto';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
 
@@ -140,8 +141,16 @@ const createProxy = async ({
 	};
 };
 
-const cancelTransaction = async ({ api, multisig, sender, callHash, onSuccess, onFailed }: ICancelTransaction) => {
+const cancelTransaction = async ({
+	api,
+	multisig,
+	sender: substrateSender,
+	callHash,
+	onSuccess,
+	onFailed
+}: ICancelTransaction) => {
 	const { network, signatories: allSignatories } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
 	const signatories = sortAddresses(
 		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
 		networkConstants[network].ss58Format
@@ -175,13 +184,14 @@ const cancelTransaction = async ({ api, multisig, sender, callHash, onSuccess, o
 const approveTransaction = async ({
 	api,
 	multisig,
-	sender,
+	sender: substrateSender,
 	calldata,
 	callHash,
 	onSuccess,
 	onFailed
 }: IApproveTransaction) => {
 	const { network, signatories: allSignatories, threshold } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
 	const signatories = sortAddresses(
 		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
 		networkConstants[network].ss58Format
@@ -215,12 +225,76 @@ const approveTransaction = async ({
 	};
 };
 
+const editMultisig = async ({
+	api,
+	newSignatories,
+	newThreshold,
+	multisig,
+	proxyAddress,
+	sender: substrateSender,
+	onSuccess,
+	onFailed
+}: IEditMultisigTransaction) => {
+	// Multisig info
+	const { address, network, threshold, signatories: allSignatories } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+
+	// Sort signatories
+	const signatories = sortAddresses(
+		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+
+	if (!newThreshold || !newSignatories || newSignatories.length < 2) {
+		throw new Error(ERROR_MESSAGES.INVALID_TRANSACTION);
+	}
+	const encodedSignatories = newSignatories.map((signatory) =>
+		encodeAddress(signatory, networkConstants[network].ss58Format)
+	);
+	const newMultisigAddress = encodeMultiAddress(encodedSignatories, newThreshold);
+	const accountId = getEncodedAddress(newMultisigAddress, network);
+	const addProxyTx = api.tx.proxy.addProxy(accountId, 'Any', 0);
+	const removeProxyTx = api.tx.proxy.removeProxy(address, 'Any', 0);
+	const addAndRemoveProxyTx = api.tx.utility.batchAll([addProxyTx, removeProxyTx]);
+
+	const proxyTx = api.tx.proxy.proxy(proxyAddress, null, addAndRemoveProxyTx);
+	const callData = api.createType('Call', proxyTx.method.toHex());
+	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
+	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, MAX_WEIGHT as any);
+
+	const afterSuccess = (tx: IGenericObject) => {
+		console.log(tx);
+		const newTransaction = {
+			callData: proxyTx.method.toHex(),
+			callHash: proxyTx.method.hash.toString(),
+			network,
+			amountToken: '0',
+			createdAt: new Date(),
+			multisigAddress: address,
+			from: address,
+			approvals: [sender]
+		} as IDashboardTransaction;
+		onSuccess && onSuccess({ newTransaction });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: mainTx as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		onSuccess: afterSuccess,
+		onFailed: onFailed,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
+};
+
 const TRANSACTION_BUILDER = {
 	[ETxType.TRANSFER]: transfer,
 	[ETxType.CREATE_PROXY]: createProxy,
 	[ETxType.CANCEL]: cancelTransaction,
-	[ETxType.APPROVE]: approveTransaction
-	// [ETxType.EDIT_MULTISIG]: editMultisig
+	[ETxType.APPROVE]: approveTransaction,
+	[ETxType.EDIT_MULTISIG]: editMultisig
 };
 
 export { TRANSACTION_BUILDER };

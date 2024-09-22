@@ -24,7 +24,7 @@ const DonateButton = () => {
 				icon={<DollarIcon />}
 				variant={EButtonVariant.PRIMARY}
 				onClick={() => setOpenDonateModal(true)}
-				className='outline-none border-none bg-highlight text-xs text-primary'
+				className='outline-none border-none bg-highlight text-2xs text-primary'
 			>
 				Donate
 			</Button>

@@ -78,7 +78,7 @@ export const MultisigDropdown = ({ multisigs, onChange, assets }: IMultisigDropd
 							<div>
 								<Typography
 									variant={ETypographyVariants.p}
-									className='text-text-primary text-2xs'
+									className='text-text-primary text-3xs'
 								>
 									Balance: {selectedAddressAsset.free} {selectedAddressAsset.symbol}
 								</Typography>

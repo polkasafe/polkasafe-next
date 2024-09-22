@@ -449,3 +449,14 @@ export interface IApproveTransaction {
 	onSuccess: (data: IGenericObject) => void;
 	onFailed: () => void;
 }
+
+export interface IEditMultisigTransaction {
+	api: ApiPromise;
+	newSignatories?: Array<string>;
+	newThreshold?: number;
+	multisig: IMultisig;
+	proxyAddress: string;
+	sender: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
+}

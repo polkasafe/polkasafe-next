@@ -93,11 +93,11 @@ const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 			>
 				<Button
 					variant={EButtonVariant.SECONDARY}
-					className='p-2.5 h-full px-4 border-2 flex gap-4'
+					className='py-2 h-full px-4 border-2 flex gap-4'
 				>
 					<SubstrateAddress
 						address={userAddress}
-						identiconSize={15}
+						identiconSize={20}
 					/>
 					<CircleArrowDownIcon className='text-primary' />
 				</Button>
