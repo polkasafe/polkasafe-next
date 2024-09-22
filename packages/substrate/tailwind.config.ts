@@ -1,6 +1,7 @@
 // Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+/** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: [
 		// add the paths to all of your template files
@@ -56,11 +57,11 @@ module.exports = {
 				'5/7': '71.4285714%',
 				'6/7': '85.7142857%',
 				'1/8': '12.5%'
+			},
+			fontSize: {
+				'2xs': '0.75rem',
+				'3xs': '0.625rem'
 			}
-		},
-		fontSize: {
-			'2xs': '0.75rem',
-			'3xs': '0.625rem'
 		}
 	},
 	plugins: []

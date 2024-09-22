@@ -94,7 +94,6 @@ export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
 				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
 				return { error: true };
 			}
-			const wallet = localStorage.getItem('logged_in_wallet') as Wallet;
 			await setSigner(executableTransaction.api);
 			await executeTx(executableTransaction);
 			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });

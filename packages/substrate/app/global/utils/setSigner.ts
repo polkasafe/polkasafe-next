@@ -37,11 +37,8 @@ export async function setSigner(api: any) {
 		console.log('Injected Window is null', injectedWindow);
 		throw new Error('Injected Window is null');
 	}
-	console.log('Injected Window', injectedWindow);
-	console.log('Injected Window', loggedInWallet);
-	console.log('Wallet', localStorage.getItem('logged_in_wallet'));
 
-	const wallet = injectedWindow.injectedWeb3[String(loggedInWallet)];
+	const wallet = injectedWindow.injectedWeb3[loggedInWallet];
 
 	if (!wallet) {
 		console.log('console.log', wallet);

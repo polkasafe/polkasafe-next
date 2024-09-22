@@ -192,7 +192,7 @@ export function SubstrateLoginForm() {
 					organisations: []
 				});
 
-				localStorage.setItem('logged_in_wallet', JSON.stringify(selectedWallet));
+				localStorage.setItem('logged_in_wallet', selectedWallet);
 
 				if (userData.currentOrganisation) {
 					router.push(ORGANISATION_DASHBOARD_URL({ id: userData.currentOrganisation }));
