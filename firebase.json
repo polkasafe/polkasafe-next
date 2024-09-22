@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "runtime":"nodejs20",
+    "runtime": "nodejs20",
     "source": "./packages/substrate",
     "ignore": [
       "firebase.json",
