@@ -94,7 +94,15 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 	const proxy = allProxies.find((item) => item.address === proxyAddress);
 
 	const selectedAddress = proxy?.address || address;
+	const isProxy = !!proxy?.address;
+
+	const proxyMultiSigAssets = assets
+		?.map((a) => a.proxy || [])
+		.flat()
+		.find((a) => a.proxyAddress === selectedAddress && a.network === network);
+
 	const multiSigAssets = assets?.find((asset) => asset?.address === selectedAddress && asset?.network === network);
+	const selectedAddressAsset = isProxy ? proxyMultiSigAssets : multiSigAssets;
 
 	return (
 		<div
@@ -186,7 +194,7 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 						<div>
 							<div className='text-white'>Tokens</div>
 							<div className='font-bold text-lg text-primary'>
-								{!multiSigAssets ? <Spin size='default' /> : multiSigAssets.free}
+								{!selectedAddressAsset ? <Spin size='default' /> : selectedAddressAsset.free}
 							</div>
 						</div>
 					</>

@@ -9,14 +9,15 @@ import InfoBox from '@common/global-ui-components/InfoBox';
 import { SelectNetwork } from '@common/global-ui-components/SelectNetwork';
 import { ICreateMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
+import { useNotification } from '@common/utils/notification';
 import { Form, Spin } from 'antd';
-import { notification } from '@common/utils/notification';
 import { useState } from 'react';
 
 // use availableSignatories to populate the select options
 export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userAddress, onClose }: ICreateMultisig) => {
 	const [loading, setLoading] = useState(false);
 	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
+	const notification = useNotification();
 
 	const [signatories, setSignatories] = useState<string[]>([userAddress]);
 

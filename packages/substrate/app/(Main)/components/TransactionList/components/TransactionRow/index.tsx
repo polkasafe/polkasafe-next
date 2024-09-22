@@ -19,8 +19,8 @@ import { twMerge } from 'tailwind-merge';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { useHistoryAtom, useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
 import { IGenericObject } from '@common/types/substrate';
-import { notification } from '@common/utils/notification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
+import { useNotification } from '@common/utils/notification';
 
 interface ITransactionRow {
 	callData?: string;
@@ -56,6 +56,7 @@ function TransactionRow({
 	const [organisation] = useOrganisation();
 	const [queueTransaction, setQueueTransactions] = useQueueAtom();
 	const [historyTransaction, setHistoryTransaction] = useHistoryAtom();
+	const notification = useNotification();
 
 	const { data, isLoading, error } = useDecodeCallData({
 		callData,

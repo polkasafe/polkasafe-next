@@ -20,11 +20,12 @@ import { ERROR_MESSAGES } from '@common/utils/messages';
 import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import UserPopover from '@common/global-ui-components/UserPopover';
 import { logout } from '@sdk/polkasafe-sdk/src/logout';
-import { notification } from '@common/utils/notification';
+import { useNotification } from '@common/utils/notification';
 
 export default function SubstrateCreateOrganisation({ user }: { user: ICookieUser }) {
 	const availableSignatories = useWalletAccounts();
 	const router = useRouter();
+	const notification = useNotification();
 
 	const [multisigs, setMultisigs] = useState<Array<IMultisig>>([]);
 	const [linkedMultisigs, setLinkedMultisigs] = useState<Array<IMultisig>>([]);

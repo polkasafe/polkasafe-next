@@ -9,7 +9,7 @@ import { ILinkMultisig, IMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { Divider, Spin } from 'antd';
 import { Empty } from '@common/global-ui-components/Empty';
-import { notification } from '@common/utils/notification';
+import { useNotification } from '@common/utils/notification';
 import { useState } from 'react';
 // use availableSignatories to populate the select options
 export const LinkMultisig = ({
@@ -22,7 +22,7 @@ export const LinkMultisig = ({
 }: ILinkMultisig) => {
 	const [loading, setLoading] = useState(false);
 	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
-
+	const notification = useNotification();
 	const handleSubmit = async (values: { multisig: IMultisig }) => {
 		try {
 			const { multisig } = values;

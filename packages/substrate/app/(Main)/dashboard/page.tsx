@@ -51,9 +51,7 @@ async function Dashboard({ searchParams }: IDashboard) {
 	}
 
 	if (_multisig && (!isValidAddress(_multisig) || !isValidNetwork(_network))) {
-		// redirect('/404');
-		console.log('problem 1');
-		return <></>;
+		redirect('/404');
 	}
 }
 

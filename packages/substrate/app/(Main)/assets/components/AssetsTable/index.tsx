@@ -8,12 +8,17 @@ import Address from '@common/global-ui-components/Address';
 import Button from '@common/global-ui-components/Button';
 import { IMultisigAssets } from '@common/types/substrate';
 import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
+import { TransferByMultisig } from '@substrate/app/(Main)/assets/components/AssetsTable/components/Transfer';
 import { Table } from 'antd';
 import Image from 'next/image';
 
 interface IAssetsTableProps {
-	dataSource: Array<IMultisigAssets>;
+	dataSource: Array<IMultisigAssetsWithProxy>;
 	currency: string;
+}
+
+interface IMultisigAssetsWithProxy extends IMultisigAssets {
+	proxy: Array<IMultisigAssets>;
 }
 
 function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
@@ -48,7 +53,10 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			render: (address: string, allData: IMultisigAssets) => (
 				<div>
 					<Address
-						address={address}
+						address={allData.proxyAddress || address}
+						isProxy={!!allData.proxyAddress}
+						isMultisig={true}
+						withBadge={false}
 						network={allData.network}
 					/>
 				</div>
@@ -59,18 +67,38 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			title: 'Actions',
 			dataIndex: 'actions',
 			key: 'actions',
-			render: (data: any) => (
-				<div>
-					<Button
-						type='primary'
-						onClick={() => console.log(data)}
-					>
-						Send
-					</Button>
-				</div>
-			)
+			render: (_: any, data: any) => {
+				if (data.proxyAddress) {
+					return null;
+				}
+				return (
+					<div>
+						<TransferByMultisig
+							address={data.address}
+							network={data.network}
+							proxyAddress={data.proxyAddress}
+						/>
+					</div>
+				);
+			}
 		}
 	];
+
+	const expandedRowRender = (record: IMultisigAssetsWithProxy) => {
+		if (record.proxy && record.proxy.length) {
+			return (
+				<Table
+					columns={assetsColumns}
+					dataSource={record.proxy}
+					pagination={false}
+					showHeader={false}
+					rowKey='free' // or any unique key in proxy
+				/>
+			);
+		}
+		return null;
+	};
+
 	return (
 		<Table
 			rowClassName='bg-bg-main'
@@ -79,6 +107,7 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			columns={assetsColumns}
 			dataSource={dataSource}
 			scroll={{ x: 950, y: 'calc(100vh - 400px)' }}
+			expandable={{ expandedRowRender, rowExpandable: (record) => !!record.proxy && record.proxy.length > 0 }}
 		/>
 	);
 }

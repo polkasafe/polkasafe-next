@@ -1,13 +1,14 @@
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import React, { useState } from 'react';
-import { notification } from '@common/utils/notification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { ConfirmationModal } from '@common/modals/ConfirmationModal';
 import { DeleteIcon } from '@common/global-ui-components/Icons';
+import { useNotification } from '@common/utils/notification';
 
 export const RemoveAddress = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
 	const [openModal, setOpenModal] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const notification = useNotification();
 	const handleRemove = async () => {
 		try {
 			setLoading(true);

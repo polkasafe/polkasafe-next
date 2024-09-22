@@ -1,11 +1,9 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import React, { useState } from 'react';
-import { Form, Spin } from 'antd';
+import { Form, FormInstance, Spin } from 'antd';
 import { IMultisig } from '@common/types/substrate';
 import { useDashboardContext } from '@common/context/DashboarcContext';
 import { findMultisig } from '@common/utils/findMultisig';
-import { notification } from '@common/utils/notification';
-import { ERROR_MESSAGES, INFO_MESSAGES } from '@common/utils/messages';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import BN from 'bn.js';
@@ -16,6 +14,9 @@ import BalanceInput from '@common/global-ui-components/BalanceInput';
 import './style.css';
 import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown';
 import { RecipientsInputs } from '@common/global-ui-components/RecipientsInputs';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+import { useNotification } from '@common/utils/notification';
+import { ERROR_MESSAGES } from '@common/utils/messages';
 
 export enum ETransactionSteps {
 	BUILD_TRANSACTION = 'New Transaction',
@@ -26,24 +27,9 @@ export interface IRecipientAndAmount {
 	amount: BN;
 }
 
-export function NewTransactionForm({
-	onClose,
-	step,
-	setStep
-}: {
-	onClose: () => void;
-	step: ETransactionSteps;
-	setStep: React.Dispatch<React.SetStateAction<ETransactionSteps>>;
-}) {
-	const {
-		multisigs,
-		onNewTransaction,
-		addressBook = [],
-		ReviewTransactionComponent,
-		getCallData
-	} = useDashboardContext();
-	const [form] = Form.useForm();
-
+export function NewTransactionForm({ onClose, form }: { onClose: () => void; form: FormInstance }) {
+	const { multisigs, buildTransaction, addressBook = [] } = useDashboardContext();
+	const notification = useNotification();
 	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
 		address: string;
 		network: ENetwork;
@@ -70,22 +56,24 @@ export function NewTransactionForm({
 	const handleSubmit = async () => {
 		try {
 			const multisigId = `${selectedMultisigDetails.address}_${selectedMultisigDetails.network}`;
-			const tip = form.getFieldValue('tipBalance');
-			const note = form.getFieldValue('note');
+			const tip = form.getFieldValue('tipBalance') as string;
 			const recipientAndAmount: Array<IRecipientAndAmount> = form.getFieldValue('recipients');
-			console.log(recipientAndAmount, tip);
+			const checkRecipent = recipientAndAmount.filter((item) => !item.recipient || item.amount.eq(new BN(0)));
+			if (checkRecipent.length) {
+				notification(ERROR_MESSAGES.NO_RECIPIENT);
+				return;
+			}
 			const payload = {
 				recipients: recipientAndAmount.map((item) => ({ address: item.recipient, amount: item.amount })),
 				sender: findMultisig(multisigs, multisigId) as IMultisig,
 				selectedProxy: selectedMultisigDetails.proxy,
-				note: note || ''
+				tip
 			};
 			setLoading(true);
-			await onNewTransaction(payload);
-			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
-		} catch (e) {
-			console.log(e);
-			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });
+			await buildTransaction(payload);
+		} catch (error) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
+			console.error(error);
 		} finally {
 			setLoading(false);
 		}
@@ -103,75 +91,57 @@ export function NewTransactionForm({
 					className='flex flex-col gap-y-6'
 					form={form}
 				>
-					{step === ETransactionSteps.BUILD_TRANSACTION ? (
-						<div className='flex flex-col gap-y-6'>
-							<div>
-								<p className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
-									Sending from
-								</p>
-								<MultisigDropdown
-									multisigs={multisigs}
-									onChange={(value: { address: string; network: ENetwork; name: string; proxy?: string }) =>
-										setSelectedMultisigDetails(value)
-									}
-								/>
-							</div>
-							<RecipientsInputs
-								form={form}
-								autocompleteAddresses={autocompleteAddresses}
-								network={selectedMultisigDetails.network}
-							/>
-
-							<BalanceInput
-								network={selectedMultisigDetails.network}
-								label='Tip'
-								onChange={(balance) => console.log(balance)}
-								formName='tipBalance'
-								required={false}
+					<div className='flex flex-col gap-y-6'>
+						<div>
+							<Typography
+								variant={ETypographyVariants.p}
+								className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'
+							>
+								Sending from
+							</Typography>
+							<MultisigDropdown
+								multisigs={multisigs}
+								onChange={(value: { address: string; network: ENetwork; name: string; proxy?: string }) =>
+									setSelectedMultisigDetails(value)
+								}
 							/>
 						</div>
-					) : (
-						<ReviewTransactionComponent
-							callData={getCallData({
-								multisigDetails: selectedMultisigDetails,
-								recipientAndAmount: form.getFieldValue('recipients')
-							})}
-							from={selectedMultisigDetails.proxy || selectedMultisigDetails.address}
-							isProxy={!!selectedMultisigDetails.proxy}
+						<RecipientsInputs
+							form={form}
+							autocompleteAddresses={autocompleteAddresses}
 							network={selectedMultisigDetails.network}
-							name={selectedMultisigDetails.name}
-							to={form.getFieldValue('recipients')?.[0].recipient}
 						/>
-					)}
+
+						<BalanceInput
+							network={selectedMultisigDetails.network}
+							label='Tip'
+							onChange={(balance) => console.log(balance)}
+							formName='tipBalance'
+							required={false}
+						/>
+					</div>
 
 					<div className='flex items-center gap-x-4 w-full'>
 						<div className='w-full'>
 							<Button
 								fullWidth
 								size='large'
-								onClick={
-									step === ETransactionSteps.BUILD_TRANSACTION
-										? onClose
-										: () => setStep(ETransactionSteps.BUILD_TRANSACTION)
-								}
+								onClick={onClose}
 								variant={EButtonVariant.DANGER}
 								icon={<OutlineCloseIcon className='text-failure' />}
 							>
-								{step === ETransactionSteps.BUILD_TRANSACTION ? 'Cancel' : 'Back'}
+								Cancel
 							</Button>
 						</div>
 						<div className='w-full'>
 							<Button
+								disabled={form.getFieldsError().filter(({ errors }) => errors.length).length > 0}
 								fullWidth
 								size='large'
-								onClick={
-									step === ETransactionSteps.REVIEW_TRANSACTION
-										? handleSubmit
-										: () => setStep(ETransactionSteps.REVIEW_TRANSACTION)
-								}
+								onClick={handleSubmit}
 								variant={EButtonVariant.PRIMARY}
 							>
-								{step === ETransactionSteps.BUILD_TRANSACTION ? 'Next' : 'Confirm'}
+								Confirm
 							</Button>
 						</div>
 					</div>

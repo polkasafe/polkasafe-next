@@ -9,10 +9,11 @@ import { fundFormFields } from '@common/modals/FundMultisig/utils/form';
 import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown';
 import { ENetwork } from '@common/enum/substrate';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
-import { notification } from '@common/utils/notification';
+import { useNotification } from '@common/utils/notification';
 
 export function FundMultisigForm() {
 	const { multisigs, onFundMultisig } = useDashboardContext();
+	const notification = useNotification();
 	const [loading, setLoading] = useState(false);
 	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
 		address: string;

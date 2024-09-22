@@ -3,8 +3,8 @@ import { addAddressFormFields } from '@common/modals/AddressBook/AddAddress/util
 import { IAddressBook } from '@common/types/substrate';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { Form, Spin } from 'antd';
-import { notification } from '@common/utils/notification';
 import { useState } from 'react';
+import { useNotification } from '@common/utils/notification';
 
 export const AddAddressForm = ({
 	initialValue,
@@ -14,6 +14,7 @@ export const AddAddressForm = ({
 	onSubmit: (value: IAddressBook) => Promise<void>;
 }) => {
 	const [loading, setLoading] = useState(false);
+	const notification = useNotification();
 	const handleSubmit = async (values: IAddressBook) => {
 		try {
 			const { address, name, email, discord, telegram } = values;

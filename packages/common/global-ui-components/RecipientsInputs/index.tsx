@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
-import { AutoComplete, Form, FormInstance } from 'antd';
+import { AutoComplete, FormInstance } from 'antd';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { CirclePlusIcon, DeleteIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import BN from 'bn.js';
 import BalanceInput from '@common/global-ui-components/BalanceInput';
-import formatBnBalance from '@common/utils/formatBnBalance';
 import { ENetwork } from '@common/enum/substrate';
-import { ICurrency, IRecipient } from '@common/types/substrate';
 import Button from '@common/global-ui-components/Button';
 import Address from '@common/global-ui-components/Address';
 
@@ -61,7 +59,7 @@ export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IReci
 
 	useEffect(() => {
 		form.setFieldsValue({ recipients: recipientAndAmount });
-	}, [recipientAndAmount]);
+	}, [form, recipientAndAmount]);
 
 	return (
 		<div>

@@ -1,8 +1,8 @@
-import { ENetwork, ETxType, Wallet } from '@common/enum/substrate';
-import { IConnectedUser, IGenericObject, ISendTransaction } from '@common/types/substrate';
+import { ENetwork, ETxType } from '@common/enum/substrate';
+import { IConnectedUser, IGenericObject, ISendTransaction, ISubstrateExecuteProps } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { IApiAtom } from '@substrate/app/atoms/api/apiAtom';
-import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
+import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuilder';
 
 export const newTransaction = async (
 	values: ISendTransaction,
@@ -11,25 +11,27 @@ export const newTransaction = async (
 	onSuccess: (data: IGenericObject) => void
 ) => {
 	if (!user) {
-		return;
+		return null;
 	}
 	const { address } = user;
 	const { recipients, sender: multisig, selectedProxy } = values;
-	const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
 	const apiAtom = getApi(multisig.network);
+
 	if (!apiAtom) {
-		return;
+		return null;
 	}
+
 	const { api } = apiAtom as { api: ApiPromise };
 	if (!api || !api.isReady) {
-		return;
+		return null;
 	}
+
 	const data = recipients.map((recipient) => ({
 		amount: recipient.amount,
 		recipient: recipient.address
 	}));
-	await initiateTransaction({
-		wallet,
+
+	return TRANSACTION_BUILDER.Transfer({
 		type: ETxType.TRANSFER,
 		api,
 		data,
@@ -38,5 +40,5 @@ export const newTransaction = async (
 		multisig,
 		sender: address,
 		onSuccess
-	});
+	}) as Promise<ISubstrateExecuteProps>;
 };

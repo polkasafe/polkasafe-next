@@ -1,73 +1,70 @@
-import { ENetwork } from '@common/enum/substrate';
+import { ETransactionState } from '@common/enum/substrate';
 import {
 	IAddressBook,
-	ICurrency,
 	IFundMultisig,
 	IMultisig,
 	IMultisigAssets,
+	IReviewTransaction,
 	ISendTransaction
 } from '@common/types/substrate';
-import { createContext, PropsWithChildren, ReactNode, useContext, useMemo } from 'react';
+import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo } from 'react';
 
 interface IDashboardProvider extends PropsWithChildren {
-	onNewTransaction: (values: ISendTransaction) => Promise<void>;
+	buildTransaction: (values: ISendTransaction) => Promise<void>;
+	signTransaction: () => Promise<void>;
 	onFundMultisig: (value: IFundMultisig) => Promise<void>;
 	assets: Array<IMultisigAssets> | null;
 	currency: string;
-	currencyValues: ICurrency;
 	multisigs: Array<IMultisig>;
 	addressBook: IAddressBook[];
 	allApi: any;
-	getCallData: (data: any) => string;
-	ReviewTransactionComponent: (props: {
-		callData: string;
-		from: string;
-		to: string;
-		network: ENetwork;
-		name: string;
-		isProxy?: boolean;
-	}) => ReactNode;
+	transactionState: ETransactionState;
+	setTransactionState: Dispatch<SetStateAction<ETransactionState>>;
+	reviewTransaction: IReviewTransaction | null;
 }
 
 export const DashboardContext = createContext({} as IDashboardProvider);
 
 export function DashboardProvider({
-	onNewTransaction,
+	buildTransaction,
+	signTransaction,
 	onFundMultisig,
 	assets,
 	currency,
-	currencyValues,
 	multisigs,
 	children,
 	addressBook,
 	allApi,
-	getCallData,
-	ReviewTransactionComponent
+	transactionState,
+	setTransactionState,
+	reviewTransaction
 }: IDashboardProvider) {
 	const value = useMemo(
 		() => ({
-			onNewTransaction,
+			buildTransaction,
+			signTransaction,
 			onFundMultisig,
 			assets,
 			currency,
 			multisigs,
 			addressBook,
-			currencyValues,
 			allApi,
-			getCallData,
-			ReviewTransactionComponent
+			transactionState,
+			reviewTransaction,
+			setTransactionState
 		}),
 		[
-			ReviewTransactionComponent,
+			setTransactionState,
+			signTransaction,
 			addressBook,
 			allApi,
 			assets,
 			currency,
-			currencyValues,
-			getCallData,
 			multisigs,
 			onFundMultisig,
-			onNewTransaction
+			transactionState,
+			buildTransaction,
+			reviewTransaction
 		]
 	);
 	return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;

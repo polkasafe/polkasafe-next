@@ -11,8 +11,8 @@ import { EyeOutlined } from '@ant-design/icons';
 
 function DashboardCard() {
 	const { assets, currency } = useDashboardContext();
-	console.log('showBalance', assets);
-	const totalBalance = assets?.reduce(
+	const proxyMultiSigAssets = [...(assets || []), ...(assets || []).map((a) => a.proxy || []).flat()];
+	const totalBalance = proxyMultiSigAssets?.reduce(
 		(acc, asset) => acc + (Number(asset?.allCurrency?.[asset.network]?.[currency.toLowerCase()]?.toFixed(2)) || 0),
 		0
 	);

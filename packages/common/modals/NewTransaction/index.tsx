@@ -4,35 +4,49 @@ import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Modal from '@common/global-ui-components/Modal';
 import React, { useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { ETransactionSteps, NewTransactionForm } from '@common/modals/NewTransaction/components/NewTransactionForm';
+import { NewTransactionForm } from '@common/modals/NewTransaction/components/NewTransactionForm';
+import { useDashboardContext } from '@common/context/DashboarcContext';
+import { ETransactionState } from '@common/enum/substrate';
+import { ReviewTransaction } from '@common/global-ui-components/ReviewTransaction';
+import { Form } from 'antd';
 
-function NewTransaction() {
+function NewTransaction({ label, className }: { label?: string; className?: string }) {
 	const [openModal, setOpenModal] = useState(false);
-	const [step, setStep] = useState<ETransactionSteps>(ETransactionSteps.BUILD_TRANSACTION);
+	const { transactionState, setTransactionState } = useDashboardContext();
+	const [form] = Form.useForm();
 
 	return (
 		<div className='w-full'>
 			<Button
 				variant={EButtonVariant.PRIMARY}
 				fullWidth
+				className={className}
 				icon={<PlusCircleOutlined />}
 				onClick={() => setOpenModal(true)}
 				size='large'
 			>
-				New Transaction
+				{label || 'New Transaction'}
 			</Button>
 			<Modal
 				open={openModal}
-				onCancel={() => setOpenModal(false)}
-				title={step}
+				onCancel={() => {
+					setTransactionState(ETransactionState.BUILD);
+					setOpenModal(false);
+					form.resetFields();
+				}}
+				title='Send Transaction'
 			>
-				<div className='flex flex-col gap-5'>
-					<NewTransactionForm
-						setStep={setStep}
-						step={step}
-						onClose={() => setOpenModal(false)}
-					/>
-				</div>
+				{transactionState === ETransactionState.BUILD && (
+					<div className='flex flex-col gap-5'>
+						<NewTransactionForm
+							onClose={() => setOpenModal(false)}
+							form={form}
+						/>
+					</div>
+				)}
+				{transactionState === ETransactionState.REVIEW && <ReviewTransaction />}
+				{transactionState === ETransactionState.CONFIRM && <div>Confirm</div>}
+				{transactionState === ETransactionState.FAILED && <div>Failed</div>}
 			</Modal>
 		</div>
 	);

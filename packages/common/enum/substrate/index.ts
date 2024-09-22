@@ -1,17 +1,5 @@
-// RULES: Enum with values should be in uppercase
+// RULES: Enum with values should be in Capital case
 // RULES: Enum should have E prefix
-
-// ASTAR
-// AVAIL
-// KHALA
-// KUSAMA
-// PHALA
-// POLKADOT
-// ROCOCO
-// ROCOCO_ASSETHUB
-// STATEMINE
-// STATEMINT
-// WESTEND
 
 export enum ENetwork {
 	ALEPHZERO = 'alephzero',
@@ -169,4 +157,11 @@ export enum ECreateOrganisationSteps {
 
 export enum ETransactionCalls {
 	PROXY = 'proxy'
+}
+
+export enum ETransactionState {
+	BUILD = 'build',
+	REVIEW = 'review',
+	CONFIRM = 'confirm',
+	FAILED = 'failed'
 }

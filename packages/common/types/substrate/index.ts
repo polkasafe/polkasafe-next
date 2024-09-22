@@ -153,7 +153,7 @@ export interface IAsset {
 	multisigId?: string;
 }
 
-export interface IMultisigAssets {
+export interface IAssets {
 	free: string;
 	reserved: string;
 	frozen: string;
@@ -163,6 +163,11 @@ export interface IMultisigAssets {
 	symbol: string;
 	network: ENetwork;
 	allCurrency: { [network: string]: any };
+	proxyAddress?: string;
+}
+
+export interface IMultisigAssets extends IAssets {
+	proxy: Array<IMultisigAssets>;
 }
 
 export interface I2FASettings {
@@ -269,7 +274,7 @@ export interface IUpdateDBAssetProps extends IDBAssets {
 export interface ISubstrateExecuteProps {
 	api: ApiPromise | AvailApiPromise;
 	apiReady: boolean;
-	network: string;
+	network: ENetwork;
 	tx: SubmittableExtrinsic<'promise'>;
 	address: string;
 	params?: Partial<SignerOptions>;
@@ -294,10 +299,11 @@ export interface ISendTransactionForm {
 
 export interface ISendTransaction {
 	recipients: Array<IRecipient>;
-	note: string;
+	note?: string;
 	sender: IMultisig;
 	selectedProxy?: string;
 	transactionFields?: ITxnCategory;
+	tip?: string;
 }
 
 export interface IGenericObject {
@@ -370,4 +376,12 @@ export interface ICreateOrganisationDetails {
 	name: string;
 	description: string;
 	image?: string;
+}
+
+export interface IReviewTransaction {
+	tx: IGenericObject;
+	from: IMultisig;
+	to?: string;
+	proxyAddress?: string;
+	txCost?: string;
 }

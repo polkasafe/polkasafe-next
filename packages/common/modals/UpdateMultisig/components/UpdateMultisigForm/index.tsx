@@ -6,7 +6,7 @@ import Typography, { ETypographyVariants } from '@common/global-ui-components/Ty
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import Address from '@common/global-ui-components/Address';
 import { DeleteIcon } from '@common/global-ui-components/Icons';
-import { notification } from '@common/utils/notification';
+import { useNotification } from '@common/utils/notification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import ActionButton from '@common/global-ui-components/ActionButton';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
@@ -28,6 +28,7 @@ export const UpdateMultisigForm = ({
 }: IUpdateMultisigForm) => {
 	const [addresses, setAddresses] = useState<Array<string>>([...multisig.signatories.map((signatory) => signatory)]);
 	const [loading, setLoading] = useState(false);
+	const notification = useNotification();
 
 	const [form] = Form.useForm();
 	console.log('multisig', addressesOptions);

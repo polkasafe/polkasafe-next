@@ -12,9 +12,8 @@ import { initiateTransaction } from '@substrate/app/global/utils/initiateTransac
 import { ReviewCreateProxy } from '@substrate/app/modal/CreateProxy/ReviewCreateProxy';
 import { Spin } from 'antd';
 import { useEffect, useState } from 'react';
-import { notification } from '@common/utils/notification';
 import { ERROR_MESSAGES } from '@common/utils/messages';
-
+import { useNotification } from '@common/utils/notification';
 interface ICreateProxyModal {
 	multisig: IMultisig;
 }
@@ -24,6 +23,7 @@ export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
 	const [loading, setLoading] = useState(false);
 	const [callData, setCallData] = useState<string | null>(null);
 	const [user] = useUser();
+	const notification = useNotification();
 
 	const { getApi } = useAllAPI();
 

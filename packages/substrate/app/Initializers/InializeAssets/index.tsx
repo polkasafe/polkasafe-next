@@ -104,7 +104,8 @@ function InitializeAssets() {
 						...proxyBalance,
 						usd: Number(usdValue.toFixed(3)),
 						allCurrency,
-						address: proxyAddress,
+						proxyAddress,
+						address,
 						network,
 						symbol: networkConstants[network].tokenSymbol
 					};
@@ -112,20 +113,20 @@ function InitializeAssets() {
 				const proxyAssets = (await Promise.all(proxyAssetsPromise)).filter((a) => Boolean(a));
 
 				return [
-					...proxyAssets,
 					{
 						...balance,
 						usd: Number(usdValue.toFixed(3)),
 						allCurrency,
 						address,
 						network,
-						symbol: networkConstants[network].tokenSymbol
+						symbol: networkConstants[network].tokenSymbol,
+						proxy: proxyAssets
 					}
 				];
 			});
 
 			const assets = (await Promise.all(assetsPromise)).flat().filter((a) => Boolean(a));
-			console.log('assets', assets);
+			console.log('assets', JSON.stringify(assets));
 			setAtom(assets);
 		};
 		handleOrganisationAssets();
