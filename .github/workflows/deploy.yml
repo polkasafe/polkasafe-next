@@ -34,9 +34,13 @@ jobs:
         SUBSCAN_API_KEY: ${{ secrets.SUBSCAN_API_KEY }}
       run: yarn build:substrate
 
-    - name: Deploy to Firebase
-      env:
-        FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-      run: firebase deploy --only hosting --token
+    - name: Deploy to Firebase          
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          echo "${FIREBASE_SERVICE_ACCOUNT}" > firebase-service-account.json
+          npx firebase-tools deploy --only hosting --project $FIREBASE_PROJECT_ID --token "${FIREBASE_TOKEN}" --non-interactive
+          rm firebase-service-account.json
+

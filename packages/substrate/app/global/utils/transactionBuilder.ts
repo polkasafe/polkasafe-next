@@ -73,6 +73,7 @@ const transfer = async ({
 			from: address,
 			approvals: [sender]
 		} as IDashboardTransaction;
+		console.log(newTransaction, 'Transaction');
 		onSuccess && onSuccess({ newTransaction });
 	};
 
@@ -115,7 +116,6 @@ const createProxy = async ({
 	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, ZERO_WEIGHT);
 
 	const afterSuccess = (tx: IGenericObject) => {
-		console.log(tx);
 		const newTransaction = {
 			callData: proxyTx.method.toHex(),
 			callHash: proxyTx.method.hash.toString(),
@@ -126,6 +126,7 @@ const createProxy = async ({
 			from: address,
 			approvals: [sender]
 		} as IDashboardTransaction;
+		console.log(newTransaction, 'Transaction');
 		onSuccess && onSuccess({ newTransaction });
 	};
 
@@ -263,7 +264,6 @@ const editMultisig = async ({
 	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, MAX_WEIGHT as any);
 
 	const afterSuccess = (tx: IGenericObject) => {
-		console.log(tx);
 		const newTransaction = {
 			callData: proxyTx.method.toHex(),
 			callHash: proxyTx.method.hash.toString(),
@@ -274,6 +274,7 @@ const editMultisig = async ({
 			from: address,
 			approvals: [sender]
 		} as IDashboardTransaction;
+		console.log(newTransaction, 'Transaction');
 		onSuccess && onSuccess({ newTransaction });
 	};
 
