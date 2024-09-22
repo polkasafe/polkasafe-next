@@ -33,8 +33,7 @@ jobs:
         NEXT_PUBLIC_SDK_BASE_URL: ${{ secrets.NEXT_PUBLIC_SDK_BASE_URL }}
         SUBSCAN_API_KEY: ${{ secrets.SUBSCAN_API_KEY }}
       run: yarn build:substrate
-
-    - name: Deploy to Firebase
+      
     - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
