@@ -10,8 +10,19 @@ import { ETransactionState } from '@common/enum/substrate';
 import { ReviewTransaction } from '@common/global-ui-components/ReviewTransaction';
 import { Form } from 'antd';
 import { IReviewTransaction } from '@common/types/substrate';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 
-function NewTransaction({ label, className }: { label?: string; className?: string }) {
+function NewTransaction({
+	label,
+	className,
+	icon = true,
+	size = 'large'
+}: {
+	label?: string;
+	className?: string;
+	icon?: React.ReactNode;
+	size?: SizeType;
+}) {
 	const [openModal, setOpenModal] = useState(false);
 	const { transactionState, setTransactionState, signTransaction, reviewTransaction } = useDashboardContext();
 	const [form] = Form.useForm();
@@ -22,8 +33,9 @@ function NewTransaction({ label, className }: { label?: string; className?: stri
 				variant={EButtonVariant.PRIMARY}
 				fullWidth
 				className={className}
-				icon={<PlusCircleOutlined />}
+				icon={icon && <PlusCircleOutlined />}
 				onClick={() => setOpenModal(true)}
+				size={size}
 			>
 				{label || 'New Transaction'}
 			</Button>

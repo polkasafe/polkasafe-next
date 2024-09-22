@@ -41,6 +41,7 @@ const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 			if (logout) {
 				await logout();
 			}
+			localStorage.removeItem('logged_in_wallet');
 			router.push(LOGIN_URL);
 		} catch (error) {
 			console.error(error);

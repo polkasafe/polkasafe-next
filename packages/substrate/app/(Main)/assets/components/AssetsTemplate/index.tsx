@@ -10,17 +10,22 @@ import { Skeleton } from 'antd';
 import { useCurrency } from '@substrate/app/atoms/currency/currencyAtom';
 import { getCurrencySymbol } from '@common/constants/currencyConstants';
 import SelectCurrency from '@common/global-ui-components/SelectCurrency';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 
 function AssetsTemplate() {
 	const [data] = useAssets();
 	const [selectedCurrency, setSelectedCurrency] = useCurrency();
 
-	const assets = data?.assets;
+	const assets = (data?.assets || []).map((asset) => ({
+		...asset,
+		key: `${asset.address}_${asset.network}`,
+		children: asset.proxy || []
+	}));
 
 	return (
-		<div className='bg-bg-main rounded-xl p-5 h-full gap-5 flex flex-col'>
-			<div className='flex justify-between items-center'>
-				<h1>Tokens</h1>
+		<div className='bg-bg-main rounded-xl p-5 h-full gap-2 flex flex-col'>
+			<div className='flex justify-between items-center mb-5'>
+				<Typography variant={ETypographyVariants.h1}>Tokens</Typography>
 				<SelectCurrency transparent />
 			</div>
 			{assets && assets.length > 0 ? (

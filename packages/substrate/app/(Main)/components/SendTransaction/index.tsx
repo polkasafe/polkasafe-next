@@ -155,8 +155,8 @@ export function SendTransaction({
 				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
 				return;
 			}
-			const wallet = localStorage.getItem('logged_in_wallet') as Wallet;
-			await setSigner(executableTransaction.api, wallet);
+
+			await setSigner(executableTransaction.api);
 			await executeTx(executableTransaction);
 			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
 			setTransactionState(ETransactionState.CONFIRM);

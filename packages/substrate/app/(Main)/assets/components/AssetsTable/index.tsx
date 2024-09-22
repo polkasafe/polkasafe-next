@@ -5,6 +5,7 @@
 'use client';
 
 import Address from '@common/global-ui-components/Address';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IMultisigAssets } from '@common/types/substrate';
 import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
 import { TransferByMultisig } from '@substrate/app/(Main)/assets/components/AssetsTable/components/Transfer';
@@ -18,6 +19,34 @@ interface IAssetsTableProps {
 interface IMultisigAssetsWithProxy extends IMultisigAssets {
 	proxy: Array<IMultisigAssets>;
 }
+
+const columns = [
+	{
+		title: 'Asset',
+		variant: ETypographyVariants.h1,
+		className: 'basis-1/6 text-base'
+	},
+	{
+		title: 'Balance',
+		variant: ETypographyVariants.h1,
+		className: 'basis-[15%] text-base'
+	},
+	{
+		title: 'Value',
+		variant: ETypographyVariants.h1,
+		className: 'basis-1/7 text-base'
+	},
+	{
+		title: 'Multisig',
+		variant: ETypographyVariants.h1,
+		className: 'basis-[39%] text-base'
+	},
+	{
+		title: 'Actions',
+		variant: ETypographyVariants.h1,
+		className: 'text-base'
+	}
+];
 
 function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 	const assetsColumns = [
@@ -81,32 +110,31 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			}
 		}
 	];
+	return (
+		<>
+			<div className='flex bg-bg-secondary my-1 p-3 rounded-lg mr-1 basis-1/'>
+				{columns.map((column) => (
+					<Typography
+						key={column.title}
+						variant={column.variant}
+						className={column.className}
+					>
+						{column.title}
+					</Typography>
+				))}
+			</div>
 
-	const expandedRowRender = (record: IMultisigAssetsWithProxy) => {
-		if (record.proxy && record.proxy.length) {
-			return (
+			<div className='overflow-x-auto overflow-y-auto pr-4'>
 				<Table
-					columns={assetsColumns}
-					dataSource={record.proxy}
+					rowClassName='bg-bg-main'
 					pagination={false}
 					showHeader={false}
-					rowKey={`${record.address}_${record.proxy}_${record.network}`}
+					className='w-full bg-bg-main'
+					columns={assetsColumns}
+					dataSource={dataSource}
 				/>
-			);
-		}
-		return null;
-	};
-
-	return (
-		<Table
-			rowClassName='bg-bg-main'
-			pagination={false}
-			className='w-full bg-bg-main'
-			columns={assetsColumns}
-			dataSource={dataSource}
-			scroll={{ x: 950, y: 'calc(100vh - 400px)' }}
-			expandable={{ expandedRowRender, rowExpandable: (record) => !!record.proxy && record.proxy.length > 0 }}
-		/>
+			</div>
+		</>
 	);
 }
 

@@ -1,6 +1,5 @@
-import styles from './index.module.css';
 import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
-import { UpdateMultisig } from '@common/modals/UpdateMultisig';
+import { UpdateMultisig } from '@substrate/app/modal/UpdateMultisig';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IMultisig } from '@common/types/substrate';
 import { findMultisig } from '@common/utils/findMultisig';
@@ -95,7 +94,6 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 						className='w-auto'
 						multisig={selectedMultisig}
 						proxyAddress={selectedProxy}
-						onSubmit={handleUpdateMultisig}
 						addresses={addresses}
 					/>
 				)}

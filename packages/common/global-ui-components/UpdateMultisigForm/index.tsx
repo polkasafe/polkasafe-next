@@ -16,7 +16,7 @@ import Input from '@common/global-ui-components/Input';
 interface IUpdateMultisigForm {
 	multisig: IMultisig;
 	proxyAddress: string;
-	onSubmit: (values: any) => Promise<void>;
+	onSubmit: (value: { signatories: Array<string>; threshold: number; proxyAddress: string }) => Promise<void>;
 	addresses: Array<IAddressBook>;
 }
 
@@ -31,7 +31,6 @@ export const UpdateMultisigForm = ({
 	const notification = useNotification();
 
 	const [form] = Form.useForm();
-	console.log('multisig', addressesOptions);
 
 	const handleSubmit = async () => {
 		const values = form.getFieldsValue();
@@ -44,14 +43,12 @@ export const UpdateMultisigForm = ({
 				threshold,
 				proxyAddress
 			});
-			notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
 		} catch (e) {
-			notification({ ...ERROR_MESSAGES.UPDATE_MULTISIG_FAILED, description: e.message || e });
+			// do nothing
 		} finally {
 			setLoading(false);
 		}
 	};
-	console.log(form.getFieldValue('address'));
 
 	return (
 		<Spin

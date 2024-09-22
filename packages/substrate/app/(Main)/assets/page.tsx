@@ -38,7 +38,7 @@ async function Assets({ searchParams }: IAssetsProps) {
 	if (_multisig && isValidAddress(_multisig) && isValidNetwork(_network)) {
 		return <AssetsTemplate />;
 	}
-	return <></>;
+	redirect('/404');
 }
 
 export default Assets;

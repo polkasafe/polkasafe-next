@@ -24,8 +24,12 @@ const getInjectorMetadata = (api: ApiPromise) => {
 	};
 };
 
-export async function setSigner(api: any, chosenWallet: Wallet) {
-	if (!api || !chosenWallet) throw new Error('Please select an address');
+export async function setSigner(api: any) {
+	if (!api) throw new Error('Api not found');
+	const loggedInWallet = localStorage.getItem('logged_in_wallet') as Wallet;
+	if (!loggedInWallet) {
+		throw new Error('Wallet not found');
+	}
 
 	const injectedWindow = (typeof window !== 'undefined' && window) as Window & InjectedWindow;
 
@@ -33,8 +37,11 @@ export async function setSigner(api: any, chosenWallet: Wallet) {
 		console.log('Injected Window is null', injectedWindow);
 		throw new Error('Injected Window is null');
 	}
+	console.log('Injected Window', injectedWindow);
+	console.log('Injected Window', loggedInWallet);
+	console.log('Wallet', localStorage.getItem('logged_in_wallet'));
 
-	const wallet = injectedWindow.injectedWeb3[String(chosenWallet)];
+	const wallet = injectedWindow.injectedWeb3[String(loggedInWallet)];
 
 	if (!wallet) {
 		console.log('console.log', wallet);

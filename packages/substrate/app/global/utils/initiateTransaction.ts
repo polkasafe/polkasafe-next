@@ -80,7 +80,7 @@ export const initiateTransaction = async ({
 				throw new Error(ERROR_MESSAGES.INVALID_TRANSACTION);
 			}
 
-			await setSigner(api, wallet);
+			await setSigner(api);
 			const getTransaction = (tx: SubmittableExtrinsic<'promise'>) => {
 				if (isProxy) {
 					return api.tx.proxy.proxy(proxyAddress, null, tx);
@@ -132,7 +132,7 @@ export const initiateTransaction = async ({
 			const info: any = await api.query.multisig.multisigs(multisig.address, callHash);
 			const TIME_POINT = info.unwrap().when;
 
-			await setSigner(api, wallet);
+			await setSigner(api);
 			const approveTx = api.tx.multisig.asMulti(threshold, signatories, TIME_POINT, callDataHex, weight);
 
 			const afterSuccess = () => {
@@ -160,7 +160,7 @@ export const initiateTransaction = async ({
 			const TIME_POINT = info.unwrap().when;
 
 			const tx = api.tx.multisig.cancelAsMulti(multisig.threshold, signatories, TIME_POINT, callHash);
-			await setSigner(api, wallet);
+			await setSigner(api);
 
 			const afterSuccess = () => {
 				onSuccess && onSuccess({ callHash });
@@ -191,7 +191,7 @@ export const initiateTransaction = async ({
 			}
 
 			const tx = api.tx.balances.transferKeepAlive(isProxy ? proxyAddress : address, new BN(data?.[0]?.amount || '0'));
-			await setSigner(api, wallet);
+			await setSigner(api);
 			return executeTx({
 				api,
 				apiReady: true,
@@ -210,7 +210,7 @@ export const initiateTransaction = async ({
 			}
 			const proxyTx = api.tx.proxy.createPure('Any', 0, new Date().getMilliseconds());
 			const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, ZERO_WEIGHT);
-			await setSigner(api, wallet);
+			await setSigner(api);
 
 			const afterSuccess = (tx: IGenericObject) => {
 				console.log(tx);
@@ -274,7 +274,7 @@ export const initiateTransaction = async ({
 				onSuccess && onSuccess({ newTransaction });
 			};
 
-			await setSigner(api, wallet);
+			await setSigner(api);
 			return executeTx({
 				api,
 				apiReady: true,
@@ -302,7 +302,7 @@ export const initiateTransaction = async ({
 			const callData = api.createType('Call', proxyTx.method.toHex());
 			const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
 			const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, MAX_WEIGHT as any);
-			await setSigner(api, wallet);
+			await setSigner(api);
 			return executeTx({
 				api,
 				apiReady: true,
@@ -321,7 +321,7 @@ export const initiateTransaction = async ({
 			const callData = api.createType('Call', proxyTx.method.toHex());
 			const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
 			const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, MAX_WEIGHT as any);
-			await setSigner(api, wallet);
+			await setSigner(api);
 			return executeTx({
 				api,
 				apiReady: true,

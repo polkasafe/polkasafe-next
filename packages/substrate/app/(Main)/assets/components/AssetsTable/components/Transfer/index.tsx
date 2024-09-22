@@ -25,7 +25,9 @@ export function TransferByMultisig({
 		>
 			<NewTransaction
 				label='Send'
-				className='w-20'
+				className='w-auto min-w-0 px-3 py-2'
+				icon={false}
+				size='small'
 			/>
 		</SendTransaction>
 	);

@@ -201,12 +201,8 @@ function TransactionRow({
 				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
 				return { error: true };
 			}
-			const wallet = localStorage.getItem('logged_in_wallet') as Wallet;
-			if (!wallet) {
-				notification({ ...ERROR_MESSAGES.WALLET_NOT_FOUND });
-				return { error: true };
-			}
-			await setSigner(executableTransaction.api, wallet);
+
+			await setSigner(executableTransaction.api);
 			await executeTx(executableTransaction);
 			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
 			return { error: false };

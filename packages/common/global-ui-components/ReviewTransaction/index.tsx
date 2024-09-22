@@ -36,12 +36,12 @@ export const ReviewTransaction = ({ onSubmit, onClose, reviewTransaction }: IRev
 		<Spin spinning={loading}>
 			<div className='flex flex-col gap-y-4'>
 				<div className='p-2 bg-bg-secondary rounded-xl'>
-					<div className='max-w-[480px] overflow-y-auto max-h-52'>
+					<div className='max-w-[480px] overflow-y-auto max-h-52 overflow-x-hidden'>
 						<ReactJson
 							src={tx}
 							collapseStringsAfterLength={15}
 							theme='bright'
-							style={{ background: 'transparent' }}
+							style={{ background: 'transparent', maxWidth: 450 }}
 						/>
 					</div>
 				</div>
