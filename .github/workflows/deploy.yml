@@ -33,10 +33,10 @@ jobs:
         NEXT_PUBLIC_SDK_BASE_URL: ${{ secrets.NEXT_PUBLIC_SDK_BASE_URL }}
         SUBSCAN_API_KEY: ${{ secrets.SUBSCAN_API_KEY }}
       run: yarn build:substrate
-      
-    - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_POLKASAFE_A8042 }}
-          channelId: live
-          projectId: polkasafe-a8042
+
+    - name: Deploy to Firebase
+      env:
+        FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      run: firebase deploy --only hosting --token
