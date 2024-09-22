@@ -41,6 +41,7 @@ jobs:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       run: |
         echo "${FIREBASE_SERVICE_ACCOUNT}" > firebase-service-account.json
+        npx firebase-tools experiments:enable webframeworks  # Enable web frameworks
         npx firebase-tools deploy --only hosting --project $FIREBASE_PROJECT_ID --token "${FIREBASE_TOKEN}" --non-interactive
         rm firebase-service-account.json
 
