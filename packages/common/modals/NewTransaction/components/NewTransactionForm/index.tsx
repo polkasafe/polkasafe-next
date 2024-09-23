@@ -25,6 +25,7 @@ export enum ETransactionSteps {
 export interface IRecipientAndAmount {
 	recipient: string;
 	amount: BN;
+	currency: string;
 }
 
 export function NewTransactionForm({ onClose, form }: { onClose: () => void; form: FormInstance }) {
@@ -64,11 +65,26 @@ export function NewTransactionForm({ onClose, form }: { onClose: () => void; for
 				return;
 			}
 			const payload = {
-				recipients: recipientAndAmount.map((item) => ({ address: item.recipient, amount: item.amount })),
+				recipients: recipientAndAmount.map((item) => ({
+					address: item.recipient,
+					amount: item.amount,
+					currency: item.currency
+				})),
 				sender: findMultisig(multisigs, multisigId) as IMultisig,
 				selectedProxy: selectedMultisigDetails.proxy,
 				tip
 			};
+
+			console.log({
+				recipients: recipientAndAmount.map((item) => ({
+					address: item.recipient,
+					amount: item.amount.toString(),
+					currency: item.currency
+				})),
+				sender: findMultisig(multisigs, multisigId) as IMultisig,
+				selectedProxy: selectedMultisigDetails.proxy,
+				tip
+			});
 			setLoading(true);
 			await buildTransaction(payload);
 		} catch (error) {

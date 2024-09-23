@@ -1,5 +1,5 @@
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
-import { ETxType } from '@common/enum/substrate';
+import { ENetwork, ETxType } from '@common/enum/substrate';
 import {
 	IApproveTransaction,
 	ICancelTransaction,
@@ -7,16 +7,32 @@ import {
 	IDashboardTransaction,
 	IEditMultisigTransaction,
 	IGenericObject,
+	IRecipient,
 	ITransferTransaction
 } from '@common/types/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress, encodeMultiAddress, sortAddresses } from '@polkadot/util-crypto';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
 import getMultisigInfo from '@substrate/app/global/utils/getMultisigInfo';
+
+const getTransferCalls = (api: ApiPromise, data: IRecipient, network: ENetwork) => {
+	console.log(data, 'data');
+	const nativeToken = networkConstants[network].tokenSymbol;
+	if (data.currency == nativeToken) {
+		return api.tx.balances.transferKeepAlive(data.address, data.amount);
+	}
+	const token = networkConstants[network].supportedTokens.find((token: any) => token.symbol === data.currency);
+	if (token) {
+		console.log('--------------Asset Data', data.currency, data.address, data.amount.toString());
+		return api.tx.assets.transfer(token.id, data.address, data.amount);
+	}
+	return null;
+};
 
 const transfer = async ({
 	api,
@@ -37,17 +53,20 @@ const transfer = async ({
 		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
 		networkConstants[network].ss58Format
 	);
-	const tx = data?.map((d) => {
-		if (!d?.amount || !d?.recipient) {
-			throw new Error('Amount and recipient are required');
-		}
-		const { amount, recipient } = d;
-		const accountId = u8aToHex(decodeAddress(recipient));
-		return api.tx.balances.transferKeepAlive(accountId, amount);
-	});
+	const tx = data
+		.map((d) => {
+			if (!d?.amount || !d?.recipient) {
+				throw new Error('Amount and recipient are required');
+			}
+			const { amount, recipient, currency } = d;
+			const accountId = u8aToHex(decodeAddress(recipient));
+			return getTransferCalls(api, { amount, address: accountId, currency: d.currency }, network);
+		})
+		.filter((tx) => tx !== null);
 
 	if (!tx || tx.length === 0) {
-		throw new Error(ERROR_MESSAGES.INVALID_TRANSACTION);
+		return;
+		// throw new Error(ERROR_MESSAGES.INVALID_TRANSACTION);
 	}
 
 	const getTransaction = (tx: SubmittableExtrinsic<'promise'>) => {

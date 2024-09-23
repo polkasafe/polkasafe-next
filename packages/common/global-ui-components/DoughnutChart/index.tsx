@@ -97,7 +97,7 @@ const DoughnutChartWithLegend = ({
 }: {
 	data: Array<{
 		label: string;
-		value: number;
+		value: string;
 		color: string;
 	} | null>;
 }) => {

@@ -37,13 +37,18 @@ function convertScientificToBigInt(scientificStr: string): string {
 	return BigInt(decimalStr).toString();
 }
 
-export function formatBalance(amount: BN | string, options: Options, network: ENetwork): string {
+export function formatBalance(
+	amount: BN | string,
+	options: Options,
+	network: ENetwork,
+	assetsDecimal?: number
+): string {
 	let valueString = amount?.toString().split(',').join('') || '0';
 	if (valueString.includes('e')) {
 		valueString = convertScientificToBigInt(valueString);
 	}
 
-	const { tokenDecimals } = networkConstants[network];
+	const tokenDecimals = assetsDecimal || networkConstants[network].tokenDecimals;
 	const decimals = new BN(tokenDecimals);
 	const factor = new BN(10).pow(decimals);
 	const amountBN = new BN(valueString);
@@ -54,9 +59,7 @@ export function formatBalance(amount: BN | string, options: Options, network: EN
 	const { withUnit } = options;
 	const unit = withUnit ? ` ${networkConstants[network]?.tokenSymbol}` : '';
 
-	const formattedValue = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 4 }).format(
-		Number(availValue.toString()) / Number(precision.toString())
-	);
+	const formattedValue = Number(availValue.toString()) / Number(precision.toString());
 
 	return formattedValue + unit;
 }

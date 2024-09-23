@@ -122,7 +122,6 @@ function TransactionRow({
 										address: user.address,
 										signature: user.signature
 									});
-									return null;
 								}
 
 								// Link old proxy to new multisig
@@ -144,7 +143,6 @@ function TransactionRow({
 										address: user.address,
 										signature: user.signature
 									});
-									return null;
 								}
 
 								if (!historyTransaction) {
@@ -166,7 +164,13 @@ function TransactionRow({
 
 					setQueueTransactions({ ...queueTransaction, transactions });
 				} else {
-					const payload = (queueTransaction?.transactions || []).filter((tx) => tx.callHash !== callHash);
+					const payload = (queueTransaction?.transactions || []).map((tx) => {
+						const approvals = tx.approvals || [];
+						if (!approvals.includes(user.address)) {
+							approvals.push(user.address);
+						}
+						return tx.callHash === callHash ? { ...tx, approvals } : tx;
+					});
 					const transactions = payload;
 					setQueueTransactions({ ...queueTransaction, transactions });
 				}

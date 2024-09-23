@@ -7,6 +7,7 @@ import { IMultisigAssets } from '@common/types/substrate';
 
 interface IAssetCard {
 	assets: Array<IMultisigAssets | null>;
+	totalAssets: number;
 }
 
 const getRandomColor = (): string => {
@@ -29,19 +30,23 @@ const getRandomColor = (): string => {
 	return color;
 };
 
-export default function AssetsCard({ assets }: IAssetCard) {
+export default function AssetsCard({ assets, totalAssets }: IAssetCard) {
 	const assetsData = assets?.map((asset) => {
 		if (!asset) {
 			return null;
 		}
+		const value = Number(asset.free.split(',').join(''));
+		if (Number.isNaN(value) || value === 0) {
+			return null;
+		}
+		// calculate asset percantage using total assets
+		const assetPercentage = ((value / totalAssets) * 100).toFixed(2);
 		return {
 			label: asset.symbol,
 			color: getRandomColor(),
-			value: Number(asset.free.split(',').join(''))
+			value: assetPercentage
 		};
 	});
-
-	// console.log('assetsData', assetsData);
 
 	return <DoughnutChart data={assetsData} />;
 }

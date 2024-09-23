@@ -78,7 +78,8 @@ export const networkConstants = {
 		tokenSymbol: 'AVAIL',
 		blockExplorerUrl: 'https://avail.subscan.io/',
 		rpcEndpoint: 'wss://zeref-api.slowops.xyz/ws',
-		chainId: 'polkadot:b91746b45e0346cc2f815a520b9c6cb4'
+		chainId: 'polkadot:b91746b45e0346cc2f815a520b9c6cb4',
+		supportedTokens: []
 	},
 	[ENetwork.ALEPHZERO]: {
 		disabled: false,
@@ -92,7 +93,8 @@ export const networkConstants = {
 		tokenSymbol: 'AZERO',
 		blockExplorerUrl: 'https://alephzero.subscan.io/',
 		rpcEndpoint: 'wss://ws.azero.dev/',
-		chainId: 'polkadot:70255b4d28de0fc4e1a193d7e175ad1c'
+		chainId: 'polkadot:70255b4d28de0fc4e1a193d7e175ad1c',
+		supportedTokens: []
 	},
 	[ENetwork.ASTAR]: {
 		disabled: false,
@@ -106,7 +108,8 @@ export const networkConstants = {
 		tokenSymbol: 'ASTR',
 		blockExplorerUrl: 'https://astar.subscan.io/',
 		rpcEndpoint: 'wss://astar-rpc.dwellir.com/',
-		chainId: 'polkadot:9eb76c5184c4ab8679d2d5d819fdf90b'
+		chainId: 'polkadot:9eb76c5184c4ab8679d2d5d819fdf90b',
+		supportedTokens: []
 	},
 	[ENetwork.KHALA]: {
 		disabled: false,
@@ -120,7 +123,8 @@ export const networkConstants = {
 		tokenSymbol: 'PHA',
 		blockExplorerUrl: 'https://khala.subscan.io/',
 		rpcEndpoint: 'wss://khala.public.curie.radiumblock.co/ws/',
-		chainId: 'polkadot:d43540ba6d3eb4897c28a77d48cb5b72'
+		chainId: 'polkadot:d43540ba6d3eb4897c28a77d48cb5b72',
+		supportedTokens: []
 	},
 	[ENetwork.KUSAMA]: {
 		disabled: false,
@@ -134,7 +138,8 @@ export const networkConstants = {
 		tokenSymbol: 'KSM',
 		blockExplorerUrl: 'https://kusama.subscan.io/',
 		rpcEndpoint: 'wss://kusama-rpc.polkadot.io',
-		chainId: 'polkadot:b0a8d493285c2df73290dfb7e61f870f'
+		chainId: 'polkadot:b0a8d493285c2df73290dfb7e61f870f',
+		supportedTokens: []
 	},
 	[ENetwork.PHALA]: {
 		disabled: false,
@@ -148,7 +153,8 @@ export const networkConstants = {
 		tokenSymbol: 'PHA',
 		blockExplorerUrl: 'https://phala.subscan.io/',
 		rpcEndpoint: 'wss://phala.api.onfinality.io/public-ws/',
-		chainId: 'polkadot:1bb969d85965e4bb5a651abbedf21a54'
+		chainId: 'polkadot:1bb969d85965e4bb5a651abbedf21a54',
+		supportedTokens: []
 	},
 	[ENetwork.POLKADOT]: {
 		disabled: false,
@@ -162,7 +168,8 @@ export const networkConstants = {
 		tokenSymbol: 'DOT',
 		blockExplorerUrl: 'https://polkadot.subscan.io/',
 		rpcEndpoint: 'wss://rpc.polkadot.io',
-		chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182'
+		chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182',
+		supportedTokens: []
 	},
 	[ENetwork.ROCOCO]: {
 		disabled: false,
@@ -176,7 +183,8 @@ export const networkConstants = {
 		tokenSymbol: 'ROC',
 		blockExplorerUrl: 'https://rococo.subscan.io/',
 		rpcEndpoint: 'wss://rococo-rpc.polkadot.io',
-		chainId: 'polkadot:6408de7737c59c238890533af25896a2'
+		chainId: 'polkadot:6408de7737c59c238890533af25896a2',
+		supportedTokens: []
 	},
 	[ENetwork.ROCOCO_ASSETHUB]: {
 		disabled: false,
@@ -190,7 +198,21 @@ export const networkConstants = {
 		tokenSymbol: 'ROC',
 		blockExplorerUrl: 'https://asset-hub-rococo.subscan.io/',
 		rpcEndpoint: 'wss://asset-hub-rococo-rpc.dwellir.com',
-		chainId: 'polkadot:7c34d42fc815d392057c78b49f2755c75'
+		chainId: 'polkadot:7c34d42fc815d392057c78b49f2755c75',
+		supportedTokens: [
+			{
+				id: 1997,
+				name: 'USDT',
+				symbol: 'USDT',
+				decimals: 6
+			},
+			{
+				id: 1337,
+				name: 'USDC',
+				symbol: 'USDC',
+				decimals: 6
+			}
+		]
 	},
 	[ENetwork.KUSAMA_ASSETHUB]: {
 		disabled: false,
@@ -204,7 +226,8 @@ export const networkConstants = {
 		tokenSymbol: 'KSM',
 		blockExplorerUrl: 'https://kusama-asset-hub.subscan.io/',
 		rpcEndpoint: 'wss://kusama-asset-hub-rpc.polkadot.io',
-		chainId: 'polkadot:48239ef607d7928874027a43a6768920'
+		chainId: 'polkadot:48239ef607d7928874027a43a6768920',
+		supportedTokens: []
 	},
 	[ENetwork.POLKADOT_ASSETHUB]: {
 		disabled: false,
@@ -218,7 +241,8 @@ export const networkConstants = {
 		tokenSymbol: 'DOT',
 		blockExplorerUrl: 'https://polkadot-asset-hub.subscan.io/',
 		rpcEndpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-		chainId: 'polkadot:68d56f15f85d3136970ec16946040bc1'
+		chainId: 'polkadot:68d56f15f85d3136970ec16946040bc1',
+		supportedTokens: []
 	},
 	[ENetwork.WESTEND]: {
 		disabled: false,
@@ -232,6 +256,7 @@ export const networkConstants = {
 		tokenSymbol: 'WND',
 		blockExplorerUrl: 'https://westend.subscan.io/',
 		rpcEndpoint: 'wss://westend-rpc.polkadot.io',
-		chainId: 'polkadot:e143f23803ac50e8f6f8e62695d1ce9e'
+		chainId: 'polkadot:e143f23803ac50e8f6f8e62695d1ce9e',
+		supportedTokens: []
 	}
 };

@@ -31,10 +31,12 @@ export const ReviewModal = ({
 		const { error } = await buildTransaction();
 		if (error) {
 			setTransactionState(ETransactionState.FAILED);
+			setOpenModal(true);
+			setLoading(false);
 			return;
-		} else {
-			setTransactionState(ETransactionState.REVIEW);
 		}
+		setTransactionState(ETransactionState.REVIEW);
+
 		setOpenModal(true);
 		setLoading(false);
 	};
