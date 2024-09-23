@@ -3,12 +3,12 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 /* eslint-disable no-tabs */
 import {
+	EAfterExecute,
 	ENetwork,
 	ETransactionOptions,
 	ETransactionType,
 	ETransactionVariant,
-	ETxType,
-	Wallet
+	ETxType
 } from '@common/enum/substrate';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { TransactionHead } from '@common/global-ui-components/Transaction/TransactionHead';
@@ -20,7 +20,6 @@ import { useOrganisation } from '@substrate/app/atoms/organisation/organisationA
 import { useDecodeCallData } from '@substrate/app/global/hooks/queryHooks/useDecodeCallData';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
-import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
 import { Collapse } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
@@ -32,6 +31,7 @@ import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuil
 import { useState } from 'react';
 import { setSigner } from '@substrate/app/global/utils/setSigner';
 import { executeTx } from '@substrate/app/global/utils/executeTransaction';
+import { AFTER_EXECUTE } from '@substrate/app/global/utils/afterExceute';
 
 interface ITransactionRow {
 	callData?: string;
@@ -117,6 +117,15 @@ function TransactionRow({
 								if (!historyTransaction) {
 									return null;
 								}
+								if (tx.callModule === 'Proxy' && tx.callModuleFunction === 'create_pure') {
+									AFTER_EXECUTE[EAfterExecute.LINK_PROXY]({
+										multisigAddress: txMultisig.address,
+										network: txMultisig.network,
+										address: user.address,
+										signature: user.signature
+									});
+								}
+
 								setHistoryTransaction({
 									...historyTransaction,
 									transactions: [tx, ...historyTransaction.transactions]
@@ -203,7 +212,7 @@ function TransactionRow({
 				return { error: true };
 			}
 
-			await setSigner(executableTransaction.api);
+			await setSigner(executableTransaction.api, executableTransaction.network);
 			await executeTx(executableTransaction);
 			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
 			return { error: false };

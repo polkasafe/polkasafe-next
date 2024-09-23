@@ -4,9 +4,10 @@
 /* eslint-disable no-console */
 
 import APP_NAME from '@common/constants/appName';
-import { Wallet } from '@common/enum/substrate';
-import { Injected, InjectedWindow, MetadataDef } from '@polkadot/extension-inject/types';
+import { ENetwork, Wallet } from '@common/enum/substrate';
+import { Injected, InjectedWindow } from '@polkadot/extension-inject/types';
 import { isNumber } from '@polkadot/util';
+import { checkAvailNetwork } from '@substrate/app/global/utils/checkAvailNetwork';
 import { ApiPromise, signedExtensions, types } from 'avail-js-sdk';
 
 const getInjectorMetadata = (api: ApiPromise) => {
@@ -19,30 +20,28 @@ const getInjectorMetadata = (api: ApiPromise) => {
 		ss58Format: isNumber(api.registry.chainSS58) ? api.registry.chainSS58 : 0,
 		tokenDecimals: api.registry.chainDecimals[0] || 18,
 		tokenSymbol: api.registry.chainTokens[0] || 'AVAIL',
-		types,
+		types: types as unknown as Record<string, string>,
 		userExtensions: signedExtensions
 	};
 };
 
-export async function setSigner(api: any) {
-	if (!api) throw new Error('Api not found');
+export async function setSigner(api: any, network: ENetwork) {
 	const loggedInWallet = localStorage.getItem('logged_in_wallet') as Wallet;
 	if (!loggedInWallet) {
-		throw new Error('Wallet not found');
+		return;
 	}
 
 	const injectedWindow = (typeof window !== 'undefined' && window) as Window & InjectedWindow;
 
 	if (!injectedWindow) {
 		console.log('Injected Window is null', injectedWindow);
-		throw new Error('Injected Window is null');
+		return;
 	}
 
 	const wallet = injectedWindow.injectedWeb3[loggedInWallet];
 
 	if (!wallet) {
-		console.log('console.log', wallet);
-		throw new Error('Wallet not found');
+		return;
 	}
 
 	let injected: Injected | undefined;
@@ -55,37 +54,39 @@ export async function setSigner(api: any) {
 			if (wallet && wallet.enable) {
 				wallet
 					.enable(APP_NAME)
-					.then((value: Injected | PromiseLike<Injected | undefined> | undefined) => {
+					.then((value) => {
 						clearTimeout(timeoutId);
 						resolve(value);
 					})
-					.catch((error: unknown) => {
+					.catch((error) => {
 						reject(error);
 					});
 			}
 		});
 	} catch (err) {
-		console.log(err);
+		console.log(err?.message);
 	}
 	if (!injected) {
-		throw new Error('Wallet not injected');
-	}
-	const metadata = getInjectorMetadata(api);
-	const prevMetadatas = await injected.metadata?.get();
-	if (
-		prevMetadatas &&
-		prevMetadatas.some((item) => item.specVersion === metadata.specVersion && item.genesisHash === metadata.genesisHash)
-	) {
-		api.setSigner(injected.signer);
 		return;
 	}
-
-	if (!metadata) {
-		throw new Error('Metadata not found');
+	if (checkAvailNetwork(network)) {
+		const metadata = getInjectorMetadata(api);
+		const prevMetadatas = await injected.metadata?.get();
+		if (
+			prevMetadatas &&
+			prevMetadatas.some(
+				(item) => item.specVersion === metadata.specVersion && item.genesisHash === metadata.genesisHash
+			)
+		) {
+			api.setSigner(injected.signer);
+			return;
+		}
+		await injected.metadata?.provide(metadata);
+		const inj = injected;
+		if (inj?.signer) {
+			api.setSigner(inj.signer);
+			return;
+		}
 	}
-	await injected.metadata?.provide(metadata as unknown as MetadataDef);
-	const inj = injected;
-	if (inj?.signer) {
-		api.setSigner(inj.signer);
-	}
+	api.setSigner(injected.signer);
 }

@@ -118,14 +118,14 @@ export enum ECurrency {
 }
 
 export enum ETxType {
-	TRANSFER = 'Transfer',
-	APPROVE = 'Approve',
-	FUND = 'Fund',
-	CANCEL = 'Cancel',
-	ADD_PROXY = 'Add Proxy',
-	REMOVE_PROXY = 'Remove Proxy',
-	CREATE_PROXY = 'Create Proxy',
-	EDIT_MULTISIG = 'Edit Multisig'
+	TRANSFER = 'transfer',
+	APPROVE = 'approve',
+	FUND = 'fund',
+	CANCEL = 'cancel',
+	ADD_PROXY = 'add_proxy',
+	REMOVE_PROXY = 'remove_proxy',
+	CREATE_PROXY = 'create_roxy',
+	EDIT_MULTISIG = 'edit_multisig'
 }
 
 export enum ETransactionTab {
@@ -169,4 +169,10 @@ export enum ETransactionState {
 export enum ETransactionVariant {
 	DETAILED = 'detailed',
 	SIMPLE = 'simple'
+}
+
+export enum EAfterExecute {
+	LINK_PROXY = 'link_proxy',
+	EDIT_PROXY = 'edit_proxy',
+	REFRESH_BALANCE = 'refresh'
 }

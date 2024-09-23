@@ -16,12 +16,10 @@ import { ApiPromise } from '@polkadot/api';
 import { useAssets } from '@substrate/app/atoms/assets/assetsAtom';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
-import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
 import { useAtomValue } from 'jotai';
 import { DashboardProvider } from '@common/context/DashboarcContext';
 import { selectedCurrencyAtom } from '@substrate/app/atoms/currency/currencyAtom';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
-import { BN } from '@polkadot/util';
 import { useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
 import { ERROR_MESSAGES, INFO_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { PropsWithChildren, useState } from 'react';
@@ -156,7 +154,7 @@ export function SendTransaction({
 				return;
 			}
 
-			await setSigner(executableTransaction.api);
+			await setSigner(executableTransaction.api, executableTransaction.network);
 			await executeTx(executableTransaction);
 			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
 			setTransactionState(ETransactionState.CONFIRM);
@@ -188,16 +186,16 @@ export function SendTransaction({
 		if (!api || !api.isReady) {
 			return;
 		}
-		await initiateTransaction({
-			wallet,
-			type: ETxType.FUND,
-			api,
-			data: [{ amount: new BN(amount), recipient: multisigAddress.address }],
-			isProxy: !!selectedProxy,
-			proxyAddress: selectedProxy,
-			multisig: multisigAddress,
-			sender: address
-		});
+		// await initiateTransaction({
+		// 	wallet,
+		// 	type: ETxType.FUND,
+		// 	api,
+		// 	data: [{ amount: new BN(amount), recipient: multisigAddress.address }],
+		// 	isProxy: !!selectedProxy,
+		// 	proxyAddress: selectedProxy,
+		// 	multisig: multisigAddress,
+		// 	sender: address
+		// });
 	};
 
 	return (

@@ -16,6 +16,7 @@ import { u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress, encodeMultiAddress, sortAddresses } from '@polkadot/util-crypto';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
+import getMultisigInfo from '@substrate/app/global/utils/getMultisigInfo';
 
 const transfer = async ({
 	api,
@@ -73,6 +74,7 @@ const transfer = async ({
 			from: address,
 			approvals: [sender]
 		} as IDashboardTransaction;
+		console.log(tx, 'transaction hash');
 		console.log(newTransaction, 'Transaction');
 		onSuccess && onSuccess({ newTransaction });
 	};
@@ -191,7 +193,7 @@ const approveTransaction = async ({
 	onSuccess,
 	onFailed
 }: IApproveTransaction) => {
-	const { network, signatories: allSignatories, threshold } = multisig;
+	const { network, signatories: allSignatories, threshold, address } = multisig;
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
 	const signatories = sortAddresses(
 		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
@@ -205,10 +207,15 @@ const approveTransaction = async ({
 	const callDataHex = api.createType('Call', calldata);
 	const { weight } = await calcWeight(callDataHex, api);
 
-	const info: any = await api.query.multisig.multisigs(multisig.address, callHash);
-	const TIME_POINT = info.unwrap().when;
+	const multisigInfos = await getMultisigInfo(address, api);
+	const [, multisigInfo] = multisigInfos?.find(([h]) => h.eq(callHash)) || [null, null];
 
-	const approveTx = api.tx.multisig.asMulti(threshold, signatories, TIME_POINT, callDataHex, weight);
+	if (!multisigInfo) {
+		console.log('No multisig info found');
+		return;
+	}
+
+	const approveTx = api.tx.multisig.asMulti(threshold, signatories, multisigInfo.when, callDataHex, weight);
 
 	const afterSuccess = () => {
 		onSuccess && onSuccess({ callHash });

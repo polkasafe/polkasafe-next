@@ -94,7 +94,7 @@ export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
 				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
 				return { error: true };
 			}
-			await setSigner(executableTransaction.api);
+			await setSigner(executableTransaction.api, executableTransaction.network);
 			await executeTx(executableTransaction);
 			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
 			return { error: false };

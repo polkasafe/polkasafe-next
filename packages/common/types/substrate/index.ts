@@ -53,6 +53,8 @@ export interface IDashboardTransaction {
 	from: string;
 	to?: string;
 	approvals: string[];
+	callModule?: string;
+	callModuleFunction?: string;
 }
 
 export interface ITransaction {

@@ -129,7 +129,7 @@ export const UpdateMultisig = ({ multisig, proxyAddress, addresses, className }:
 				throw new Error('Transaction build failed');
 			}
 
-			await setSigner(executableTransaction.api);
+			await setSigner(executableTransaction.api, executableTransaction.network);
 			await executeTx(executableTransaction);
 			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
 			setTransactionState(ETransactionState.CONFIRM);
