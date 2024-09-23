@@ -15,6 +15,37 @@ import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import axios from 'axios';
 import { useAllCurrencyPrice } from '@substrate/app/atoms/currency/currencyAtom';
+import { ENetwork } from '@common/enum/substrate';
+import getEncodedAddress from '@common/utils/getEncodedAddress';
+import { ApiPromise } from '@polkadot/api';
+import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
+
+const getTokenBalance = async (api: ApiPromise | AvailApiPromise, address: string, network: ENetwork) => {
+	const parseAssets = (balance: any, decimal: number) => {
+		console.log('balance', balance?.balance);
+		return formatBalance(
+			balance?.balance,
+			{
+				numberAfterComma: 3,
+				withThousandDelimitor: true
+			},
+			network,
+			decimal
+		);
+	};
+
+	const tokens = (networkConstants[network] as any).supportedTokens || [];
+
+	const tokenData = tokens.map(async (token: any) => {
+		const balance = await api.query.assets.account(token.id, getEncodedAddress(address, network));
+		const data = parseAssets(balance.toHuman(), token.decimals);
+		return {
+			free: data,
+			symbol: token.symbol
+		};
+	});
+	return Promise.all(tokenData);
+};
 
 function InitializeAssets() {
 	const [organisation] = useOrganisation();
@@ -54,6 +85,14 @@ function InitializeAssets() {
 					data: any;
 				};
 				const balance = {} as any;
+
+				if (network === ENetwork.POLKADOT_ASSETHUB || network === ENetwork.ROCOCO_ASSETHUB) {
+					const tokenData = await getTokenBalance(api, address, network);
+					tokenData.map((t) => {
+						balance[String(t.symbol).toLowerCase()] = t;
+					});
+				}
+
 				// eslint-disable-next-line no-restricted-syntax
 				for (const [key, value] of Object.entries(JSON.parse(JSON.stringify(balanceWithDecimals.toHuman())))) {
 					balance[key] = formatBalance(
@@ -80,6 +119,14 @@ function InitializeAssets() {
 						data: any;
 					};
 					const proxyBalance = {} as any;
+
+					if (network === ENetwork.POLKADOT_ASSETHUB || network === ENetwork.ROCOCO_ASSETHUB) {
+						const tokenData = await getTokenBalance(api, address, network);
+						tokenData.map((t) => {
+							proxyBalance[String(t.symbol).toLowerCase()] = t;
+						});
+					}
+
 					// eslint-disable-next-line no-restricted-syntax
 					for (const [key, value] of Object.entries(JSON.parse(JSON.stringify(proxyBalanceWithDecimals.toHuman())))) {
 						proxyBalance[key] = formatBalance(
@@ -126,6 +173,7 @@ function InitializeAssets() {
 			});
 
 			const assets = (await Promise.all(assetsPromise)).flat().filter((a) => Boolean(a));
+			console.log('assets', assets);
 			setAtom({ assets: assets, refetch: handleOrganisationAssets });
 		};
 		handleOrganisationAssets();

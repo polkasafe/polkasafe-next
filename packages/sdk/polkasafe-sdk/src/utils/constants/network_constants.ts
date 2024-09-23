@@ -157,8 +157,8 @@ export const networkConstants = {
 		subsquidUrl: '',
 		tokenDecimals: 12,
 		tokenSymbol: 'ROC',
-		blockExplorerUrl: 'https://asset-hub-rococo.subscan.io/',
-		rpcEndpoint: 'wss://asset-hub-rococo-rpc.dwellir.com',
+		blockExplorerUrl: 'https://assethub-rococo.subscan.io/',
+		rpcEndpoint: 'wss://rococo-asset-hub-rpc.polkadot.io',
 		chainId: 'polkadot:7c34d42fc815d392057c78b49f2755c75'
 	},
 	[ENetwork.KUSAMA_ASSETHUB]: {

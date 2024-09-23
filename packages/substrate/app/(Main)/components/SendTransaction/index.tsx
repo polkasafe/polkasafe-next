@@ -98,9 +98,9 @@ export function SendTransaction({
 
 			const data = recipients.map((recipient) => ({
 				amount: recipient.amount,
-				recipient: recipient.address
+				recipient: recipient.address,
+				currency: recipient.currency
 			}));
-
 			const transaction = (await TRANSACTION_BUILDER[ETxType.TRANSFER]({
 				api,
 				data,
@@ -120,7 +120,6 @@ export function SendTransaction({
 			}
 
 			const fee = (await transaction.tx.paymentInfo(address)).partialFee;
-			console.log(fee.toString());
 			const formattedFee = formatBalance(
 				fee.toString(),
 				{

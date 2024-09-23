@@ -29,8 +29,13 @@ function isValidNumber(bn: BN, isZeroable?: boolean): boolean {
 	);
 }
 
-export default function inputToBn(input: string, network: ENetwork, isZeroable?: boolean): [BN, boolean] {
-	const tokenDecimal = networkConstants[network]?.tokenDecimals;
+export default function inputToBn(
+	input: string,
+	network: ENetwork,
+	isZeroable?: boolean,
+	decimals?: number
+): [BN, boolean] {
+	const tokenDecimal = decimals || networkConstants[network]?.tokenDecimals;
 	const tokenDecimalBN = new BN(tokenDecimal);
 
 	const isDecimalValue = input.match(/^(\d+)\.(\d+)$/);

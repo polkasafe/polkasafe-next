@@ -14,7 +14,8 @@ import {
 	rococoApi,
 	assethubPolkadotApi,
 	assethubKusamaApi,
-	westendApi
+	westendApi,
+	assethubRococoApi
 } from '@substrate/app/atoms/api/apiAtom';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
@@ -37,6 +38,7 @@ function InitializeAPI() {
 	const [AssethubPolkadotApiAtom, setAssethubPolkadotApiAtom] = useAtom(assethubPolkadotApi);
 	const [AssethubKusamaApiAtom, setAssethubKusamaApiAtom] = useAtom(assethubKusamaApi);
 	const [WestendApiAtom, setWestendApiAtom] = useAtom(westendApi);
+	const [AssethubRococoApiAtom, setAssethubRococoApiAtom] = useAtom(assethubRococoApi);
 
 	const getApiSetter = (network: string) => {
 		switch (network) {
@@ -60,6 +62,8 @@ function InitializeAPI() {
 				return setAssethubKusamaApiAtom;
 			case ENetwork.WESTEND:
 				return setWestendApiAtom;
+			case ENetwork.ROCOCO_ASSETHUB:
+				return setAssethubRococoApiAtom;
 			default:
 				return null;
 		}
@@ -87,6 +91,8 @@ function InitializeAPI() {
 				return AssethubKusamaApiAtom;
 			case ENetwork.WESTEND:
 				return WestendApiAtom;
+			case ENetwork.ROCOCO_ASSETHUB:
+				return AssethubRococoApiAtom;
 			default:
 				return null;
 		}

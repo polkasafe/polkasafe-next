@@ -168,6 +168,8 @@ export interface IAssets {
 	network: ENetwork;
 	allCurrency: { [network: string]: any };
 	proxyAddress?: string;
+	usdt?: { free: string };
+	usdc?: { free: string };
 }
 
 export interface IMultisigAssets extends IAssets {
@@ -291,6 +293,7 @@ export interface ISubstrateExecuteProps {
 export interface IRecipient {
 	address: string;
 	amount: BN;
+	currency: string;
 }
 
 export interface ISendTransactionForm {
@@ -417,7 +420,8 @@ export interface ITransferTransaction {
 	data: Array<{
 		amount: BN;
 		recipient: string;
-	}> | null;
+		currency: string;
+	}>;
 	multisig: IMultisig;
 	proxyAddress?: string;
 	isProxy?: boolean;

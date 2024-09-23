@@ -7,6 +7,8 @@ import BalanceInput from '@common/global-ui-components/BalanceInput';
 import { ENetwork } from '@common/enum/substrate';
 import Button from '@common/global-ui-components/Button';
 import Address from '@common/global-ui-components/Address';
+import { MULTIPLE_CURRENCY_NETWORKS } from '@common/constants/multipleCurrencyNetworks';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 interface IRecipientInputs {
 	autocompleteAddresses: Array<any>;
@@ -18,7 +20,8 @@ export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IReci
 	const [recipientAndAmount, setRecipientAndAmount] = useState([
 		{
 			amount: new BN('0'),
-			recipient: ''
+			recipient: '',
+			currency: networkConstants[network].tokenSymbol
 		}
 	]);
 	const isSelected = (recipient: string) => {
@@ -33,20 +36,22 @@ export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IReci
 			return copyArray;
 		});
 	};
-	const onAmountChange = (a: BN, i: number) => {
+	const onAmountChange = (a: BN, i: number, currency?: string) => {
 		setRecipientAndAmount((prevState) => {
 			const copyArray = [...prevState];
 			const copyObject = { ...copyArray[i] };
 			copyObject.amount = a;
+			copyObject.currency = currency || '';
 			copyArray[i] = copyObject;
 			return copyArray;
 		});
 	};
 
 	const onAddRecipient = () => {
+		const nativeToken = networkConstants[network].tokenSymbol;
 		setRecipientAndAmount((prevState) => {
 			const copyOptionsArray = [...prevState];
-			copyOptionsArray.push({ amount: new BN(0), recipient: '' });
+			copyOptionsArray.push({ amount: new BN(0), recipient: '', currency: nativeToken });
 			return copyOptionsArray;
 		});
 	};
@@ -70,7 +75,7 @@ export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IReci
 							key={`${recipient}_${i}`}
 							className='flex items-start gap-x-2 justify-center max-sm:w-full max-sm:flex-col'
 						>
-							<div className='w-[55%] max-sm:w-full'>
+							<div className='w-[60%] max-sm:w-full'>
 								<label className='text-label font-normal text-xs leading-[13px] block mb-[5px]'>Recipient*</label>
 
 								<div className='h-[50px]'>
@@ -105,12 +110,13 @@ export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IReci
 									)}
 								</div>
 							</div>
-							<div className='flex items-center gap-x-2 w-[45%]'>
+							<div className='flex items-center gap-x-2 w-[40%]'>
 								<BalanceInput
 									network={network}
 									label='Amount*'
 									formName={`recipients[${i}].amount`}
-									onChange={(balance) => onAmountChange(balance, i)}
+									onChange={(balance, currency) => onAmountChange(balance, i, currency)}
+									multipleCurrency={MULTIPLE_CURRENCY_NETWORKS.includes(network)}
 								/>
 								{i !== 0 && (
 									<Button

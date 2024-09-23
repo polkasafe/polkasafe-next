@@ -10,7 +10,7 @@ export enum ENetwork {
 	PHALA = 'phala',
 	POLKADOT = 'polkadot',
 	ROCOCO = 'rococo',
-	ROCOCO_ASSETHUB = 'rococo-asset-hub',
+	ROCOCO_ASSETHUB = 'assethub-rococo',
 	KUSAMA_ASSETHUB = 'assethub-kusama',
 	POLKADOT_ASSETHUB = 'assethub-polkadot',
 	WESTEND = 'westend'
