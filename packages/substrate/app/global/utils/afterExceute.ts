@@ -1,5 +1,6 @@
 import { EAfterExecute, ENetwork } from '@common/enum/substrate';
 import { createProxy } from '@sdk/polkasafe-sdk/src/create-proxy';
+import { editProxy as editProxyDB } from '@sdk/polkasafe-sdk/src/edit-proxy';
 
 const linkProxy = async ({
 	multisigAddress,
@@ -16,19 +17,23 @@ const linkProxy = async ({
 };
 
 const editProxy = async ({
+	organisationId,
+	oldMultisigAddress,
 	newMultisigAddress,
 	proxyAddress,
 	network,
 	address,
 	signature
 }: {
+	organisationId: string;
+	oldMultisigAddress: string;
 	newMultisigAddress: string;
 	proxyAddress: ENetwork;
 	network: ENetwork;
 	address: string;
 	signature: string;
 }) => {
-	editProxy({ newMultisigAddress, proxyAddress, network, address, signature });
+	editProxyDB({ organisationId, oldMultisigAddress, newMultisigAddress, proxyAddress, network, address, signature });
 };
 
 export const AFTER_EXECUTE = {

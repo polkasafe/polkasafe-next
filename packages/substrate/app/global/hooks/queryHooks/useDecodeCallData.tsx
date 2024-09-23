@@ -3,7 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 /* eslint-disable no-restricted-syntax */
 import { IGenericObject } from '@common/types/substrate';
-import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { ApiPromise } from '@polkadot/api';
 import { IApiAtom } from '@substrate/app/atoms/api/apiAtom';
 import { useQuery } from '@tanstack/react-query';
@@ -46,6 +45,11 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 			if (destAddress) {
 				payload.to = destAddress;
 			}
+
+			const delegate = currentPoint?.delegate?.Id;
+			if (delegate) {
+				payload.delegate = delegate;
+			}
 			// check if there is a value
 			const value = currentPoint?.value;
 			if (value) {
@@ -81,33 +85,9 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 		}
 
 		decodeCallData(callJSONData);
-
-		if (metaData.name === 'batch_all' || metaData.name === 'batch') {
-			const calls = (callJSONData?.args as IGenericObject)?.calls as Array<IGenericObject>;
-			for (const batchCall of calls) {
-				const dest = (batchCall.args as IGenericObject)?.dest;
-				const value = (batchCall.args as IGenericObject)?.value;
-				if (dest && value && dest.id) {
-					payload.to = getEncodedAddress(value.address20 ? value.address20 : value.id, apiData.network);
-					payload.value = value.split(',').join('');
-					break;
-				}
-			}
-			return payload;
-		}
-		const calls = Object.entries(callJSONData?.args || {});
-		for (const [key, value] of calls) {
-			if (key === 'dest' && value.id) {
-				payload.to = getEncodedAddress(value.address20 ? value.address20 : value.id, apiData.network);
-			}
-			if (key === 'value') {
-				payload.value = value.split(',').join('');
-			}
-			if (payload.to && payload.value) {
-				break;
-			}
-		}
-		return payload;
+		// console.log('callJSONData', callJSONData);
+		// console.log(allCalls);
+		return allCalls;
 	};
 
 	return useQuery({

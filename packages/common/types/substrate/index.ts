@@ -55,6 +55,7 @@ export interface IDashboardTransaction {
 	approvals: string[];
 	callModule?: string;
 	callModuleFunction?: string;
+	txType?: ETxType;
 }
 
 export interface ITransaction {

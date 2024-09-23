@@ -88,7 +88,7 @@ export const UpdateMultisig = ({ multisig, proxyAddress, addresses, className }:
 				onFailed: () => {}
 			};
 
-			const transaction = (await TRANSACTION_BUILDER[ETxType.EDIT_MULTISIG](payload)) as ISubstrateExecuteProps;
+			const transaction = (await TRANSACTION_BUILDER[ETxType.EDIT_PROXY](payload)) as ISubstrateExecuteProps;
 
 			if (!transaction) {
 				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });

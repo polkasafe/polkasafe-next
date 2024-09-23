@@ -233,7 +233,7 @@ const approveTransaction = async ({
 	};
 };
 
-const editMultisig = async ({
+const editProxy = async ({
 	api,
 	newSignatories,
 	newThreshold,
@@ -302,7 +302,7 @@ const TRANSACTION_BUILDER = {
 	[ETxType.CREATE_PROXY]: createProxy,
 	[ETxType.CANCEL]: cancelTransaction,
 	[ETxType.APPROVE]: approveTransaction,
-	[ETxType.EDIT_MULTISIG]: editMultisig
+	[ETxType.EDIT_PROXY]: editProxy
 };
 
 export { TRANSACTION_BUILDER };

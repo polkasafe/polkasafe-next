@@ -114,9 +114,7 @@ function TransactionRow({
 							}
 							const multisig = findMultisig(organisation?.multisigs || [], `${tx.multisigAddress}_${tx.network}`);
 							if (approvals.length === multisig?.threshold) {
-								if (!historyTransaction) {
-									return null;
-								}
+								// Add new proxy to DB
 								if (tx.callModule === 'Proxy' && tx.callModuleFunction === 'create_pure') {
 									AFTER_EXECUTE[EAfterExecute.LINK_PROXY]({
 										multisigAddress: txMultisig.address,
@@ -124,8 +122,34 @@ function TransactionRow({
 										address: user.address,
 										signature: user.signature
 									});
+									return null;
 								}
 
+								// Link old proxy to new multisig
+								const isEditProxyTransaction = data.find(
+									(d: IGenericObject) => d.method === 'addProxy' && d.section === 'proxy'
+								);
+								const isRemoveTransaction = data.find(
+									(d: IGenericObject) => d.method === 'removeProxy' && d.section === 'proxy'
+								);
+								const proxy = data.find((d: IGenericObject) => d.method === 'proxy' && d.section === 'proxy');
+
+								if (isEditProxyTransaction && isRemoveTransaction) {
+									AFTER_EXECUTE[EAfterExecute.EDIT_PROXY]({
+										organisationId: organisation?.id || '',
+										newMultisigAddress: isEditProxyTransaction.delegate,
+										oldMultisigAddress: isRemoveTransaction.delegate,
+										proxyAddress: proxy.proxyAddress,
+										network: txMultisig.network,
+										address: user.address,
+										signature: user.signature
+									});
+									return null;
+								}
+
+								if (!historyTransaction) {
+									return null;
+								}
 								setHistoryTransaction({
 									...historyTransaction,
 									transactions: [tx, ...historyTransaction.transactions]
@@ -152,7 +176,7 @@ function TransactionRow({
 				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			}
 		};
-		console.log('callData', callData, callHash);
+
 		try {
 			const transaction = await (type === ETxType.APPROVE
 				? TRANSACTION_BUILDER[ETxType.APPROVE]({
