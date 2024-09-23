@@ -44,7 +44,6 @@ function DashboardCard() {
 							{symbol}{' '}
 							{showBalance === 'yes' ? (
 								<>
-									{symbol}
 									{totalBalance === null ? (
 										<Skeleton.Button
 											size='small'

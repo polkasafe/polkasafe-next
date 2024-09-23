@@ -32,6 +32,8 @@ import { useState } from 'react';
 import { setSigner } from '@substrate/app/global/utils/setSigner';
 import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { AFTER_EXECUTE } from '@substrate/app/global/utils/afterExceute';
+import formatBnBalance from '@common/utils/formatBnBalance';
+import BN from 'bn.js';
 
 interface ITransactionRow {
 	callData?: string;
@@ -46,6 +48,65 @@ interface ITransactionRow {
 	multisig: string;
 	approvals: Array<string>;
 	variant: ETransactionVariant;
+}
+
+const getLabelForTransation = (type: ETransactionOptions, label?: string) => {
+	switch (type) {
+		case ETransactionOptions.SENT:
+			return 'Sent';
+		case ETransactionOptions.RECEIVED:
+			return 'Received';
+		case ETransactionOptions.ADD_SIGNATORY:
+			return 'Add Signatory';
+		case ETransactionOptions.REMOVE_SIGNATORY:
+			return 'Remove Signatory';
+		case ETransactionOptions.CREATE_PROXY:
+			return 'Create Proxy'
+		case ETransactionOptions.CUSTOM:
+			return label || 'Custom';
+		default:
+			return label || 'Custom';
+	}
+}
+
+const getTransactionDetails = (data: any[], network: ENetwork, type: ETransactionOptions) => {
+	if (!data || !Array.isArray(data) || data.length === 0) {
+		return {
+			label: getLabelForTransation(type),
+			amount: 0,
+			to: []
+		}
+	}
+
+	const sections: string[] = []
+	const methods: string[] = []
+
+	const amounts: BN[] = [];
+	const to: string[] = [];
+
+	let label = '';
+
+	data.forEach((item) => {
+		sections.push(item.section || '');
+		methods.push(item.method || '');
+
+		if (item.section === 'balances' && item.method === 'transferKeepAlive') {
+			amounts.push(new BN(item.value || 0));
+			to.push(item.to || '');
+		}
+	});
+
+	label = getLabelForTransation(type, `${sections[sections.length - 1]}.${methods[methods.length - 1]}`);
+
+
+	const amount = amounts.reduce((prev, curr) => (new BN(prev)).add(new BN(curr)), new BN(0));
+
+	return {
+		label,
+		amounts,
+		amount: formatBnBalance(amount, { numberAfterComma: 4 }, network),
+		to
+	};
 }
 
 function TransactionRow({
@@ -74,6 +135,8 @@ function TransactionRow({
 		callHash,
 		apiData: getApi(network)
 	});
+
+	const transactionDetails = getTransactionDetails(data, network, type);
 
 	const [executableTransaction, setExecutableTransaction] = useState<ISubstrateExecuteProps | null>(null);
 	const [reviewTransaction, setReviewTransaction] = useState<IReviewTransaction | null>(null);
@@ -246,33 +309,22 @@ function TransactionRow({
 		}
 	};
 
-	const label = data?.method && data?.section ? `${data.section}_${data.method}` : '';
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
 	if (error) {
 		return <div>Error: {error.message}</div>;
 	}
-	const value = data?.value
-		? formatBalance(
-				data?.value,
-				{
-					numberAfterComma: 2,
-					withThousandDelimitor: false
-				},
-				network
-			)
-		: amountToken;
 
 	if (variant === ETransactionVariant.SIMPLE) {
 		return (
 			<TransactionHead
 				createdAt={createdAt}
-				to={data?.to || to}
+				to={transactionDetails.to}
 				network={network}
-				amountToken={value}
+				amountToken={transactionDetails.amount}
 				from={from}
-				label={label.split('_')}
+				label={transactionDetails.label}
 				type={type}
 				transactionType={transactionType}
 				approvals={approvals}
@@ -300,11 +352,11 @@ function TransactionRow({
 					label: (
 						<TransactionHead
 							createdAt={createdAt}
-							to={data?.to || to}
+							to={transactionDetails.to}
 							network={network}
-							amountToken={value}
+							amountToken={transactionDetails.amount}
 							from={from}
-							label={label.split('_')}
+							label={transactionDetails.label}
 							type={type}
 							transactionType={transactionType}
 							approvals={approvals}
@@ -318,9 +370,9 @@ function TransactionRow({
 					children: (
 						<TransactionDetails
 							createdAt={createdAt}
-							to={data?.to || to}
+							to={transactionDetails.to}
 							network={network}
-							amountToken={value}
+							amountToken={transactionDetails.amount}
 							from={from}
 							type={type}
 							transactionType={transactionType}

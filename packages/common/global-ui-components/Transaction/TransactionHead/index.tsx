@@ -5,7 +5,7 @@ import { ENetwork, ETransactionOptions, ETransactionType, ETxType } from '@commo
 import ReceivedIcon from '@common/assets/icons/arrow-up-right.svg';
 import SentIcon from '@common/assets/icons/sent-icon.svg';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
-import { OutlineCheckIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
+import { ArrowDownLeftIcon, ArrowUpRightIcon, OutlineCheckIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import dayjs from 'dayjs';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { IReviewTransaction } from '@common/types/substrate';
@@ -13,11 +13,11 @@ import { IReviewTransaction } from '@common/types/substrate';
 interface ITransactionHeadProps {
 	type: ETransactionOptions;
 	createdAt: Date;
-	amountToken: string;
-	to: string;
+	amountToken: number | string;
+	to: string[];
 	network: ENetwork;
 	from: string;
-	label: Array<string>;
+	label: string;
 	transactionType: ETransactionType;
 	isHomePage?: boolean;
 	approvals?: string[];
@@ -33,14 +33,14 @@ function TransactionIcon({ type }: { type: ETransactionOptions }) {
 		case ETransactionOptions.SENT: {
 			return (
 				<div className='bg bg-[#e63946]/[0.1] p-2.5 rounded-lg text-failure'>
-					<SentIcon />
+					<ArrowUpRightIcon />
 				</div>
 			);
 		}
 		case ETransactionOptions.RECEIVED: {
 			return (
 				<div className='bg bg-bg-success p-2.5 rounded-lg text-success'>
-					<ReceivedIcon />
+					<ArrowDownLeftIcon />
 				</div>
 			);
 		}
@@ -82,22 +82,16 @@ export function TransactionHead({
 			<div className='flex items-center max-sm:flex max-sm:flex-wrap max-sm:gap-2'>
 				<Typography
 					variant={ETypographyVariants.p}
-					className='flex items-center gap-x-3 basis-1/5 justify-start text-text-primary'
+					className='flex items-center gap-x-3 basis-1/5 justify-start'
 				>
 					<TransactionIcon type={type} />
 					{label ? (
 						<div className='flex'>
 							<Typography
 								variant={ETypographyVariants.p}
-								className='capitalize text-[10px]'
+								className='capitalize text-text-primary text-sm'
 							>
-								{label[0]}.
-							</Typography>
-							<Typography
-								variant={ETypographyVariants.p}
-								className='capitalize text-[10px]'
-							>
-								{label[1]}
+								{label}
 							</Typography>
 						</div>
 					) : (
@@ -113,12 +107,12 @@ export function TransactionHead({
 							variant={ETypographyVariants.p}
 							className='flex items-center gap-x-2 justify-start text-text-primary'
 						>
-							{Boolean(amountToken) && <ParachainTooltipIcon src={networkConstants[network]?.logo} />}
+							{<ParachainTooltipIcon src={networkConstants[network]?.logo} />}
 							<span
-								className={`font-normal text-xs text-success ${type === ETransactionOptions.SENT && 'text-failure'}`}
+								className={`font-normal text-xs text-success ${type === ETransactionOptions.SENT && 'text-text-danger'}`}
 							>
-								{type === ETransactionOptions.SENT || !amountToken ? '-' : '+'} {Boolean(amountToken) && amountToken}{' '}
-								{Boolean(amountToken) || networkConstants[network].tokenSymbol}
+								{type === ETransactionOptions.SENT ? '-' : '+'} {amountToken}{' '}
+								{networkConstants[network].tokenSymbol}
 							</span>
 						</Typography>
 					) : (
@@ -142,9 +136,9 @@ export function TransactionHead({
 					variant={ETypographyVariants.p}
 					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
 				>
-					{to ? (
+					{to && to.length > 0 ? (
 						<Address
-							address={to}
+							address={to[0]}
 							network={network}
 							withBadge={false}
 							isMultisig
@@ -185,7 +179,7 @@ export function TransactionHead({
 									buildTransaction={() => onAction(ETxType.APPROVE)}
 									reviewTransaction={reviewTransaction}
 									signTransaction={signTransaction}
-									className='w-auto min-w-0'
+									className='w-auto min-w-0 bg-[#06d6a0]/[0.1] text-success'
 									size='middle'
 								>
 									<OutlineCheckIcon />
