@@ -77,7 +77,6 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			encodedMultisigAddress,
 			network
 		);
-		console.log('multisigMetaData', multisigMetaData);
 		if (multisigMetaDataErr) {
 			const data = await getDataFromDB(docId);
 			if (data) {

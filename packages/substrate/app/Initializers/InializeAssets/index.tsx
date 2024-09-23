@@ -6,7 +6,7 @@
 
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { useSetAtom } from 'jotai/react';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { assetsAtom } from '@substrate/app/atoms/assets/assetsAtom';
 // import axios from 'axios';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
@@ -104,7 +104,8 @@ function InitializeAssets() {
 						...proxyBalance,
 						usd: Number(usdValue.toFixed(3)),
 						allCurrency,
-						address: proxyAddress,
+						proxyAddress,
+						address,
 						network,
 						symbol: networkConstants[network].tokenSymbol
 					};
@@ -112,21 +113,20 @@ function InitializeAssets() {
 				const proxyAssets = (await Promise.all(proxyAssetsPromise)).filter((a) => Boolean(a));
 
 				return [
-					...proxyAssets,
 					{
 						...balance,
 						usd: Number(usdValue.toFixed(3)),
 						allCurrency,
 						address,
 						network,
-						symbol: networkConstants[network].tokenSymbol
+						symbol: networkConstants[network].tokenSymbol,
+						proxy: proxyAssets
 					}
 				];
 			});
 
 			const assets = (await Promise.all(assetsPromise)).flat().filter((a) => Boolean(a));
-			console.log('assets', assets);
-			setAtom(assets);
+			setAtom({ assets: assets, refetch: handleOrganisationAssets });
 		};
 		handleOrganisationAssets();
 	}, [getApi, organisation]);

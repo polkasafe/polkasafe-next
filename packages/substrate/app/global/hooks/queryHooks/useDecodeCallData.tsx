@@ -3,7 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 /* eslint-disable no-restricted-syntax */
 import { IGenericObject } from '@common/types/substrate';
-import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { ApiPromise } from '@polkadot/api';
 import { IApiAtom } from '@substrate/app/atoms/api/apiAtom';
 import { useQuery } from '@tanstack/react-query';
@@ -20,39 +19,75 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 		if (!apiData || !apiData.api || !callData) {
 			return payload;
 		}
+
 		const { api } = apiData as { api: ApiPromise };
+
 		const call = api.createType('Call', callData);
 		const callJSONData = call.toHuman();
 		const metaData = call.meta.toHuman();
-		payload.method = call.method;
-		payload.section = call.section;
-		if (metaData.name === 'batch_all' || metaData.name === 'batch') {
-			const calls = (callJSONData?.args as IGenericObject)?.calls as Array<IGenericObject>;
-			for (const batchCall of calls) {
-				const dest = (batchCall.args as IGenericObject)?.dest;
-				const value = (batchCall.args as IGenericObject)?.value;
-				if (dest && value && dest.id) {
-					payload.to = getEncodedAddress(value.address20 ? value.address20 : value.id, apiData.network);
-					payload.value = value.split(',').join('');
-					break;
-				}
+		const allCalls: any = [];
+		function decodeCallData(call: IGenericObject, payload: IGenericObject = {}) {
+			if (!call) {
+				return;
 			}
-			console.log('payload', payload);
-			return payload;
-		}
-		const calls = Object.entries(callJSONData?.args || {});
-		for (const [key, value] of calls) {
-			if (key === 'dest' && value.id) {
-				payload.to = getEncodedAddress(value.address20 ? value.address20 : value.id, apiData.network);
+			payload.method = call.method;
+			payload.section = call.section;
+
+			const currentPoint = call?.args as IGenericObject;
+			// check is there a proxy address
+			const proxyAddress = currentPoint?.real?.Id;
+			if (proxyAddress) {
+				payload.proxyAddress = proxyAddress;
 			}
-			if (key === 'value') {
+
+			// check if there is a dest address
+			const destAddress = currentPoint?.dest?.Id;
+			if (destAddress) {
+				payload.to = destAddress;
+			}
+
+			const delegate = currentPoint?.delegate?.Id;
+			if (delegate) {
+				payload.delegate = delegate;
+			}
+			// check if there is a value
+			const value = currentPoint?.value;
+			if (value) {
 				payload.value = value.split(',').join('');
 			}
-			if (payload.to && payload.value) {
-				break;
+
+			const assets = currentPoint?.assets as IGenericObject;
+			const beneficiary = currentPoint?.beneficiary as IGenericObject;
+			const dest = currentPoint?.dest as IGenericObject;
+			if (assets && beneficiary && dest) {
+				payload.xcm = {
+					assets: assets,
+					beneficiary: beneficiary,
+					dest
+				};
+			}
+
+			allCalls.push(payload);
+			// check is there any call or calls
+			const callOrCalls = currentPoint?.call || currentPoint?.calls;
+
+			// if callOrCalls is an object
+			if (!Array.isArray(callOrCalls)) {
+				const call = callOrCalls as IGenericObject;
+				decodeCallData(call);
+			}
+			// if callOrCalls is an array
+			if (Array.isArray(callOrCalls)) {
+				for (const call of callOrCalls) {
+					decodeCallData(call);
+				}
 			}
 		}
-		return payload;
+
+		decodeCallData(callJSONData);
+		// console.log('callJSONData', callJSONData);
+		// console.log(allCalls);
+		return allCalls;
 	};
 
 	return useQuery({

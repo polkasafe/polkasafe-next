@@ -1,12 +1,18 @@
 import { CheckCircleOutlined } from '@ant-design/icons';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 
 export const AdminPanel = () => {
 	return (
 		<section className='mt-4 bg-bg-secondary rounded-lg p-4 flex items-start justify-start'>
 			<div className='flex justify-start items-center gap-x-2 w-[30%]'>
 				<CheckCircleOutlined />
-				<p className='m-0 p-0 text-text-secondary text-sm'>Two-Factor Authentication</p>
+				<Typography
+					variant={ETypographyVariants.p}
+					className='m-0 p-0 text-text-secondary text-sm'
+				>
+					Two-Factor Authentication
+				</Typography>
 			</div>
 			<div className='flex flex-col items-start gap-x-2'>
 				<p className='m-0 p-0 text-text-secondary text-sm whitespace-nowrap'>

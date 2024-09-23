@@ -2,10 +2,12 @@ import fetchPonyfill from 'fetch-ponyfill';
 
 const { fetch: fetchPF } = fetchPonyfill();
 
-// const baseUrl = 'https://polkasafe-a8042.web.app/api/v1';
-const baseUrl = 'http://localhost:3000/api/v1';
+const baseUrl = 'https://polkasafe-a8042.web.app/api/v1';
+
+// const baseUrl = 'http://localhost:3000/api/v1';
 
 export function request<T>(endpoint: string, reqHeaders?: any, options?: RequestInit): Promise<T> {
+	// console.log('baseUrl', baseUrl);
 	const url = `${baseUrl}${endpoint}`;
 	const headers = {
 		Accept: 'application/json',

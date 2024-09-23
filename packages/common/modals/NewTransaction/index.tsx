@@ -4,35 +4,67 @@ import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Modal from '@common/global-ui-components/Modal';
 import React, { useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { ETransactionSteps, NewTransactionForm } from '@common/modals/NewTransaction/components/NewTransactionForm';
+import { NewTransactionForm } from '@common/modals/NewTransaction/components/NewTransactionForm';
+import { useDashboardContext } from '@common/context/DashboarcContext';
+import { ETransactionState } from '@common/enum/substrate';
+import { ReviewTransaction } from '@common/global-ui-components/ReviewTransaction';
+import { Form } from 'antd';
+import { IReviewTransaction } from '@common/types/substrate';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 
-function NewTransaction() {
+function NewTransaction({
+	label,
+	className,
+	icon = true,
+	size = 'large'
+}: {
+	label?: string;
+	className?: string;
+	icon?: React.ReactNode;
+	size?: SizeType;
+}) {
 	const [openModal, setOpenModal] = useState(false);
-	const [step, setStep] = useState<ETransactionSteps>(ETransactionSteps.BUILD_TRANSACTION);
+	const { transactionState, setTransactionState, signTransaction, reviewTransaction } = useDashboardContext();
+	const [form] = Form.useForm();
 
 	return (
 		<div className='w-full'>
 			<Button
 				variant={EButtonVariant.PRIMARY}
 				fullWidth
-				icon={<PlusCircleOutlined />}
+				className={className}
+				icon={icon && <PlusCircleOutlined />}
 				onClick={() => setOpenModal(true)}
-				size='large'
+				size={size}
 			>
-				New Transaction
+				{label || 'New Transaction'}
 			</Button>
 			<Modal
 				open={openModal}
-				onCancel={() => setOpenModal(false)}
-				title={step}
+				onCancel={() => {
+					setTransactionState(ETransactionState.BUILD);
+					setOpenModal(false);
+					form.resetFields();
+				}}
+				title='Send Transaction'
 			>
-				<div className='flex flex-col gap-5'>
-					<NewTransactionForm
-						setStep={setStep}
-						step={step}
-						onClose={() => setOpenModal(false)}
+				{transactionState === ETransactionState.BUILD && (
+					<div className='flex flex-col gap-5'>
+						<NewTransactionForm
+							onClose={() => setOpenModal(false)}
+							form={form}
+						/>
+					</div>
+				)}
+				{transactionState === ETransactionState.REVIEW && (
+					<ReviewTransaction
+						onSubmit={signTransaction}
+						onClose={() => setTransactionState(ETransactionState.BUILD)}
+						reviewTransaction={reviewTransaction as IReviewTransaction}
 					/>
-				</div>
+				)}
+				{transactionState === ETransactionState.CONFIRM && <div>Success</div>}
+				{transactionState === ETransactionState.FAILED && <div>Failed</div>}
 			</Modal>
 		</div>
 	);

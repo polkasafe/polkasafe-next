@@ -22,8 +22,9 @@ export default function Button({ variant, className, fullWidth, children, ...pro
 			return (
 				<ScaleMotion>
 					<AntDButton
+						size='large'
 						className={twMerge(
-							'bg-primary text-white rounded-lg border-none min-w-[120px] flex justify-center items-center gap-x-2 text-sm',
+							'bg-primary text-white rounded-lg border-none min-w-[120px] flex justify-center items-center gap-x-2 text-sm shadow-none',
 							props.disabled && 'bg-opacity-60 text-disabled-btn-text',
 							fullWidth && 'w-full',
 							className
@@ -38,8 +39,10 @@ export default function Button({ variant, className, fullWidth, children, ...pro
 			return (
 				<ScaleMotion>
 					<AntDButton
+						size='large'
 						className={twMerge(
-							'bg-highlight text-text-primary border-secondary p-3 h-full rounded-lg',
+							'bg-highlight text-white rounded-lg min-w-[120px] flex justify-center items-center gap-x-2 text-sm shadow-none text-text-label border-none',
+							props.disabled && 'bg-opacity-60 text-disabled-btn-text',
 							fullWidth && 'w-full',
 							className
 						)}
@@ -53,8 +56,9 @@ export default function Button({ variant, className, fullWidth, children, ...pro
 			return (
 				<ScaleMotion>
 					<AntDButton
+						size='large'
 						className={twMerge(
-							'flex items-center text-failure text-sm font-normal bg-[#e63946]/[0.1] border-none outline-none rounded-lg justify-center',
+							'flex items-center text-failure text-sm font-normal bg-[#e63946]/[0.1] border-none outline-none rounded-lg justify-center shadow-none',
 							fullWidth && 'w-full',
 							className
 						)}
@@ -69,7 +73,7 @@ export default function Button({ variant, className, fullWidth, children, ...pro
 				<ScaleMotion>
 					<AntDButton
 						className={twMerge(
-							'bg-bg-secondary text-text-primary border-primary rounded-lg',
+							'bg-bg-secondary text-text-primary border-primary rounded-lg shadow-none',
 							fullWidth && 'w-full',
 							className
 						)}

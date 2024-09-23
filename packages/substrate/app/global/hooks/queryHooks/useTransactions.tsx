@@ -39,6 +39,7 @@ export function useTransactions({
 				? [`HistoryTransaction${JSON.stringify({ multisigs: [multisigId], page, limit })}`]
 				: [`QueueTransaction${JSON.stringify({ multisigs: [multisigId], page, limit })}`],
 		queryFn: type === ETransactionType.HISTORY_TRANSACTION ? handleHistoryTransaction : handleQueueTransaction,
-		enabled: !!multisigId
+		enabled: !!multisigId,
+		refetchOnWindowFocus: false
 	});
 }

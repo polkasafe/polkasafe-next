@@ -1,17 +1,5 @@
-// RULES: Enum with values should be in uppercase
+// RULES: Enum with values should be in Capital case
 // RULES: Enum should have E prefix
-
-// ASTAR
-// AVAIL
-// KHALA
-// KUSAMA
-// PHALA
-// POLKADOT
-// ROCOCO
-// ROCOCO_ASSETHUB
-// STATEMINE
-// STATEMINT
-// WESTEND
 
 export enum ENetwork {
 	ALEPHZERO = 'alephzero',
@@ -130,12 +118,14 @@ export enum ECurrency {
 }
 
 export enum ETxType {
-	TRANSFER = 'Transfer',
-	APPROVE = 'Approve',
-	FUND = 'Fund',
-	CANCEL = 'Cancel',
-	ADD_PROXY = 'Add Proxy',
-	REMOVE_PROXY = 'Remove Proxy'
+	TRANSFER = 'transfer',
+	APPROVE = 'approve',
+	FUND = 'fund',
+	CANCEL = 'cancel',
+	ADD_PROXY = 'add_proxy',
+	REMOVE_PROXY = 'remove_proxy',
+	CREATE_PROXY = 'create_roxy',
+	EDIT_PROXY = 'EDIT_PROXY'
 }
 
 export enum ETransactionTab {
@@ -163,4 +153,26 @@ export enum ECreateOrganisationSteps {
 	ORGANISATION_DETAILS = 'organisation_details',
 	ADD_MULTISIG = 'add_multisig',
 	REVIEW = 'review'
+}
+
+export enum ETransactionCalls {
+	PROXY = 'proxy'
+}
+
+export enum ETransactionState {
+	BUILD = 'build',
+	REVIEW = 'review',
+	CONFIRM = 'confirm',
+	FAILED = 'failed'
+}
+
+export enum ETransactionVariant {
+	DETAILED = 'detailed',
+	SIMPLE = 'simple'
+}
+
+export enum EAfterExecute {
+	LINK_PROXY = 'link_proxy',
+	EDIT_PROXY = 'edit_proxy',
+	REFRESH_BALANCE = 'refresh'
 }

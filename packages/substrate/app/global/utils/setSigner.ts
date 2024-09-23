@@ -1,16 +1,16 @@
-// Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
+// Copyright 2019-2025 @blobscriptions/marketplace authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-/* eslint-disable security/detect-object-injection */
+/* eslint-disable no-console */
 
 import APP_NAME from '@common/constants/appName';
 import { ENetwork, Wallet } from '@common/enum/substrate';
 import { Injected, InjectedWindow } from '@polkadot/extension-inject/types';
 import { isNumber } from '@polkadot/util';
 import { checkAvailNetwork } from '@substrate/app/global/utils/checkAvailNetwork';
-import { signedExtensions, types } from 'avail-js-sdk';
+import { ApiPromise, signedExtensions, types } from 'avail-js-sdk';
 
-const getInjectorMetadata = (api: any) => {
+const getInjectorMetadata = (api: ApiPromise) => {
 	return {
 		chain: api.runtimeChain.toString(),
 		chainType: 'substrate' as const,
@@ -20,15 +20,25 @@ const getInjectorMetadata = (api: any) => {
 		ss58Format: isNumber(api.registry.chainSS58) ? api.registry.chainSS58 : 0,
 		tokenDecimals: api.registry.chainDecimals[0] || 18,
 		tokenSymbol: api.registry.chainTokens[0] || 'AVAIL',
-		types: types as any,
+		types: types as unknown as Record<string, string>,
 		userExtensions: signedExtensions
 	};
 };
 
-export async function setSigner(api: any, chosenWallet: Wallet, network: ENetwork) {
+export async function setSigner(api: any, network: ENetwork) {
+	const loggedInWallet = localStorage.getItem('logged_in_wallet') as Wallet;
+	if (!loggedInWallet) {
+		return;
+	}
+
 	const injectedWindow = (typeof window !== 'undefined' && window) as Window & InjectedWindow;
 
-	const wallet = injectedWindow.injectedWeb3[String(chosenWallet)];
+	if (!injectedWindow) {
+		console.log('Injected Window is null', injectedWindow);
+		return;
+	}
+
+	const wallet = injectedWindow.injectedWeb3[loggedInWallet];
 
 	if (!wallet) {
 		return;

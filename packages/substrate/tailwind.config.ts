@@ -1,6 +1,7 @@
 // Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+/** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: [
 		// add the paths to all of your template files
@@ -47,6 +48,19 @@ module.exports = {
 				'circle-2-gradient': 'linear-gradient(76deg, #4C1D95 -15.25%, #7C3AED 100%)',
 				'circle-3-gradient': 'linear-gradient(129deg, #312E81 11.01%, #4F46E5 95%)',
 				'circle-4-gradient': 'linear-gradient(129deg, #655600 11.01%, #00CCE3 95%)'
+			},
+			flexBasis: {
+				'1/7': '14.2857143%',
+				'2/7': '28.5714286%',
+				'3/7': '42.8571429%',
+				'4/7': '57.1428571%',
+				'5/7': '71.4285714%',
+				'6/7': '85.7142857%',
+				'1/8': '12.5%'
+			},
+			fontSize: {
+				'2xs': '0.75rem',
+				'3xs': '0.625rem'
 			}
 		}
 	},

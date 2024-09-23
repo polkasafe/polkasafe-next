@@ -41,7 +41,7 @@ export default function AssetsCard({ assets }: IAssetCard) {
 		};
 	});
 
-	console.log('assetsData', assetsData);
+	// console.log('assetsData', assetsData);
 
 	return <DoughnutChart data={assetsData} />;
 }

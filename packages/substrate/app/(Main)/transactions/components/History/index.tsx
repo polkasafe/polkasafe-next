@@ -4,7 +4,7 @@
 
 'use client';
 
-import { ETransactionType } from '@common/enum/substrate';
+import { ETransactionType, ETransactionVariant } from '@common/enum/substrate';
 import { Empty } from '@common/global-ui-components/Empty';
 import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
 import { TransactionList } from '@substrate/app/(Main)/components/TransactionList';
@@ -46,6 +46,7 @@ export function History({ multisigs }: IHistory) {
 		<TransactionList
 			transactions={(data.transactions || []) as Array<IDashboardTransaction>}
 			txType={ETransactionType.HISTORY_TRANSACTION}
+			variant={ETransactionVariant.DETAILED}
 		/>
 	);
 }

@@ -4,10 +4,10 @@
 
 'use client';
 
-import { ETransactionType } from '@common/enum/substrate';
+import { ETransactionType, ETransactionVariant } from '@common/enum/substrate';
 import { Empty } from '@common/global-ui-components/Empty';
 import { IDashboardTransaction, IMultisig } from '@common/types/substrate';
-import { TransactionList } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails/components/TransactionList';
+import { TransactionList } from '@substrate/app/(Main)/components/TransactionList';
 import { useHistoryAtom } from '@substrate/app/atoms/transaction/transactionAtom';
 import { Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -35,17 +35,18 @@ export function QuickHistory({ multisigs }: IQuickHistory) {
 		return <Skeleton />;
 	}
 
-	if (data.transactions.length === 0 && data.currentIndex !== multisigIds.length - 1) {
-		return <Skeleton />;
-	}
-
 	if (data.transactions.length === 0 && data.currentIndex === multisigIds.length - 1) {
 		return <Empty description='No Transaction Found' />;
+	}
+
+	if (data.transactions.length === 0 && data.currentIndex !== multisigIds.length - 1) {
+		return <Skeleton />;
 	}
 	return (
 		<TransactionList
 			transactions={(data.transactions || []) as Array<IDashboardTransaction>}
 			txType={ETransactionType.HISTORY_TRANSACTION}
+			variant={ETransactionVariant.SIMPLE}
 		/>
 	);
 }

@@ -6,28 +6,28 @@ import React, { useState } from 'react';
 import { DollarIcon } from '@common/global-ui-components/Icons';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import Modal from '@common/global-ui-components/Modal';
+import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import DonateInfo from './DonateInfo';
 
 const DonateButton = () => {
 	const [openDonateModal, setOpenDonateModal] = useState(false);
 	return (
 		<SlideInMotion>
-			<div className='relative'>
-				<Modal
-					onCancel={() => setOpenDonateModal(false)}
-					title={<h3 className='text-white mb-8 text-lg font-semibold'>Donate Us!</h3>}
-					open={openDonateModal}
-				>
-					<DonateInfo />
-				</Modal>
-				<button
-					onClick={() => setOpenDonateModal(true)}
-					className='flex items-center justify-center gap-x-2 outline-none border-none text-white bg-highlight rounded-lg p-2.5 shadow-none text-xs'
-				>
-					<DollarIcon className='text-sm text-primary' />
-					<span className='hidden md:inline-flex text-primary'>Donate</span>
-				</button>
-			</div>
+			<Modal
+				onCancel={() => setOpenDonateModal(false)}
+				title={<h3 className='text-white mb-8 text-lg font-semibold'>Donate Us!</h3>}
+				open={openDonateModal}
+			>
+				<DonateInfo />
+			</Modal>
+			<Button
+				icon={<DollarIcon />}
+				variant={EButtonVariant.PRIMARY}
+				onClick={() => setOpenDonateModal(true)}
+				className='outline-none border-none bg-highlight text-2xs text-primary'
+			>
+				Donate
+			</Button>
 		</SlideInMotion>
 	);
 };

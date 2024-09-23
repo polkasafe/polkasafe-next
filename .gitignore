@@ -41,3 +41,5 @@ cache
 
 firebase-debug.log
 .firebase/
+
+firebase-hosting-merge.yml

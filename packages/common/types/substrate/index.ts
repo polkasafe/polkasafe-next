@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { ECHANNEL, ENetwork, EUserType } from '@common/enum/substrate';
+import { ECHANNEL, ENetwork, ETxType, EUserType } from '@common/enum/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
 import { SignerOptions, SubmittableExtrinsic, SignerResult } from '@polkadot/api/types';
@@ -48,11 +48,14 @@ export interface IDashboardTransaction {
 	callData: string;
 	amountToken: string;
 	network: string;
-	createdAt: number;
+	createdAt: Date;
 	multisigAddress: string;
 	from: string;
 	to?: string;
 	approvals: string[];
+	callModule?: string;
+	callModuleFunction?: string;
+	txType?: ETxType;
 }
 
 export interface ITransaction {
@@ -153,7 +156,7 @@ export interface IAsset {
 	multisigId?: string;
 }
 
-export interface IMultisigAssets {
+export interface IAssets {
 	free: string;
 	reserved: string;
 	frozen: string;
@@ -163,6 +166,11 @@ export interface IMultisigAssets {
 	symbol: string;
 	network: ENetwork;
 	allCurrency: { [network: string]: any };
+	proxyAddress?: string;
+}
+
+export interface IMultisigAssets extends IAssets {
+	proxy: Array<IMultisigAssets>;
 }
 
 export interface I2FASettings {
@@ -269,13 +277,13 @@ export interface IUpdateDBAssetProps extends IDBAssets {
 export interface ISubstrateExecuteProps {
 	api: ApiPromise | AvailApiPromise;
 	apiReady: boolean;
-	network: string;
+	network: ENetwork;
 	tx: SubmittableExtrinsic<'promise'>;
 	address: string;
 	params?: Partial<SignerOptions>;
 	errorMessageFallback: string;
-	onSuccess: (txHash?: string, txIndex?: number) => Promise<void> | void;
-	onFailed: (errorMessageFallback?: string) => Promise<void> | void;
+	onSuccess?: (data: IGenericObject) => Promise<void> | void;
+	onFailed?: (errorMessageFallback?: string) => Promise<void> | void;
 	setStatus?: (pre: string) => void;
 }
 
@@ -294,10 +302,11 @@ export interface ISendTransactionForm {
 
 export interface ISendTransaction {
 	recipients: Array<IRecipient>;
-	note: string;
+	note?: string;
 	sender: IMultisig;
 	selectedProxy?: string;
 	transactionFields?: ITxnCategory;
+	tip?: string;
 }
 
 export interface IGenericObject {
@@ -370,4 +379,87 @@ export interface ICreateOrganisationDetails {
 	name: string;
 	description: string;
 	image?: string;
+}
+
+export interface IReviewTransaction {
+	tx: IGenericObject;
+	from: string;
+	to?: string;
+	name?: string;
+	proxyAddress?: string;
+	txCost?: string;
+	network: ENetwork;
+}
+
+export interface IGetTransaction {
+	type: ETxType;
+	api: ApiPromise;
+	data: Array<{
+		amount: BN;
+		recipient: string;
+	}> | null;
+	multisig: IMultisig;
+	sender: string;
+	proxyAddress?: string;
+	isProxy?: boolean;
+	calldata?: string;
+	callHash?: string;
+	newSignatories?: Array<string>;
+	params?: Partial<SignerOptions>;
+	newThreshold?: number;
+	onSuccess?: (data: IGenericObject) => void;
+	onFailed?: () => void;
+}
+
+export interface ITransferTransaction {
+	api: ApiPromise;
+	data: Array<{
+		amount: BN;
+		recipient: string;
+	}> | null;
+	multisig: IMultisig;
+	proxyAddress?: string;
+	isProxy?: boolean;
+	params?: Partial<SignerOptions>;
+	sender: string;
+	onSuccess?: (data: IGenericObject) => void;
+	onFailed?: () => void;
+}
+
+export interface ICreateProxyTransaction {
+	api: ApiPromise;
+	multisig: IMultisig;
+	sender: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
+}
+
+export interface ICancelTransaction {
+	api: ApiPromise;
+	multisig: IMultisig;
+	sender: string;
+	callHash: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
+}
+
+export interface IApproveTransaction {
+	api: ApiPromise;
+	multisig: IMultisig;
+	sender: string;
+	calldata: string;
+	callHash: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
+}
+
+export interface IEditMultisigTransaction {
+	api: ApiPromise;
+	newSignatories?: Array<string>;
+	newThreshold?: number;
+	multisig: IMultisig;
+	proxyAddress: string;
+	sender: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
 }

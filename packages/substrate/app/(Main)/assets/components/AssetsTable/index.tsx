@@ -4,17 +4,49 @@
 
 'use client';
 
-import { currencyProperties, getCurrencyLogo, getCurrencySymbolByCurrency } from '@common/constants/currencyConstants';
 import Address from '@common/global-ui-components/Address';
-import Button from '@common/global-ui-components/Button';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IMultisigAssets } from '@common/types/substrate';
+import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
+import { TransferByMultisig } from '@substrate/app/(Main)/assets/components/AssetsTable/components/Transfer';
 import { Table } from 'antd';
-import Image from 'next/image';
 
 interface IAssetsTableProps {
-	dataSource: Array<IMultisigAssets>;
+	dataSource: Array<IMultisigAssetsWithProxy>;
 	currency: string;
 }
+
+interface IMultisigAssetsWithProxy extends IMultisigAssets {
+	proxy: Array<IMultisigAssets>;
+}
+
+const columns = [
+	{
+		title: 'Asset',
+		variant: ETypographyVariants.h1,
+		className: 'basis-1/6 text-base'
+	},
+	{
+		title: 'Balance',
+		variant: ETypographyVariants.h1,
+		className: 'basis-[15%] text-base'
+	},
+	{
+		title: 'Value',
+		variant: ETypographyVariants.h1,
+		className: 'basis-1/7 text-base'
+	},
+	{
+		title: 'Multisig',
+		variant: ETypographyVariants.h1,
+		className: 'basis-[39%] text-base'
+	},
+	{
+		title: 'Actions',
+		variant: ETypographyVariants.h1,
+		className: 'text-base'
+	}
+];
 
 function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 	const assetsColumns = [
@@ -33,10 +65,10 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			dataIndex: 'usd',
 			key: 'usd',
 			render: (usd: string, allData: IMultisigAssets) => {
-				const currencySymbol = getCurrencySymbolByCurrency(currency);
+				const symbol = getCurrencySymbol(currency);
 				return (
 					<div className='flex gap-2'>
-						{currencySymbol} {allData.allCurrency?.[allData.network]?.[currency.toLowerCase()]?.toFixed(2)}
+						{symbol} {(allData.allCurrency?.[allData.network]?.[currency.toLowerCase()] || 0).toFixed(2)}
 					</div>
 				);
 			}
@@ -48,7 +80,10 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			render: (address: string, allData: IMultisigAssets) => (
 				<div>
 					<Address
-						address={address}
+						address={allData.proxyAddress || address}
+						isProxy={!!allData.proxyAddress}
+						isMultisig={true}
+						withBadge={false}
 						network={allData.network}
 					/>
 				</div>
@@ -59,26 +94,47 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			title: 'Actions',
 			dataIndex: 'actions',
 			key: 'actions',
-			render: (data: any) => (
-				<div>
-					<Button
-						type='primary'
-						onClick={() => console.log(data)}
-					>
-						Send
-					</Button>
-				</div>
-			)
+			render: (_: any, data: any) => {
+				if (data.proxyAddress) {
+					return null;
+				}
+				return (
+					<div>
+						<TransferByMultisig
+							address={data.address}
+							network={data.network}
+							proxyAddress={data.proxyAddress}
+						/>
+					</div>
+				);
+			}
 		}
 	];
 	return (
-		<Table
-			rowClassName='bg-bg-main'
-			pagination={false}
-			className='w-full bg-bg-main'
-			columns={assetsColumns}
-			dataSource={dataSource}
-		/>
+		<>
+			<div className='flex bg-bg-secondary my-1 p-3 rounded-lg mr-1 basis-1/'>
+				{columns.map((column) => (
+					<Typography
+						key={column.title}
+						variant={column.variant}
+						className={column.className}
+					>
+						{column.title}
+					</Typography>
+				))}
+			</div>
+
+			<div className='overflow-x-auto overflow-y-auto pr-4'>
+				<Table
+					rowClassName='bg-bg-main'
+					pagination={false}
+					showHeader={false}
+					className='w-full bg-bg-main'
+					columns={assetsColumns}
+					dataSource={dataSource}
+				/>
+			</div>
+		</>
 	);
 }
 

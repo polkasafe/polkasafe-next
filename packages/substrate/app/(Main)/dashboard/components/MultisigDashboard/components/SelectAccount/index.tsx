@@ -6,18 +6,36 @@
 
 import Address from '@common/global-ui-components/Address';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IMultisig } from '@common/types/substrate';
+import { MULTISIG_DASHBOARD_URL, PROXY_URL } from '@substrate/app/global/end-points';
+import { CreateProxyModal } from '@substrate/app/modal/CreateProxy';
 import { Divider } from 'antd';
+import Link from 'next/link';
 import React from 'react';
 
-const SelectAccount = ({ className, multisig }: { className?: string; multisig: IMultisig }) => {
+const SelectAccount = ({
+	className,
+	multisig,
+	organisationId
+}: {
+	className?: string;
+	multisig: IMultisig;
+	organisationId: string;
+}) => {
 	return (
-		<div>
-			<h2 className='text-base font-bold text-white mb-2'>Select Account</h2>
+		<div className='flex flex-col gap-4 '>
+			<Typography variant={ETypographyVariants.h1}>Select Account</Typography>
 			<div
-				className={`${className} relative bg-bg-main flex flex-col gap-y-3 rounded-lg p-5 shadow-lg h-[17rem] scale-90 w-[111%] origin-top-left`}
+				className={`${className} relative bg-bg-main flex flex-col gap-y-3 rounded-3xl p-5 shadow-lg h-60 origin-top-left`}
 			>
-				<div>
+				<Link
+					href={MULTISIG_DASHBOARD_URL({
+						organisationId,
+						multisig: multisig.address,
+						network: multisig.network
+					})}
+				>
 					<Address
 						address={multisig.address}
 						network={multisig.network}
@@ -27,28 +45,31 @@ const SelectAccount = ({ className, multisig }: { className?: string; multisig: 
 						isMultisig
 						withBadge={false}
 					/>
-				</div>
+				</Link>
 				<Divider className='m-1'></Divider>
 				<div className='flex-1 flex flex-col gap-y-3 pl-2 overflow-y-auto'>
 					{multisig.proxy &&
 						multisig.proxy.length > 0 &&
 						multisig.proxy.map((item) => (
-							<Address
-								address={item.address}
-								name={item.name}
-								network={multisig.network}
-								isProxy
-							/>
+							<Link
+								href={PROXY_URL({
+									organisationId,
+									multisigAddress: multisig.address,
+									proxyAddress: item.address,
+									network: multisig.network
+								})}
+							>
+								<Address
+									address={item.address}
+									name={item.name}
+									network={multisig.network}
+									isProxy
+								/>
+							</Link>
 						))}
 				</div>
 				<div className='w-full'>
-					<Button
-						variant={EButtonVariant.SECONDARY}
-						className='text-sm text-text-label border-none'
-						fullWidth
-					>
-						Create Proxy
-					</Button>
+					<CreateProxyModal multisig={multisig} />
 				</div>
 			</div>
 		</div>

@@ -4,6 +4,7 @@ import { useOrganisation } from '@substrate/app/atoms/organisation/organisationA
 import { NotificationsUI } from '@common/global-ui-components/Notifications/index.tsx';
 import { AdminPanel } from '@common/global-ui-components/AdminPanel/index';
 import React from 'react';
+import { Skeleton } from 'antd';
 
 interface IActionItems {
 	selectedTab: ESettingsTab;
@@ -14,7 +15,7 @@ export const ActionItems = ({ selectedTab }: IActionItems) => {
 	console.log('organisation', organisation);
 
 	if (!organisation) {
-		return <div>Loading...</div>;
+		return <Skeleton active />;
 	}
 
 	return (

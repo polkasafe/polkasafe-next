@@ -27,8 +27,8 @@ interface ISignatoryProps {
 	// filterAddress?: string;
 	homepage?: boolean;
 	network: string;
-    userAddress: string;
-    addressBook?: IAddressBook[];
+	userAddress: string;
+	addressBook?: IAddressBook[];
 }
 
 const SelectSignatories = ({
@@ -37,24 +37,23 @@ const SelectSignatories = ({
 	signatories,
 	homepage,
 	network,
-    userAddress,
-    addressBook
+	userAddress,
+	addressBook
 }: ISignatoryProps) => {
 	const [walletAccounts, setWalletAccounts] = useState<InjectedAccount[]>([]);
 
-	const [addWalletAddress, setAddWalletAddress] = useState<boolean>(false);
-
-    const addresses: ISignature[] = addressBook
-    // ?.filter(
-    //     (item) =>
-    //         !signatories.includes(item.address) &&
-    //         (filterAddress ? item.address.includes(filterAddress, 0) || item.name.includes(filterAddress, 0) : true)
-    // )
-    ?.map((item, i) => ({
-        address: item.address,
-        key: signatories.length + i,
-        name: item.name
-    })) || [];
+	const addresses: ISignature[] =
+		addressBook
+			// ?.filter(
+			//     (item) =>
+			//         !signatories.includes(item.address) &&
+			//         (filterAddress ? item.address.includes(filterAddress, 0) || item.name.includes(filterAddress, 0) : true)
+			// )
+			?.map((item, i) => ({
+				address: item.address,
+				key: signatories.length + i,
+				name: item.name
+			})) || [];
 
 	const dragStart = (event: any) => {
 		event.dataTransfer.setData('text', event.target.id);
@@ -64,19 +63,19 @@ const SelectSignatories = ({
 		event.preventDefault();
 	};
 
-    const fetchWalletAccounts = async () => {
-        if (addresses && addresses.length > 0) return;
+	const fetchWalletAccounts = async () => {
+		if (addresses && addresses.length > 0) return;
 
-        const accounts = await getWalletAccounts();
+		const accounts = await getWalletAccounts();
 
-        if (accounts && accounts.accounts) {
-            setWalletAccounts(accounts.accounts);
-        }
-    }
+		if (accounts && accounts.accounts) {
+			setWalletAccounts(accounts.accounts);
+		}
+	};
 
-    useEffect(() => {
-        fetchWalletAccounts();
-    }, []);
+	useEffect(() => {
+		fetchWalletAccounts();
+	}, []);
 
 	const drop = (event: any) => {
 		event.preventDefault();
@@ -163,7 +162,7 @@ const SelectSignatories = ({
 	};
 
 	return (
-		<div className='w-full max-sm:w-[100%]'>
+		<div className='flex w-full max-sm:w-full'>
 			{/* <NewUserModal
 				open={addWalletAddress}
 				onCancel={() => setAddWalletAddress(false)}
@@ -172,7 +171,7 @@ const SelectSignatories = ({
 				<h1 className='text-label mt-3 mb-2 max-sm:text-xs'>Add Addresses</h1>
 				<Input placeholder='Enter name, address or account index to add as signatory' prefix={<SearchIcon className='text-label' />} className='border border-label' />
 			</div>
-			<div className='flex w-[100%] items-center justify-center'>
+			<div className='flex w-full items-center justify-center'>
 				<div
 					id='div1'
 					className='flex flex-col my-2 w-1/2 mr-1 cursor-grab'
@@ -209,7 +208,7 @@ const SelectSignatories = ({
 							// </Tooltip>
 							<>
 								<div className='text-sm text-text-disabled'>
-                                    Addresses imported directly from your Polkadot.js wallet
+									Addresses imported directly from your Polkadot.js wallet
 								</div>
 								{walletAccounts
 									.filter((item) => !signatories.includes(item.address))
@@ -251,8 +250,8 @@ const SelectSignatories = ({
 								key={`${i}-${a}`}
 								className='bg-bg-main p-2 m-1 rounded-md text-white cursor-default flex items-center gap-x-2 max-sm:text-[8px]'
 							>
-								{addressBook?.find((item) => getSubstrateAddress(item.address) === getSubstrateAddress(a))
-									?.name || shortenAddress(getEncodedAddress(a, network) || a)}{' '}
+								{addressBook?.find((item) => getSubstrateAddress(item.address) === getSubstrateAddress(a))?.name ||
+									shortenAddress(getEncodedAddress(a, network) || a)}{' '}
 								{getSubstrateAddress(a) === getSubstrateAddress(userAddress) && (
 									<Tooltip title={<span className='text-sm text-text_secondary'>Your Wallet Address</span>}>
 										<Badge status='success' />

@@ -18,8 +18,9 @@ export const executeTx = async ({
 	onSuccess,
 	onFailed,
 	setStatus
-}: ISubstrateExecuteProps) =>
-	new Promise<string>((resolve, reject) => {
+}: ISubstrateExecuteProps) => {
+	let success = false;
+	return new Promise<string>((resolve, reject) => {
 		if (!api || !apiReady || !tx) return;
 
 		tx.signAndSend(address, params, async ({ status, events, txHash, txIndex }) => {
@@ -39,7 +40,7 @@ export const executeTx = async ({
 				// eslint-disable-next-line no-restricted-syntax
 				for (const { event } of events) {
 					if (event.method === 'ExtrinsicSuccess') {
-						onSuccess(blockHash, Number(txIndex));
+						success = true;
 						resolve(txHash.toString());
 					} else if (event.method === 'ExtrinsicFailed') {
 						setStatus?.(TX_FAILED);
@@ -63,6 +64,12 @@ export const executeTx = async ({
 					}
 				}
 			} else if (status.isFinalized) {
+				console.log(success, 'checking success');
+				if (success) {
+					console.log('sending success');
+					console.log(txHash.toHex(), txHash.toString(), txHash);
+					onSuccess?.({ txHash: txHash.toHex() || txHash.toString() || txHash, txIndex });
+				}
 				console.log(`Transaction has been included in blockHash ${status.asFinalized.toHex()}`);
 				console.log(`tx: https://${network}.subscan.io/extrinsic/${txHash}`);
 			}
@@ -71,6 +78,7 @@ export const executeTx = async ({
 			setStatus?.(':( transaction failed');
 			reject(error?.toString?.() || errorMessageFallback);
 			console.error('ERROR:', error);
-			onFailed(error?.toString?.() || errorMessageFallback);
+			onFailed?.(error?.toString?.() || errorMessageFallback);
 		});
 	});
+};

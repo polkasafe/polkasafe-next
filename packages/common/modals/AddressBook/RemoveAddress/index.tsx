@@ -1,22 +1,22 @@
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import React, { useState } from 'react';
-import useNotification from 'antd/es/notification/useNotification';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { ConfirmationModal } from '@common/modals/ConfirmationModal';
 import { DeleteIcon } from '@common/global-ui-components/Icons';
+import { useNotification } from '@common/utils/notification';
 
 export const RemoveAddress = ({ onSubmit }: { onSubmit: () => Promise<void> }) => {
 	const [openModal, setOpenModal] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [notification, context] = useNotification();
+	const notification = useNotification();
 	const handleRemove = async () => {
 		try {
 			setLoading(true);
 			await onSubmit();
-			notification.success(SUCCESS_MESSAGES.REMOVE_ADDRESS_SUCCESS);
+			notification(SUCCESS_MESSAGES.REMOVE_ADDRESS_SUCCESS);
 		} catch (error) {
 			console.error(error);
-			notification.error({ ...ERROR_MESSAGES.REMOVE_ADDRESS_FAILED, description: error.message || error });
+			notification({ ...ERROR_MESSAGES.REMOVE_ADDRESS_FAILED, description: error.message || error });
 		} finally {
 			setLoading(false);
 			setOpenModal(false);
@@ -24,7 +24,6 @@ export const RemoveAddress = ({ onSubmit }: { onSubmit: () => Promise<void> }) =
 	};
 	return (
 		<>
-			{context}
 			<Button
 				size='small'
 				variant={EButtonVariant.SECONDARY}

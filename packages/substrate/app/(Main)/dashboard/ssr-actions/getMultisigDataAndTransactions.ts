@@ -18,9 +18,6 @@ const parseMultisig = (multisig: any) =>
 		proxy: multisig.proxy || []
 	}) as IMultisig;
 export const getMultisigDataAndTransactions = async (address: string, network: string) => {
-	// fetch multisig data and transactions
-	console.log('getMultisigDataAndTransactions', address, network);
-
 	const multisigData = await getMultisigDataByMultisigAddress({ address, network });
 
 	// parsing multisig data

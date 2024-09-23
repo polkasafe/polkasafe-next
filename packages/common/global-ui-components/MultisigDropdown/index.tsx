@@ -1,4 +1,4 @@
-import { IMultisig } from '@common/types/substrate';
+import { IMultisig, IMultisigAssets } from '@common/types/substrate';
 import { useState } from 'react';
 import { Dropdown } from 'antd';
 import Address from '@common/global-ui-components/Address';
@@ -6,6 +6,7 @@ import { getMultisigOptions } from '@common/global-ui-components/MultisigDropdow
 import { ENetwork } from '@common/enum/substrate';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 
 interface IMultisigDropdown {
 	multisigs: Array<IMultisig>;
@@ -20,9 +21,10 @@ interface IMultisigDropdown {
 		name: string;
 		proxy?: string;
 	}) => void;
+	assets?: Array<IMultisigAssets> | null;
 }
 
-export const MultisigDropdown = ({ multisigs, onChange }: IMultisigDropdown) => {
+export const MultisigDropdown = ({ multisigs, onChange, assets }: IMultisigDropdown) => {
 	const defaultMultisigId = `${multisigs[0].address}_${multisigs[0].network}_${multisigs[0].name}`;
 	const [selectedMultisig, setSelectedMultisig] = useState<string>(defaultMultisigId);
 
@@ -44,6 +46,14 @@ export const MultisigDropdown = ({ multisigs, onChange }: IMultisigDropdown) => 
 	});
 	const [address, network, name, proxy, proxyName] = selectedMultisig.split('_');
 
+	const proxyMultiSigAssets = assets
+		?.map((a) => a.proxy || [])
+		.flat()
+		.find((a) => a.proxyAddress === proxy && a.network === network);
+
+	const multiSigAssets = assets?.find((asset) => asset?.address === address && asset?.network === network);
+	const selectedAddressAsset = proxy ? proxyMultiSigAssets : multiSigAssets;
+
 	return (
 		<div>
 			<Dropdown
@@ -53,7 +63,7 @@ export const MultisigDropdown = ({ multisigs, onChange }: IMultisigDropdown) => 
 					items: multisigOptions
 				}}
 			>
-				<div className='flex justify-between gap-x-4 items-center text-white text-[16px]'>
+				<div className='flex justify-between gap-x-4 items-center text-white text-base'>
 					<Address
 						isMultisig
 						isProxy={Boolean(proxy)}
@@ -63,7 +73,19 @@ export const MultisigDropdown = ({ multisigs, onChange }: IMultisigDropdown) => 
 						withBadge={false}
 						address={proxy || address}
 					/>
-					<CircleArrowDownIcon className='text-primary' />
+					<div className='flex gap-2'>
+						{selectedAddressAsset && (
+							<div>
+								<Typography
+									variant={ETypographyVariants.p}
+									className='text-text-primary text-3xs'
+								>
+									Balance: {selectedAddressAsset.free} {selectedAddressAsset.symbol}
+								</Typography>
+							</div>
+						)}
+						<CircleArrowDownIcon className='text-primary' />
+					</div>
 				</div>
 			</Dropdown>
 		</div>

@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 import RightArrowOutlined from '@common/assets/icons/RightArrowOutlined.svg';
 import { ActionAndDetails } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/ActionsAndDetails';
-import { DashboardOverview } from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/DashboardOverview';
+import { DashboardOverview } from '@substrate/app/(Main)/dashboard/components/DashboardOverview';
 import AssetsOverview from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/AssetsOverview';
 import { Suspense } from 'react';
 import { ETransactionTab } from '@common/enum/substrate';
@@ -41,7 +41,9 @@ export default async function OrganisationDashboard({ id, selectedTab }: IOrgani
 								View All <RightArrowOutlined />
 							</Link>
 						</div>
-						<AssetsOverview />
+						<div className='bg-bg-main flex justify-center items-center px-7 py-5 rounded-3xl gap-10 h-full'>
+							<AssetsOverview />
+						</div>
 					</div>
 				</div>
 				<div className='bg-bg-main rounded-3xl p-5 h-full'>

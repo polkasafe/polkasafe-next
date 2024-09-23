@@ -41,6 +41,7 @@ const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 			if (logout) {
 				await logout();
 			}
+			localStorage.removeItem('logged_in_wallet');
 			router.push(LOGIN_URL);
 		} catch (error) {
 			console.error(error);
@@ -93,11 +94,11 @@ const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 			>
 				<Button
 					variant={EButtonVariant.SECONDARY}
-					className='p-2.5 h-full px-4 border-2 border-primary flex gap-4'
+					className='p-2 h-full px-4 border-2 border-primary flex gap-4'
 				>
 					<SubstrateAddress
 						address={userAddress}
-						identiconSize={15}
+						identiconSize={20}
 					/>
 					<CircleArrowDownIcon className='text-primary' />
 				</Button>

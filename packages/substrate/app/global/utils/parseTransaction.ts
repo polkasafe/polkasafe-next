@@ -15,6 +15,8 @@ export const parseTransaction = (transaction: any) => {
 		createdAt: new Date(transaction.created_at),
 		callData: transaction.callData,
 		callHash: transaction.callHash,
-		approvals: transaction.approvals
+		approvals: transaction.approvals,
+		callModule: transaction.call_module,
+		callModuleFunction: transaction.call_module_function
 	} as unknown as IDashboardTransaction;
 };

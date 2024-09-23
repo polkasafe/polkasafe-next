@@ -13,7 +13,8 @@
     "dev": "npm-run-all --parallel next:substrate",
     "prepare": "husky install",
     "lint": "yarn workspace substrate lint",
-    "lint-fix": "yarn workspace substrate lint --fix"
+    "lint-fix": "yarn workspace substrate lint --fix",
+    "deploy:substrate": "firebase deploy --only hosting"
   },
   "dependencies": {
     "@svgr/webpack": "^8.1.0",

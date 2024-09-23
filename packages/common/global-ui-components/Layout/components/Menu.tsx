@@ -41,7 +41,8 @@ const Menu = ({ userAddress, organisation, organisations }: IMenuProps) => {
 
 	const getUrl = (baseUrl: string, tab?: string) => {
 		if (multisig && network && organisationParam) {
-			return `${baseUrl}?_multisig=${multisig}&_network=${network}&_organisation=${organisationParam}`;
+			// eslint-disable-next-line sonarjs/no-nested-template-literals
+			return `${baseUrl}?_multisig=${multisig}&_network=${network}&_organisation=${organisationParam}${tab ? `&_tab=${tab}` : ''}`;
 		}
 		if (organisationParam) {
 			return `${baseUrl}?_organisation=${organisationParam}&_tab=${tab}`;

@@ -4,26 +4,13 @@
 
 'use client';
 
-import { Dropdown, Form, Input, Tooltip } from 'antd';
+import { Form, Input } from 'antd';
 import BN from 'bn.js';
-import { useEffect, useState } from 'react';
-import { currencies, currencyProperties } from '@common/constants/currencyConstants';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
-import { ItemType } from 'antd/es/menu/interface';
 import { ENetwork } from '@common/enum/substrate';
-import { CircleArrowDownIcon, WarningCircleIcon } from '@common/global-ui-components/Icons';
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
-import { CurrencyFlag } from '@common/global-ui-components/SelectCurrency';
-import formatBnBalance from '@common/utils/formatBnBalance';
 import inputToBn from '@common/utils/inputToBn';
-import { ICurrency } from '@common/types/substrate';
-
-function formatBalance(amount: number | string) {
-	return Number(amount)
-		.toFixed(2)
-		.replace(/\d(?=(\d{3})+\.)/g, '$&,');
-}
 
 interface Props {
 	className?: string;
@@ -46,63 +33,6 @@ const BalanceInput: React.FC<Props> = ({
 	formName,
 	required = true
 }: Props) => {
-	// useEffect(() => {
-	// setCurrency(network);
-	// setBalance(defaultValue || '');
-	// }, [defaultValue, network]);
-
-	// const tokenCurrencyPrice = !Object.values(ENetwork).includes(currency as any)
-	// 	? Number(currencyValues.tokenUsdPrice[network]?.value) *
-	// 		(currencyValues.allCurrencyPrices[currencyProperties[currency]?.symbol]?.value || 1)
-	// 	: 1;
-
-	// useEffect(() => {
-	// 	const value = Number(defaultValue);
-	// 	if (Number.isNaN(value)) return;
-	// 	if (!value || value <= 0) {
-	// 		setIsValidInput(false);
-	// 		onChange(new BN(0));
-	// 		return;
-	// 	}
-
-	// 	const [inputBalance, isValid] = inputToBn(
-	// 		`${network === 'astar' ? value.toFixed(13) : network === 'alephzero' ? value.toFixed(11) : value}`,
-	// 		network,
-	// 		false
-	// 	);
-	// 	setIsValidInput(isValid);
-
-	// 	if (isValid) {
-	// 		setBnBalance(inputBalance);
-	// 		onChange(inputBalance);
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [network]);
-
-	const currencyOptions: ItemType[] = [
-		{
-			key: network,
-			label: (
-				<span className='flex items-center gap-x-2 text-white'>
-					<ParachainTooltipIcon src={networkConstants[network]?.logo} />
-					{networkConstants[network]?.tokenSymbol}
-				</span>
-			) as any
-		}
-	];
-
-	Object.values(currencies).forEach((c) => {
-		currencyOptions.push({
-			key: c,
-			label: (
-				<span className='flex items-center gap-x-2 text-white'>
-					<CurrencyFlag src={currencyProperties[c]?.logo} />
-					{c} ({currencyProperties[c]?.symbol})
-				</span>
-			) as any
-		});
-	});
-
 	return (
 		<section className={`${className}`}>
 			<label

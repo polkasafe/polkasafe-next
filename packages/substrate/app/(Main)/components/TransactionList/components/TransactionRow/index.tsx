@@ -2,7 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 /* eslint-disable no-tabs */
-import { ENetwork, ETransactionOptions, ETransactionType, ETxType, Wallet } from '@common/enum/substrate';
+import {
+	EAfterExecute,
+	ENetwork,
+	ETransactionOptions,
+	ETransactionType,
+	ETransactionVariant,
+	ETxType
+} from '@common/enum/substrate';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { TransactionHead } from '@common/global-ui-components/Transaction/TransactionHead';
 import TransactionDetails from '@common/global-ui-components/Transaction/TransactionDetails';
@@ -13,10 +20,18 @@ import { useOrganisation } from '@substrate/app/atoms/organisation/organisationA
 import { useDecodeCallData } from '@substrate/app/global/hooks/queryHooks/useDecodeCallData';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
-import { initiateTransaction } from '@substrate/app/global/utils/initiateTransaction';
 import { Collapse } from 'antd';
 import { twMerge } from 'tailwind-merge';
-import getEncodedAddress from '@common/utils/getEncodedAddress';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { useHistoryAtom, useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
+import { IGenericObject, IReviewTransaction, ISubstrateExecuteProps } from '@common/types/substrate';
+import { ERROR_MESSAGES, INFO_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
+import { useNotification } from '@common/utils/notification';
+import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuilder';
+import { useState } from 'react';
+import { setSigner } from '@substrate/app/global/utils/setSigner';
+import { executeTx } from '@substrate/app/global/utils/executeTransaction';
+import { AFTER_EXECUTE } from '@substrate/app/global/utils/afterExceute';
 
 interface ITransactionRow {
 	callData?: string;
@@ -29,7 +44,8 @@ interface ITransactionRow {
 	type: ETransactionOptions;
 	transactionType: ETransactionType;
 	multisig: string;
-	approvals: string[];
+	approvals: Array<string>;
+	variant: ETransactionVariant;
 }
 
 function TransactionRow({
@@ -43,11 +59,15 @@ function TransactionRow({
 	type,
 	transactionType,
 	multisig,
-	approvals
+	approvals = [],
+	variant = ETransactionVariant.SIMPLE
 }: ITransactionRow) {
 	const { getApi } = useAllAPI();
 	const [user] = useUser();
 	const [organisation] = useOrganisation();
+	const [queueTransaction, setQueueTransactions] = useQueueAtom();
+	const [historyTransaction, setHistoryTransaction] = useHistoryAtom();
+	const notification = useNotification();
 
 	const { data, isLoading, error } = useDecodeCallData({
 		callData,
@@ -55,31 +75,175 @@ function TransactionRow({
 		apiData: getApi(network)
 	});
 
+	const [executableTransaction, setExecutableTransaction] = useState<ISubstrateExecuteProps | null>(null);
+	const [reviewTransaction, setReviewTransaction] = useState<IReviewTransaction | null>(null);
+
 	const txMultisig = findMultisig(organisation?.multisigs || [], `${multisig}_${network}`);
 
-	const hasApproved = txMultisig?.signatories.includes(getEncodedAddress(user?.address || '', network) || '');
+	const hasApproved = approvals
+		.map((a) => getSubstrateAddress(a))
+		.includes(getSubstrateAddress(user?.address || '') || '');
 
-	const onActionClick = (type: ETxType) => {
-		const api = getApi(network);
+	const buildTransaction = async (type: ETxType) => {
+		const api = getApi(network)?.api;
 
-		if (!api?.api || !user?.address || !txMultisig) {
-			console.log('API not found', api, user, txMultisig, callData);
-			return;
+		if (!api) {
+			notification({ ...ERROR_MESSAGES.API_NOT_CONNECTED });
+			return { error: true };
 		}
+		if (!user?.address) {
+			notification({ ...ERROR_MESSAGES.INVALID_TRANSACTION });
+			return { error: true };
+		}
+		if (!txMultisig) {
+			notification({ ...ERROR_MESSAGES.WALLET_NOT_FOUND });
+			return { error: true };
+		}
+		// After successful transaction add the transaction to the queue with the latest transaction on top
+		const onSuccess = ({ callHash }: IGenericObject) => {
+			try {
+				if (!callHash || !queueTransaction) {
+					return;
+				}
+				if (type === ETxType.APPROVE) {
+					const payload = (queueTransaction?.transactions || []).map((tx) => {
+						if (tx.callHash === callHash) {
+							const approvals = tx.approvals || [];
+							if (!approvals.includes(user.address)) {
+								approvals.push(user.address);
+							}
+							const multisig = findMultisig(organisation?.multisigs || [], `${tx.multisigAddress}_${tx.network}`);
+							if (approvals.length === multisig?.threshold) {
+								// Add new proxy to DB
+								if (tx.callModule === 'Proxy' && tx.callModuleFunction === 'create_pure') {
+									AFTER_EXECUTE[EAfterExecute.LINK_PROXY]({
+										multisigAddress: txMultisig.address,
+										network: txMultisig.network,
+										address: user.address,
+										signature: user.signature
+									});
+									return null;
+								}
 
-		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
+								// Link old proxy to new multisig
+								const isEditProxyTransaction = data.find(
+									(d: IGenericObject) => d.method === 'addProxy' && d.section === 'proxy'
+								);
+								const isRemoveTransaction = data.find(
+									(d: IGenericObject) => d.method === 'removeProxy' && d.section === 'proxy'
+								);
+								const proxy = data.find((d: IGenericObject) => d.method === 'proxy' && d.section === 'proxy');
 
-		initiateTransaction({
-			calldata: callData,
-			callHash,
-			type,
-			api: api.api as ApiPromise,
-			data: null,
-			isProxy: false,
-			sender: user.address,
-			wallet,
-			multisig: txMultisig
-		});
+								if (isEditProxyTransaction && isRemoveTransaction) {
+									AFTER_EXECUTE[EAfterExecute.EDIT_PROXY]({
+										organisationId: organisation?.id || '',
+										newMultisigAddress: isEditProxyTransaction.delegate,
+										oldMultisigAddress: isRemoveTransaction.delegate,
+										proxyAddress: proxy.proxyAddress,
+										network: txMultisig.network,
+										address: user.address,
+										signature: user.signature
+									});
+									return null;
+								}
+
+								if (!historyTransaction) {
+									return null;
+								}
+								setHistoryTransaction({
+									...historyTransaction,
+									transactions: [tx, ...historyTransaction.transactions]
+								});
+								return null;
+							}
+
+							return { ...tx, approvals };
+						}
+						return tx;
+					});
+
+					const transactions = payload.filter((tx) => tx !== null);
+
+					setQueueTransactions({ ...queueTransaction, transactions });
+				} else {
+					const payload = (queueTransaction?.transactions || []).filter((tx) => tx.callHash !== callHash);
+					const transactions = payload;
+					setQueueTransactions({ ...queueTransaction, transactions });
+				}
+
+				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+			} catch (error) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
+			}
+		};
+
+		try {
+			const transaction = await (type === ETxType.APPROVE
+				? TRANSACTION_BUILDER[ETxType.APPROVE]({
+						calldata: callData as string,
+						callHash,
+						api: api as ApiPromise,
+						sender: user.address,
+						multisig: txMultisig,
+						onSuccess,
+						onFailed: () => {}
+					})
+				: TRANSACTION_BUILDER[ETxType.CANCEL]({
+						callHash,
+						api: api as ApiPromise,
+						sender: user.address,
+						multisig: txMultisig,
+						onSuccess,
+						onFailed: () => {}
+					}));
+
+			if (!transaction) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+				return { error: true };
+			}
+
+			const fee = (await transaction.tx.paymentInfo(user.address)).partialFee;
+			console.log(fee.toString());
+			const formattedFee = formatBalance(
+				fee.toString(),
+				{
+					numberAfterComma: 3,
+					withThousandDelimitor: false
+				},
+				txMultisig.network
+			);
+
+			const reviewData = {
+				tx: transaction.tx.method.toJSON(),
+				from: txMultisig.address,
+				txCost: formattedFee.toString(),
+				network: txMultisig.network,
+				name: txMultisig.name
+			};
+			setExecutableTransaction(transaction);
+			setReviewTransaction(reviewData);
+			return { error: false };
+		} catch (error) {
+			notification(ERROR_MESSAGES.CREATE_MULTISIG_FAILED);
+			return { error: true };
+		}
+	};
+
+	const signTransaction = async () => {
+		try {
+			if (!executableTransaction) {
+				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+				return { error: true };
+			}
+
+			await setSigner(executableTransaction.api, executableTransaction.network);
+			await executeTx(executableTransaction);
+			notification({ ...INFO_MESSAGES.TRANSACTION_IN_BLOCK });
+			return { error: false };
+		} catch (e) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });
+			return { error: true };
+		}
 	};
 
 	const label = data?.method && data?.section ? `${data.section}_${data.method}` : '';
@@ -100,15 +264,35 @@ function TransactionRow({
 			)
 		: amountToken;
 
+	if (variant === ETransactionVariant.SIMPLE) {
+		return (
+			<TransactionHead
+				createdAt={createdAt}
+				to={data?.to || to}
+				network={network}
+				amountToken={value}
+				from={from}
+				label={label.split('_')}
+				type={type}
+				transactionType={transactionType}
+				approvals={approvals}
+				isHomePage
+				threshold={txMultisig?.threshold || 2}
+				hasApproved={hasApproved}
+				signTransaction={signTransaction}
+				reviewTransaction={reviewTransaction}
+				onAction={buildTransaction}
+			/>
+		);
+	}
+
 	return (
 		<Collapse
 			className={'bg-bg-secondary rounded-xl'}
 			expandIconPosition='end'
-			expandIcon={
-				(({ isActive }) => (
-					<CircleArrowDownIcon className={twMerge('text-primary text-lg', isActive && 'rotate-[180deg]')} />
-				))
-			}
+			expandIcon={({ isActive }) => (
+				<CircleArrowDownIcon className={twMerge('text-primary text-lg', isActive && 'rotate-[180deg]')} />
+			)}
 			// defaultActiveKey={[item.address]}
 			items={[
 				{
@@ -123,27 +307,33 @@ function TransactionRow({
 							label={label.split('_')}
 							type={type}
 							transactionType={transactionType}
-							onAction={onActionClick}
 							approvals={approvals}
 							threshold={txMultisig?.threshold || 2}
 							hasApproved={hasApproved}
+							signTransaction={signTransaction}
+							reviewTransaction={reviewTransaction}
+							onAction={buildTransaction}
 						/>
 					),
-					children: <TransactionDetails 
-									createdAt={createdAt}
-									to={data?.to || to}
-									network={network}
-									amountToken={value}
-									from={from}
-									type={type}
-									transactionType={transactionType}
-									onAction={onActionClick}
-									approvals={approvals}
-									threshold={txMultisig?.threshold || 2}
-									hasApproved={hasApproved}
-									callHash={callHash}
-									callData={callData}
-								/>
+					children: (
+						<TransactionDetails
+							createdAt={createdAt}
+							to={data?.to || to}
+							network={network}
+							amountToken={value}
+							from={from}
+							type={type}
+							transactionType={transactionType}
+							approvals={approvals}
+							threshold={txMultisig?.threshold || 2}
+							hasApproved={hasApproved}
+							callHash={callHash}
+							callData={callData}
+							signTransaction={signTransaction}
+							reviewTransaction={reviewTransaction}
+							onAction={buildTransaction}
+						/>
+					)
 				}
 			]}
 		/>

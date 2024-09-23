@@ -9,7 +9,7 @@ import { ILinkMultisig, IMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { Divider, Spin } from 'antd';
 import { Empty } from '@common/global-ui-components/Empty';
-import useNotification from 'antd/es/notification/useNotification';
+import { useNotification } from '@common/utils/notification';
 import { useState } from 'react';
 import { LinkIcon, UnlinkIcon } from '@common/global-ui-components/Icons';
 // use availableSignatories to populate the select options
@@ -23,19 +23,18 @@ export const LinkMultisig = ({
 }: ILinkMultisig) => {
 	const [loading, setLoading] = useState(false);
 	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
-	const [notification, context] = useNotification();
-
+	const notification = useNotification();
 	const handleSubmit = async (values: { multisig: IMultisig }) => {
 		try {
 			const { multisig } = values;
 			if (!multisig) {
-				notification.error({ ...ERROR_MESSAGES.LINKED_MULTISIG_FAILED });
+				notification({ ...ERROR_MESSAGES.LINKED_MULTISIG_FAILED });
 				return;
 			}
 			setLoading(true);
 			await onSubmit?.(multisig);
 		} catch (e) {
-			notification.error({ ...ERROR_MESSAGES.LINKED_MULTISIG_FAILED, description: e || e.message });
+			notification({ ...ERROR_MESSAGES.LINKED_MULTISIG_FAILED, description: e || e.message });
 		} finally {
 			setLoading(false);
 		}
@@ -45,13 +44,13 @@ export const LinkMultisig = ({
 		try {
 			const { multisig } = values;
 			if (!multisig) {
-				notification.error({ ...ERROR_MESSAGES.LINKED_MULTISIG_FAILED });
+				notification({ ...ERROR_MESSAGES.LINKED_MULTISIG_FAILED });
 				return;
 			}
 			setLoading(true);
 			await onRemoveSubmit?.(multisig);
 		} catch (e) {
-			notification.error({ ...ERROR_MESSAGES.LINKED_MULTISIG_FAILED, description: e || e.message });
+			notification({ ...ERROR_MESSAGES.LINKED_MULTISIG_FAILED, description: e || e.message });
 		} finally {
 			setLoading(false);
 		}
@@ -59,7 +58,6 @@ export const LinkMultisig = ({
 
 	return (
 		<div className='rounded-xl p-6 bg-bg-main'>
-			{context}
 			<div className='w-full h-full'>
 				<p className='text-base font-bold mb-2 text-white flex justify-between w-full items-center'>
 					Link MultiSig(s)

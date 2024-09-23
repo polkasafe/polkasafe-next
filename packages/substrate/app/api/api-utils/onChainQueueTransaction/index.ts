@@ -52,6 +52,8 @@ const getQueueTransactions = async (multisigAddress: string, network: string, pa
 			note: dbTransactionDoc.exists && dbTransaction?.note ? transaction?.note : '',
 			status: transaction.status,
 			threshold: transaction.threshold,
+			callModule: transaction.call_module,
+			callModuleFunction: transaction.call_module_function,
 			totalAmount: dbTransactionDoc.exists && dbTransaction?.amount_token ? transaction?.amount_token : '',
 			transactionFields:
 				dbTransactionDoc.exists && dbTransaction?.transactionFields
