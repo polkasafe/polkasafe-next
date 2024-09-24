@@ -8,6 +8,7 @@ import Image from 'next/image';
 import emptyImage from '@common/assets/icons/empty-image.png';
 import Address from '@common/global-ui-components/Address';
 import { useSearchParams } from 'next/navigation';
+import { ENetwork } from '@common/enum/substrate';
 
 interface IOrganisationDropdown {
 	organisations: Array<IOrganisation>;
@@ -70,8 +71,10 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 											<Address
 												address={m.address}
 												name={m.name}
-												network={m.network}
+												network={m.network || ENetwork.POLKADOT}
+												isMultisig
 												showNetworkBadge
+												withBadge={false}
 											/>
 										</span>
 									</Link>

@@ -96,71 +96,73 @@ export const NotificationsUI: React.FC = () => {
 	];
 
 	return (
-		<section className='flex flex-col gap-y-4 overflow-y-auto'>
-			<article className='bg-bg-secondary rounded-lg px-1 py-4 flex items-start justify-start gap-x-8'>
-				<Button
-					htmlType='submit'
-					icon={<NotificationIcon />}
-					variant={EButtonVariant.PRIMARY}
-					className='bg-transparent text-text-secondary border-none shadow-none text-sm flex items-center justify-start w-[250px]'
-					fullWidth
-				>
-					General
-				</Button>
-				<div className='flex flex-col gap-y-2 items-start'>
-					<p className='m-0 p-0 text-text-secondary'>
-						Configure the notifications you want Polkasafe to send in your linked channels
-					</p>
-					<div className='flex flex-col gap-y-2 mt-2'>
-						<ConfigProvider
-							theme={{
-								token: {
-									colorBgContainer: '#24272E'
-								}
-							}}
-						>
-							{checkboxItems.map((checkbox, index) => (
-								<Checkbox key={index}>{checkbox.label}</Checkbox>
-							))}
-							<Checkbox className='-mt-3'>
-								<div className='flex gap-x-2 mt-3'>
-									For Pending Transactions remind signers every{' '}
-									<Dropdown
-										trigger={['click']}
-										className='-mt-1 border border-text-secondary flex items-center justify-center rounded-lg w-[93px] h-[31px] p-2.5 bg-bg-secondary cursor-pointer'
-										menu={{
-											items
-										}}
-									>
-										<div className='flex justify-between gap-x-2 items-center text-white text-[16px]'>
-											<p className='text-text-tertiary text-sm'>{selectedOption}</p>
-											<CircleArrowDownIcon className='text-primary' />
-										</div>
-									</Dropdown>
-								</div>
-							</Checkbox>
-						</ConfigProvider>
+		<div className='overflow-y-auto pr-2'>
+			<section className='flex flex-col gap-y-4'>
+				<article className='bg-bg-secondary rounded-lg px-1 py-4 flex items-start justify-start gap-x-8'>
+					<Button
+						htmlType='submit'
+						icon={<NotificationIcon />}
+						variant={EButtonVariant.PRIMARY}
+						className='bg-transparent text-text-secondary border-none shadow-none text-sm flex items-center justify-start w-[250px]'
+						fullWidth
+					>
+						General
+					</Button>
+					<div className='flex flex-col gap-y-2 items-start'>
+						<p className='m-0 p-0 text-text-secondary'>
+							Configure the notifications you want Polkasafe to send in your linked channels
+						</p>
+						<div className='flex flex-col gap-y-2 mt-2'>
+							<ConfigProvider
+								theme={{
+									token: {
+										colorBgContainer: '#24272E'
+									}
+								}}
+							>
+								{checkboxItems.map((checkbox, index) => (
+									<Checkbox key={index}>{checkbox.label}</Checkbox>
+								))}
+								<Checkbox className='-mt-3'>
+									<div className='flex gap-x-2 mt-3'>
+										For Pending Transactions remind signers every{' '}
+										<Dropdown
+											trigger={['click']}
+											className='-mt-1 border border-text-secondary flex items-center justify-center rounded-lg w-[93px] h-[31px] p-2.5 bg-bg-secondary cursor-pointer'
+											menu={{
+												items
+											}}
+										>
+											<div className='flex justify-between gap-x-2 items-center text-white text-[16px]'>
+												<p className='text-text-tertiary text-sm'>{selectedOption}</p>
+												<CircleArrowDownIcon className='text-primary' />
+											</div>
+										</Dropdown>
+									</div>
+								</Checkbox>
+							</ConfigProvider>
+						</div>
 					</div>
+				</article>
+
+				{notificationPlatforms.map((platform, index) => (
+					<NotificationArticle
+						key={index}
+						icon={platform.icon}
+						title={platform.title}
+						platform={platform.platform}
+						input={platform.input}
+						buttonText={platform.buttonText}
+					/>
+				))}
+
+				<div className='h-[54px] flex items-center justify-start gap-x-2 px-5 py-4 bg-bg-secondary rounded-lg'>
+					<InfoCircleOutlined className='text-waiting' />
+					<p className='m-0 p-0 text-waiting text-sm flex items-center gap-x-1'>
+						Not receiving notifications? <span className='m-0 p-0 text-primary'>Contact Us</span>
+					</p>
 				</div>
-			</article>
-
-			{notificationPlatforms.map((platform, index) => (
-				<NotificationArticle
-					key={index}
-					icon={platform.icon}
-					title={platform.title}
-					platform={platform.platform}
-					input={platform.input}
-					buttonText={platform.buttonText}
-				/>
-			))}
-
-			<div className='h-[54px] flex items-center justify-start gap-x-2 px-5 py-4 bg-bg-secondary rounded-lg'>
-				<InfoCircleOutlined className='text-waiting' />
-				<p className='m-0 p-0 text-waiting text-sm flex items-center gap-x-1'>
-					Not receiving notifications? <span className='m-0 p-0 text-primary'>Contact Us</span>
-				</p>
-			</div>
-		</section>
+			</section>
+		</div>
 	);
 };

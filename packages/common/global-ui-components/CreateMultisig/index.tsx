@@ -79,40 +79,40 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 					layout='vertical'
 					onFinish={handleSubmit}
 				>
-					<h1 className='text-label mb-2 max-sm:text-xs'>Select Network</h1>
-					<SelectNetwork
-						networks={networks}
-						selectedNetwork={selectedNetwork}
-						onChange={(network) => setSelectedNetwork(network)}
-					/>
+						<h1 className='text-label mb-2 max-sm:text-xs'>Select Network</h1>
+						<SelectNetwork
+							networks={networks}
+							selectedNetwork={selectedNetwork}
+							onChange={(network) => setSelectedNetwork(network)}
+						/>
 
-					<SelectSignatories
-						network={selectedNetwork}
-						signatories={signatories}
-						setSignatories={setSignatories}
-						userAddress={userAddress}
-					/>
+						<SelectSignatories
+							network={selectedNetwork}
+							signatories={signatories}
+							setSignatories={setSignatories}
+							userAddress={userAddress}
+						/>
 
-					{createMultisigFormFields.map((field) => (
-						<Form.Item
-							label={field.label}
-							name={field.name}
-							rules={field.rules}
-							key={field.name}
-						>
-							{field.input}
-						</Form.Item>
-					))}
-					{/* {availableSignatories && (
-						<Form.Item
-							label='Signatories'
-							name='signatories'
-							rules={[{ required: true, message: 'Please select signatories' }]}
-						>
-							<Checkbox.Group options={signatoriesOptions} />
-						</Form.Item>
-					)} */}
-					<InfoBox message='The address balance should be greater than the existential deposit for successful creation of Multisig on-chain' />
+						{createMultisigFormFields.map((field) => (
+							<Form.Item
+								label={field.label}
+								name={field.name}
+								rules={field.rules}
+								key={field.name}
+							>
+								{field.input}
+							</Form.Item>
+						))}
+						{/* {availableSignatories && (
+							<Form.Item
+								label='Signatories'
+								name='signatories'
+								rules={[{ required: true, message: 'Please select signatories' }]}
+							>
+								<Checkbox.Group options={signatoriesOptions} />
+							</Form.Item>
+						)} */}
+						<InfoBox message='The address balance should be greater than the existential deposit for successful creation of Multisig on-chain' />
 					<div className='flex items-center gap-x-4 w-full'>
 						<div className='w-full'>
 							<Button

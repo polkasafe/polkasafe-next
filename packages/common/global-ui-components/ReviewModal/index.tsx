@@ -2,7 +2,7 @@ import { ETransactionState } from '@common/enum/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Modal from '@common/global-ui-components/Modal';
 import { IReviewTransaction } from '@common/types/substrate';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, ReactNode, useState } from 'react';
 import { ReviewTransaction } from '@common/global-ui-components/ReviewTransaction';
 import { SizeType } from 'antd/lib/config-provider/SizeContext';
 
@@ -12,6 +12,7 @@ interface IReviewModal {
 	className?: string;
 	size?: SizeType;
 	reviewTransaction: IReviewTransaction | null;
+	buttonIcon?: ReactNode;
 }
 
 export const ReviewModal = ({
@@ -20,6 +21,7 @@ export const ReviewModal = ({
 	reviewTransaction,
 	className,
 	children,
+	buttonIcon,
 	size
 }: PropsWithChildren<IReviewModal>) => {
 	const [openModal, setOpenModal] = useState(false);
@@ -59,6 +61,7 @@ export const ReviewModal = ({
 				loading={loading}
 				className={className}
 				size={size || 'large'}
+				icon={buttonIcon}
 			>
 				{children}
 			</Button>

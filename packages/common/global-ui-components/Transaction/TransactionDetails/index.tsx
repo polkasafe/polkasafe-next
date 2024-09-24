@@ -1,6 +1,12 @@
 import { ENetwork, ETransactionOptions, ETransactionType, ETxType } from '@common/enum/substrate';
 import Address from '@common/global-ui-components/Address';
-import { CircleCheckIcon, CirclePlusIcon, CircleWatchIcon } from '@common/global-ui-components/Icons';
+import {
+	CircleCheckIcon,
+	CirclePlusIcon,
+	CircleWatchIcon,
+	OutlineCheckIcon,
+	OutlineCloseIcon
+} from '@common/global-ui-components/Icons';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { IReviewTransaction } from '@common/types/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
@@ -11,8 +17,8 @@ import dayjs from 'dayjs';
 interface ITransactionDetails {
 	type: ETransactionOptions;
 	createdAt: Date;
-	amountToken: string;
-	to: string;
+	amountToken: string | number;
+	to: string[];
 	network: ENetwork;
 	from: string;
 	transactionType: ETransactionType;
@@ -58,20 +64,22 @@ export default function TransactionDetails({
 						network={network}
 					/>
 				</div>
-				{to && (
-					<>
-						<Divider className='border-text-disabled' />
-						<p className='text-text-secondary font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
-							{type === ETransactionOptions.RECEIVED ? 'RECEIVED TO' : 'SEND TO'}
-						</p>
-						<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
-							<Address
-								address={to}
-								network={network}
-							/>
-						</div>
-					</>
-				)}
+				{to &&
+					to.length > 0 &&
+					to.map((item) => (
+						<>
+							<Divider className='border-text-disabled' />
+							<p className='text-text-secondary font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
+								{type === ETransactionOptions.RECEIVED ? 'RECEIVED TO' : 'SEND TO'}
+							</p>
+							<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
+								<Address
+									address={item}
+									network={network}
+								/>
+							</div>
+						</>
+					))}
 				<Divider className='border-text-disabled' />
 				<div className='flex flex-col gap-y-2'>
 					<div className='flex items-center justify-between'>
@@ -214,6 +222,8 @@ export default function TransactionDetails({
 									buildTransaction={() => onAction(ETxType.APPROVE)}
 									reviewTransaction={reviewTransaction}
 									signTransaction={signTransaction}
+									className='bg-[#06d6a0]/[0.1] text-success'
+									buttonIcon={<OutlineCheckIcon className='text-success' />}
 								>
 									Approve
 								</ReviewModal>
@@ -222,6 +232,8 @@ export default function TransactionDetails({
 								buildTransaction={() => onAction(ETxType.CANCEL)}
 								reviewTransaction={reviewTransaction}
 								signTransaction={signTransaction}
+								className='bg-[#e63946]/[0.1] text-text-danger'
+								buttonIcon={<OutlineCloseIcon className='text-text-danger' />}
 							>
 								Reject
 							</ReviewModal>

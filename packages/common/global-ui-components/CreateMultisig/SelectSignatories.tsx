@@ -12,6 +12,8 @@ import { InjectedAccount } from '@polkadot/extension-inject/types';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import shortenAddress from '@common/utils/shortenAddress';
+import Input from '@common/global-ui-components/Input';
+import { SearchIcon } from '@common/global-ui-components/Icons';
 
 interface ISignature {
 	name: string;
@@ -165,6 +167,10 @@ const SelectSignatories = ({
 				open={addWalletAddress}
 				onCancel={() => setAddWalletAddress(false)}
 			/> */}
+			<div className=''>
+				<h1 className='text-label mt-3 mb-2 max-sm:text-xs'>Add Addresses</h1>
+				<Input placeholder='Enter name, address or account index to add as signatory' prefix={<SearchIcon className='text-label' />} className='border border-label' />
+			</div>
 			<div className='flex w-full items-center justify-center'>
 				<div
 					id='div1'

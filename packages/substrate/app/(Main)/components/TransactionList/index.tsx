@@ -96,6 +96,7 @@ export function TransactionList({ transactions = [], txType, className, variant 
 							multisig={transaction.multisigAddress}
 							approvals={transaction.approvals}
 							variant={variant}
+							initiator={transaction.initiator || ''}
 						/>
 					))}
 			</div>

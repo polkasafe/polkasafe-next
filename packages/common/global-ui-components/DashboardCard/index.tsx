@@ -41,9 +41,9 @@ function DashboardCard() {
 							variant={ETypographyVariants.p}
 							className='text-4xl text-text-primary capitalize font-raleway'
 						>
+							{symbol}{' '}
 							{showBalance === 'yes' ? (
 								<>
-									{symbol}
 									{totalBalance === null ? (
 										<Skeleton.Button
 											size='small'
@@ -62,6 +62,7 @@ function DashboardCard() {
 								setShowBalance(showBalance === 'yes' ? 'no' : 'yes');
 								localStorage.setItem('showBalance', showBalance === 'yes' ? 'no' : 'yes');
 							}}
+							className='cursor-pointer'
 						>
 							{showBalance === 'yes' ? (
 								<EyeIcon />

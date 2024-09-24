@@ -47,6 +47,9 @@
   background: transparent;
 }
 
+.ant-dropdown-menu-root::-webkit-scrollbar {
+  display: none !important;
+}
 
 .ant-popover-inner {
   padding: 0 !important;

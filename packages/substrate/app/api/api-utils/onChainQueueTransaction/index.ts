@@ -41,6 +41,9 @@ const getQueueTransactions = async (multisigAddress: string, network: string, pa
 			multi_id: transaction?.multi_id || '',
 			multisigAddress,
 			approvals: transaction?.approve_record?.map((item: any) => item?.account_display?.address),
+			initiator:
+				transaction?.approve_record?.find((item: any) => item?.approve_type === 'Initialize')?.account_display
+					?.address || '',
 			callData: transaction?.call_data
 				? transaction?.call_data
 				: dbTransactionDoc.exists && dbTransaction?.callData

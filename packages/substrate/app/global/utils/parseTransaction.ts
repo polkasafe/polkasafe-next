@@ -17,6 +17,7 @@ export const parseTransaction = (transaction: any) => {
 		callHash: transaction.callHash,
 		approvals: transaction.approvals,
 		callModule: transaction.call_module,
+		initiator: transaction.initiator,
 		callModuleFunction: transaction.call_module_function
 	} as unknown as IDashboardTransaction;
 };

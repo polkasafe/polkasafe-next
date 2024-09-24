@@ -2,7 +2,6 @@
 
 import { ESettingsTab } from '@common/enum/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
-import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { ActionItems } from '@substrate/app/(Main)/settings/components/Actions/components/ActionItems';
 import { SETTINGS_URL } from '@substrate/app/global/end-points';
 import Link from 'next/link';
@@ -49,7 +48,7 @@ export const Actions = ({ organisation, selectedTab }: IActions) => {
 	];
 
 	return (
-		<div className='flex flex-col gap-5'>
+		<div className='flex flex-col gap-5 h-full'>
 			<div className='flex justify-between items-center'>
 				<div className='flex gap-x-4 items-center'>
 					{tabs.map((tab) => (

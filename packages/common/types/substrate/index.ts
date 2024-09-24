@@ -56,6 +56,7 @@ export interface IDashboardTransaction {
 	callModule?: string;
 	callModuleFunction?: string;
 	txType?: ETxType;
+	initiator?: string;
 }
 
 export interface ITransaction {
@@ -116,6 +117,7 @@ export interface IOrganisation {
 	createdAt: Date;
 	updatedAt: Date;
 	addressBook: Array<IAddressBook>;
+	transactionFields: ITransactionFields;
 	city: string;
 	country: string;
 	image: string;
@@ -129,6 +131,7 @@ export interface IConnectedUser {
 	address: string;
 	signature: string;
 	organisations: Array<IOrganisation>;
+	notificationPreferences?: INotificationPreferences;
 }
 
 export interface ICookieUser {
@@ -466,4 +469,36 @@ export interface IEditMultisigTransaction {
 	sender: string;
 	onSuccess: (data: IGenericObject) => void;
 	onFailed: () => void;
+}
+
+export interface IDropdownOptions {
+	optionName: string;
+	archieved?: boolean;
+}
+
+export interface ITransactionFields {
+	[field: string]: {
+		fieldName: string;
+		fieldDesc: string;
+		subfields: ITransactionCategorySubfields;
+	};
+}
+
+export interface ITransactionCategorySubfields {
+	[subfield: string]: {
+		subfieldName: string;
+		subfieldType: EFieldType;
+		required: boolean;
+		dropdownOptions?: IDropdownOptions[];
+	};
+}
+
+export enum EFieldType {
+	ATTACHMENT = 'Attachment',
+	SINGLE_SELECT = 'Single-select',
+	// MULTI_SELECT = 'Multi-select',
+	TEXT = 'Text'
+	// NUMBER = 'Number',
+	// DATE = 'Date/Date-range',
+	// LINK = 'link',
 }
