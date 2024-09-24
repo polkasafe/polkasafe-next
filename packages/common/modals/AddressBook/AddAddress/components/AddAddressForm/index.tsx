@@ -5,6 +5,7 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { Form, Spin } from 'antd';
 import { useState } from 'react';
 import { useNotification } from '@common/utils/notification';
+import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 
 export const AddAddressForm = ({
 	initialValue,
@@ -40,7 +41,12 @@ export const AddAddressForm = ({
 	};
 
 	return (
-		<Spin spinning={loading}>
+		<Spin spinning={loading} indicator={
+			<LoadingLottie
+				width={200}
+				message={'Adding Address to Address Book'}
+			/>
+		}>
 			<Form
 				initialValues={initialValue}
 				layout='vertical'

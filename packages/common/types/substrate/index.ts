@@ -488,7 +488,6 @@ export interface ITransactionCategorySubfields {
 	[subfield: string]: {
 		subfieldName: string;
 		subfieldType: EFieldType;
-		required: boolean;
 		dropdownOptions?: IDropdownOptions[];
 	};
 }

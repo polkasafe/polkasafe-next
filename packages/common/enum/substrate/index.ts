@@ -196,3 +196,9 @@ export enum NotificationSource {
 	POLKASAFE = 'polkasafe',
 	TOWNHALL = 'townhall'
 }
+
+export enum ETransactionFieldsUpdateType {
+	ADD_CATEGORY = 'Add Category',
+	ADD_SUBFIELD = 'Add Subfield',
+	DELETE_SUBFIELD = 'Delete Subfield'
+}

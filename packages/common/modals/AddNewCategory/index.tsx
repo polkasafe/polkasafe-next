@@ -3,9 +3,12 @@ import Modal from '@common/global-ui-components/Modal';
 import AddCategoryForm from '@common/modals/AddNewCategory/AddCategoryForm';
 import React, { useState } from 'react'
 import { PlusCircleOutlined } from '@ant-design/icons';
+import { ITransactionCategorySubfields } from '@common/types/substrate';
+import { ETransactionFieldsUpdateType } from '@common/enum/substrate';
 
-const AddNewCategory = () => {
+const AddNewCategory = ({ loading, onSave }: { loading: boolean; onSave: (updateType: ETransactionFieldsUpdateType, fieldName: string, fieldDesc: string, subfields?: ITransactionCategorySubfields, onCancel?: () => void) => Promise<void> }) => {
     const [openModal, setOpenModal] = useState(false);
+
   return (
     <div>
          <Button
@@ -23,7 +26,7 @@ const AddNewCategory = () => {
             }}
             title='Add New Category'
         >
-            <AddCategoryForm />
+            <AddCategoryForm loading={loading} onSave={onSave} onCancel={() => setOpenModal(false)} />
         </Modal>
 
     </div>

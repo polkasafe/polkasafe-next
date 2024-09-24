@@ -8,6 +8,7 @@ import ReactJson from 'react-json-view';
 import { Spin } from 'antd';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
+import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 
 interface IReviewTransactionProps {
 	onSubmit: () => Promise<void>;
@@ -33,7 +34,12 @@ export const ReviewTransaction = ({ onSubmit, onClose, reviewTransaction }: IRev
 	};
 
 	return (
-		<Spin spinning={loading}>
+		<Spin spinning={loading} indicator={
+			<LoadingLottie
+				width={200}
+				message={'Creating Your Transaction'}
+			/>
+		}>
 			<div className='flex flex-col gap-y-4'>
 				<div className='p-2 bg-bg-secondary rounded-xl'>
 					<div className='max-w-[480px] overflow-y-auto max-h-52 overflow-x-hidden'>

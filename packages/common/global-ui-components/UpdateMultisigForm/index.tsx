@@ -12,6 +12,7 @@ import ActionButton from '@common/global-ui-components/ActionButton';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
 import Input from '@common/global-ui-components/Input';
+import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 
 interface IUpdateMultisigForm {
 	multisig: IMultisig;
@@ -52,8 +53,13 @@ export const UpdateMultisigForm = ({
 
 	return (
 		<Spin
-			className='w-full mb-4 flex flex-col gap-2'
 			spinning={loading}
+			indicator={
+				<LoadingLottie
+					width={200}
+					message={'Creating Your Transaction'}
+				/>
+			}
 		>
 			<div className='flex flex-col gap-2 mb-6'>
 				<Typography
