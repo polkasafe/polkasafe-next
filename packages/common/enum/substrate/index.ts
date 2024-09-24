@@ -176,3 +176,16 @@ export enum EAfterExecute {
 	EDIT_PROXY = 'edit_proxy',
 	REFRESH_BALANCE = 'refresh'
 }
+
+// Enum for triggers these are only exception for camel case
+export enum ETriggers {
+	CANCELLED_TRANSACTION = 'cancelledTransaction',
+	CREATED_PROXY = 'createdProxy',
+	EDIT_MULTISIG_USERS_EXECUTED = 'editMultisigUsersExecuted',
+	EDIT_MULTISIG_USERS_START = 'editMultisigUsersStart',
+	EXECUTED_PROXY = 'executedProxy',
+	EXECUTED_TRANSACTION = 'executedTransaction',
+	INIT_MULTISIG_TRANSFER = 'initMultisigTransfer',
+	SCHEDULED_APPROVAL_REMINDER = 'scheduledApprovalReminder',
+	APPROVAL_REMINDER = 'approvalReminder'
+}

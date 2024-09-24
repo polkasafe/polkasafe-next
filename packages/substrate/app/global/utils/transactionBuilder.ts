@@ -22,7 +22,6 @@ import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import getMultisigInfo from '@substrate/app/global/utils/getMultisigInfo';
 
 const getTransferCalls = (api: ApiPromise, data: IRecipient, network: ENetwork) => {
-	console.log(data, 'data');
 	const nativeToken = networkConstants[network].tokenSymbol;
 	if (data.currency == nativeToken) {
 		return api.tx.balances.transferKeepAlive(data.address, data.amount);
@@ -99,7 +98,8 @@ const transfer = async ({
 			createdAt: new Date(),
 			multisigAddress: address,
 			from: address,
-			approvals: [sender]
+			approvals: [sender],
+			initiator: sender
 		} as IDashboardTransaction;
 		console.log(tx, 'transaction hash');
 		console.log(newTransaction, 'Transaction');

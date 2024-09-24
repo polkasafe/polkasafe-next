@@ -131,6 +131,7 @@ export interface IConnectedUser {
 	address: string;
 	signature: string;
 	organisations: Array<IOrganisation>;
+	notificationPreferences?: INotificationPreferences;
 }
 
 export interface ICookieUser {

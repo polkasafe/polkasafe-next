@@ -171,27 +171,29 @@ export function TransactionHead({
 				)}
 				{ETransactionType.QUEUE_TRANSACTION === transactionType && isSignatory ? (
 					<div className='flex items-center gap-x-4 basis-1/5 justify-start'>
-						<div className='flex items-center gap-x-4'>
-							{!isHomePage && (
-								<Typography
-									variant={ETypographyVariants.p}
-									className='text-waiting'
-								>
-									{!hasApproved ? 'Awaiting your Confirmation' : `(${approvals?.length}/${threshold})`}
-								</Typography>
-							)}
-							{!hasApproved && (
-								<ReviewModal
-									buildTransaction={() => onAction(ETxType.APPROVE)}
-									reviewTransaction={reviewTransaction}
-									signTransaction={signTransaction}
-									className='w-auto min-w-0 bg-[#06d6a0]/[0.1] text-success'
-									size='middle'
-								>
-									<OutlineCheckIcon />
-								</ReviewModal>
-							)}
-						</div>
+						{!isHomePage && !hasApproved && (
+							<div className='flex items-center gap-x-4'>
+								{!isHomePage && (
+									<Typography
+										variant={ETypographyVariants.p}
+										className='text-waiting'
+									>
+										{!hasApproved ? 'Awaiting your Confirmation' : `(${approvals?.length}/${threshold})`}
+									</Typography>
+								)}
+								{!hasApproved && (
+									<ReviewModal
+										buildTransaction={() => onAction(ETxType.APPROVE)}
+										reviewTransaction={reviewTransaction}
+										signTransaction={signTransaction}
+										className='w-auto min-w-0 bg-[#06d6a0]/[0.1] text-success'
+										size='middle'
+									>
+										<OutlineCheckIcon />
+									</ReviewModal>
+								)}
+							</div>
+						)}
 						{isHomePage && initiator && (
 							<ReviewModal
 								buildTransaction={() => onAction(ETxType.CANCEL)}

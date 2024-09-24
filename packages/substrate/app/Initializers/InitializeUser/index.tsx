@@ -4,9 +4,11 @@
 
 'use client';
 
-import { IOrganisation } from '@common/types/substrate';
-import { userAtom } from '@substrate/app/atoms/auth/authAtoms';
+import { INotificationPreferences, IOrganisation } from '@common/types/substrate';
+import { userAtom, useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useHydrateAtoms } from 'jotai/utils';
+import { useEffect } from 'react';
+import { notificationPreferences } from '@sdk/polkasafe-sdk/src/notification-preferences';
 
 interface IInitializeUserProps {
 	userAddress: string;
@@ -16,6 +18,21 @@ interface IInitializeUserProps {
 
 function InitializeUser({ userAddress, signature, organisations }: IInitializeUserProps) {
 	useHydrateAtoms([[userAtom, { address: userAddress, signature, organisations: organisations }]]);
+	const [user, setUser] = useUser();
+	useEffect(() => {
+		if (!user || user.notificationPreferences) {
+			return;
+		}
+		const getNotificationPreferences = async () => {
+			const { data } = (await notificationPreferences({ address: userAddress, signature })) as {
+				data: INotificationPreferences;
+			};
+			setUser({ ...user, notificationPreferences: data });
+			console.log('Notification Preferences:', data);
+		};
+		getNotificationPreferences();
+	}, [user]);
+	console.log('User:', user);
 	return null;
 }
 

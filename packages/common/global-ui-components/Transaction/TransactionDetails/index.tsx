@@ -1,6 +1,12 @@
 import { ENetwork, ETransactionOptions, ETransactionType, ETxType } from '@common/enum/substrate';
 import Address from '@common/global-ui-components/Address';
-import { CircleCheckIcon, CirclePlusIcon, CircleWatchIcon, OutlineCheckIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
+import {
+	CircleCheckIcon,
+	CirclePlusIcon,
+	CircleWatchIcon,
+	OutlineCheckIcon,
+	OutlineCloseIcon
+} from '@common/global-ui-components/Icons';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { IReviewTransaction } from '@common/types/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
@@ -58,7 +64,8 @@ export default function TransactionDetails({
 						network={network}
 					/>
 				</div>
-				{to && to.length > 0 && (
+				{to &&
+					to.length > 0 &&
 					to.map((item) => (
 						<>
 							<Divider className='border-text-disabled' />
@@ -72,9 +79,7 @@ export default function TransactionDetails({
 								/>
 							</div>
 						</>
-
-					))
-				)}
+					))}
 				<Divider className='border-text-disabled' />
 				<div className='flex flex-col gap-y-2'>
 					<div className='flex items-center justify-between'>
