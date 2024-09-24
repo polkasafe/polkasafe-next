@@ -23,9 +23,7 @@ function InitializeTransaction() {
 	const multisigIds = multisigs.map((multisig) => `${multisig.address}_${multisig.network}`);
 
 	// get All the data for the all multisig on multisig
-	const allMultisigIds = multisigIds.includes(singleMultisigId)
-		? [...new Set([singleMultisigId, ...multisigIds])]
-		: multisigIds;
+	const allMultisigIds = multisigIds.includes(singleMultisigId) ? [singleMultisigId] : multisigIds;
 
 	const [queueCurrentIndex, setQueueCurrentIndex] = useState<number>(0);
 	const [historyCurrentIndex, setHistoryCurrentIndex] = useState<number>(0);
