@@ -1,9 +1,15 @@
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { ORGANISATION_COLLECTION } from '@common/db/collections';
+import { ETxnType, ITreasury, ITreasuryTxns } from '@common/enum/substrate';
 import { ITransactionFields } from '@common/types/substrate';
+import getEncodedAddress from '@common/utils/getEncodedAddress';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import { withErrorHandling } from '@substrate/app/api/api-utils';
+import { onChainTreasuryData } from '@substrate/app/api/api-utils/onChainTreasuryData';
+import { SUBSCAN_API_HEADERS } from '@substrate/app/api/constants/subscane';
+import axios from 'axios';
+import dayjs from 'dayjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
@@ -19,28 +25,14 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
 		const { isValid, error } = await isValidRequest(substrateAddress, signature);
 		if (!isValid) return NextResponse.json({ error }, { status: 400 });
-
-		const { transactionFields, organisationId } = (await req.json()) as {
-			transactionFields: ITransactionFields;
-			organisationId: string;
-		};
-
-		if (!transactionFields || typeof transactionFields !== 'object') {
+		const { multisigs, organisationId } = await req.json();
+		if (!multisigs || !organisationId) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
-		const orgDoc = ORGANISATION_COLLECTION.doc(organisationId);
-		const data = await orgDoc.get();
-		const orgData = data.data();
-		if (!orgData) {
-			return NextResponse.json({ error: ResponseMessages.INVALID_ORGANISATION_ID }, { status: 400 });
-		}
-		const members = orgData.members.map((member: string) => getSubstrateAddress(member));
-		if (members.indexOf(substrateAddress) === -1) {
-			return NextResponse.json({ error: ResponseMessages.UNAUTHORIZED }, { status: 400 });
-		}
 
-		orgDoc.update({ ['transactionFields']: transactionFields });
-		return NextResponse.json({ data: 'success', error: null });
+		const orgTreasury = await onChainTreasuryData({ multisigs, organisationId });
+
+		return NextResponse.json({ data: orgTreasury }, { status: 200 });
 	} catch (err) {
 		console.log('Error in getAssets:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });

@@ -162,8 +162,10 @@ const BalanceInput: React.FC<Props> = ({
 											false,
 											getDecimalByToken(currency, network)
 										);
+
+										console.log('balance', balance.toString());
+										setSelectedCurrency(currency);
 										if (isValid) {
-											setSelectedCurrency(currency);
 											onChange(balance as BN, currency);
 										}
 									}}
