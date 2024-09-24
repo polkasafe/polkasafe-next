@@ -18,6 +18,7 @@ import { u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress, encodeMultiAddress, sortAddresses } from '@polkadot/util-crypto';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
+import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import getMultisigInfo from '@substrate/app/global/utils/getMultisigInfo';
 
 const getTransferCalls = (api: ApiPromise, data: IRecipient, network: ENetwork) => {
@@ -86,7 +87,14 @@ const transfer = async ({
 			callData: transaction.method.toHex(),
 			callHash: transaction.method.hash.toString(),
 			network,
-			amountToken: data?.[0]?.amount.toString() || '0',
+			amountToken: formatBalance(
+				data?.[0]?.amount.toString() || '0',
+				{
+					numberAfterComma: 3,
+					withThousandDelimitor: false
+				},
+				network
+			),
 			to: data?.[0]?.recipient || '',
 			createdAt: new Date(),
 			multisigAddress: address,

@@ -2,10 +2,13 @@ import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipI
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import Address from '@common/global-ui-components/Address';
 import { ENetwork, ETransactionOptions, ETransactionType, ETxType } from '@common/enum/substrate';
-import ReceivedIcon from '@common/assets/icons/arrow-up-right.svg';
-import SentIcon from '@common/assets/icons/sent-icon.svg';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
-import { ArrowDownLeftIcon, ArrowUpRightIcon, OutlineCheckIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
+import {
+	ArrowDownLeftIcon,
+	ArrowUpRightIcon,
+	OutlineCheckIcon,
+	OutlineCloseIcon
+} from '@common/global-ui-components/Icons';
 import dayjs from 'dayjs';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { IReviewTransaction } from '@common/types/substrate';
@@ -26,6 +29,8 @@ interface ITransactionHeadProps {
 	onAction: (actionType: ETxType) => Promise<{ error: boolean }>;
 	reviewTransaction: IReviewTransaction | null;
 	signTransaction: () => Promise<{ error: boolean }>;
+	isSignatory?: boolean;
+	initiator: boolean;
 }
 
 function TransactionIcon({ type }: { type: ETransactionOptions }) {
@@ -75,7 +80,9 @@ export function TransactionHead({
 	hasApproved,
 	onAction,
 	reviewTransaction,
-	signTransaction
+	signTransaction,
+	isSignatory,
+	initiator
 }: ITransactionHeadProps) {
 	return (
 		<div className={isHomePage ? 'border-b border-text-secondary p-3 mr-2' : ''}>
@@ -107,12 +114,11 @@ export function TransactionHead({
 							variant={ETypographyVariants.p}
 							className='flex items-center gap-x-2 justify-start text-text-primary'
 						>
-							{<ParachainTooltipIcon src={networkConstants[network]?.logo} />}
+							<ParachainTooltipIcon src={networkConstants[network]?.logo} />
 							<span
 								className={`font-normal text-xs text-success ${type === ETransactionOptions.SENT && 'text-text-danger'}`}
 							>
-								{type === ETransactionOptions.SENT ? '-' : '+'} {amountToken}{' '}
-								{networkConstants[network].tokenSymbol}
+								{type === ETransactionOptions.SENT ? '-' : '+'} {amountToken} {networkConstants[network].tokenSymbol}
 							</span>
 						</Typography>
 					) : (
@@ -163,8 +169,8 @@ export function TransactionHead({
 						<span className='text-success'>Success</span>
 					</Typography>
 				)}
-				{ETransactionType.QUEUE_TRANSACTION === transactionType && (
-					<div className='flex items-center gap-x-4 basis-1/5 justify-end'>
+				{ETransactionType.QUEUE_TRANSACTION === transactionType && isSignatory ? (
+					<div className='flex items-center gap-x-4 basis-1/5 justify-start'>
 						<div className='flex items-center gap-x-4'>
 							{!isHomePage && (
 								<Typography
@@ -186,7 +192,7 @@ export function TransactionHead({
 								</ReviewModal>
 							)}
 						</div>
-						{isHomePage && (
+						{isHomePage && initiator && (
 							<ReviewModal
 								buildTransaction={() => onAction(ETxType.CANCEL)}
 								reviewTransaction={reviewTransaction}
@@ -198,6 +204,13 @@ export function TransactionHead({
 							</ReviewModal>
 						)}
 					</div>
+				) : (
+					<Typography
+						variant={ETypographyVariants.p}
+						className='flex items-center gap-x-4 basis-1/5 '
+					>
+						Not a signatories
+					</Typography>
 				)}
 			</div>
 		</div>

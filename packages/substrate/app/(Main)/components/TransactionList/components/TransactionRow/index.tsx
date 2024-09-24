@@ -48,6 +48,7 @@ interface ITransactionRow {
 	multisig: string;
 	approvals: Array<string>;
 	variant: ETransactionVariant;
+	initiator: string;
 }
 
 const getLabelForTransation = (type: ETransactionOptions, label?: string) => {
@@ -61,13 +62,13 @@ const getLabelForTransation = (type: ETransactionOptions, label?: string) => {
 		case ETransactionOptions.REMOVE_SIGNATORY:
 			return 'Remove Signatory';
 		case ETransactionOptions.CREATE_PROXY:
-			return 'Create Proxy'
+			return 'Create Proxy';
 		case ETransactionOptions.CUSTOM:
 			return label || 'Custom';
 		default:
 			return label || 'Custom';
 	}
-}
+};
 
 const getTransactionDetails = (data: any[], network: ENetwork, type: ETransactionOptions) => {
 	if (!data || !Array.isArray(data) || data.length === 0) {
@@ -75,11 +76,11 @@ const getTransactionDetails = (data: any[], network: ENetwork, type: ETransactio
 			label: getLabelForTransation(type),
 			amount: 0,
 			to: []
-		}
+		};
 	}
 
-	const sections: string[] = []
-	const methods: string[] = []
+	const sections: string[] = [];
+	const methods: string[] = [];
 
 	const amounts: BN[] = [];
 	const to: string[] = [];
@@ -92,14 +93,13 @@ const getTransactionDetails = (data: any[], network: ENetwork, type: ETransactio
 
 		if (item.section === 'balances' && item.method === 'transferKeepAlive') {
 			amounts.push(new BN(item.value || 0));
-			to.push(item.to || '');
+			item.to && to.push(item.to);
 		}
 	});
 
 	label = getLabelForTransation(type, `${sections[sections.length - 1]}.${methods[methods.length - 1]}`);
 
-
-	const amount = amounts.reduce((prev, curr) => (new BN(prev)).add(new BN(curr)), new BN(0));
+	const amount = amounts.reduce((prev, curr) => new BN(prev).add(new BN(curr)), new BN(0));
 
 	return {
 		label,
@@ -107,7 +107,7 @@ const getTransactionDetails = (data: any[], network: ENetwork, type: ETransactio
 		amount: formatBnBalance(amount, { numberAfterComma: 4 }, network),
 		to
 	};
-}
+};
 
 function TransactionRow({
 	callData,
@@ -121,7 +121,8 @@ function TransactionRow({
 	transactionType,
 	multisig,
 	approvals = [],
-	variant = ETransactionVariant.SIMPLE
+	variant = ETransactionVariant.SIMPLE,
+	initiator
 }: ITransactionRow) {
 	const { getApi } = useAllAPI();
 	const [user] = useUser();
@@ -129,6 +130,7 @@ function TransactionRow({
 	const [queueTransaction, setQueueTransactions] = useQueueAtom();
 	const [historyTransaction, setHistoryTransaction] = useHistoryAtom();
 	const notification = useNotification();
+	const isInitiator = getSubstrateAddress(initiator) === getSubstrateAddress(user?.address || '');
 
 	const { data, isLoading, error } = useDecodeCallData({
 		callData,
@@ -142,6 +144,7 @@ function TransactionRow({
 	const [reviewTransaction, setReviewTransaction] = useState<IReviewTransaction | null>(null);
 
 	const txMultisig = findMultisig(organisation?.multisigs || [], `${multisig}_${network}`);
+	const isSignatory = txMultisig?.signatories.includes(getSubstrateAddress(user?.address || '') || '');
 
 	const hasApproved = approvals
 		.map((a) => getSubstrateAddress(a))
@@ -338,6 +341,8 @@ function TransactionRow({
 				signTransaction={signTransaction}
 				reviewTransaction={reviewTransaction}
 				onAction={buildTransaction}
+				isSignatory={isSignatory}
+				initiator={isInitiator}
 			/>
 		);
 	}
@@ -369,6 +374,8 @@ function TransactionRow({
 							signTransaction={signTransaction}
 							reviewTransaction={reviewTransaction}
 							onAction={buildTransaction}
+							isSignatory={isSignatory}
+							initiator={isInitiator}
 						/>
 					),
 					children: (

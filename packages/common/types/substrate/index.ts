@@ -56,6 +56,7 @@ export interface IDashboardTransaction {
 	callModule?: string;
 	callModuleFunction?: string;
 	txType?: ETxType;
+	initiator?: string;
 }
 
 export interface ITransaction {
