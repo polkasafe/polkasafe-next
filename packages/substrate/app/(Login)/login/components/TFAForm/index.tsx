@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 
 interface ITFAFormProps {
 	onSubmit: (authCode: number) => void;
@@ -17,10 +18,13 @@ export function TFAForm({ onSubmit, onCancel, loginDisabled, loading }: ITFAForm
 	return (
 		<>
 			<h2 className='text-lg text-white font-semibold'>Two Factor Authentication</h2>
-			<p className='text-sm text-white'>
+			<Typography
+				variant={ETypographyVariants.p}
+				className='text-sm text-white'
+			>
 				Please open the two-step verification app or extension and input the authentication code for your Polkassembly
 				account.
-			</p>
+			</Typography>
 
 			<div className='mt-5'>
 				<label

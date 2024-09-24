@@ -11,7 +11,7 @@ import {
 } from '@common/types/substrate';
 import { UpdateMultisigForm } from '@common/global-ui-components/UpdateMultisigForm';
 import { twMerge } from 'tailwind-merge';
-import { ETransactionState, ETxType, Wallet } from '@common/enum/substrate';
+import { ETransactionState, ETriggers, ETxType, Wallet } from '@common/enum/substrate';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
@@ -23,6 +23,8 @@ import { setSigner } from '@substrate/app/global/utils/setSigner';
 import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { ReviewTransaction } from '@common/global-ui-components/ReviewTransaction';
 import { ApiPromise } from '@polkadot/api';
+import { sendNotification } from '@sdk/polkasafe-sdk/src';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 
 interface IUpdateMultisig {
 	multisig: IMultisig;
@@ -62,6 +64,25 @@ export const UpdateMultisig = ({ multisig, proxyAddress, addresses, className }:
 				const payload = [newTransaction, ...(queueTransaction?.transactions || [])];
 				setQueueTransactions({ ...queueTransaction, transactions: payload });
 				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+				const { callHash, network, multisigAddress } = newTransaction;
+				if (!user?.address || !user?.signature) {
+					return;
+				}
+				sendNotification({
+					address: user?.address,
+					signature: user?.signature,
+					args: {
+						address: user?.address,
+						addresses:
+							multisig?.signatories.filter(
+								(signatory) => getSubstrateAddress(signatory) !== getSubstrateAddress(user?.address || '')
+							) || [],
+						callHash,
+						multisigAddress,
+						network
+					},
+					trigger: ETriggers.EDIT_MULTISIG_USERS_START
+				});
 			} catch (error) {
 				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			}

@@ -187,5 +187,12 @@ export enum ETriggers {
 	EXECUTED_TRANSACTION = 'executedTransaction',
 	INIT_MULTISIG_TRANSFER = 'initMultisigTransfer',
 	SCHEDULED_APPROVAL_REMINDER = 'scheduledApprovalReminder',
-	APPROVAL_REMINDER = 'approvalReminder'
+	APPROVAL_REMINDER = 'approvalReminder',
+	VERIFY_EMAIL = 'verifyEmail'
+}
+
+export enum NotificationSource {
+	POLKASSEMBLY = 'polkassembly',
+	POLKASAFE = 'polkasafe',
+	TOWNHALL = 'townhall'
 }

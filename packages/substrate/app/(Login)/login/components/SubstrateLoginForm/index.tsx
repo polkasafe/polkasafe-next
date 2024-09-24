@@ -35,6 +35,7 @@ import Modal from '@common/global-ui-components/Modal';
 import InfoBox from '@common/global-ui-components/InfoBox';
 import { QrDisplayPayload, QrScanSignature } from '@polkadot/react-qr';
 import { polkadotVaultSign } from '@substrate/app/(Login)/login/utils/polkadotVaultSign';
+import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 
 export function SubstrateLoginForm() {
 	const setAtom = useSetAtom(userAtom);
@@ -345,11 +346,24 @@ export function SubstrateLoginForm() {
 					</div>
 				</>
 			</Modal>
-			<h2 className='font-bold text-lg text-white'>Get Started</h2>
-			<p className='mt-2  text-normal text-sm text-white'>Connect your wallet</p>
-			<p className='text-text_secondary text-sm font-normal mt-5 text-white'>
+			<Typography
+				variant={ETypographyVariants.h2}
+				className='font-bold text-lg text-white'
+			>
+				Get Started
+			</Typography>
+			<Typography
+				variant={ETypographyVariants.p}
+				className='mt-2  text-normal text-sm text-white'
+			>
+				Connect your wallet
+			</Typography>
+			<Typography
+				variant={ETypographyVariants.p}
+				className='text-text_secondary text-sm font-normal mt-5 text-white'
+			>
 				Your first step towards creating a safe & secure MultiSig
-			</p>
+			</Typography>
 			{showAccountsDropdown ? (
 				<div className='mt-5'>
 					<WalletButtons
@@ -366,13 +380,19 @@ export function SubstrateLoginForm() {
 					{fetchAccountsLoading ? (
 						<Loader />
 					) : noExtension ? (
-						<p className='mt-2  text-normal text-sm text-white text-center capitalize'>
+						<Typography
+							variant={ETypographyVariants.p}
+							className='mt-2  text-normal text-sm text-white text-center capitalize'
+						>
 							Please Install {selectedWallet} Extension.
-						</p>
+						</Typography>
 					) : noAccounts ? (
-						<p className='mt-2  text-normal text-sm text-white text-center'>
+						<Typography
+							variant={ETypographyVariants.p}
+							className='mt-2  text-normal text-sm text-white text-center'
+						>
 							No Accounts Found. Please Install the Extension And Add Accounts.
-						</p>
+						</Typography>
 					) : (
 						<AccountSelectionForm
 							disabled={loading}

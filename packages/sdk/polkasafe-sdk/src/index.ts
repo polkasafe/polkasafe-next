@@ -8,7 +8,8 @@ import {
 	IGetOrganisationTransactionProps
 } from '@common/types/sdk';
 import { ETransactionType } from '@common/enum/sdk';
-import { ENetwork } from '@common/enum/substrate';
+import { ENetwork, ETriggers } from '@common/enum/substrate';
+import { IGenericObject } from '@common/types/substrate';
 import CURRENCY_API_KEY from './constants/currencyApiKey';
 import { currencySymbols } from './constants/currencyConstants';
 import { connectAddress } from './connect-address';
@@ -131,4 +132,23 @@ export const createMultisig = async ({
 	});
 
 	return request('/createMultisig', {}, { method: 'POST', body });
+};
+
+export const sendNotification = async ({
+	address,
+	signature,
+	trigger,
+	args
+}: {
+	address: string;
+	signature: string;
+	trigger: ETriggers;
+	args: IGenericObject;
+}) => {
+	const body = JSON.stringify({
+		trigger,
+		args
+	});
+	const headers = handleHeaders({ address, signature });
+	return request('/sendNotification', headers, { method: 'POST', body });
 };

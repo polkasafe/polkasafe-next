@@ -8,6 +8,7 @@ import {
 	ETransactionOptions,
 	ETransactionType,
 	ETransactionVariant,
+	ETriggers,
 	ETxType
 } from '@common/enum/substrate';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
@@ -34,6 +35,7 @@ import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { AFTER_EXECUTE } from '@substrate/app/global/utils/afterExceute';
 import formatBnBalance from '@common/utils/formatBnBalance';
 import BN from 'bn.js';
+import { sendNotification } from '@sdk/polkasafe-sdk/src';
 
 interface ITransactionRow {
 	callData?: string;
@@ -181,16 +183,6 @@ function TransactionRow({
 							const multisig = findMultisig(organisation?.multisigs || [], `${tx.multisigAddress}_${tx.network}`);
 							if (approvals.length === multisig?.threshold) {
 								// Add new proxy to DB
-								if (tx.callModule === 'Proxy' && tx.callModuleFunction === 'create_pure') {
-									AFTER_EXECUTE[EAfterExecute.LINK_PROXY]({
-										multisigAddress: txMultisig.address,
-										network: txMultisig.network,
-										address: user.address,
-										signature: user.signature
-									});
-								}
-
-								// Link old proxy to new multisig
 								const isEditProxyTransaction = data.find(
 									(d: IGenericObject) => d.method === 'addProxy' && d.section === 'proxy'
 								);
@@ -198,8 +190,31 @@ function TransactionRow({
 									(d: IGenericObject) => d.method === 'removeProxy' && d.section === 'proxy'
 								);
 								const proxy = data.find((d: IGenericObject) => d.method === 'proxy' && d.section === 'proxy');
-
-								if (isEditProxyTransaction && isRemoveTransaction) {
+								if (tx.callModule === 'Proxy' && tx.callModuleFunction === 'create_pure') {
+									AFTER_EXECUTE[EAfterExecute.LINK_PROXY]({
+										multisigAddress: txMultisig.address,
+										network: txMultisig.network,
+										address: user.address,
+										signature: user.signature
+									});
+									sendNotification({
+										address: user.address,
+										signature: user.signature,
+										args: {
+											address: user.address,
+											addresses:
+												multisig?.signatories.filter(
+													(signatory) => getSubstrateAddress(signatory) !== getSubstrateAddress(user?.address || '')
+												) || [],
+											callHash: callHash,
+											multisigAddress: txMultisig.address,
+											network
+										},
+										trigger: ETriggers.EXECUTED_PROXY
+									});
+								}
+								// Link old proxy to new multisig
+								else if (isEditProxyTransaction && isRemoveTransaction) {
 									AFTER_EXECUTE[EAfterExecute.EDIT_PROXY]({
 										organisationId: organisation?.id || '',
 										newMultisigAddress: isEditProxyTransaction.delegate,
@@ -209,11 +224,43 @@ function TransactionRow({
 										address: user.address,
 										signature: user.signature
 									});
+									sendNotification({
+										address: user.address,
+										signature: user.signature,
+										args: {
+											address: user.address,
+											addresses:
+												multisig?.signatories.filter(
+													(signatory) => getSubstrateAddress(signatory) !== getSubstrateAddress(user?.address || '')
+												) || [],
+											callHash: callHash,
+											multisigAddress: txMultisig.address,
+											network
+										},
+										trigger: ETriggers.EDIT_MULTISIG_USERS_EXECUTED
+									});
+								} else {
+									sendNotification({
+										address: user.address,
+										signature: user.signature,
+										args: {
+											address: user.address,
+											addresses:
+												multisig?.signatories.filter(
+													(signatory) => getSubstrateAddress(signatory) !== getSubstrateAddress(user?.address || '')
+												) || [],
+											callHash: callHash,
+											multisigAddress: txMultisig.address,
+											network
+										},
+										trigger: ETriggers.EXECUTED_TRANSACTION
+									});
 								}
 
 								if (!historyTransaction) {
 									return null;
 								}
+
 								setHistoryTransaction({
 									...historyTransaction,
 									transactions: [tx, ...historyTransaction.transactions]
@@ -235,8 +282,25 @@ function TransactionRow({
 						if (!approvals.includes(user.address)) {
 							approvals.push(user.address);
 						}
+						const multisig = findMultisig(organisation?.multisigs || [], `${tx.multisigAddress}_${tx.network}`);
+						sendNotification({
+							address: user.address,
+							signature: user.signature,
+							args: {
+								address: user.address,
+								addresses:
+									multisig?.signatories.filter(
+										(signatory) => getSubstrateAddress(signatory) !== getSubstrateAddress(user?.address || '')
+									) || [],
+								callHash: callHash,
+								multisigAddress: txMultisig.address,
+								network
+							},
+							trigger: ETriggers.CANCELLED_TRANSACTION
+						});
 						return tx.callHash === callHash ? { ...tx, approvals } : tx;
 					});
+
 					const transactions = payload;
 					setQueueTransactions({ ...queueTransaction, transactions });
 				}

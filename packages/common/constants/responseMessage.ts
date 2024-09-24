@@ -14,7 +14,7 @@ export const ResponseMessages = {
 	INVALID_USER: 'Invalid user.',
 	INVALID_NETWORK: 'Invalid network.',
 	INVALID_REQUEST: 'Invalid request.',
-	UNAUTHORISED: 'Unauthorised.',
+	UNAUTHORIZED: 'Unauthorized.',
 	INTERNAL: 'Internal error occured.',
 	MIN_SINGATORIES: 'Minimum number of signatories is 2.',
 	INVALID_ORGANIZATION: 'invalid organization',

@@ -4,7 +4,7 @@
 
 'use client';
 
-import { ENetwork, ETransactionState, ETxType, Wallet } from '@common/enum/substrate';
+import { ENetwork, ETransactionState, ETriggers, ETxType, Wallet } from '@common/enum/substrate';
 import {
 	IGenericObject,
 	IMultisig,
@@ -28,6 +28,9 @@ import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuilder';
 import { useNotification } from '@common/utils/notification';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
+import { sendNotification } from '@sdk/polkasafe-sdk/src';
+import { findMultisig } from '@common/utils/findMultisig';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 
 interface ISendTransactionProps {
 	address: string | null;
@@ -63,6 +66,10 @@ export function SendTransaction({
 	const assets = data?.assets;
 
 	const buildTransaction = async (values: ISendTransaction) => {
+		if (!user) {
+			notification({ ...ERROR_MESSAGES.AUTHENTICATION_FAILED });
+			return;
+		}
 		// After successful transaction add the transaction to the queue with the latest transaction on top
 		const onSuccess = ({ newTransaction }: IGenericObject) => {
 			try {
@@ -70,8 +77,26 @@ export function SendTransaction({
 					return;
 				}
 				const payload = [newTransaction, ...(queueTransaction?.transactions || [])];
+				const { callHash, network, multisigAddress } = newTransaction;
+				const multisig = findMultisig(organisation?.multisigs || [], multisigAddress);
+
 				setQueueTransactions({ ...queueTransaction, transactions: payload });
 				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+				sendNotification({
+					address: user?.address,
+					signature: user?.signature,
+					args: {
+						address: user?.address,
+						addresses:
+							multisig?.signatories.filter(
+								(signatory) => getSubstrateAddress(signatory) !== getSubstrateAddress(user?.address || '')
+							) || [],
+						callHash,
+						multisigAddress,
+						network
+					},
+					trigger: ETriggers.INIT_MULTISIG_TRANSFER
+				});
 			} catch (error) {
 				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			}

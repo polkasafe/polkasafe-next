@@ -1,4 +1,4 @@
-import { ETxType, Wallet } from '@common/enum/substrate';
+import { ETriggers, ETxType, Wallet } from '@common/enum/substrate';
 import { IGenericObject, IMultisig, IReviewTransaction, ISubstrateExecuteProps } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
@@ -12,6 +12,8 @@ import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import { setSigner } from '@substrate/app/global/utils/setSigner';
 import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
+import { sendNotification } from '@sdk/polkasafe-sdk/src';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 interface ICreateProxyModal {
 	multisig: IMultisig;
 }
@@ -32,9 +34,28 @@ export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
 				if (!queueTransaction) {
 					return;
 				}
+				if (!user?.address || !user?.signature) {
+					return;
+				}
 				const payload = [newTransaction, ...(queueTransaction?.transactions || [])];
+				const { callHash, network, multisigAddress } = newTransaction;
 				setQueueTransactions({ ...queueTransaction, transactions: payload });
 				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+				sendNotification({
+					address: user?.address,
+					signature: user?.signature,
+					args: {
+						address: user?.address,
+						addresses:
+							multisig?.signatories.filter(
+								(signatory) => getSubstrateAddress(signatory) !== getSubstrateAddress(user?.address || '')
+							) || [],
+						callHash,
+						multisigAddress,
+						network
+					},
+					trigger: ETriggers.CREATED_PROXY
+				});
 			} catch (error) {
 				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			}
