@@ -50,7 +50,9 @@ const transfer = async ({
 
 	// Sort signatories
 	const signatories = sortAddresses(
-		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		allSignatories
+			.map((s) => getEncodedAddress(s, network) || s)
+			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
 		networkConstants[network].ss58Format
 	);
 	const tx = data
