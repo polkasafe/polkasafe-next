@@ -24,7 +24,9 @@ export const ActionItems = ({ selectedTab }: IActionItems) => {
 		<>
 			{selectedTab === ESettingsTab.SIGNATORIES && <Signatories multisigs={organisation.multisigs} />}
 			{selectedTab === ESettingsTab.NOTIFICATIONS && <NotificationsUI />}
-			{selectedTab === ESettingsTab.TRANSACTION_FIELDS && <TransactionFields transactionFields={organisation.transactionFields} />}
+			{selectedTab === ESettingsTab.TRANSACTION_FIELDS && (
+				<TransactionFields transactionFields={organisation.transactionFields || {}} />
+			)}
 			{selectedTab === ESettingsTab.ADMIN && <AdminPanel />}
 			{selectedTab === ESettingsTab.OVERVIEW && <MultisigOverview multisigs={organisation.multisigs} />}
 		</>

@@ -347,6 +347,7 @@ export interface IDBOrganisation {
 	tax_number: string;
 	imageURI: string;
 	addressBook: Array<IAddressBook>;
+	transactionFields?: ITransactionFields;
 }
 
 export interface QrState {

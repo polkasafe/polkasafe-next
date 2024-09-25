@@ -8,6 +8,7 @@ import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collections';
 import { IDBOrganisation } from '@common/types/substrate';
+import { transactionFields } from '@substrate/app/api/v1/getOrganisationById/utils/transactionFields';
 
 const getValidProxy = (proxy: string | Array<{ address: string }>) => {
 	return typeof proxy === 'string'
@@ -53,6 +54,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		}
 
 		const data = organisation.data() as IDBOrganisation;
+
 		data.members = [...new Set(data?.members || [])] as Array<string>;
 		const multisigIds = (data?.multisigs || [])
 			.map((multisigId: string | any) => {
@@ -89,7 +91,15 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const multisigs = (await Promise.all(multisigsPromise)).filter((a) => Boolean(a));
 
 		return NextResponse.json(
-			{ data: { ...data, addressBook: data.addressBook || [], multisigs, id: organisationId } },
+			{
+				data: {
+					...data,
+					addressBook: data.addressBook || [],
+					multisigs,
+					id: organisationId,
+					transactionFields: data.transactionFields || transactionFields
+				}
+			},
 			{ status: 200 }
 		);
 	} catch (err: unknown) {
