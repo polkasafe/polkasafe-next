@@ -136,10 +136,11 @@ const createProxy = async ({
 
 	// Sort signatories
 	const signatories = sortAddresses(
-		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		allSignatories
+			.map((s) => getEncodedAddress(s, network) || s)
+			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
 		networkConstants[network].ss58Format
 	);
-
 	if (!api || !api.isReady) {
 		throw new Error(ERROR_MESSAGES.API_NOT_CONNECTED);
 	}
@@ -183,8 +184,11 @@ const cancelTransaction = async ({
 }: ICancelTransaction) => {
 	const { network, signatories: allSignatories } = multisig;
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+	// Sort signatories
 	const signatories = sortAddresses(
-		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		allSignatories
+			.map((s) => getEncodedAddress(s, network) || s)
+			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
 		networkConstants[network].ss58Format
 	);
 
@@ -224,8 +228,11 @@ const approveTransaction = async ({
 }: IApproveTransaction) => {
 	const { network, signatories: allSignatories, threshold, address } = multisig;
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+	// Sort signatories
 	const signatories = sortAddresses(
-		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		allSignatories
+			.map((s) => getEncodedAddress(s, network) || s)
+			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
 		networkConstants[network].ss58Format
 	);
 
@@ -277,8 +284,11 @@ const editProxy = async ({
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
 
 	// Sort signatories
+	// Sort signatories
 	const signatories = sortAddresses(
-		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		allSignatories
+			.map((s) => getEncodedAddress(s, network) || s)
+			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
 		networkConstants[network].ss58Format
 	);
 
