@@ -18,7 +18,11 @@ interface ITransactionDetails {
 	type: ETransactionOptions;
 	createdAt: Date;
 	amountToken: string | number;
-	to: string[];
+	to: Array<{
+		address: string;
+		amount: number;
+		currency: string;
+	}>;
 	network: ENetwork;
 	from: string;
 	transactionType: ETransactionType;
@@ -64,22 +68,36 @@ export default function TransactionDetails({
 						network={network}
 					/>
 				</div>
-				{to &&
-					to.length > 0 &&
-					to.map((item) => (
-						<>
-							<Divider className='border-text-disabled' />
-							<p className='text-text-secondary font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
-								{type === ETransactionOptions.RECEIVED ? 'RECEIVED TO' : 'SEND TO'}
-							</p>
-							<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
-								<Address
-									address={item}
-									network={network}
-								/>
-							</div>
-						</>
-					))}
+				<Divider className='border-text-disabled' />
+				{to.length > 0 && to?.[0]?.address && (
+					<p className='text-text-secondary font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'>
+						{type === ETransactionOptions.RECEIVED ? 'RECEIVED TO' : 'SEND TO'}
+					</p>
+				)}
+				<div className='flex flex-col gap-2'>
+					{to &&
+						to.length > 0 &&
+						to.map((item, i) =>
+							item.address && item.amount ? (
+								<div key={`${item}_${i}`}>
+									<div className='flex justify-between'>
+										<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
+											<Address
+												address={item.address}
+												network={network}
+											/>
+										</div>
+
+										<div className='flex items-center justify-between'>
+											<span className='text-white'>
+												{item.amount} {item.currency}
+											</span>
+										</div>
+									</div>
+								</div>
+							) : null
+						)}
+				</div>
 				<Divider className='border-text-disabled' />
 				<div className='flex flex-col gap-y-2'>
 					<div className='flex items-center justify-between'>

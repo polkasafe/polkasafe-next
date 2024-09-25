@@ -112,20 +112,16 @@ export function TransactionHead({
 					variant={ETypographyVariants.p}
 					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
 				>
-					{allAmountsAndCurrency.length ? (
-						<div>
-							{allAmountsAndCurrency.map((recipe, index) => (
-								<div
-									key={index}
-									className='flex items-center gap-x-2'
-								>
-									<span
-										className={`font-normal text-xs text-success ${type === ETransactionOptions.SENT && 'text-text-danger'}`}
-									>
-										{recipe.amount} {recipe.currency}
-									</span>
-								</div>
-							))}
+					{allAmountsAndCurrency.length &&
+					String(allAmountsAndCurrency?.[0].amount) !== '0' &&
+					allAmountsAndCurrency?.[0].currency ? (
+						<div className='flex items-center gap-x-2'>
+							<span
+								className={`font-normal text-xs text-success ${type === ETransactionOptions.SENT && 'text-text-danger'}`}
+							>
+								{allAmountsAndCurrency?.[0].amount} {allAmountsAndCurrency?.[0]?.currency}
+							</span>
+							{Boolean(allAmountsAndCurrency.length - 1) && `+${allAmountsAndCurrency.length - 1}`}
 						</div>
 					) : Boolean(amountToken) && Number(amountToken) ? (
 						<Typography
@@ -160,8 +156,8 @@ export function TransactionHead({
 					variant={ETypographyVariants.p}
 					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
 				>
-					{to && to.length > 0 ? (
-						<div>
+					{allRecipes && allRecipes.length > 0 ? (
+						<div className='flex items-center gap-x-2'>
 							<Address
 								address={allRecipes?.[0]}
 								network={network}

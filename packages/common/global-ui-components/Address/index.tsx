@@ -52,6 +52,10 @@ const Address: React.FC<IAddressComponent> = ({
 }: IAddressComponent) => {
 	const encodedMultisigAddress = getEncodedAddress(address, network);
 
+	if (!encodedMultisigAddress) {
+		return null;
+	}
+
 	return (
 		<div className=' flex items-center gap-x-3'>
 			{isProxy ? (
