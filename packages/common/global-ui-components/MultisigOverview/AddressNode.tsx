@@ -25,7 +25,7 @@ const AddressNode = ({ data }: { data: { address: string; network: ENetwork; han
 				address={data.address}
                 isMultisig={data.isMultisig}
                 isProxy={data.isProxy}
-                withBadge={false}
+                withBadge={data.isProxy}
 
 			/>
 		</>

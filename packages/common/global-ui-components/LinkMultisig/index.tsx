@@ -12,6 +12,7 @@ import { Empty } from '@common/global-ui-components/Empty';
 import { useNotification } from '@common/utils/notification';
 import { useState } from 'react';
 import { LinkIcon, UnlinkIcon } from '@common/global-ui-components/Icons';
+import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 // use availableSignatories to populate the select options
 export const LinkMultisig = ({
 	networks,
@@ -152,7 +153,11 @@ export const LinkMultisig = ({
 				</div>
 				<Divider variant='solid' />
 
-				<Spin spinning={loading}>
+				<Spin spinning={loading} indicator={
+					<LoadingLottie
+						width={200}
+					/>
+				}>
 					<div className='flex flex-col gap-y-3 max-h-80 overflow-x-auto px-3'>
 						{availableMultisig.length === 0 && <Empty description='No onChain Multisig available on this network' />}
 						{availableMultisig.length > 0 &&

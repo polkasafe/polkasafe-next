@@ -64,11 +64,11 @@ const MultisigOverview = ({ multisigs }: { multisigs: IMultisig[] }) => {
 	}));
 
 	if (selectedMultisig.proxy) {
-        selectedMultisig.proxy.forEach((item) => {
+        selectedMultisig.proxy.forEach((item, i) => {
             nodes.push({
                 data: { address: item.address, handle: 'left', network: selectedMultisig.network, isMultisig: false, isProxy: true },
                 id: item.address,
-                position: { x: 600, y: 0 },
+                position: { x: 600, y: i * 70 },
                 type: 'custom'
             });
 

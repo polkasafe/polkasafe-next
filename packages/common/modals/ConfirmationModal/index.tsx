@@ -1,4 +1,5 @@
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import Modal from '@common/global-ui-components/Modal';
 import React from 'react';
 
@@ -29,8 +30,9 @@ export const ConfirmationModal = ({ openModal, setOpenModal, title, message, onS
 					Yes
 				</Button>
 				<Button
-					variant={EButtonVariant.PRIMARY}
+					variant={EButtonVariant.DANGER}
 					onClick={() => setOpenModal(false)}
+					icon={<OutlineCloseIcon className='text-failure' />}
 				>
 					No
 				</Button>

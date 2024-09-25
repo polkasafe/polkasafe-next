@@ -6,6 +6,7 @@ import SelectSignatories from '@common/global-ui-components/CreateMultisig/Selec
 import { createMultisigFormFields } from '@common/global-ui-components/CreateMultisig/utils/form';
 import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import InfoBox from '@common/global-ui-components/InfoBox';
+import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 import { SelectNetwork } from '@common/global-ui-components/SelectNetwork';
 import { ICreateMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
@@ -73,7 +74,12 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 		<div className='w-[600px] h-full flex flex-col justify-center items-center'>
 			<Spin
 				spinning={loading}
-				size='large'
+				indicator={
+					<LoadingLottie
+						width={200}
+						message={'Creating Your Multisig'}
+					/>
+				}
 			>
 				<Form
 					layout='vertical'
