@@ -98,7 +98,8 @@ export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
 				from: multisig.address,
 				txCost: formattedFee.toString(),
 				network: multisig.network,
-				name: multisig.name
+				name: multisig.name,
+				createAt: new Date().toISOString()
 			};
 			setExecutableTransaction(transaction);
 			setReviewTransaction(reviewData);

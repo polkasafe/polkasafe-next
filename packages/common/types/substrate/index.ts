@@ -397,7 +397,7 @@ export interface IReviewTransaction {
 	txCost?: string;
 	network: ENetwork;
 	txHash?: string;
-	createdAt: Date;
+	createdAt?: Date;
 }
 
 export interface IGetTransaction {

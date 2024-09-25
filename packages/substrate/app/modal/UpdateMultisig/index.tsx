@@ -132,7 +132,8 @@ export const UpdateMultisig = ({ multisig, proxyAddress, addresses, className }:
 				from: multisig.address,
 				proxyAddress: proxyAddress,
 				txCost: formattedFee.toString(),
-				network: multisig.network
+				network: multisig.network,
+				createAt: new Date().toISOString()
 			} as IReviewTransaction;
 			setExecutableTransaction(transaction);
 			setReviewTransaction(reviewData);

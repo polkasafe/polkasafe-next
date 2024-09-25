@@ -415,7 +415,8 @@ function TransactionRow({
 				from: txMultisig.address,
 				txCost: formattedFee.toString(),
 				network: txMultisig.network,
-				name: txMultisig.name
+				name: txMultisig.name,
+				createAt: new Date().toISOString()
 			};
 			setExecutableTransaction(transaction);
 			setReviewTransaction(reviewData);

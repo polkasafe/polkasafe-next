@@ -161,7 +161,7 @@ export function SendTransaction({
 				proxyAddress: values.selectedProxy,
 				txCost: formattedFee.toString(),
 				network: values.sender.network,
-				createdAt: new Date()
+				createAt: new Date().toISOString()
 			} as IReviewTransaction;
 			setExecutableTransaction(transaction);
 			setReviewTransaction(reviewData);
