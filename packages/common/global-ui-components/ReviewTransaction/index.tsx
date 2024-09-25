@@ -34,12 +34,15 @@ export const ReviewTransaction = ({ onSubmit, onClose, reviewTransaction }: IRev
 	};
 
 	return (
-		<Spin spinning={loading} indicator={
-			<LoadingLottie
-				width={200}
-				message={'Creating Your Transaction'}
-			/>
-		}>
+		<Spin
+			spinning={loading}
+			indicator={
+				<LoadingLottie
+					width={200}
+					message='Creating Your Transaction'
+				/>
+			}
+		>
 			<div className='flex flex-col gap-y-4'>
 				<div className='p-2 bg-bg-secondary rounded-xl'>
 					<div className='max-w-[480px] overflow-y-auto max-h-52 overflow-x-hidden'>
