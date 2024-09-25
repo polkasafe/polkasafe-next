@@ -80,11 +80,11 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 					return null;
 				}
 				return {
-					name: data.name,
+					name: data.name.split('_').join(' '),
 					address: data.address,
 					network: data.network,
 					threshold: data.threshold,
-					signatories: data.signatories,
+					signatories: data.signatories.map((s: string) => getSubstrateAddress(s)),
 					proxy: data.proxy ? getValidProxy(data.proxy) : []
 				};
 			}) || [];

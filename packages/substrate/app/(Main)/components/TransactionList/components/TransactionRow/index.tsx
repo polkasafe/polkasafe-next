@@ -36,6 +36,7 @@ import { AFTER_EXECUTE } from '@substrate/app/global/utils/afterExceute';
 import formatBnBalance from '@common/utils/formatBnBalance';
 import BN from 'bn.js';
 import { sendNotification } from '@sdk/polkasafe-sdk/src';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 interface ITransactionRow {
 	callData?: string;
@@ -53,16 +54,14 @@ interface ITransactionRow {
 	initiator: string;
 }
 
-const getLabelForTransation = (type: ETransactionOptions, label?: string) => {
+const getLabelForTransaction = (type: ETransactionOptions, label?: string) => {
 	switch (type) {
 		case ETransactionOptions.SENT:
 			return 'Sent';
 		case ETransactionOptions.RECEIVED:
 			return 'Received';
-		case ETransactionOptions.ADD_SIGNATORY:
-			return 'Add Signatory';
-		case ETransactionOptions.REMOVE_SIGNATORY:
-			return 'Remove Signatory';
+		case ETransactionOptions.EDIT_SIGNATORY:
+			return 'EDIT Signatory';
 		case ETransactionOptions.CREATE_PROXY:
 			return 'Create Proxy';
 		case ETransactionOptions.CUSTOM:
@@ -72,10 +71,73 @@ const getLabelForTransation = (type: ETransactionOptions, label?: string) => {
 	}
 };
 
+const getTransactionDetail = (data: Array<any>, network: ENetwork) => {
+	if (!data || !Array.isArray(data) || data.length === 0) {
+		console.log('No data', data);
+		return {
+			label: '-',
+			amount: 0,
+			to: []
+		};
+	}
+	const transaction: any = {};
+	const recipientsAndAmount: Array<any> = [];
+	for (let txData of data) {
+		// LABEL
+		if (txData.section === 'proxy' && txData.method === 'createPure') {
+			transaction.label = ETransactionOptions.CREATE_PROXY;
+		} else if (txData.section === 'proxy' && txData.method === 'addProxy') {
+			transaction.label = ETransactionOptions.EDIT_SIGNATORY;
+		} else if (
+			(txData.section === 'balances' && txData.method === 'transferKeepAlive') ||
+			(txData.section === 'assets' && txData.method === 'transfer') ||
+			(txData.section === 'assets' && txData.method === 'reserveTransferAssets') ||
+			(txData.section === 'balances' && txData.method === 'transfer')
+		) {
+			transaction.label = ETransactionOptions.SENT;
+		} else {
+			transaction.label = ETransactionOptions.CUSTOM;
+		}
+		// AMOUNT
+		if (txData.section === 'balances' && txData.method === 'transferKeepAlive') {
+			const recipient = txData.to;
+			const amount = txData.value?.split(',').join('');
+
+			recipientsAndAmount.push({
+				address: recipient,
+				currency: networkConstants[network].tokenSymbol,
+				amount: formatBalance(amount, { numberAfterComma: 4 }, network)
+			});
+		}
+		if (txData.section === 'assets' && txData.method === 'transfer') {
+			const recipient = txData?.transfer?.target;
+			const amount = txData?.transfer?.amount?.split(',').join('');
+			const assetId = txData?.transfer?.assetId?.split(',').join('');
+			const currency = networkConstants[network].supportedTokens.find(
+				(token) => String(token.id) === String(assetId)
+			)?.symbol;
+			const decimals = networkConstants[network].supportedTokens.find(
+				(token) => String(token.id) === String(assetId)
+			)?.decimals;
+			recipientsAndAmount.push({
+				address: recipient,
+				currency,
+				amount: formatBalance(amount, { numberAfterComma: 4 }, network, decimals)
+			});
+		}
+		if (txData.section === 'proxy' && txData.method === 'proxy') {
+			transaction.proxyAddress = txData.proxyAddress;
+		}
+	}
+	transaction.to = recipientsAndAmount;
+
+	return transaction;
+};
+
 const getTransactionDetails = (data: any[], network: ENetwork, type: ETransactionOptions) => {
 	if (!data || !Array.isArray(data) || data.length === 0) {
 		return {
-			label: getLabelForTransation(type),
+			label: getLabelForTransaction(type),
 			amount: 0,
 			to: []
 		};
@@ -99,7 +161,7 @@ const getTransactionDetails = (data: any[], network: ENetwork, type: ETransactio
 		}
 	});
 
-	label = getLabelForTransation(type, `${sections[sections.length - 1]}.${methods[methods.length - 1]}`);
+	label = getLabelForTransaction(type, `${sections[sections.length - 1]}.${methods[methods.length - 1]}`);
 
 	const amount = amounts.reduce((prev, curr) => new BN(prev).add(new BN(curr)), new BN(0));
 
@@ -133,7 +195,6 @@ function TransactionRow({
 	const [historyTransaction, setHistoryTransaction] = useHistoryAtom();
 	const notification = useNotification();
 	const isInitiator = getSubstrateAddress(initiator) === getSubstrateAddress(user?.address || '');
-	console.log(user, 'user', getSubstrateAddress(user?.address || ''), getSubstrateAddress(initiator));
 
 	const { data, isLoading, error } = useDecodeCallData({
 		callData,
@@ -141,23 +202,15 @@ function TransactionRow({
 		apiData: getApi(network)
 	});
 
-	const transactionDetails = getTransactionDetails(data, network, type);
+	const transactionDetails = getTransactionDetail(data, network);
 
 	const [executableTransaction, setExecutableTransaction] = useState<ISubstrateExecuteProps | null>(null);
 	const [reviewTransaction, setReviewTransaction] = useState<IReviewTransaction | null>(null);
-
-	console.log(organisation?.multisigs);
 
 	const txMultisig = findMultisig(organisation?.multisigs || [], `${multisig}_${network}`);
 	const isSignatory = txMultisig?.signatories
 		.map((a) => getSubstrateAddress(a))
 		.includes(getSubstrateAddress(user?.address || '') || '');
-
-	console.log('isSignatory', isSignatory);
-	console.log(
-		'txMultisig',
-		txMultisig?.signatories.map((a) => getSubstrateAddress(a))
-	);
 
 	const hasApproved = approvals
 		.map((a) => getSubstrateAddress(a))
@@ -348,7 +401,6 @@ function TransactionRow({
 			}
 
 			const fee = (await transaction.tx.paymentInfo(user.address)).partialFee;
-			console.log(fee.toString());
 			const formattedFee = formatBalance(
 				fee.toString(),
 				{
@@ -402,9 +454,13 @@ function TransactionRow({
 		return (
 			<TransactionHead
 				createdAt={createdAt}
-				to={transactionDetails.to}
+				to={
+					transactionDetails.to || [
+						{ address: to, currency: networkConstants[network].tokenSymbol, amount: amountToken }
+					]
+				}
 				network={network}
-				amountToken={transactionDetails.amount}
+				amountToken={amountToken}
 				from={from}
 				label={transactionDetails.label}
 				type={type}
@@ -436,7 +492,11 @@ function TransactionRow({
 					label: (
 						<TransactionHead
 							createdAt={createdAt}
-							to={transactionDetails.to}
+							to={
+								transactionDetails.to || [
+									{ address: to, currency: networkConstants[network].tokenSymbol, amount: amountToken }
+								]
+							}
 							network={network}
 							amountToken={transactionDetails.amount}
 							from={from}

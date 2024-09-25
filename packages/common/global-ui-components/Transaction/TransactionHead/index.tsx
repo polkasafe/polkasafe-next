@@ -17,7 +17,11 @@ interface ITransactionHeadProps {
 	type: ETransactionOptions;
 	createdAt: Date;
 	amountToken: number | string;
-	to: string[];
+	to: Array<{
+		address: string;
+		amount: number;
+		currency: string;
+	}>;
 	network: ENetwork;
 	from: string;
 	label: string;
@@ -52,10 +56,7 @@ function TransactionIcon({ type }: { type: ETransactionOptions }) {
 		case ETransactionOptions.CREATE_PROXY: {
 			break;
 		}
-		case ETransactionOptions.REMOVE_SIGNATORY: {
-			break;
-		}
-		case ETransactionOptions.ADD_SIGNATORY: {
+		case ETransactionOptions.EDIT_SIGNATORY: {
 			break;
 		}
 		default: {
@@ -84,6 +85,8 @@ export function TransactionHead({
 	isSignatory,
 	initiator
 }: ITransactionHeadProps) {
+	const allRecipes = to?.map((recipe) => recipe.address);
+	const allAmountsAndCurrency = to?.map((recipe) => ({ amount: recipe?.amount, currency: recipe?.currency }));
 	return (
 		<div className={isHomePage ? 'border-b border-text-secondary p-3 mr-2' : ''}>
 			<div className='flex items-center max-sm:flex max-sm:flex-wrap max-sm:gap-2'>
@@ -109,7 +112,22 @@ export function TransactionHead({
 					variant={ETypographyVariants.p}
 					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
 				>
-					{Boolean(amountToken) && Number(amountToken) ? (
+					{allAmountsAndCurrency.length ? (
+						<div>
+							{allAmountsAndCurrency.map((recipe, index) => (
+								<div
+									key={index}
+									className='flex items-center gap-x-2'
+								>
+									<span
+										className={`font-normal text-xs text-success ${type === ETransactionOptions.SENT && 'text-text-danger'}`}
+									>
+										{recipe.amount} {recipe.currency}
+									</span>
+								</div>
+							))}
+						</div>
+					) : Boolean(amountToken) && Number(amountToken) ? (
 						<Typography
 							variant={ETypographyVariants.p}
 							className='flex items-center gap-x-2 justify-start text-text-primary'
@@ -143,12 +161,15 @@ export function TransactionHead({
 					className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
 				>
 					{to && to.length > 0 ? (
-						<Address
-							address={to[0]}
-							network={network}
-							withBadge={false}
-							isMultisig
-						/>
+						<div>
+							<Address
+								address={allRecipes?.[0]}
+								network={network}
+								withBadge={false}
+								isMultisig
+							/>
+							{Boolean(allRecipes.length - 1) && `+${allRecipes.length - 1}`}
+						</div>
 					) : (
 						<Typography variant={ETypographyVariants.h1}>-</Typography>
 					)}
@@ -171,7 +192,7 @@ export function TransactionHead({
 				)}
 				{ETransactionType.QUEUE_TRANSACTION === transactionType && isSignatory ? (
 					<div className='flex items-center gap-x-4 basis-1/5 justify-start'>
-						{!isHomePage && !hasApproved && (
+						{!isHomePage && (
 							<div className='flex items-center gap-x-4'>
 								{!isHomePage && (
 									<Typography
@@ -181,7 +202,7 @@ export function TransactionHead({
 										{!hasApproved ? 'Awaiting your Confirmation' : `(${approvals?.length}/${threshold})`}
 									</Typography>
 								)}
-								{!hasApproved && (
+								{!hasApproved && isHomePage && (
 									<ReviewModal
 										buildTransaction={() => onAction(ETxType.APPROVE)}
 										reviewTransaction={reviewTransaction}
@@ -194,6 +215,18 @@ export function TransactionHead({
 								)}
 							</div>
 						)}
+						{isHomePage && !hasApproved && (
+							<ReviewModal
+								buildTransaction={() => onAction(ETxType.APPROVE)}
+								reviewTransaction={reviewTransaction}
+								signTransaction={signTransaction}
+								className='w-auto min-w-0 bg-[#06d6a0]/[0.1] text-success'
+								size='middle'
+							>
+								<OutlineCheckIcon />
+							</ReviewModal>
+						)}
+
 						{isHomePage && initiator && (
 							<ReviewModal
 								buildTransaction={() => onAction(ETxType.CANCEL)}

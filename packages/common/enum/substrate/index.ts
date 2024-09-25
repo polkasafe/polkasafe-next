@@ -20,8 +20,7 @@ export enum ETransactionOptions {
 	SENT = 'sent',
 	RECEIVED = 'received',
 	CREATE_PROXY = 'create_proxy',
-	REMOVE_SIGNATORY = 'remove_signatory',
-	ADD_SIGNATORY = 'add_signatory',
+	EDIT_SIGNATORY = 'edit_multisig',
 	CUSTOM = 'custom'
 }
 

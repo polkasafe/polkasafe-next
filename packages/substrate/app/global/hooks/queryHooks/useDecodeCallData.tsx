@@ -56,6 +56,17 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 				payload.value = value.split(',').join('');
 			}
 
+			const target = currentPoint?.target?.Id;
+			const amount = currentPoint?.amount;
+			const assetId = currentPoint?.id;
+			if (target && amount && assetId) {
+				payload.transfer = {
+					target,
+					amount,
+					assetId
+				};
+			}
+
 			const assets = currentPoint?.assets as IGenericObject;
 			const beneficiary = currentPoint?.beneficiary as IGenericObject;
 			const dest = currentPoint?.dest as IGenericObject;

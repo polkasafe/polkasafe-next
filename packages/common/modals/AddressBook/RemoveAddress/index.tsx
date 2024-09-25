@@ -29,7 +29,7 @@ export const RemoveAddress = ({ onSubmit }: { onSubmit: () => Promise<void> }) =
 				variant={EButtonVariant.SECONDARY}
 				onClick={() => setOpenModal(true)}
 				loading={loading}
-				className='bg bg-[#e63946]/[0.1] p-2.5 rounded-lg text-failure border-none'
+				className='bg bg-[#e63946]/[0.1] p-2.5 rounded-lg text-failure border-none min-w-0'
 			>
 				<DeleteIcon />
 			</Button>

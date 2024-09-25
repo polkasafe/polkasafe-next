@@ -10,10 +10,12 @@ import { IMultisigAssets } from '@common/types/substrate';
 import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
 import { TransferByMultisig } from '@substrate/app/(Main)/assets/components/AssetsTable/components/Transfer';
 import { Table } from 'antd';
+import { twMerge } from 'tailwind-merge';
 
 interface IAssetsTableProps {
 	dataSource: Array<IMultisigAssetsWithProxy>;
 	currency: string;
+	isExpandable: boolean;
 }
 
 interface IMultisigAssetsWithProxy extends IMultisigAssets {
@@ -24,22 +26,22 @@ const columns = [
 	{
 		title: 'Asset',
 		variant: ETypographyVariants.h1,
-		className: 'basis-1/6 text-base'
+		className: 'basis-[20%] text-base'
 	},
 	{
 		title: 'Balance',
 		variant: ETypographyVariants.h1,
-		className: 'basis-[15%] text-base'
+		className: 'basis-[20%] text-base'
 	},
 	{
 		title: 'Value',
 		variant: ETypographyVariants.h1,
-		className: 'basis-1/7 text-base'
+		className: 'basis-[20%] text-base'
 	},
 	{
 		title: 'Multisig',
 		variant: ETypographyVariants.h1,
-		className: 'basis-[39%] text-base'
+		className: 'basis-[20%] text-base'
 	},
 	{
 		title: 'Actions',
@@ -48,22 +50,25 @@ const columns = [
 	}
 ];
 
-function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
+function AssetsTable({ dataSource, currency, isExpandable }: IAssetsTableProps) {
 	const assetsColumns = [
 		{
 			title: 'Asset',
 			dataIndex: 'symbol',
-			key: 'symbol'
+			key: 'symbol',
+			width: '20%'
 		},
 		{
 			title: 'Balance',
 			dataIndex: 'free',
-			key: 'free'
+			key: 'free',
+			width: '20%'
 		},
 		{
 			title: 'Value',
 			dataIndex: 'usd',
 			key: 'usd',
+			width: '20%',
 			render: (usd: string, allData: IMultisigAssets) => {
 				const symbol = getCurrencySymbol(currency);
 				return (
@@ -77,6 +82,7 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			title: 'Multisig',
 			dataIndex: 'address',
 			key: 'address',
+			width: '20%',
 			render: (address: string, allData: IMultisigAssets) => (
 				<div>
 					<Address
@@ -94,6 +100,7 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 			title: 'Actions',
 			dataIndex: 'actions',
 			key: 'actions',
+			width: '20%',
 			render: (_: any, data: any) => {
 				if (data.proxyAddress) {
 					return null;
@@ -117,7 +124,7 @@ function AssetsTable({ dataSource, currency }: IAssetsTableProps) {
 					<Typography
 						key={column.title}
 						variant={column.variant}
-						className={column.className}
+						className={twMerge(column.className, column.title === 'Asset' && isExpandable && 'pl-4')}
 					>
 						{column.title}
 					</Typography>

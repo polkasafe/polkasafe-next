@@ -14,13 +14,15 @@ import Typography, { ETypographyVariants } from '@common/global-ui-components/Ty
 
 function AssetsTemplate() {
 	const [data] = useAssets();
-	const [selectedCurrency, setSelectedCurrency] = useCurrency();
+	const [selectedCurrency] = useCurrency();
 
 	const assets = (data?.assets || []).map((asset) => ({
 		...asset,
 		key: `${asset.address}_${asset.network}`,
-		children: asset.proxy || []
+		children: Boolean(asset.proxy?.length) ? asset.proxy : null
 	}));
+
+	const isExpandable = assets.find((record) => Boolean(record.children));
 
 	return (
 		<div className='bg-bg-main rounded-xl p-5 h-full gap-2 flex flex-col'>
@@ -32,6 +34,7 @@ function AssetsTemplate() {
 				<AssetsTable
 					dataSource={assets || []}
 					currency={String(getCurrencySymbol(selectedCurrency))}
+					isExpandable={Boolean(isExpandable)}
 				/>
 			) : (
 				<Skeleton />

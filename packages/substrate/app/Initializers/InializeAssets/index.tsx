@@ -22,7 +22,6 @@ import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
 
 const getTokenBalance = async (api: ApiPromise | AvailApiPromise, address: string, network: ENetwork) => {
 	const parseAssets = (balance: any, decimal: number) => {
-		console.log('balance', balance?.balance);
 		return formatBalance(
 			balance?.balance,
 			{
@@ -173,7 +172,7 @@ function InitializeAssets() {
 			});
 
 			const assets = (await Promise.all(assetsPromise)).flat().filter((a) => Boolean(a));
-			console.log('assets', assets);
+			// console.log('assets', assets);
 			setAtom({ assets: assets, refetch: handleOrganisationAssets });
 		};
 		handleOrganisationAssets();

@@ -26,7 +26,7 @@ export const AddAddress = ({ onSubmit, title, addressBook, className, isUsedInsi
 					size='small'
 					variant={EButtonVariant.SECONDARY}
 					onClick={() => setOpenModal(true)}
-					className='bg bg-[#1A2A42]/[0.1] p-2.5 rounded-lg text-[#3F8CFF] border-none'
+					className='bg bg-[#1A2A42]/[0.1] p-2.5 rounded-lg text-[#3F8CFF] border-none min-w-0'
 				>
 					<EditIcon />
 				</Button>
