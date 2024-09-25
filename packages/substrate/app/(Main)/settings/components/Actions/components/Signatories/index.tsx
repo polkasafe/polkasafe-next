@@ -150,6 +150,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 						)
 					}))}
 					pagination={false}
+					scroll={{ y: 55 * 5 }}
 				/>
 			</div>
 		</div>

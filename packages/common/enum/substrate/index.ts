@@ -205,10 +205,11 @@ export interface ITreasuryTxns {
 	type: ETxnType;
 	balance_usd: string;
 	balance_token: string;
+	tokenSymbol?: string;
 	txHash: string;
 	timestamp: string;
 	multisigAddress: string;
-	network: string;
+	network: ENetwork;
 }
 
 export interface ITreasury {
@@ -218,4 +219,10 @@ export interface ITreasury {
 		incomingTransactions: ITreasuryTxns[];
 		outgoingTransactions: ITreasuryTxns[];
 	};
+}
+
+export enum ETransactionFieldsUpdateType {
+	ADD_CATEGORY = 'Add Category',
+	ADD_SUBFIELD = 'Add Subfield',
+	DELETE_SUBFIELD = 'Delete Subfield'
 }

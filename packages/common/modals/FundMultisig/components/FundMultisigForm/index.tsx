@@ -10,6 +10,7 @@ import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown'
 import { ENetwork } from '@common/enum/substrate';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { useNotification } from '@common/utils/notification';
+import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 
 export function FundMultisigForm() {
 	const { multisigs, onFundMultisig } = useDashboardContext();
@@ -48,8 +49,12 @@ export function FundMultisigForm() {
 		<div className='w-full h-full flex flex-col justify-center items-center'>
 			<Spin
 				spinning={loading}
-				size='large'
-				className='w-full h-full'
+				indicator={
+					<LoadingLottie
+						width={200}
+						message={'Sending Funds To Multisig'}
+					/>
+				}
 			>
 				<Form
 					layout='vertical'

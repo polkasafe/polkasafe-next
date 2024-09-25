@@ -17,6 +17,7 @@ import { RecipientsInputs } from '@common/global-ui-components/RecipientsInputs'
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { useNotification } from '@common/utils/notification';
 import { ERROR_MESSAGES } from '@common/utils/messages';
+import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 
 export enum ETransactionSteps {
 	BUILD_TRANSACTION = 'New Transaction',
@@ -54,7 +55,7 @@ export function NewTransactionForm({ onClose, form }: { onClose: () => void; for
 		value: item.address
 	}));
 
-	const getFormFieldValues = (field: string) => form.getFieldValue(field);
+	// const getFormFieldValues = (field: string) => form.getFieldValue(field);
 
 	const handleSubmit = async () => {
 		try {
@@ -101,8 +102,12 @@ export function NewTransactionForm({ onClose, form }: { onClose: () => void; for
 		<div className='w-full h-full flex flex-col justify-center items-center'>
 			<Spin
 				spinning={loading}
-				size='large'
-				className='w-full h-full'
+				indicator={
+					<LoadingLottie
+						width={200}
+						message='Creating Your Transaction'
+					/>
+				}
 			>
 				<Form
 					layout='vertical'

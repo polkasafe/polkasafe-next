@@ -50,7 +50,7 @@ export const Actions = ({ organisation, selectedTab }: IActions) => {
 	return (
 		<div className='flex flex-col gap-5 h-full'>
 			<div className='flex justify-between items-center'>
-				<div className='flex gap-x-4 items-center'>
+				<div className='flex gap-x-2 items-center'>
 					{tabs.map((tab) => (
 						<Link
 							key={tab.tab}
