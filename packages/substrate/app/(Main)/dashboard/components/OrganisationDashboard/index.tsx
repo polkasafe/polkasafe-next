@@ -22,6 +22,9 @@ interface IOrganisationDashboard {
 
 export default async function OrganisationDashboard({ id, selectedTab }: IOrganisationDashboard) {
 	const data = await getOrganisationData(id);
+	if (!data || !data.organisationData) {
+		throw new Error('Organisation not found');
+	}
 
 	return (
 		<Secure>

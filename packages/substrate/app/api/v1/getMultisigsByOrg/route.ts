@@ -36,6 +36,13 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		}
 
 		const orgData = organisation.data();
+
+		const members = orgData?.members || [];
+
+		if (!members.includes(substrateAddress)) {
+			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS }, { status: 400 });
+		}
+
 		const multisigIds = (orgData?.multisigs || [])
 			.map((multisigId: string | any) => {
 				let id = multisigId;

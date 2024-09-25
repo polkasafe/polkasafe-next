@@ -5,6 +5,8 @@ import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collections';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { isValidRequest } from '@common/utils/isValidRequest';
 
 const getDataFromDB = async (docId: string) => {
 	const orgRef = await ORGANISATION_COLLECTION.doc(docId).get();
@@ -43,7 +45,20 @@ const getDataFromDB = async (docId: string) => {
 };
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
+	const { headers } = req;
+	const address = headers.get('x-address');
+	const signature = headers.get('x-signature');
 	try {
+		// check if address is valid
+		const substrateAddress = getSubstrateAddress(String(address));
+		if (!substrateAddress) {
+			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });
+		}
+
+		// check if signature is valid
+		const { isValid, error } = await isValidRequest(substrateAddress, signature);
+		if (!isValid) return NextResponse.json({ error }, { status: 400 });
+
 		const { organisations } = await req.json();
 		if (!organisations) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });

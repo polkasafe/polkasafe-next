@@ -4,7 +4,7 @@ import emptyImage from '@common/assets/icons/empty-image.png';
 import { IOrganisation } from '@common/types/substrate';
 
 interface IOrg {
-	selectedOrganisation: IOrganisation;
+	selectedOrganisation: IOrganisation | null;
 }
 
 // TODO: tailwind need to update
@@ -23,9 +23,11 @@ function Org({ selectedOrganisation }: IOrg) {
 					/>
 					<div className='flex flex-col gap-y-[1px]'>
 						<span className='text-sm text-white capitalize truncate max-w-[100px] font-bold'>
-							{selectedOrganisation.name}
+							{selectedOrganisation?.name}
 						</span>
-						<span className='text-xs text-text-secondary'>{selectedOrganisation.multisigs?.length || 0} Multisigs</span>
+						<span className='text-xs text-text-secondary'>
+							{selectedOrganisation?.multisigs?.length || 0} Multisigs
+						</span>
 					</div>
 				</div>
 				<CircleArrowDownIcon className='text-white' />

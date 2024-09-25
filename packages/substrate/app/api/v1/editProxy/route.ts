@@ -8,6 +8,7 @@ import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collect
 import { IDBMultisig } from '@common/types/substrate';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import getEncodedAddress from '@common/utils/getEncodedAddress';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	const { headers } = req;
@@ -25,19 +26,27 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (!isValid) return NextResponse.json({ error }, { status: 400 });
 
 		const { newMultisigAddress, network, proxyAddress, oldMultisigAddress, organisationId } = await req.json();
+
 		if (!newMultisigAddress || !network || !proxyAddress || !oldMultisigAddress) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
-		const doc = MULTISIG_COLLECTION.doc(`${oldMultisigAddress}_${network}`);
+
+		const oldMultisigEncodedAddress = getEncodedAddress(oldMultisigAddress, network);
+		const newMultisigEncodedAddress = getEncodedAddress(newMultisigAddress, network);
+
+		const doc = MULTISIG_COLLECTION.doc(`${oldMultisigEncodedAddress}_${network}`);
 		const data = await doc.get();
+
 		if (!data.exists) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });
 		}
+
 		const oldData = data.data() as IDBMultisig;
+
 		const proxyPayload = (oldData.proxy || []).filter((p) => p.address !== proxyAddress);
 		await doc.set({ proxy: proxyPayload }, { merge: true });
 
-		const newDoc = MULTISIG_COLLECTION.doc(`${newMultisigAddress}_${network}`);
+		const newDoc = MULTISIG_COLLECTION.doc(`${newMultisigEncodedAddress}_${network}`);
 		const newData = await newDoc.get();
 
 		const newMultisigData = newData.data() as IDBMultisig;
@@ -50,17 +59,17 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const orgData = await organisation.get();
 
 		if (!orgData.exists) {
-			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });
+			return NextResponse.json({ error: ResponseMessages.INVALID_ORGANISATION_ID }, { status: 400 });
 		}
 		const orgDataPayload = orgData.data();
 
 		const multisigs = orgDataPayload?.multisigs || [];
 
-		organisation.set({ multisigs: [...multisigs, `${newMultisigAddress}_${network}`] }, { merge: true });
+		organisation.set({ multisigs: [...multisigs, `${newMultisigEncodedAddress}_${network}`] }, { merge: true });
 
-		return NextResponse.json({ data, error: null });
+		return NextResponse.json({ data: 'success', error: null }, { status: 200 });
 	} catch (err: unknown) {
-		console.log('Error in getAssets:', err);
+		console.log('Error in edit proxy:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
 	}
 });

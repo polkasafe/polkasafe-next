@@ -1,4 +1,4 @@
-import { Dropdown, Skeleton } from 'antd';
+import { Dropdown } from 'antd';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import { MULTISIG_DASHBOARD_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import { IOrganisation } from '@common/types/substrate';
@@ -84,13 +84,9 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 					}))
 				}}
 			>
-				{selectedOrganisation ? (
-					<div>
-						<Org selectedOrganisation={selectedOrganisation} />
-					</div>
-				) : (
-					<Skeleton />
-				)}
+				<div>
+					<Org selectedOrganisation={selectedOrganisation} />
+				</div>
 			</Dropdown>
 		</SlideInMotion>
 	);

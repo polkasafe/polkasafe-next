@@ -56,7 +56,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		updateDB([payload]);
 		return NextResponse.json({ data: payload, error: null });
 	} catch (err: unknown) {
-		console.log('Error in getAssets:', err);
+		console.log('Error in create multisigs:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
 	}
 });

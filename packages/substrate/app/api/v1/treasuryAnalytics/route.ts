@@ -6,6 +6,7 @@ import { onChainTreasuryData } from '@substrate/app/api/api-utils/onChainTreasur
 
 import { NextRequest, NextResponse } from 'next/server';
 
+// TODO: need to refactor this to use the onChainTreasuryData function
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	try {
 		const { headers } = req;
