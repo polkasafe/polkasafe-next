@@ -6,11 +6,14 @@ import React, { useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { NewTransactionForm } from '@common/modals/NewTransaction/components/NewTransactionForm';
 import { useDashboardContext } from '@common/context/DashboarcContext';
-import { ETransactionState } from '@common/enum/substrate';
+import { ENetwork, ETransactionState } from '@common/enum/substrate';
 import { ReviewTransaction } from '@common/global-ui-components/ReviewTransaction';
 import { Form } from 'antd';
 import { IReviewTransaction } from '@common/types/substrate';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
+import TransactionSuccessScreen from '@common/global-ui-components/TransactionSuccessScreen';
+import BN from 'bn.js';
+import TransactionFailedScreen from '@common/global-ui-components/TransactionFailedScreen';
 
 function NewTransaction({
 	label,
@@ -63,8 +66,33 @@ function NewTransaction({
 						reviewTransaction={reviewTransaction as IReviewTransaction}
 					/>
 				)}
-				{transactionState === ETransactionState.CONFIRM && <div>Success</div>}
-				{transactionState === ETransactionState.FAILED && <div>Failed</div>}
+				{transactionState === ETransactionState.CONFIRM && (
+					<TransactionSuccessScreen
+						network={reviewTransaction?.network || ENetwork.POLKADOT}
+						successMessage='Transaction in Progress!'
+						waitMessage='All Threshold Signatories need to Approve the Transaction.'
+						amount={new BN(0)}
+						txnHash=''
+						created_at={new Date()}
+						sender={reviewTransaction?.from || ''}
+						recipients={[reviewTransaction?.to || '']}
+						onDone={() => {
+							setOpenModal(false);
+						}}
+					/>
+				)}
+				{transactionState === ETransactionState.FAILED && (
+					<TransactionFailedScreen
+						onDone={() => {
+							setOpenModal(false);
+						}}
+						txnHash=''
+						sender={reviewTransaction?.from || ''}
+						failedMessage='Oh no! Something went wrong.'
+						waitMessage='Your transaction has failed due to some technical error. Please try again...Details of the transaction are included below'
+						created_at={new Date()}
+					/>
+				)}
 			</Modal>
 		</div>
 	);

@@ -48,7 +48,7 @@ const TransactionFailedScreen = ({
 				)}
 				<div className='flex justify-between items-center'>
 					<span>Created:</span>
-					<span className='text-white'>{dayjs(created_at).format('llll')}</span>
+					<span className='text-white'>{dayjs(created_at).format('DD/MM/YYYY, hh:mm A')}</span>
 				</div>
 				<div className='flex justify-between items-center'>
 					<span>Created By:</span>

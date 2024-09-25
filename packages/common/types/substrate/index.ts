@@ -396,6 +396,8 @@ export interface IReviewTransaction {
 	proxyAddress?: string;
 	txCost?: string;
 	network: ENetwork;
+	txHash?: string;
+	createdAt: Date;
 }
 
 export interface IGetTransaction {
