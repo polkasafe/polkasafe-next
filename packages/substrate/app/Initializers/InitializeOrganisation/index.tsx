@@ -27,7 +27,7 @@ function InitializeOrganisation() {
 		})) as { data: IOrganisation };
 
 		if (!organisation.data) {
-			return;
+			throw new Error('Organisation not found');
 		}
 		setAtom(organisation.data);
 	};
