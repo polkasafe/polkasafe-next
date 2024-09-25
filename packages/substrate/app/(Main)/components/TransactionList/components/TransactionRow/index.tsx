@@ -133,6 +133,7 @@ function TransactionRow({
 	const [historyTransaction, setHistoryTransaction] = useHistoryAtom();
 	const notification = useNotification();
 	const isInitiator = getSubstrateAddress(initiator) === getSubstrateAddress(user?.address || '');
+	console.log(user, 'user', getSubstrateAddress(user?.address || ''), getSubstrateAddress(initiator));
 
 	const { data, isLoading, error } = useDecodeCallData({
 		callData,
@@ -145,8 +146,18 @@ function TransactionRow({
 	const [executableTransaction, setExecutableTransaction] = useState<ISubstrateExecuteProps | null>(null);
 	const [reviewTransaction, setReviewTransaction] = useState<IReviewTransaction | null>(null);
 
+	console.log(organisation?.multisigs);
+
 	const txMultisig = findMultisig(organisation?.multisigs || [], `${multisig}_${network}`);
-	const isSignatory = txMultisig?.signatories.includes(getSubstrateAddress(user?.address || '') || '');
+	const isSignatory = txMultisig?.signatories
+		.map((a) => getSubstrateAddress(a))
+		.includes(getSubstrateAddress(user?.address || '') || '');
+
+	console.log('isSignatory', isSignatory);
+	console.log(
+		'txMultisig',
+		txMultisig?.signatories.map((a) => getSubstrateAddress(a))
+	);
 
 	const hasApproved = approvals
 		.map((a) => getSubstrateAddress(a))

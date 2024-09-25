@@ -242,7 +242,20 @@ export const networkConstants = {
 		blockExplorerUrl: 'https://polkadot-asset-hub.subscan.io/',
 		rpcEndpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
 		chainId: 'polkadot:68d56f15f85d3136970ec16946040bc1',
-		supportedTokens: []
+		supportedTokens: [
+			{
+				id: 1984,
+				name: 'USDT',
+				symbol: 'USDT',
+				decimals: 6
+			},
+			{
+				id: 1337,
+				name: 'USDC',
+				symbol: 'USDC',
+				decimals: 6
+			}
+		]
 	},
 	[ENetwork.WESTEND]: {
 		disabled: false,

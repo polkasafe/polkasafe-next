@@ -39,9 +39,6 @@ export function QuickHistory({ multisigs }: IQuickHistory) {
 		return <Empty description='No Transaction Found' />;
 	}
 
-	if (data.transactions.length === 0 && data.currentIndex !== multisigIds.length - 1) {
-		return <Skeleton />;
-	}
 	return (
 		<TransactionList
 			transactions={(data.transactions || []) as Array<IDashboardTransaction>}

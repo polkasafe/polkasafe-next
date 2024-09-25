@@ -197,6 +197,30 @@ export enum NotificationSource {
 	TOWNHALL = 'townhall'
 }
 
+export enum ETxnType {
+	INCOMING = 'INCOMING',
+	OUTGOING = 'OUTGOING'
+}
+
+export interface ITreasuryTxns {
+	type: ETxnType;
+	balance_usd: string;
+	balance_token: string;
+	txHash: string;
+	timestamp: string;
+	multisigAddress: string;
+	network: string;
+}
+
+export interface ITreasury {
+	[id: string]: {
+		totalIncomingUSD: number;
+		totalOutgoingUSD: number;
+		incomingTransactions: ITreasuryTxns[];
+		outgoingTransactions: ITreasuryTxns[];
+	};
+}
+
 export enum ETransactionFieldsUpdateType {
 	ADD_CATEGORY = 'Add Category',
 	ADD_SUBFIELD = 'Add Subfield',

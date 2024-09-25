@@ -98,7 +98,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 				name: m.name,
 				proxy: m.proxy
 			})) as Array<IDBMultisig>,
-			address: user.address[0],
+			address: user.address,
 			signature: user.signature
 		};
 		const data = (await createOrganisation(payload)) as { data: IOrganisation };
