@@ -235,14 +235,14 @@ export function TransactionHead({
 							</ReviewModal>
 						)}
 					</div>
-				) : (
+				) : ETransactionType.HISTORY_TRANSACTION !== transactionType ? (
 					<Typography
 						variant={ETypographyVariants.p}
 						className='flex items-center gap-x-4 basis-1/5 '
 					>
 						Not a signatories
 					</Typography>
-				)}
+				) : null}
 			</div>
 		</div>
 	);
