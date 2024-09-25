@@ -3,18 +3,13 @@ import { handleHeaders } from '../utils/handleHeaders';
 import { request } from '../utils/request';
 
 type Props = {
-    address: string;
+	address: string;
 	signature: string;
-	transactionFields: ITransactionFields
+	transactionFields: ITransactionFields;
 	organisationId: string;
 };
 
-export function addNewCategory({
-    address,
-    signature,
-	transactionFields,
-    organisationId
-}: Props) {
+export function addNewCategory({ address, signature, transactionFields, organisationId }: Props) {
 	if (!transactionFields) {
 		throw new Error('transactionFields is required');
 	}

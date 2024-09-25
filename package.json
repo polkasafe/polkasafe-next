@@ -17,6 +17,7 @@
     "deploy:substrate": "firebase deploy --only hosting"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.10.5",
     "@svgr/webpack": "^8.1.0",
     "@types/node": "20.5.1",
     "@typescript-eslint/eslint-plugin": "^6.7.0",

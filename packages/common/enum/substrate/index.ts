@@ -206,10 +206,11 @@ export interface ITreasuryTxns {
 	type: ETxnType;
 	balance_usd: string;
 	balance_token: string;
+	tokenSymbol?: string;
 	txHash: string;
 	timestamp: string;
 	multisigAddress: string;
-	network: string;
+	network: ENetwork;
 }
 
 export interface ITreasury {
