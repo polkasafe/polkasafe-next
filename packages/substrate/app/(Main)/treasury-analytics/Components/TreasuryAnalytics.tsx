@@ -32,36 +32,38 @@ enum EDateFilters {
 }
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TreasuryAnalyticsComponents = () => {
+	const [organisation] = useOrganisation();
+	const [user] = useUser();
 
-    const [organisation] = useOrganisation();
-    const [user] = useUser();
+	const [loading, setLoading] = useState<boolean>(false);
 
-    const [loading, setLoading] = useState<boolean>(false);
+	const [treasury, setTreasury] = useState<ITreasury>();
 
-    const [treasury, setTreasury] = useState<ITreasury>();
+	const fetchTreasuryData = useCallback(async () => {
+		if (!user) {
+			throw new Error('User not found');
+		}
 
-    const fetchTreasuryData = useCallback(async () => {
-        if (!user) {
-            throw new Error('User not found');
-        }
+		if (!organisation || !organisation.id) {
+			throw new Error('Organisation not found');
+		}
 
-        if (!organisation || !organisation.id) {
-            throw new Error('Organisation not found');
-        }
+		setLoading(true);
 
-        setLoading(true);
+		const { data } = (await treasuryAnalytics({
+			address: user.address,
+			signature: user.signature,
+			organisationId: organisation.id,
+			multisigs: organisation.multisigs
+		})) as { data: ITreasury };
 
-        const { data } = (await treasuryAnalytics({ address: user.address, signature: user.signature, organisationId: organisation.id, multisigs: organisation.multisigs  })) as { data: ITreasury };
+		if (data) {
+			setTreasury(data);
+			setLoading(false);
+		}
 
-        if (data) {
-            setTreasury(data);
-            setLoading(false);
-        }
-
-        console.log('treasury data', data);
-    }, []);
-
-
+		console.log('treasury data', data);
+	}, []);
 
 	const [selectedID, setSelectedID] = useState<string>(organisation?.id || '');
 	const [startDate, setStartDate] = useState<null | Dayjs>(null);
@@ -250,12 +252,12 @@ const TreasuryAnalyticsComponents = () => {
 				)}
 			</div>
 			<div className='grid grid-cols-2 gap-x-4 max-sm:hidden'>
-                <div>
-                    <h2 className='text-base font-bold text-white mb-2'>Assets Overview</h2>
-                    <div className='bg-bg-secondary rounded-xl p-8 shadow-lg'>
-                        <AssetsOverview />
-                    </div>
-                </div>
+				<div>
+					<h2 className='text-base font-bold text-white mb-2'>Assets Overview</h2>
+					<div className='bg-bg-secondary rounded-xl p-5 shadow-lg'>
+						<AssetsOverview />
+					</div>
+				</div>
 				<TransactionsByEachToken
 					className='bg-bg-secondary'
 					incomingTransactions={treasury?.[selectedID]?.incomingTransactions || []}
@@ -263,12 +265,12 @@ const TreasuryAnalyticsComponents = () => {
 				/>
 			</div>
 			<div className='flex flex-col gap-x-4 sm:hidden'>
-                <div>
-                    <h2 className='text-base font-bold text-white mb-2'>Assets Overview</h2>
-                    <div className='bg-bg-secondary rounded-xl p-8 shadow-lg'>
-                        <AssetsOverview />
-                    </div>
-                </div>
+				<div>
+					<h2 className='text-base font-bold text-white mb-2'>Assets Overview</h2>
+					<div className='bg-bg-secondary rounded-xl p-8 shadow-lg'>
+						<AssetsOverview />
+					</div>
+				</div>
 				<TransactionsByEachToken
 					className='bg-bg-secondary'
 					incomingTransactions={treasury?.[selectedID]?.incomingTransactions || []}

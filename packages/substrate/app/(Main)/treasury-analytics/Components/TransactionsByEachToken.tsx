@@ -169,9 +169,7 @@ const TransactionsByEachToken = ({
 					</div>
 				</div>
 			) : (
-				<div
-					className={`bg-bg-main relative flex items-center rounded-xl p-8 shadow-lg ${className}`}
-				>
+				<div className={`bg-bg-main relative flex items-center rounded-xl p-4 shadow-lg ${className}`}>
 					<TokenFlow
 						numberOfIncoming={tokenIncomingtxns}
 						numberOfOutgoing={tokenOutgoingTxns}

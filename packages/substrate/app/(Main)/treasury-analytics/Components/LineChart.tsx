@@ -36,7 +36,7 @@ const LineChart = ({
 		incomingTransactions.forEach((item) => {
 			const { timestamp } = item;
 			const monthAndYear = dayjs(timestamp).format('YYYY-MM-DD');
-			let foundIndex: number;
+			let foundIndex: number | null = null;
 			if (
 				monthlyDataIncoming.length > 0 &&
 				monthlyDataIncoming.some((data, i) => {
@@ -48,6 +48,7 @@ const LineChart = ({
 					return false;
 				})
 			) {
+				if (foundIndex === null) return;
 				const foundData = monthlyDataIncoming[foundIndex];
 				foundData.balance_usd = Number(item.balance_usd) + Number(monthlyDataIncoming[foundIndex].balance_usd);
 				if (foundData.tokenInfo[item.network]) {
@@ -79,7 +80,7 @@ const LineChart = ({
 		outgoingTransactions.forEach((item) => {
 			const { timestamp } = item;
 			const monthAndYear = dayjs(timestamp).format('YYYY-MM-DD');
-			let foundIndex: number;
+			let foundIndex: number | null = null;
 			if (
 				monthlyDataOutgoing.length > 0 &&
 				monthlyDataOutgoing.some((data, i) => {
@@ -91,6 +92,7 @@ const LineChart = ({
 					return false;
 				})
 			) {
+				if (foundIndex === null) return;
 				const foundData = monthlyDataOutgoing[foundIndex];
 				foundData.balance_usd = Number(item.balance_usd) + Number(monthlyDataOutgoing[foundIndex].balance_usd);
 				if (foundData.tokenInfo[item.network]) {
@@ -133,7 +135,7 @@ const LineChart = ({
 		incomingTransactions.forEach((item) => {
 			const { timestamp } = item;
 			const monthAndYear = dayjs(timestamp).format('MMM/YYYY');
-			let foundIndex: number;
+			let foundIndex: number | null = null;
 			if (
 				monthlyDataIncoming.length > 0 &&
 				monthlyDataIncoming.some((data, i) => {
@@ -145,6 +147,7 @@ const LineChart = ({
 					return false;
 				})
 			) {
+				if (foundIndex === null) return;
 				const foundData = monthlyDataIncoming[foundIndex];
 				foundData.balance_usd = Number(item.balance_usd) + Number(monthlyDataIncoming[foundIndex].balance_usd);
 				if (foundData.tokenInfo[item.network]) {
@@ -176,7 +179,7 @@ const LineChart = ({
 		outgoingTransactions.forEach((item) => {
 			const { timestamp } = item;
 			const monthAndYear = dayjs(timestamp).format('MMM/YYYY');
-			let foundIndex: number;
+			let foundIndex: number | null = null;
 			if (
 				monthlyDataOutgoing.length > 0 &&
 				monthlyDataOutgoing.some((data, i) => {
@@ -188,6 +191,7 @@ const LineChart = ({
 					return false;
 				})
 			) {
+				if (foundIndex === null) return;
 				const foundData = monthlyDataOutgoing[foundIndex];
 				foundData.balance_usd = Number(item.balance_usd) + Number(monthlyDataOutgoing[foundIndex].balance_usd);
 				if (foundData.tokenInfo[item.network]) {
