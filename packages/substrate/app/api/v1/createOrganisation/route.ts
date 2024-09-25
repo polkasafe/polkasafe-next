@@ -51,7 +51,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
 		const {
 			name,
-			multisigs,
+			multisigs: allMultisigs,
 			imageURI = '',
 			country = '',
 			state = '',
@@ -62,16 +62,22 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			description = ''
 		} = await req.json();
 
-		if (!multisigs || !name) {
+		if (!allMultisigs || !name) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
-		if (multisigs.length < 1) {
+		if (allMultisigs.length < 1) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_THRESHOLD }, { status: 400 });
 		}
 
 		const oldMultisigData = (await MULTISIG_COLLECTION.where('signatories', 'array-contains', address).get()).docs.map(
 			(oldData) => oldData.data()
 		);
+
+		const multisigs = allMultisigs.map((multisig: IDBMultisig) => ({
+			...multisigs,
+			address: getEncodedAddress(multisig.address, multisig.network),
+			signatories: multisig.signatories.map((signatory) => getSubstrateAddress(signatory))
+		}));
 
 		const getMultisigName = (address: string) => {
 			oldMultisigData.forEach((a) => {
@@ -85,9 +91,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const multisigPayload = (multisigs as Array<IDBMultisig>).map((multisig) => {
 			return {
 				name: getMultisigName(multisig.address),
-				signatories: multisig.signatories.map((signatory) =>
-					getEncodedAddress(signatory, multisig.network)
-				) as Array<string>,
+				signatories: multisig.signatories,
 				network: multisig.network,
 				address: multisig.address,
 				threshold: multisig.threshold,
@@ -122,7 +126,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const docId = await updateDB(newOrganisation, multisigPayload);
 		return NextResponse.json({ data: { ...newOrganisation, id: docId }, error: null });
 	} catch (err: unknown) {
-		console.log('Error in getAssets:', err);
+		console.log('Error in create organisation:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
 	}
 });

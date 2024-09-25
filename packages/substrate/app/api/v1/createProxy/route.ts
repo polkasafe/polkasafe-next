@@ -9,9 +9,19 @@ import { IDBMultisig } from '@common/types/substrate';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { onChainProxy } from '@substrate/app/api/api-utils/onChainProxy';
+import getEncodedAddress from '@common/utils/getEncodedAddress';
 
-const updateDB = async ({ address, network, proxy }: { address: string; network: string; proxy: string }) => {
+const updateDB = async ({
+	address: addressProps,
+	network,
+	proxy
+}: {
+	address: string;
+	network: string;
+	proxy: string;
+}) => {
 	try {
+		const address = getEncodedAddress(addressProps, network);
 		const docId = `${address}_${network}`;
 		const docRef = MULTISIG_COLLECTION.doc(docId);
 		const doc = await docRef.get();
@@ -26,7 +36,7 @@ const updateDB = async ({ address, network, proxy }: { address: string; network:
 		await docRef.set({ proxy: proxyPayload }, { merge: true });
 		return { ...oldData, proxy: proxyPayload };
 	} catch (err: unknown) {
-		console.log('Error in updateDB:', err);
+		console.log('Error in updateDB on create Proxy:', err);
 	}
 };
 
@@ -46,9 +56,11 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (!isValid) return NextResponse.json({ error }, { status: 400 });
 
 		const { multisigAddress, network } = await req.json();
+
 		if (!multisigAddress) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
+
 		const proxy = await onChainProxy(multisigAddress, network);
 		if (!proxy) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });
@@ -61,7 +73,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const data = await updateDB(payload);
 		return NextResponse.json({ data, error: null });
 	} catch (err: unknown) {
-		console.log('Error in getAssets:', err);
+		console.log('Error in create proxy:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
 	}
 });

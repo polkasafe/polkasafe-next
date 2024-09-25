@@ -40,6 +40,12 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ORGANIZATION }, { status: 400 });
 		}
 
+		const members = organisationDoc.data()?.members || [];
+
+		if (members.map((m: any) => getSubstrateAddress(m)).indexOf(substrateAddress) === -1) {
+			return NextResponse.json({ error: ResponseMessages.UNAUTHORIZED }, { status: 400 });
+		}
+
 		const organisationData = organisationDoc.data();
 		const addressBook = organisationData?.addressBook || [];
 
@@ -77,7 +83,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
 		return NextResponse.json({ data: { addressBook: newAddressBook }, error: null });
 	} catch (err: unknown) {
-		console.log('Error in Set Currency:', err);
+		console.log('Error in Adding Address:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
 	}
 });
@@ -108,6 +114,12 @@ export const DELETE = withErrorHandling(async (req: NextRequest) => {
 		if (!organisationDoc.exists) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ORGANIZATION }, { status: 400 });
 		}
+		const members = organisationDoc.data()?.members || [];
+
+		if (members.map((m: any) => getSubstrateAddress(m)).indexOf(substrateAddress) === -1) {
+			return NextResponse.json({ error: ResponseMessages.UNAUTHORIZED }, { status: 400 });
+		}
+
 		const organisationData = organisationDoc.data();
 		const addressBook = organisationData?.addressBook || [];
 
@@ -119,7 +131,7 @@ export const DELETE = withErrorHandling(async (req: NextRequest) => {
 
 		return NextResponse.json({ data: { addressBook: newAddressBook }, error: null });
 	} catch (err: unknown) {
-		console.log('Error in Set Currency:', err);
+		console.log('Error in Deleting Address:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
 	}
 });

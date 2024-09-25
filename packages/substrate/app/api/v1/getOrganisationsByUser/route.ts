@@ -8,6 +8,7 @@ import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION, USER_COLLECTION } from '@
 import { IOrganisation } from '@common/types/substrate';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
+import { isValidRequest } from '@common/utils/isValidRequest';
 
 const getOrganisations = async (address: string) => {
 	const organisations = await ORGANISATION_COLLECTION.where('members', 'array-contains', address).get();

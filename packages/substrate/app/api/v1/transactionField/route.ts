@@ -35,7 +35,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ORGANISATION_ID }, { status: 400 });
 		}
 		const members = orgData.members.map((member: string) => getSubstrateAddress(member));
-		if (members.indexOf(substrateAddress) === -1) {
+		if (!members.includes(substrateAddress)) {
 			return NextResponse.json({ error: ResponseMessages.UNAUTHORIZED }, { status: 400 });
 		}
 
