@@ -1,7 +1,8 @@
 // Copyright 2022-2023 @Polkasafe/polkaSafe-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-import { Form, Input, FormInstance } from 'antd';
+import Input from '@common/global-ui-components/Input';
+import { Form, FormInstance } from 'antd';
 import React, { useEffect, useState } from 'react';
 // import { ApiPromise } from '@polkadot/api';
 
@@ -75,7 +76,6 @@ const SetIdentity = ({
 									onChange={(a) => setDisplayName(a.target.value)}
 									placeholder='John'
 									value={displayName}
-									className='w-full h-full text-sm font-normal leading-[15px] border-0 outline-0 p-3 placeholder:text-[#505050] bg-bg-secondary rounded-lg text-white pr-20'
 								/>
 							</div>
 						</Form.Item>
@@ -96,7 +96,6 @@ const SetIdentity = ({
 									onChange={(a) => setLegalName(a.target.value)}
 									placeholder='John Doe'
 									value={legalName}
-									className='w-full h-full text-sm font-normal leading-[15px] border-0 outline-0 p-3 placeholder:text-[#505050] bg-bg-secondary rounded-lg text-white pr-20'
 								/>
 							</div>
 						</Form.Item>
@@ -117,7 +116,6 @@ const SetIdentity = ({
 									onChange={(a) => setElementHandle(a.target.value)}
 									placeholder='@john:matrix.org'
 									value={elementHandle}
-									className='w-full h-full text-sm font-normal leading-[15px] border-0 outline-0 p-3 placeholder:text-[#505050] bg-bg-secondary rounded-lg text-white pr-20'
 								/>
 							</div>
 						</Form.Item>
@@ -138,7 +136,6 @@ const SetIdentity = ({
 									onChange={(a) => setWebsiteUrl(a.target.value)}
 									placeholder='https://john.me'
 									value={websiteUrl}
-									className='w-full h-full text-sm font-normal leading-[15px] border-0 outline-0 p-3 placeholder:text-[#505050] bg-bg-secondary rounded-lg text-white pr-20'
 								/>
 							</div>
 						</Form.Item>
@@ -159,7 +156,6 @@ const SetIdentity = ({
 									onChange={(a) => setTwitterHandle(a.target.value)}
 									placeholder='@john'
 									value={twitterHandle}
-									className='w-full h-full text-sm font-normal leading-[15px] border-0 outline-0 p-3 placeholder:text-[#505050] bg-bg-secondary rounded-lg text-white pr-20'
 								/>
 							</div>
 						</Form.Item>
@@ -180,7 +176,6 @@ const SetIdentity = ({
 									onChange={(a) => setEmail(a.target.value)}
 									placeholder='johndoe123@email.com'
 									value={email}
-									className='w-full h-full text-sm font-normal leading-[15px] border-0 outline-0 p-3 placeholder:text-[#505050] bg-bg-secondary rounded-lg text-white pr-20'
 								/>
 							</div>
 						</Form.Item>
