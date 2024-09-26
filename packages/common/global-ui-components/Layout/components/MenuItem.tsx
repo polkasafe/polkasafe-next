@@ -10,6 +10,7 @@ interface MenuItemProps {
 	title: string;
 	authenticated: boolean;
 	isNew?: boolean;
+	noShow?: boolean;
 }
 const styles = {
 	linkContainer: 'flex items-center gap-x-2 flex-1 rounded-lg p-3 text-sm max-sm:p-2 font-semibold hover:text-label',
@@ -18,7 +19,8 @@ const styles = {
 	newTag: 'px-2.5 py-0.5 rounded-lg text-xs bg-primary text-text-primary'
 };
 
-function MenuItem({ pathname, baseURL, icon, title, authenticated, isNew }: MenuItemProps) {
+function MenuItem({ pathname, baseURL, icon, title, authenticated, isNew, noShow }: MenuItemProps) {
+	if (noShow) return null;
 	return (
 		<SlideInMotion>
 			<ScaleMotion>

@@ -84,13 +84,7 @@ function InitializeTransaction() {
 
 	// Reset transaction states when URL parameters change
 	useEffect(() => {
-		if (
-			!organisation ||
-			queueCurrentIndex === 0 ||
-			historyCurrentIndex === 0 ||
-			!queueTransaction ||
-			!historyTransaction
-		) {
+		if (!organisation || !queueTransaction || !historyTransaction) {
 			return;
 		}
 		setQueueCurrentIndex(0);

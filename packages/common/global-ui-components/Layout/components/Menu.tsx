@@ -91,6 +91,7 @@ const Menu = ({ userAddress, organisation, organisations }: IMenuProps) => {
 									pathname={pathname}
 									isNew={item.isNew}
 									title={item.title}
+									noShow={item.noShow}
 								/>
 							);
 						})}

@@ -59,6 +59,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const multisigIds = (data?.multisigs || [])
 			.map((multisigId: string | any) => {
 				let id = multisigId;
+				console.log(id);
 				if (typeof multisigId !== 'string' && multisigId.address && multisigId.network) {
 					id = `${multisigId.address}_${multisigId.network}`;
 				}
@@ -80,7 +81,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 					return null;
 				}
 				return {
-					name: data.name.split('_').join(' '),
+					name: data.name?.split('_').join(' '),
 					address: data.address,
 					network: data.network,
 					threshold: data.threshold,

@@ -32,7 +32,8 @@ export const menuItems = [
 		baseURL: '/exchange',
 		authenticated: true,
 		icon: <ExchangeIcon />,
-		title: 'Exchange'
+		title: 'Exchange',
+		noShow: true
 	},
 	{
 		baseURL: '/watch-list',
@@ -58,7 +59,7 @@ export const menuItems = [
 		authenticated: true,
 		icon: <TreasuryAnalyticsIcon />,
 		title: 'Invoices',
-		isNew: true
+		noShow: true
 	},
 	{
 		baseURL: '/apps',
