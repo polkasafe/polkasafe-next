@@ -13,7 +13,8 @@ export enum ENetwork {
 	ROCOCO_ASSETHUB = 'assethub-rococo',
 	KUSAMA_ASSETHUB = 'assethub-kusama',
 	POLKADOT_ASSETHUB = 'assethub-polkadot',
-	WESTEND = 'westend'
+	WESTEND = 'westend',
+	PEOPLE = 'people-polkadot'
 }
 
 export enum ETransactionOptions {
@@ -125,7 +126,8 @@ export enum ETxType {
 	ADD_PROXY = 'add_proxy',
 	REMOVE_PROXY = 'remove_proxy',
 	CREATE_PROXY = 'create_roxy',
-	EDIT_PROXY = 'EDIT_PROXY'
+	EDIT_PROXY = 'EDIT_PROXY',
+	SET_IDENTITY = 'set_identity'
 }
 
 export enum ETransactionTab {
@@ -226,4 +228,15 @@ export enum ETransactionFieldsUpdateType {
 	ADD_CATEGORY = 'Add Category',
 	ADD_SUBFIELD = 'Add Subfield',
 	DELETE_SUBFIELD = 'Delete Subfield'
+}
+
+export enum ETransactionCreationType {
+	SEND_TOKEN = 'Send Token',
+	// MANUAL_EXTRINSIC = 'Manual Extrinsic',
+	// CALL_DATA = 'Call Data',
+	// SUBMIT_PREIMAGE = 'Submit Preimage',
+	// SUBMIT_PROPOSAL = 'Submit Proposal',
+	SET_IDENTITY = 'Set Identity'
+	// DELEGATE = 'Delegate',
+	// CREATE_NFT = 'Create NFT'
 }

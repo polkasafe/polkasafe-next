@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { ECHANNEL, ENetwork, ETxType, EUserType } from '@common/enum/substrate';
+import { ECHANNEL, ENetwork, ETransactionCreationType, ETxType, EUserType } from '@common/enum/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
 import { SignerOptions, SubmittableExtrinsic, SignerResult } from '@polkadot/api/types';
@@ -313,6 +313,15 @@ export interface ISendTransaction {
 	selectedProxy?: string;
 	transactionFields?: ITxnCategory;
 	tip?: string;
+	type: ETransactionCreationType;
+	identityData?: {
+		displayName?: string;
+		legalName?: string;
+		elementHandle?: string;
+		websiteUrl?: string;
+		twitterHandle?: string;
+		email?: string;
+	};
 }
 
 export interface IGenericObject {
@@ -470,6 +479,21 @@ export interface IEditMultisigTransaction {
 	multisig: IMultisig;
 	proxyAddress: string;
 	sender: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
+}
+export interface ISetIdentityMultisigTransaction {
+	api: ApiPromise;
+	multisig: IMultisig;
+	sender: string;
+	data: {
+		displayName?: string;
+		legalName?: string;
+		elementHandle?: string;
+		websiteUrl?: string;
+		twitterHandle?: string;
+		email?: string;
+	};
 	onSuccess: (data: IGenericObject) => void;
 	onFailed: () => void;
 }

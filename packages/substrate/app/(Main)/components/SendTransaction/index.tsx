@@ -4,7 +4,7 @@
 
 'use client';
 
-import { ENetwork, ETransactionState, ETriggers, ETxType, Wallet } from '@common/enum/substrate';
+import { ENetwork, ETransactionCreationType, ETransactionState, ETriggers, ETxType, Wallet } from '@common/enum/substrate';
 import {
 	IGenericObject,
 	IMultisig,
@@ -107,8 +107,9 @@ export function SendTransaction({
 				return;
 			}
 			const { address } = user;
-			const { recipients, sender: multisig, selectedProxy } = values;
+			const { recipients, sender: multisig, selectedProxy, type, identityData } = values;
 			const apiAtom = getApi(multisig.network);
+			const peopleApiAtom = getApi(ENetwork.PEOPLE);
 
 			if (!apiAtom) {
 				notification({ ...ERROR_MESSAGES.API_NOT_CONNECTED });
@@ -116,28 +117,44 @@ export function SendTransaction({
 			}
 
 			const { api } = apiAtom as { api: ApiPromise };
+			const { api: peopleApi } = peopleApiAtom as { api: ApiPromise };
 			if (!api || !api.isReady) {
 				notification({ ...ERROR_MESSAGES.API_NOT_CONNECTED });
 				return;
 			}
 
-			const data = recipients.map((recipient) => ({
-				amount: recipient.amount,
-				recipient: recipient.address,
-				currency: recipient.currency
-			}));
-			const transaction = (await TRANSACTION_BUILDER[ETxType.TRANSFER]({
-				api,
-				data,
-				params: {
-					tip: values.tip
-				},
-				isProxy: Boolean(selectedProxy),
-				proxyAddress: selectedProxy,
-				multisig,
-				sender: address,
-				onSuccess
-			})) as ISubstrateExecuteProps;
+			let transaction: ISubstrateExecuteProps;
+
+			if (type === ETransactionCreationType.SET_IDENTITY) {
+				if (!identityData) return;
+				transaction = (await TRANSACTION_BUILDER[ETxType.SET_IDENTITY]({
+					api: multisig.network === ENetwork.POLKADOT ? peopleApi : api,
+					data: identityData,
+					multisig,
+					sender: address,
+					onSuccess,
+					onFailed: () => {}
+				})) as ISubstrateExecuteProps;
+			}
+			else {
+				const data = recipients.map((recipient) => ({
+					amount: recipient.amount,
+					recipient: recipient.address,
+					currency: recipient.currency
+				}));
+				transaction = (await TRANSACTION_BUILDER[ETxType.TRANSFER]({
+					api,
+					data,
+					params: {
+						tip: values.tip
+					},
+					isProxy: Boolean(selectedProxy),
+					proxyAddress: selectedProxy,
+					multisig,
+					sender: address,
+					onSuccess
+				})) as ISubstrateExecuteProps;
+			}
 
 			if (!transaction) {
 				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
@@ -156,9 +173,9 @@ export function SendTransaction({
 
 			const reviewData = {
 				tx: transaction.tx.toHuman(),
-				from: values.sender.address,
-				to: values.recipients[0].address,
-				proxyAddress: values.selectedProxy,
+				from: values.sender?.address,
+				to: values.recipients[0]?.address || '',
+				proxyAddress: values.selectedProxy || '',
 				txCost: formattedFee.toString(),
 				network: values.sender.network,
 				createdAt: new Date()
