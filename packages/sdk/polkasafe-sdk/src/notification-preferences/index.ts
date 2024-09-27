@@ -16,9 +16,6 @@ export function notificationPreferences({ address, signature, triggerPreferences
 	if (!signature) {
 		throw new Error('signature is required');
 	}
-	if (!triggerPreferences && !channelPreferences) {
-		throw new Error('triggerPreferences/channelPreferences is required');
-	}
 
 	const body = JSON.stringify({
 		triggerPreferences,
@@ -27,5 +24,7 @@ export function notificationPreferences({ address, signature, triggerPreferences
 
 	const method = triggerPreferences || channelPreferences ? 'POST' : 'GET';
 
-	return request('/notificationPreferences', { ...handleHeaders({ address, signature }) }, { method, body });
+	const option = method === 'POST' ? { method, body } : { method };
+
+	return request('/notificationPreferences', { ...handleHeaders({ address, signature }) }, option);
 }

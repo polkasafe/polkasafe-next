@@ -52,7 +52,7 @@ export function FundMultisigForm() {
 				indicator={
 					<LoadingLottie
 						width={200}
-						message={'Sending Funds To Multisig'}
+						message='Sending Funds To Multisig'
 					/>
 				}
 			>

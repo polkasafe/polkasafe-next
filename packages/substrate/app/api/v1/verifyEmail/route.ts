@@ -1,6 +1,5 @@
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { ETriggers } from '@common/enum/substrate';
-import { ITriggerPreferences } from '@common/types/substrate';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import { withErrorHandling } from '@substrate/app/api/api-utils';
@@ -15,35 +14,44 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const signature = headers.get('x-signature');
 
 		const substrateAddress = getSubstrateAddress(String(address));
-		if (!substrateAddress) {
+		if (!substrateAddress || !signature) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });
 		}
 
-		const { trigger, args } = (await req.json()) as {
-			trigger: ETriggers;
-			args: ITriggerPreferences;
-		};
-
 		const { isValid, error } = await isValidRequest(substrateAddress, signature);
 		if (!isValid) return NextResponse.json({ error }, { status: 400 });
+		const { email } = await req.json();
 
-		const res = await axios.post(
-			`${FIREBASE_FUNCTIONS_URL}/notify`,
-			{
-				args,
-				trigger
-			},
-			{
-				headers: firebaseFunctionsHeader(substrateAddress, signature || '')
-			}
-		);
-		if (res.status !== 200) {
-			return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
+		if (!email) {
+			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
 
-		return NextResponse.json({ data: 'success', error: null }, { status: 200 });
+		const verifyEmailRes = await axios.post(
+			`${FIREBASE_FUNCTIONS_URL}/notify`,
+			{
+				args: {
+					address,
+					email
+				},
+				trigger: ETriggers.VERIFY_EMAIL
+			},
+			{ headers: firebaseFunctionsHeader(substrateAddress, signature) }
+		);
+		
+		const { data: verifyEmailUpdate } = verifyEmailRes;
+		if (!verifyEmailUpdate) {
+			return NextResponse.json({ error: verifyEmailUpdate.error }, { status: 400 });
+		}
+		if (verifyEmailUpdate.error) {
+			return NextResponse.json({ error: verifyEmailUpdate.error }, { status: 400 });
+		}
+		if (verifyEmailUpdate.status !== 200) {
+			return NextResponse.json({ error: verifyEmailUpdate.data }, { status: verifyEmailUpdate.status });
+		}
+
+		return NextResponse.json({ data: 'Success', error: null });
 	} catch (err) {
-		console.log('Error in getAssets:', err);
+		console.log('Error in sending email:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
 	}
 });

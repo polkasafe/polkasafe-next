@@ -6,8 +6,10 @@
 import { NOTIFICATION_ENGINE_API_KEY } from '@common/envs';
 
 export const FIREBASE_FUNCTIONS_URL = 'https://us-central1-polkasafe-a8042.cloudfunctions.net';
+// export const FIREBASE_FUNCTIONS_URL = 'http://127.0.0.1:5001/polkasafe-a8042/us-central1';
 
-export default function firebaseFunctionsHeader(address: string, signature: string, contentType?: string) {
+export function firebaseFunctionsHeader(address: string, signature: string, contentType?: string) {
+	console.log(NOTIFICATION_ENGINE_API_KEY, 'NOTIFICATION_ENGINE_API_KEY');
 	return {
 		Accept: 'application/json',
 		'Content-Type': contentType || 'application/json',

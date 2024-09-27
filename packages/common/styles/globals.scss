@@ -497,3 +497,8 @@ td {
 table {
   background-color: var(--bg-secondary);
 }
+
+.ant-checkbox-inner{
+  background-color: transparent !important;
+  border: 1px solid #1573fe!important;
+}

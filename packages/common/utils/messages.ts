@@ -75,6 +75,26 @@ export const ERROR_MESSAGES = {
 		message: 'Wallet not found',
 		description: 'Wallet not found',
 		status: NotificationStatus.ERROR
+	},
+	NO_CHANGES: {
+		message: 'No Changes',
+		description: 'No changes found',
+		status: NotificationStatus.ERROR
+	},
+	NOTIFICATIONS_ERROR: {
+		message: 'Notifications Error',
+		description: 'Notifications failed to update',
+		status: NotificationStatus.ERROR
+	},
+	INVALID_EMAIL: {
+		message: 'Invalid Email',
+		description: 'Email is invalid',
+		status: NotificationStatus.ERROR
+	},
+	ERROR_IN_SENDING_EMAIL: {
+		message: 'Error in sending email',
+		description: 'Error in sending email',
+		status: NotificationStatus.ERROR
 	}
 };
 
@@ -117,6 +137,11 @@ export const SUCCESS_MESSAGES = {
 	CREATE_PROXY_SUCCESS: {
 		message: 'Create Proxy Success',
 		description: 'Create Proxy has been sent successfully',
+		status: NotificationStatus.SUCCESS
+	},
+	NOTIFICATIONS_UPDATED: {
+		message: 'Notifications Updated',
+		description: 'Notifications have been updated successfully',
 		status: NotificationStatus.SUCCESS
 	}
 };

@@ -28,31 +28,33 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			};
 		};
 
-		if (!triggerPreferences && channelPreferences) {
+		if (!triggerPreferences && !channelPreferences) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
 
-		if (triggerPreferences || typeof triggerPreferences !== 'object') {
+		if (triggerPreferences && typeof triggerPreferences !== 'object') {
 			return NextResponse.json({ error: ResponseMessages.INVALID_PARAMS }, { status: 400 });
 		}
 
-		if (channelPreferences || typeof channelPreferences !== 'object') {
+		if (channelPreferences && typeof channelPreferences !== 'object') {
 			return NextResponse.json({ error: ResponseMessages.INVALID_PARAMS }, { status: 400 });
 		}
 
 		const userDoc = USER_COLLECTION.doc(substrateAddress);
 		if (triggerPreferences) {
-			userDoc.update({
+			await userDoc.update({
 				['notification_preferences.triggerPreferences']: triggerPreferences
 			});
 		}
 		if (channelPreferences) {
-			userDoc.update({
+			await userDoc.update({
 				['notification_preferences.channelPreferences']: channelPreferences
 			});
 		}
 
-		return NextResponse.json({ data: 'success', error: null });
+		const payload = (await userDoc.get()).data()?.notification_preferences;
+
+		return NextResponse.json({ data: payload, error: null });
 	} catch (err) {
 		console.log('Error in getAssets:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
