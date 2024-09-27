@@ -5,11 +5,11 @@ import ReactFlow, { Controls, Background, NodeTypes, MarkerType } from 'reactflo
 import 'reactflow/dist/style.css';
 
 import React, { useState } from 'react';
-import AddressNode from './AddressNode';
 import { IMultisig } from '@common/types/substrate';
 import { Dropdown } from '@common/global-ui-components/Dropdown';
 import Address from '@common/global-ui-components/Address';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
+import AddressNode from './AddressNode';
 
 const nodeTypes: NodeTypes = {
 	custom: AddressNode
@@ -18,10 +18,10 @@ const nodeTypes: NodeTypes = {
 const MultisigOverview = ({ multisigs }: { multisigs: IMultisig[] }) => {
 	const [selectedMultisig, setSelectedMultisig] = useState<IMultisig>(multisigs[0]);
 
-    const multisigOptions = multisigs?.map((item) => ({
+	const multisigOptions = multisigs?.map((item) => ({
 		key: JSON.stringify(item),
 		label: (
-			<div className='scale-90 origin-top-left'>
+			<div className='origin-top-left'>
 				<Address
 					isMultisig
 					showNetworkBadge
@@ -43,7 +43,13 @@ const MultisigOverview = ({ multisigs }: { multisigs: IMultisig[] }) => {
 	});
 
 	nodes.push({
-		data: { address: selectedMultisig.address, handle: 'both', network: selectedMultisig.network, isMultisig: true, isProxy: false },
+		data: {
+			address: selectedMultisig.address,
+			handle: 'both',
+			network: selectedMultisig.network,
+			isMultisig: true,
+			isProxy: false
+		},
 		id: selectedMultisig.address,
 		position: { x: 300, y: 0 },
 		type: 'custom'
@@ -64,28 +70,34 @@ const MultisigOverview = ({ multisigs }: { multisigs: IMultisig[] }) => {
 	}));
 
 	if (selectedMultisig.proxy) {
-        selectedMultisig.proxy.forEach((item, i) => {
-            nodes.push({
-                data: { address: item.address, handle: 'left', network: selectedMultisig.network, isMultisig: false, isProxy: true },
-                id: item.address,
-                position: { x: 600, y: i * 70 },
-                type: 'custom'
-            });
+		selectedMultisig.proxy.forEach((item, i) => {
+			nodes.push({
+				data: {
+					address: item.address,
+					handle: 'left',
+					network: selectedMultisig.network,
+					isMultisig: false,
+					isProxy: true
+				},
+				id: item.address,
+				position: { x: 600, y: i * 70 },
+				type: 'custom'
+			});
 
-            edges.push({
-                animated: true,
-                id: `${selectedMultisig.address}-${item.address}`,
-                markerEnd: {
-                    height: 20,
-                    type: MarkerType.Arrow,
-                    width: 20
-                },
-                source: selectedMultisig.address,
-                sourceHandle: 'right',
-                target: item.address,
-                targetHandle: 'left'
-            });
-        })
+			edges.push({
+				animated: true,
+				id: `${selectedMultisig.address}-${item.address}`,
+				markerEnd: {
+					height: 20,
+					type: MarkerType.Arrow,
+					width: 20
+				},
+				source: selectedMultisig.address,
+				sourceHandle: 'right',
+				target: item.address,
+				targetHandle: 'left'
+			});
+		});
 	}
 
 	return (
@@ -97,42 +109,42 @@ const MultisigOverview = ({ multisigs }: { multisigs: IMultisig[] }) => {
 					</p>
 				</section>
 			) : (
-                <div className='flex-1 flex flex-col h-full px-4'>
-                    <div className='flex justify-start mb-4'>
-                        <Dropdown
-                            trigger={['click']}
-                            className='border border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer min-w-[260px]'
-                            menu={{
-                                items: multisigOptions,
-                                onClick: (e) => {
-                                    setSelectedMultisig(JSON.parse(e.key) as IMultisig);
-                                }
-                            }}
-                        >
-                            <div className='flex justify-between gap-x-4 items-center text-white text-[16px]'>
-                                <Address
-                                    isMultisig
-                                    showNetworkBadge
-                                    network={selectedMultisig?.network}
-                                    withBadge={false}
-                                    address={selectedMultisig?.address}
-                                />
-                                <CircleArrowDownIcon className='text-primary' />
-                            </div>
-                        </Dropdown>
-                    </div>
-                    <div className='w-full flex-1'>
-                        <ReactFlow
-                            fitView
-                            edges={edges}
-                            nodes={nodes}
-                            nodeTypes={nodeTypes}
-                        >
-                            <Background />
-                            <Controls />
-                        </ReactFlow>
-                    </div>
-                </div>
+				<div className='flex-1 flex flex-col h-full px-4'>
+					<div className='flex justify-start mb-4'>
+						<Dropdown
+							trigger={['click']}
+							className='border border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer min-w-[260px]'
+							menu={{
+								items: multisigOptions,
+								onClick: (e) => {
+									setSelectedMultisig(JSON.parse(e.key) as IMultisig);
+								}
+							}}
+						>
+							<div className='flex justify-between gap-x-4 items-center text-white text-[16px]'>
+								<Address
+									isMultisig
+									showNetworkBadge
+									network={selectedMultisig?.network}
+									withBadge={false}
+									address={selectedMultisig?.address}
+								/>
+								<CircleArrowDownIcon className='text-primary' />
+							</div>
+						</Dropdown>
+					</div>
+					<div className='w-full flex-1'>
+						<ReactFlow
+							fitView
+							edges={edges}
+							nodes={nodes}
+							nodeTypes={nodeTypes}
+						>
+							<Background />
+							<Controls />
+						</ReactFlow>
+					</div>
+				</div>
 			)}
 		</div>
 	);

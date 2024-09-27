@@ -4,11 +4,9 @@
 import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
-import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION, USER_COLLECTION } from '@common/db/collections';
+import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collections';
 import { IOrganisation } from '@common/types/substrate';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
-import { isValidRequest } from '@common/utils/isValidRequest';
 
 const getOrganisations = async (address: string) => {
 	const organisations = await ORGANISATION_COLLECTION.where('members', 'array-contains', address).get();

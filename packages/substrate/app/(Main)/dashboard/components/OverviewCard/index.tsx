@@ -26,6 +26,7 @@ import { useSearchParams } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import NewTransaction from '@common/modals/NewTransaction';
 import FundMultisig from '@common/modals/FundMultisig';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 const ExternalLink = ({ network, address }: { network: ENetwork; address: string }) => (
 	<div className='absolute right-5 top-5'>
@@ -103,6 +104,23 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 
 	const multiSigAssets = assets?.find((asset) => asset?.address === selectedAddress && asset?.network === network);
 	const selectedAddressAsset = isProxy ? proxyMultiSigAssets : multiSigAssets;
+	const supportedTokens = networkConstants?.[network].supportedTokens || [];
+	const allAssets: Array<{
+		name: string;
+		amount: string;
+	}> = [{
+		name: networkConstants?.[network].tokenSymbol,
+		amount: selectedAddressAsset?.free || '0'
+	}]
+	supportedTokens.forEach((token: any) => {
+		const id = token.name.toLocaleLowerCase()
+		if ((selectedAddressAsset as any)?.[id]) {
+			allAssets.push({
+				name: token.name,
+				amount: (selectedAddressAsset as any)?.[id]?.free || '0'
+			});
+		}
+	})
 
 	return (
 		<div
@@ -186,17 +204,22 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 						active
 					/>
 				) : (
-					<>
+							<> 
 						<div>
 							<div className='text-white'>Signatories</div>
 							<div className='font-bold text-lg text-primary'>{signatories.length || 0}</div>
 						</div>
+					{allAssets.map((asset) => Boolean(Number(asset.amount)) ? (
+
 						<div>
-							<div className='text-white'>Tokens</div>
+							<div className='text-white'>{asset.name}</div>
 							<div className='font-bold text-lg text-primary'>
-								{!selectedAddressAsset ? <Spin size='default' /> : selectedAddressAsset.free}
+								{!selectedAddressAsset ? <Spin size='default' /> : asset.amount}
 							</div>
 						</div>
+					): null)
+
+					}
 					</>
 				)}
 			</div>

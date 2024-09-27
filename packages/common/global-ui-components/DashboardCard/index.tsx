@@ -8,14 +8,50 @@ import { useDashboardContext } from '@common/context/DashboarcContext';
 import { Skeleton } from 'antd';
 import { useState } from 'react';
 import { EyeOutlined } from '@ant-design/icons';
+import { ENetwork } from '@common/enum/substrate';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 function DashboardCard() {
 	const { assets, currency } = useDashboardContext();
 	const proxyMultiSigAssets = [...(assets || []), ...(assets || []).map((a) => a.proxy || []).flat()];
-	const totalBalance = proxyMultiSigAssets?.reduce(
-		(acc, asset) => acc + (Number(asset?.allCurrency?.[asset.network]?.[currency.toLowerCase()]?.toFixed(2)) || 0),
-		0
-	);
+	const tokenBalance: any = [];
+
+	const getTotalBalance = () => {
+		try {
+			const totalBalance = proxyMultiSigAssets?.reduce((ac, asset) => {
+				const supportedTokens = (networkConstants[asset.network] as any).supportedTokens || [];
+				if (supportedTokens.length > 0) {
+					supportedTokens.forEach((token: { symbol: string }) => {
+						tokenBalance.push((asset as any)[token.symbol.toLowerCase()]);
+					});
+				}
+				return (
+					ac +
+					Number(
+						asset?.allCurrency?.[
+							asset.network === ENetwork.POLKADOT_ASSETHUB
+								? ENetwork.POLKADOT
+								: asset.network === ENetwork.KUSAMA_ASSETHUB
+									? ENetwork.KUSAMA
+									: asset.network
+						]?.[currency.toLowerCase()]?.toFixed(2) || 0
+					)
+				);
+			}, 0);
+
+			const tokenBalanceValue =
+				tokenBalance.reduce((ac: number, token: any) => {
+					return ac + Number(token?.free) * Number(token?.[currency?.toUpperCase()]);
+				}, 0) || 0;
+
+			return totalBalance + tokenBalanceValue;
+		} catch (error) {
+			console.log('error in getTotalBalance', error);
+		}
+	};
+
+	const TOTAL_VALUE = getTotalBalance() || 0;
+
 	const symbol = getCurrencySymbol(currency);
 	const show = (localStorage.getItem('showBalance') || 'yes') as 'yes' | 'no';
 	const [showBalance, setShowBalance] = useState<'yes' | 'no'>(show);
@@ -43,16 +79,16 @@ function DashboardCard() {
 						>
 							{symbol}{' '}
 							{showBalance === 'yes' ? (
-								<>
-									{totalBalance === null ? (
+								<span>
+									{TOTAL_VALUE === null ? (
 										<Skeleton.Button
 											size='small'
 											active
 										/>
 									) : (
-										totalBalance?.toFixed(2)
+										TOTAL_VALUE?.toFixed(2)
 									)}
-								</>
+								</span>
 							) : (
 								'******'
 							)}

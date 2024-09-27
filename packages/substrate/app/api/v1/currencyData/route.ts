@@ -21,6 +21,13 @@ export const PUT = withErrorHandling(async (req: NextRequest) => {
 			await CURRENCIES_COLLECTION.doc(docId).set(data[network], { merge: true });
 			return data[network];
 		});
+		const { data: usdtAndUsdc } = await axios.get(
+			`https://min-api.cryptocompare.com/data/pricemulti?fsyms=USDT,USDC&tsyms=${currencies}`
+		);
+
+		await CURRENCIES_COLLECTION.doc('usdt').set(usdtAndUsdc.USDT, { merge: true });
+		await CURRENCIES_COLLECTION.doc('usdc').set(usdtAndUsdc.USDT, { merge: true });
+
 		await Promise.all(currenciesData);
 		return NextResponse.json({ data: currenciesData, error: null });
 	} catch (err: unknown) {

@@ -17,6 +17,7 @@ export function useDecodeCallData({ apiData, callHash, callData }: IUseHistoryTr
 	const decodedData = async () => {
 		const payload = {} as IGenericObject;
 		if (!apiData || !apiData.api || !callData) {
+			console.log(callHash, 'callData');
 			return payload;
 		}
 

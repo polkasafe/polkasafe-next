@@ -73,7 +73,6 @@ const getLabelForTransaction = (type: ETransactionOptions, label?: string) => {
 
 const getTransactionDetail = (data: Array<any>, network: ENetwork) => {
 	if (!data || !Array.isArray(data) || data.length === 0) {
-		console.log('No data', data);
 		return {
 			label: '-',
 			amount: 0,

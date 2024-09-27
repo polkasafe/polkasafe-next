@@ -88,7 +88,8 @@ function InitializeAssets() {
 				if (network === ENetwork.POLKADOT_ASSETHUB || network === ENetwork.ROCOCO_ASSETHUB) {
 					const tokenData = await getTokenBalance(api, address, network);
 					tokenData.map((t) => {
-						balance[String(t.symbol).toLowerCase()] = t;
+						const currencies = currencyData?.[String(t.symbol).toLowerCase()] || {};
+						balance[String(t.symbol).toLowerCase()] = {...t, ...currencies};
 					});
 				}
 
@@ -122,7 +123,8 @@ function InitializeAssets() {
 					if (network === ENetwork.POLKADOT_ASSETHUB || network === ENetwork.ROCOCO_ASSETHUB) {
 						const tokenData = await getTokenBalance(api, address, network);
 						tokenData.map((t) => {
-							proxyBalance[String(t.symbol).toLowerCase()] = t;
+							const currencies = currencyData?.[String(t.symbol).toLowerCase()] || {};
+							proxyBalance[String(t.symbol).toLowerCase()] = {...t, ...currencies};
 						});
 					}
 
