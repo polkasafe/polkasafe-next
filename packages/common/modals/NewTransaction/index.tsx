@@ -6,9 +6,9 @@ import React, { useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { NewTransactionForm } from '@common/modals/NewTransaction/components/NewTransactionForm';
 import { useDashboardContext } from '@common/context/DashboarcContext';
-import { ENetwork, ETransactionState } from '@common/enum/substrate';
+import { ENetwork, ETransactionCreationType, ETransactionState } from '@common/enum/substrate';
 import { ReviewTransaction } from '@common/global-ui-components/ReviewTransaction';
-import { Form } from 'antd';
+import { Form, Dropdown } from 'antd';
 import { IReviewTransaction } from '@common/types/substrate';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
 import TransactionSuccessScreen from '@common/global-ui-components/TransactionSuccessScreen';
@@ -30,18 +30,35 @@ function NewTransaction({
 	const { transactionState, setTransactionState, signTransaction, reviewTransaction } = useDashboardContext();
 	const [form] = Form.useForm();
 
+	const [transactionType, setTransactionType] = useState<ETransactionCreationType>(ETransactionCreationType.SEND_TOKEN);
+
+	const transactionTypes = Object.values(ETransactionCreationType).map((item) => ({
+		key: item,
+		label: <span className='text-white flex items-center gap-x-2'>{item}</span>
+	}));
+
 	return (
 		<div className='w-full'>
-			<Button
-				variant={EButtonVariant.PRIMARY}
-				fullWidth
-				className={className}
-				icon={icon && <PlusCircleOutlined />}
-				onClick={() => setOpenModal(true)}
-				size={size}
+			<Dropdown
+				trigger={['click']}
+				menu={{
+					items: transactionTypes,
+					onClick: (e) => {
+						setTransactionType(e.key as ETransactionCreationType);
+						setOpenModal(true);
+					}
+				}}
 			>
-				{label || 'New Transaction'}
-			</Button>
+				<Button
+					variant={EButtonVariant.PRIMARY}
+					fullWidth
+					className={className}
+					icon={icon && <PlusCircleOutlined />}
+					size={size}
+				>
+					{label || 'New Transaction'}
+				</Button>
+			</Dropdown>
 			<Modal
 				open={openModal}
 				onCancel={() => {
@@ -49,13 +66,14 @@ function NewTransaction({
 					setOpenModal(false);
 					form.resetFields();
 				}}
-				title='Send Transaction'
+				title={transactionType}
 			>
 				{transactionState === ETransactionState.BUILD && (
 					<div className='flex flex-col gap-5'>
 						<NewTransactionForm
 							onClose={() => setOpenModal(false)}
 							form={form}
+							type={transactionType}
 						/>
 					</div>
 				)}
