@@ -8,6 +8,7 @@ import {
 	IEditMultisigTransaction,
 	IGenericObject,
 	IRecipient,
+	ISetIdentityMultisigTransaction,
 	ITransferTransaction
 } from '@common/types/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
@@ -20,6 +21,14 @@ import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import getMultisigInfo from '@substrate/app/global/utils/getMultisigInfo';
+
+const createRawObject = (value: string | undefined) => {
+	return value
+		? {
+				Raw: value
+			}
+		: { none: null };
+};
 
 const getTransferCalls = (api: ApiPromise, data: IRecipient, network: ENetwork) => {
 	const nativeToken = networkConstants[network].tokenSymbol;
@@ -336,12 +345,75 @@ const editProxy = async ({
 	};
 };
 
+const setIdentity = async ({
+	api,
+	data,
+	multisig,
+	sender: substrateSender,
+	onSuccess
+}: ISetIdentityMultisigTransaction) => {
+	// Multisig info
+	const { address, network, threshold, signatories: allSignatories } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+
+	// Sort signatories
+	const signatories = sortAddresses(
+		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+
+	const { displayName, email, legalName, elementHandle, twitterHandle, websiteUrl } = data;
+
+	const args = {
+		additional: [],
+		display: createRawObject(displayName),
+		email: createRawObject(email),
+		legal: createRawObject(legalName),
+		pgpFingerprint: null,
+		riot: createRawObject(elementHandle),
+		twitter: createRawObject(twitterHandle),
+		web: createRawObject(websiteUrl)
+	};
+
+	const tx = api.tx.identity.setIdentity(args);
+
+	const callData = api.createType('Call', tx.method.toHex());
+	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
+	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, tx, MAX_WEIGHT as any);
+
+	const afterSuccess = (tx: IGenericObject) => {
+		const newTransaction = {
+			callData: tx.method.toHex(),
+			callHash: tx.method.hash.toString(),
+			network,
+			amountToken: '0',
+			createdAt: new Date(),
+			multisigAddress: address,
+			from: address,
+			approvals: [sender]
+		} as IDashboardTransaction;
+		console.log(newTransaction, 'Transaction');
+		onSuccess && onSuccess({ newTransaction });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: mainTx as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		onSuccess: afterSuccess,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
+};
+
 const TRANSACTION_BUILDER = {
 	[ETxType.TRANSFER]: transfer,
 	[ETxType.CREATE_PROXY]: createProxy,
 	[ETxType.CANCEL]: cancelTransaction,
 	[ETxType.APPROVE]: approveTransaction,
-	[ETxType.EDIT_PROXY]: editProxy
+	[ETxType.EDIT_PROXY]: editProxy,
+	[ETxType.SET_IDENTITY]: setIdentity
 };
 
 export { TRANSACTION_BUILDER };

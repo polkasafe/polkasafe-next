@@ -15,7 +15,8 @@ import {
 	assethubPolkadotApi,
 	assethubKusamaApi,
 	westendApi,
-	assethubRococoApi
+	assethubRococoApi,
+	peopleChainApi
 } from '@substrate/app/atoms/api/apiAtom';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
@@ -29,6 +30,7 @@ import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 function InitializeAPI() {
 	const [PolkadotApiAtom, setPolkadotApiAtom] = useAtom(polkadotApi);
+	const [PeoplePolkadotApiAtom, setPeoplePolkadotApiAtom] = useAtom(peopleChainApi);
 	const [AstarApiAtom, setAstarApiAtom] = useAtom(astarApi);
 	const [AvailApiAtom, setAvailApiAtom] = useAtom(availApi);
 	const [KhalaApiAtom, setKhalaApiAtom] = useAtom(khalaApi);
@@ -64,35 +66,8 @@ function InitializeAPI() {
 				return setWestendApiAtom;
 			case ENetwork.ROCOCO_ASSETHUB:
 				return setAssethubRococoApiAtom;
-			default:
-				return null;
-		}
-	};
-
-	const getApiValue = (network: string) => {
-		switch (network) {
-			case ENetwork.POLKADOT:
-				return PolkadotApiAtom;
-			case ENetwork.ASTAR:
-				return AstarApiAtom;
-			case ENetwork.AVAIL:
-				return AvailApiAtom;
-			case ENetwork.KHALA:
-				return KhalaApiAtom;
-			case ENetwork.KUSAMA:
-				return KusamaApiAtom;
-			case ENetwork.PHALA:
-				return PhalaApiAtom;
-			case ENetwork.ROCOCO:
-				return RococoApiAtom;
-			case ENetwork.POLKADOT_ASSETHUB:
-				return AssethubPolkadotApiAtom;
-			case ENetwork.KUSAMA_ASSETHUB:
-				return AssethubKusamaApiAtom;
-			case ENetwork.WESTEND:
-				return WestendApiAtom;
-			case ENetwork.ROCOCO_ASSETHUB:
-				return AssethubRococoApiAtom;
+			case ENetwork.PEOPLE:
+				return setPeoplePolkadotApiAtom;
 			default:
 				return null;
 		}

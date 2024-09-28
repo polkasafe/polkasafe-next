@@ -1,4 +1,4 @@
-import Input from "@common/global-ui-components/Input";
+import Input from '@common/global-ui-components/Input';
 
 export const newTransactionFormFields = [
 	{
