@@ -504,3 +504,30 @@ export enum EFieldType {
 	// DATE = 'Date/Date-range',
 	// LINK = 'link',
 }
+
+export interface IInvoice {
+	organisationId: string;
+	title: string;
+	from: string;
+	to: Array<string>;
+	network: string;
+	amount: string;
+	amountPaid?: string;
+	note: string;
+	status: {
+		current_status: string;
+		history: Array<{ status: string; updated_at: Date }>;
+	};
+	paid_from: null | [{ token: string; amount: number; wallet: string; timestamp: Date; dollarValue: string }];
+	files: string;
+	transactionHash: string;
+	created_at: Date;
+}
+
+export interface IInvoiceTemplate {
+	organisationId: string;
+	title: string;
+	from: string;
+	note: string;
+	created_at: Date;
+}

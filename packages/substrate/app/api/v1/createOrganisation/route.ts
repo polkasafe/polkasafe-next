@@ -4,8 +4,8 @@
 import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
-import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION, PROXY_COLLECTION } from '@common/db/collections';
-import { IDBMultisig, IDBOrganisation, IOrganisation } from '@common/types/substrate';
+import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collections';
+import { IDBMultisig, IDBOrganisation } from '@common/types/substrate';
 import { EUserType } from '@common/enum/substrate';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';

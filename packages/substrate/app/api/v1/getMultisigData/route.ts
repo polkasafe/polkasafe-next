@@ -3,10 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
-import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { ResponseMessages } from '@common/constants/responseMessage';
-import { isValidRequest } from '@common/utils/isValidRequest';
-import { MULTISIG_COLLECTION, PROXY_COLLECTION } from '@common/db/collections';
+import { MULTISIG_COLLECTION } from '@common/db/collections';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { onChainMultisig } from '@substrate/app/api/api-utils/onChainMultisig';
 import { ENetwork, EUserType } from '@common/enum/substrate';
@@ -15,34 +13,14 @@ import { IDBMultisig } from '@common/types/substrate';
 
 const updateDB = async (docId: string, multisig: IDBMultisig) => {
 	const multisigRef = await MULTISIG_COLLECTION.doc(String(docId)).get();
-
-	if (!multisigRef.exists) {
-		// if the multisig is not exists in our db, update it
-		const newMultisigRef = MULTISIG_COLLECTION.doc(docId);
-		newMultisigRef.set(multisig);
-	}
-
-	await Promise.all(
-		(multisig.proxy || [])?.map(async (proxy) => {
-			const proxyId = `${proxy.address}_${docId}`;
-			const proxyRef = await PROXY_COLLECTION.doc(proxyId).get();
-			if (!proxyRef.exists) {
-				const newProxyRef = PROXY_COLLECTION.doc(proxyId);
-				await newProxyRef.set({ multisigId: docId, address: proxy.address, name: proxy.name });
-			}
-		})
-	);
+	multisigRef.ref.set(multisig);
 };
 
 const getDataFromDB = async (docId: string) => {
 	const multisigRef = await MULTISIG_COLLECTION.doc(docId).get();
-	// proxy data from db if exists
-	const proxyRef = await PROXY_COLLECTION.where('multisigId', '==', docId).get();
-	const proxyData = proxyRef.docs.map((doc) => doc.data());
-
 	if (multisigRef.exists) {
 		const multisigData = multisigRef.data();
-		return { ...multisigData, proxy: proxyData };
+		return { ...multisigData };
 	}
 	return null;
 };

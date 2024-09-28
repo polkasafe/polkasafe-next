@@ -7,3 +7,5 @@ export const USER_COLLECTION = DB.collection('users');
 export const TRANSACTION_COLLECTION = DB.collection('transactions');
 export const ASSETS_COLLECTION = DB.collection('assets');
 export const CURRENCIES_COLLECTION = DB.collection('currencies');
+export const INVOICE_COLLECTION = DB.collection('invoice');
+export const INVOICE_TEMPLATE_COLLECTION = DB.collection('invoice_template');

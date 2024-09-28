@@ -4,7 +4,7 @@
 import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
-import { MULTISIG_COLLECTION, PROXY_COLLECTION } from '@common/db/collections';
+import { MULTISIG_COLLECTION } from '@common/db/collections';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import { onChainMultisig } from '@substrate/app/api/api-utils/onChainMultisig';
 import { ENetwork, EUserType } from '@common/enum/substrate';
@@ -22,13 +22,6 @@ const updateDB = async (docId: string, multisig: IDBMultisig) => {
 		const newMultisigRef = MULTISIG_COLLECTION.doc(docId);
 		await newMultisigRef.set(multisig, { merge: true });
 	}
-};
-
-const getProxyDataFromDB = async (docId: string) => {
-	const proxyRef = await PROXY_COLLECTION.where('multisigId', '==', docId).get();
-	const proxyData = proxyRef.docs.map((doc) => doc.data());
-
-	return proxyData.filter((a) => Boolean(a));
 };
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
@@ -51,8 +44,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (dbData.docs.length > 0) {
 			dbData.docs.forEach(async (doc) => {
 				const data = doc.data() as IDBMultisig;
-				const proxyData = (await getProxyDataFromDB(doc.id)) as Array<IProxy>;
-				allMultisig.push({ ...data, proxy: proxyData });
+				allMultisig.push({ ...data });
 			});
 		}
 

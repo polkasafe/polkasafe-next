@@ -4,6 +4,7 @@
 
 'use client';
 
+import { ENetwork } from '@common/enum/substrate';
 import Address from '@common/global-ui-components/Address';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IMultisigAssets } from '@common/types/substrate';
@@ -73,7 +74,11 @@ function AssetsTable({ dataSource, currency, isExpandable }: IAssetsTableProps) 
 				const symbol = getCurrencySymbol(currency);
 				return (
 					<div className='flex gap-2'>
-						{symbol} {(allData.allCurrency?.[allData.network]?.[currency.toLowerCase()] || 0).toFixed(2)}
+						{symbol} {(allData.allCurrency?.[allData.network === ENetwork.POLKADOT_ASSETHUB
+								? ENetwork.POLKADOT
+								: allData.network === ENetwork.KUSAMA_ASSETHUB
+									? ENetwork.KUSAMA
+									: allData.network]?.[currency.toLowerCase()] || 0).toFixed(2)}
 					</div>
 				);
 			}

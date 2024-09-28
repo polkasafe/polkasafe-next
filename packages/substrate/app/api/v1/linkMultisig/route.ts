@@ -4,7 +4,7 @@
 import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
-import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION, PROXY_COLLECTION } from '@common/db/collections';
+import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collections';
 import { IDBMultisig, IOrganisation } from '@common/types/substrate';
 import { EUserType } from '@common/enum/substrate';
 import { isValidRequest } from '@common/utils/isValidRequest';
@@ -16,16 +16,6 @@ const updateDB = async (multisigs: Array<IDBMultisig>) => {
 			multisigs.map(async (multisig) => {
 				const docId = `${multisig.address}_${multisig.network}`;
 				await MULTISIG_COLLECTION.doc(docId).set({ multisigs }, { merge: true });
-				await Promise.all(
-					(multisig.proxy || [])?.map(async (proxy) => {
-						const proxyId = `${proxy.address}_${docId}`;
-						const proxyRef = await PROXY_COLLECTION.doc(proxyId).get();
-						if (!proxyRef.exists) {
-							const newProxyRef = PROXY_COLLECTION.doc(proxyId);
-							await newProxyRef.set({ multisigId: docId, address: proxy.address, name: proxy.name });
-						}
-					})
-				);
 			})
 		);
 	} catch (err: unknown) {

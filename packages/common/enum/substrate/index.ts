@@ -226,3 +226,11 @@ export enum ETransactionFieldsUpdateType {
 	ADD_SUBFIELD = 'Add Subfield',
 	DELETE_SUBFIELD = 'Delete Subfield'
 }
+
+export enum EInvoiceStatus {
+	PENDING = 'pending',
+	REJECTED = 'rejected',
+	APPROVED = 'approved',
+	PAID = 'paid',
+	PARTIALLY_PAID = 'partially paid'
+}
