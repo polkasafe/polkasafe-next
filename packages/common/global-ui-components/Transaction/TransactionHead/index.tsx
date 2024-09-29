@@ -12,6 +12,7 @@ import {
 import dayjs from 'dayjs';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { IReviewTransaction } from '@common/types/substrate';
+import { Tooltip } from 'antd';
 
 interface ITransactionHeadProps {
 	type: ETransactionOptions;
@@ -121,7 +122,17 @@ export function TransactionHead({
 							>
 								{allAmountsAndCurrency?.[0].amount} {allAmountsAndCurrency?.[0]?.currency}
 							</span>
-							{Boolean(allAmountsAndCurrency.length - 1) && `+${allAmountsAndCurrency.length - 1}`}
+							<Tooltip
+								title={
+									<div className='flex flex-col gap-y-2'>
+										{allAmountsAndCurrency.slice(1).map((item) => `${item.amount} ${item.currency}`)}
+									</div>
+								}
+							>
+								<span className='px-2 py-1 rounded-xl text-label bg-highlight'>
+									{Boolean(allAmountsAndCurrency.length - 1) && `+${allAmountsAndCurrency.length - 1}`}
+								</span>
+							</Tooltip>
 						</div>
 					) : Boolean(amountToken) && Number(amountToken) ? (
 						<Typography
@@ -164,7 +175,24 @@ export function TransactionHead({
 								withBadge={false}
 								isMultisig
 							/>
-							{Boolean(allRecipes.length - 1) && `+${allRecipes.length - 1}`}
+							<Tooltip
+								title={
+									<div className='flex flex-col gap-y-2'>
+										{allRecipes.slice(1).map((item) => (
+											<Address
+												address={item}
+												network={network}
+												withBadge={false}
+												isMultisig
+											/>
+										))}
+									</div>
+								}
+							>
+								<span className='px-2 py-1 rounded-xl text-label bg-highlight'>
+									{Boolean(allRecipes.length - 1) && `+${allRecipes.length - 1}`}
+								</span>
+							</Tooltip>
 						</div>
 					) : (
 						<Typography variant={ETypographyVariants.h1}>-</Typography>
@@ -173,7 +201,7 @@ export function TransactionHead({
 				{!isHomePage && (
 					<Typography
 						variant={ETypographyVariants.p}
-						className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
+						className='basis-1/5 justify-center text-text-primary flex items-center gap-2'
 					>
 						{dayjs(createdAt).format('MM/DD/YYYY, hh:mm A')}
 					</Typography>
@@ -187,7 +215,7 @@ export function TransactionHead({
 					</Typography>
 				)}
 				{ETransactionType.QUEUE_TRANSACTION === transactionType && isSignatory ? (
-					<div className='flex items-center gap-x-4 basis-1/5 justify-start'>
+					<div className='flex items-center gap-x-4 basis-1/5 justify-end'>
 						{!isHomePage && (
 							<div className='flex items-center gap-x-4'>
 								{!isHomePage && (

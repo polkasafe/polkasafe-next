@@ -14,6 +14,7 @@ import { DashboardOverview } from '@substrate/app/(Main)/dashboard/components/Da
 import AssetsOverview from '@substrate/app/(Main)/dashboard/components/OrganisationDashboard/components/AssetsOverview';
 import { Suspense } from 'react';
 import { ETransactionTab } from '@common/enum/substrate';
+import ProxyWarning from '@common/global-ui-components/ProxyWarning';
 
 interface IOrganisationDashboard {
 	id: string;
@@ -26,9 +27,12 @@ export default async function OrganisationDashboard({ id, selectedTab }: IOrgani
 		throw new Error('Organisation not found');
 	}
 
+	const multisigs = data.organisationData.multisigs || [];
+
 	return (
 		<Secure>
 			<div className='flex flex-col gap-5 h-full'>
+				<ProxyWarning multisigs={multisigs} />
 				<div className='flex gap-5'>
 					<div className='flex flex-col gap-4 basis-[55%]'>
 						<Typography variant={ETypographyVariants.h1}>Overview</Typography>

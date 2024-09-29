@@ -4,11 +4,14 @@ import {
 	CircleCheckIcon,
 	CirclePlusIcon,
 	CircleWatchIcon,
+	CopyIcon,
+	ExternalLinkIcon,
 	OutlineCheckIcon,
 	OutlineCloseIcon
 } from '@common/global-ui-components/Icons';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { IReviewTransaction } from '@common/types/substrate';
+import copyText from '@common/utils/copyText';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import shortenAddress from '@common/utils/shortenAddress';
 import { Divider, Timeline, Collapse } from 'antd';
@@ -81,15 +84,12 @@ export default function TransactionDetails({
 							item.address && item.amount ? (
 								<div key={`${item}_${i}`}>
 									<div className='flex justify-between'>
-										<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'>
+										<div className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 px-4 bg-bg-secondary flex items-center justify-between w-full '>
 											<Address
 												address={item.address}
 												network={network}
 											/>
-										</div>
-
-										<div className='flex items-center justify-between'>
-											<span className='text-white'>
+											<span className='text-failure'>
 												{item.amount} {item.currency}
 											</span>
 										</div>
@@ -102,12 +102,33 @@ export default function TransactionDetails({
 				<div className='flex flex-col gap-y-2'>
 					<div className='flex items-center justify-between'>
 						<span className='text-text-secondary'>Txn Hash</span>
-						<span className='text-white'>{shortenAddress(callHash)}</span>
+						<span className='text-white flex items-center gap-x-2'>
+							{shortenAddress(callHash)}
+							<span className='flex items-center gap-x-2 text-sm'>
+								<button onClick={() => copyText(callHash)}>
+									<CopyIcon className='text-text-secondary hover:text-label' />
+								</button>
+								<a
+									href={`https://${network}.subscan.io/extrinsic/${callHash}`}
+									target='_blank'
+									rel='noreferrer'
+								>
+									<ExternalLinkIcon className='text-text-secondary hover:text-label' />
+								</a>
+							</span>
+						</span>
 					</div>
 					{callData && (
 						<div className='flex items-center justify-between'>
 							<span className='text-text-secondary'>Call Data</span>
-							<span className='text-white'>{shortenAddress(callData)}</span>
+							<span className='text-white flex items-center gap-x-2'>
+								{shortenAddress(callData)}
+								<span className='flex items-center gap-x-2 text-sm'>
+									<button onClick={() => copyText(callData)}>
+										<CopyIcon className='text-text-secondary hover:text-label' />
+									</button>
+								</span>
+							</span>
 						</div>
 					)}
 					<div className='flex items-center justify-between'>

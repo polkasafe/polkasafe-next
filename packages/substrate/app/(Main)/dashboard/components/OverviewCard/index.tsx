@@ -24,10 +24,10 @@ import { Skeleton, Spin, Tooltip } from 'antd';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { useSearchParams } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
-import NewTransaction from '@common/modals/NewTransaction';
 import FundMultisig from '@common/modals/FundMultisig';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { TransactionDropdown } from '@substrate/app/(Main)/dashboard/components/TransactionDropdown';
+import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
 
 const ExternalLink = ({ network, address }: { network: ENetwork; address: string }) => (
 	<div className='absolute right-5 top-5'>
@@ -168,6 +168,11 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 							>
 								{proxy ? 'Proxy' : 'Multisig'}
 							</div>
+							<ParachainTooltipIcon
+								size={15}
+								src={networkConstants[network]?.logo}
+								tooltip={network}
+							/>
 						</div>
 						<div className='flex text-xs'>
 							<div
