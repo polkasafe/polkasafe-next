@@ -550,6 +550,7 @@ export enum EFieldType {
 }
 
 export interface IInvoice {
+	id?: string;
 	organisationId: string;
 	title: string;
 	from: string;
