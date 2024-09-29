@@ -58,7 +58,8 @@ export const menuItems = [
 		baseURL: '/invoices',
 		authenticated: true,
 		icon: <TreasuryAnalyticsIcon />,
-		title: 'Invoices'
+		title: 'Invoices',
+		noShow: true
 	},
 	{
 		baseURL: '/apps',
