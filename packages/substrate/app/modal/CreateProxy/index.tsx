@@ -14,6 +14,7 @@ import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { sendNotification } from '@sdk/polkasafe-sdk/src';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { AddBoxIcon } from '@common/global-ui-components/Icons';
 interface ICreateProxyModal {
 	multisig: IMultisig;
 }
@@ -132,6 +133,8 @@ export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
 				buildTransaction={buildTransaction}
 				signTransaction={signTransaction}
 				reviewTransaction={reviewTransaction}
+				className='text-label'
+				buttonIcon={<AddBoxIcon className='text-label' />}
 			>
 				Create Proxy
 			</ReviewModal>

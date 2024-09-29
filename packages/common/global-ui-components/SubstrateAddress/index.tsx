@@ -6,8 +6,8 @@ import Identicon from '@polkadot/react-identicon';
 import { twMerge } from 'tailwind-merge';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { CopyIcon } from '@common/global-ui-components/Icons';
-import shortenAddress from '../../utils/shortenAddress';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+import shortenAddress from '../../utils/shortenAddress';
 
 interface IAddressProps {
 	address: string;
@@ -24,7 +24,7 @@ interface IAddressProps {
 
 const styles = {
 	container: 'flex items-center gap-x-3',
-	textContainer: 'flex flex-col text-xs font-normal leading-13px justify-center',
+	textContainer: 'flex flex-col text-sm font-normal leading-13px justify-center',
 	textActive: 'text-white',
 	textDisabled: 'text-text-secondary text-2xs'
 };
@@ -59,7 +59,7 @@ export const SubstrateAddress: React.FC<IAddressProps> = ({
 				{!disableExtensionName ? <span className={styles.textActive}>{extensionName}</span> : null}
 				<span>
 					{!disableAddress ? (
-						<span className={styles.textDisabled}>{shortenAddress(address, shortenAddressLength)}</span>
+						<span className={styles.textActive}>{shortenAddress(address, shortenAddressLength)}</span>
 					) : null}
 					{copyIcon && <CopyIcon className='ml-2' />}
 				</span>

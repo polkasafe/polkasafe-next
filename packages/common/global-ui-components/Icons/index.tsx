@@ -103,6 +103,8 @@ import InvoicesSVG from '@common/assets/icons/invoice.svg';
 import LedgerSVG from '@common/assets/icons/ledger.svg';
 import ReceivedIconSVG from '@common/assets/icons/received-icon.svg';
 import UnlinkIconSVG from '@common/assets/icons/unlink.svg';
+import DangerTriangleSVG from '@common/assets/icons/danger-triangle.svg';
+import DollarCircleSVG from '@common/assets/icons/dollar-circle.svg';
 
 export const AddIcon: React.FC<Partial<CustomIconComponentProps>> = (props: Partial<CustomIconComponentProps>) => (
 	<Icon
@@ -869,6 +871,24 @@ export const ReceivedIcon: React.FC<Partial<CustomIconComponentProps>> = (props:
 export const UnlinkIcon: React.FC<Partial<CustomIconComponentProps>> = (props: Partial<CustomIconComponentProps>) => (
 	<Icon
 		component={UnlinkIconSVG}
+		{...props}
+	/>
+);
+
+export const DangerTriangleIcon: React.FC<Partial<CustomIconComponentProps>> = (
+	props: Partial<CustomIconComponentProps>
+) => (
+	<Icon
+		component={DangerTriangleSVG}
+		{...props}
+	/>
+);
+
+export const DollarCircleIcon: React.FC<Partial<CustomIconComponentProps>> = (
+	props: Partial<CustomIconComponentProps>
+) => (
+	<Icon
+		component={DollarCircleSVG}
 		{...props}
 	/>
 );

@@ -5,6 +5,7 @@ import {
 	AssetsIcon,
 	ExchangeIcon,
 	HomeIcon,
+	SettingsIcon,
 	StarIcon,
 	TransactionIcon,
 	TreasuryAnalyticsIcon
@@ -77,7 +78,7 @@ export const menuItems = [
 	{
 		baseURL: '/settings',
 		authenticated: true,
-		icon: <TreasuryAnalyticsIcon />,
+		icon: <SettingsIcon />,
 		title: 'Settings',
 		tab: ESettingsTab.SIGNATORIES
 	}

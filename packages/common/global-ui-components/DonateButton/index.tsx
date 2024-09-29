@@ -3,10 +3,10 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import React, { useState } from 'react';
 
-import { DollarIcon } from '@common/global-ui-components/Icons';
+import { DollarCircleIcon } from '@common/global-ui-components/Icons';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import Modal from '@common/global-ui-components/Modal';
-import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import Button from '@common/global-ui-components/Button';
 import DonateInfo from './DonateInfo';
 
 const DonateButton = () => {
@@ -21,10 +21,9 @@ const DonateButton = () => {
 				<DonateInfo />
 			</Modal>
 			<Button
-				icon={<DollarIcon />}
-				variant={EButtonVariant.PRIMARY}
+				icon={<DollarCircleIcon className='text-base text-waiting' />}
 				onClick={() => setOpenDonateModal(true)}
-				className='outline-none border-none bg-highlight text-2xs text-primary'
+				className='p-2 h-full px-4 border-2 border-waiting text-waiting text-sm bg-transparent flex'
 			>
 				Donate
 			</Button>

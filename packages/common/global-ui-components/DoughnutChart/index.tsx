@@ -12,6 +12,8 @@ type IChartData = {
 
 Chart.register(ArcElement, Tooltip, ChartLegend);
 
+const CHART_COLORS = ['#392A74', '#58409B', '#9F69C9', '#DDB4FC'];
+
 // Main DoughnutChart component
 const DoughnutChart = ({ data: currentData }: { data: Array<{ label: string; value: number; color: string }> }) => {
 	if (!currentData || currentData.length === 0) {
@@ -20,12 +22,31 @@ const DoughnutChart = ({ data: currentData }: { data: Array<{ label: string; val
 
 	const data = currentData.filter((item) => Boolean(item) && item?.label && item?.color && item?.value);
 
+	const sortedData = data.sort((a, b) => Number(a.value) - Number(b.value)).reverse();
+
+	const filteredData =
+		sortedData.length <= 4
+			? sortedData
+			: [
+					...sortedData.slice(0, 3),
+					sortedData.slice(3).reduce(
+						(prev, item) => {
+							return {
+								value: prev.value + Number(item.value),
+								label: prev.label.concat(`${item.label}, `),
+								color: ''
+							};
+						},
+						{ label: '', value: 0, color: '' }
+					)
+				];
+
 	const chartData = {
-		labels: data.map((item) => item.label),
+		labels: filteredData.map((item) => item.label),
 		datasets: [
 			{
-				data: data.map((item) => Number(item.value)),
-				backgroundColor: data.map((item) => item.color),
+				data: filteredData.map((item) => Number(item.value)),
+				backgroundColor: CHART_COLORS,
 				borderColor: '#1b2028',
 				borderWidth: 6,
 				hoverBorderColor: '#1b2028',
@@ -41,13 +62,13 @@ const DoughnutChart = ({ data: currentData }: { data: Array<{ label: string; val
 			},
 			customSegmentWidthPlugin: {}
 		},
-		cutout: '70%',
+		cutout: '67%',
 		responsive: true,
 		maintainAspectRatio: false
 	};
 
 	return (
-		<div className='w-48 h-48'>
+		<div className='w-44 h-44'>
 			<Doughnut
 				data={chartData}
 				options={options}
@@ -59,6 +80,25 @@ const DoughnutChart = ({ data: currentData }: { data: Array<{ label: string; val
 // Legend component
 const Legend = ({ data: currentData }: { data: Array<IChartData> }) => {
 	const data = currentData.filter((item) => Boolean(item) && item?.label && item?.color && item?.value);
+
+	const sortedData = data.sort((a, b) => Number(a.value) - Number(b.value)).reverse();
+
+	const filteredData =
+		sortedData.length <= 4
+			? sortedData
+			: [
+					...sortedData.slice(0, 3),
+					sortedData.slice(3).reduce(
+						(prev, item) => {
+							return {
+								value: prev.value + Number(item.value),
+								label: prev.label.concat(`${item.label}, `),
+								color: ''
+							};
+						},
+						{ label: '', value: 0, color: '' }
+					)
+				];
 	return (
 		<div>
 			<Typography
@@ -69,10 +109,10 @@ const Legend = ({ data: currentData }: { data: Array<IChartData> }) => {
 			</Typography>
 			<div className='overflow-y-auto overflow-x-hidden h-32 px-4'>
 				<ul style={{ listStyleType: 'none', padding: 0 }}>
-					{data.map((item, index) => (
+					{filteredData.map((item, index) => (
 						<li
 							key={`${item.label}_${index}`}
-							style={{ color: item.color }}
+							style={{ color: CHART_COLORS[index] }}
 						>
 							<div className='flex items-center gap-2 text-xs'>
 								<Typography
@@ -102,7 +142,7 @@ const DoughnutChartWithLegend = ({
 	} | null>;
 }) => {
 	return (
-		<div className='flex justify-center items-center gap-10'>
+		<div className='flex justify-center items-center gap-6'>
 			{data?.filter((item) => Boolean(item) && item?.label && item?.color && item?.value).length > 0 && (
 				<>
 					<DoughnutChart data={data as any} />

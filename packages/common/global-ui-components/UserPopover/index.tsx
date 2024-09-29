@@ -92,10 +92,7 @@ const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 				trigger='click'
 				arrow={false}
 			>
-				<Button
-					variant={EButtonVariant.SECONDARY}
-					className='p-2 h-full px-4 border-2 border-primary flex gap-4'
-				>
+				<Button className='p-2 h-full px-4 border-2 border-primary bg-transparent flex gap-4'>
 					<SubstrateAddress
 						address={userAddress}
 						identiconSize={20}
