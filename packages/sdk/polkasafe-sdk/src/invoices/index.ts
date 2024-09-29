@@ -19,7 +19,7 @@ interface ICreateInvoice {
 	signature: string;
 	organisationId: string;
 	title: string;
-	to?: string;
+	to: string[] | string;
 	from: string;
 	fileURL: string;
 	amount: string;
@@ -33,9 +33,9 @@ interface IUpdateInvoice {
 	address: string;
 	signature: string;
 	status: string;
-	paidFrom: string;
+	paidFrom?: string;
 	invoiceId: string;
-	transactionHash: string;
+	transactionHash?: string;
 }
 
 export function invoicesByOrganisation({ address, signature, organisationId }: IInvoicesByOrganisation) {
@@ -93,7 +93,7 @@ export function createInvoice({
 }
 
 export function updateInvoice({ address, signature, status, paidFrom, invoiceId, transactionHash }: IUpdateInvoice) {
-	if (!address || !signature || !status || !paidFrom || !invoiceId || !transactionHash) {
+	if (!address || !signature || !status || !invoiceId) {
 		throw new Error('Invalid Params');
 	}
 

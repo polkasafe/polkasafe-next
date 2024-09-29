@@ -1,15 +1,10 @@
-import { ISearchParams } from '@common/types/substrate';
+import Invoices from '@substrate/app/(Main)/invoices/components/Invoices';
 import React from 'react';
 
-interface IInvoices {
-	searchParams: ISearchParams;
-}
-
-
-async function Invoices({ searchParams }: IInvoices) {
-	const { _organisation } = searchParams;
-
-	return <div>invoices</div>;
+function invoices() {
+	return <div>
+		<Invoices />
+	</div>;
 }
 
 export default Invoices;
