@@ -129,9 +129,11 @@ export function TransactionHead({
 									</div>
 								}
 							>
-								<span className='px-2 py-1 rounded-xl text-label bg-highlight'>
-									{Boolean(allAmountsAndCurrency.length - 1) && `+${allAmountsAndCurrency.length - 1}`}
-								</span>
+								{Boolean(allAmountsAndCurrency.length - 1) && (
+									<span className='px-2 py-1 rounded-xl text-label bg-highlight'>
+										+{allAmountsAndCurrency.length - 1}
+									</span>
+								)}
 							</Tooltip>
 						</div>
 					) : Boolean(amountToken) && Number(amountToken) ? (
@@ -189,9 +191,9 @@ export function TransactionHead({
 									</div>
 								}
 							>
-								<span className='px-2 py-1 rounded-xl text-label bg-highlight'>
-									{Boolean(allRecipes.length - 1) && `+${allRecipes.length - 1}`}
-								</span>
+								{Boolean(allRecipes.length - 1) && (
+									<span className='px-2 py-1 rounded-xl text-label bg-highlight'>{`+${allRecipes.length - 1}`}</span>
+								)}
 							</Tooltip>
 						</div>
 					) : (
