@@ -27,6 +27,7 @@ import { twMerge } from 'tailwind-merge';
 import NewTransaction from '@common/modals/NewTransaction';
 import FundMultisig from '@common/modals/FundMultisig';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { TransactionDropdown } from '@substrate/app/(Main)/dashboard/components/TransactionDropdown';
 
 const ExternalLink = ({ network, address }: { network: ENetwork; address: string }) => (
 	<div className='absolute right-5 top-5'>
@@ -108,19 +109,21 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 	const allAssets: Array<{
 		name: string;
 		amount: string;
-	}> = [{
-		name: networkConstants?.[network].tokenSymbol,
-		amount: selectedAddressAsset?.free || '0'
-	}]
+	}> = [
+		{
+			name: networkConstants?.[network].tokenSymbol,
+			amount: selectedAddressAsset?.free || '0'
+		}
+	];
 	supportedTokens.forEach((token: any) => {
-		const id = token.name.toLocaleLowerCase()
+		const id = token.name.toLocaleLowerCase();
 		if ((selectedAddressAsset as any)?.[id]) {
 			allAssets.push({
 				name: token.name,
 				amount: (selectedAddressAsset as any)?.[id]?.free || '0'
 			});
 		}
-	})
+	});
 
 	return (
 		<div
@@ -204,27 +207,26 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 						active
 					/>
 				) : (
-							<> 
+					<>
 						<div>
 							<div className='text-white'>Signatories</div>
 							<div className='font-bold text-lg text-primary'>{signatories.length || 0}</div>
 						</div>
-					{allAssets.map((asset) => Boolean(Number(asset.amount)) ? (
-
-						<div>
-							<div className='text-white'>{asset.name}</div>
-							<div className='font-bold text-lg text-primary'>
-								{!selectedAddressAsset ? <Spin size='default' /> : asset.amount}
-							</div>
-						</div>
-					): null)
-
-					}
+						{allAssets.map((asset) =>
+							Boolean(Number(asset.amount)) ? (
+								<div>
+									<div className='text-white'>{asset.name}</div>
+									<div className='font-bold text-lg text-primary'>
+										{!selectedAddressAsset ? <Spin size='default' /> : asset.amount}
+									</div>
+								</div>
+							) : null
+						)}
 					</>
 				)}
 			</div>
 			<div className='flex w-full gap-6 justify-center items-center'>
-				<NewTransaction />
+				<TransactionDropdown />
 				<FundMultisig />
 			</div>
 		</div>

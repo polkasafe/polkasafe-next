@@ -7,10 +7,10 @@
 import { ENetwork } from '@common/enum/substrate';
 import DashboardCard from '@common/global-ui-components/DashboardCard';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
-import NewTransaction from '@common/modals/NewTransaction';
 import { useSearchParams } from 'next/navigation';
 import OverviewCard from '@substrate/app/(Main)/dashboard/components/OverviewCard';
 import { SendTransaction } from '@substrate/app/(Main)/components/SendTransaction';
+import { TransactionDropdown } from '@substrate/app/(Main)/dashboard/components/TransactionDropdown';
 
 export function DashboardOverview() {
 	const [organisation] = useOrganisation();
@@ -37,7 +37,7 @@ export function DashboardOverview() {
 			) : (
 				<div className='flex flex-col gap-y-6'>
 					<DashboardCard />
-					<NewTransaction />
+					<TransactionDropdown />
 				</div>
 			)}
 		</SendTransaction>

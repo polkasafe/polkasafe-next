@@ -4,12 +4,22 @@
 
 'use client';
 
-import { ENetwork, ETransactionCreationType, ETransactionState, ETriggers, ETxType, Wallet } from '@common/enum/substrate';
 import {
+	ENetwork,
+	ETransactionCreationType,
+	ETransactionState,
+	ETriggers,
+	ETxType,
+	Wallet
+} from '@common/enum/substrate';
+import {
+	IConnectedUser,
+	IDelegateTransaction,
 	IGenericObject,
 	IMultisig,
 	IReviewTransaction,
 	ISendTransaction,
+	ISetIdentityTransaction,
 	ISubstrateExecuteProps
 } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
@@ -65,7 +75,157 @@ export function SendTransaction({
 	const proxy = allProxies.find((item) => item.address === proxyAddress);
 	const assets = data?.assets;
 
-	const buildTransaction = async (values: ISendTransaction) => {
+	const sendTokens = async (
+		values: ISendTransaction,
+		user: IConnectedUser,
+		api: ApiPromise,
+		onSuccess: ({ newTransaction }: IGenericObject) => void
+	) => {
+		const { address } = user;
+		const { recipients, sender: multisig, selectedProxy } = values;
+		const data = recipients.map((recipient) => ({
+			amount: recipient.amount,
+			recipient: recipient.address,
+			currency: recipient.currency
+		}));
+		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.TRANSFER]({
+			api,
+			data,
+			params: {
+				tip: values.tip
+			},
+			isProxy: Boolean(selectedProxy),
+			proxyAddress: selectedProxy,
+			multisig,
+			sender: address,
+			onSuccess
+		})) as ISubstrateExecuteProps;
+		if (!transaction) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+			return;
+		}
+
+		const fee = (await transaction.tx.paymentInfo(address)).partialFee;
+		const formattedFee = formatBalance(
+			fee.toString(),
+			{
+				numberAfterComma: 3,
+				withThousandDelimitor: false
+			},
+			multisig.network
+		);
+
+		const reviewData = {
+			tx: transaction.tx.toHuman(),
+			from: values.sender?.address,
+			to: values.recipients[0]?.address || '',
+			proxyAddress: values.selectedProxy || '',
+			txCost: formattedFee.toString(),
+			network: values.sender.network,
+			createAt: new Date().toISOString()
+		} as IReviewTransaction;
+		setExecutableTransaction(transaction);
+		setReviewTransaction(reviewData);
+		setTransactionState(ETransactionState.REVIEW);
+	};
+
+	const setIdentity = async (
+		values: ISetIdentityTransaction,
+		user: IConnectedUser,
+		api: ApiPromise,
+		peopleApi: ApiPromise,
+		onSuccess: ({ newTransaction }: IGenericObject) => void
+	) => {
+		const { address } = user;
+		const { sender: multisig, displayName, legalName, elementHandle, websiteUrl, twitterHandle, email } = values;
+		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.SET_IDENTITY]({
+			api: multisig.network === ENetwork.POLKADOT ? peopleApi : api,
+			data: {
+				displayName,
+				legalName,
+				elementHandle,
+				websiteUrl,
+				twitterHandle,
+				email
+			},
+			multisig,
+			sender: address,
+			onSuccess,
+			onFailed: () => {}
+		})) as ISubstrateExecuteProps;
+
+		if (!transaction) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+			return;
+		}
+
+		const fee = (await transaction.tx.paymentInfo(address)).partialFee;
+		const formattedFee = formatBalance(
+			fee.toString(),
+			{
+				numberAfterComma: 3,
+				withThousandDelimitor: false
+			},
+			multisig.network
+		);
+
+		const reviewData = {
+			tx: transaction.tx.toHuman(),
+			from: values.sender?.address,
+			txCost: formattedFee.toString(),
+			network: values.sender.network,
+			createAt: new Date().toISOString()
+		} as IReviewTransaction;
+		setExecutableTransaction(transaction);
+		setReviewTransaction(reviewData);
+		setTransactionState(ETransactionState.REVIEW);
+	};
+
+	const delegation = async (
+		values: IDelegateTransaction,
+		user: IConnectedUser,
+		api: ApiPromise,
+		onSuccess: ({ newTransaction }: IGenericObject) => void
+	) => {
+		const { address } = user;
+		const { proxyAddress, proxyType, sender: multisig } = values;
+		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.DELEGATE]({
+			api,
+			proxyAddress,
+			proxyType,
+			multisig,
+			sender: address,
+			onSuccess,
+			onFailed: () => {}
+		})) as ISubstrateExecuteProps;
+		if (!transaction) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+			return;
+		}
+
+		const fee = (await transaction.tx.paymentInfo(address)).partialFee;
+		const formattedFee = formatBalance(
+			fee.toString(),
+			{
+				numberAfterComma: 3,
+				withThousandDelimitor: false
+			},
+			multisig.network
+		);
+
+		const reviewData = {
+			tx: transaction.tx.toHuman(),
+			from: values.sender?.address,
+			txCost: formattedFee.toString(),
+			network: values.sender.network,
+			createAt: new Date().toISOString()
+		} as IReviewTransaction;
+		setExecutableTransaction(transaction);
+		setReviewTransaction(reviewData);
+		setTransactionState(ETransactionState.REVIEW);
+	};
+
+	const buildTransaction = async (values: ISendTransaction | ISetIdentityTransaction | IDelegateTransaction) => {
 		if (!user) {
 			notification({ ...ERROR_MESSAGES.AUTHENTICATION_FAILED });
 			return;
@@ -106,16 +266,13 @@ export function SendTransaction({
 				notification({ ...ERROR_MESSAGES.AUTHENTICATION_FAILED });
 				return;
 			}
-			const { address } = user;
-			const { recipients, sender: multisig, selectedProxy, type, identityData } = values;
+			const { sender: multisig, type } = values;
 			const apiAtom = getApi(multisig.network);
 			const peopleApiAtom = getApi(ENetwork.PEOPLE);
-
 			if (!apiAtom) {
 				notification({ ...ERROR_MESSAGES.API_NOT_CONNECTED });
 				return;
 			}
-
 			const { api } = apiAtom as { api: ApiPromise };
 			const { api: peopleApi } = peopleApiAtom as { api: ApiPromise };
 			if (!api || !api.isReady) {
@@ -123,66 +280,18 @@ export function SendTransaction({
 				return;
 			}
 
-			let transaction: ISubstrateExecuteProps;
+			switch (type) {
+				case ETransactionCreationType.SEND_TOKEN:
+					await sendTokens(values as ISendTransaction, user, api, onSuccess);
+					break;
+				case ETransactionCreationType.SET_IDENTITY:
+					await setIdentity(values as ISetIdentityTransaction, user, api, peopleApi, onSuccess);
+					break;
 
-			if (type === ETransactionCreationType.SET_IDENTITY) {
-				if (!identityData) return;
-				transaction = (await TRANSACTION_BUILDER[ETxType.SET_IDENTITY]({
-					api: multisig.network === ENetwork.POLKADOT ? peopleApi : api,
-					data: identityData,
-					multisig,
-					sender: address,
-					onSuccess,
-					onFailed: () => {}
-				})) as ISubstrateExecuteProps;
+				case ETransactionCreationType.DELEGATE:
+					await delegation(values as IDelegateTransaction, user, api, onSuccess);
+					break;
 			}
-			else {
-				const data = recipients.map((recipient) => ({
-					amount: recipient.amount,
-					recipient: recipient.address,
-					currency: recipient.currency
-				}));
-				transaction = (await TRANSACTION_BUILDER[ETxType.TRANSFER]({
-					api,
-					data,
-					params: {
-						tip: values.tip
-					},
-					isProxy: Boolean(selectedProxy),
-					proxyAddress: selectedProxy,
-					multisig,
-					sender: address,
-					onSuccess
-				})) as ISubstrateExecuteProps;
-			}
-
-			if (!transaction) {
-				notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
-				return;
-			}
-
-			const fee = (await transaction.tx.paymentInfo(address)).partialFee;
-			const formattedFee = formatBalance(
-				fee.toString(),
-				{
-					numberAfterComma: 3,
-					withThousandDelimitor: false
-				},
-				multisig.network
-			);
-
-			const reviewData = {
-				tx: transaction.tx.toHuman(),
-				from: values.sender?.address,
-				to: values.recipients[0]?.address || '',
-				proxyAddress: values.selectedProxy || '',
-				txCost: formattedFee.toString(),
-				network: values.sender.network,
-				createAt: new Date().toISOString()
-			} as IReviewTransaction;
-			setExecutableTransaction(transaction);
-			setReviewTransaction(reviewData);
-			setTransactionState(ETransactionState.REVIEW);
 		} catch (error) {
 			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			console.log(error);

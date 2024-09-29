@@ -125,8 +125,9 @@ export enum ETxType {
 	ADD_PROXY = 'add_proxy',
 	REMOVE_PROXY = 'remove_proxy',
 	CREATE_PROXY = 'create_roxy',
-	EDIT_PROXY = 'EDIT_PROXY',
-	SET_IDENTITY = 'set_identity'
+	EDIT_PROXY = 'edit_proxy',
+	SET_IDENTITY = 'set_identity',
+	DELEGATE = 'delegate'
 }
 
 export enum ETransactionTab {
@@ -243,7 +244,14 @@ export enum ETransactionCreationType {
 	// CALL_DATA = 'Call Data',
 	// SUBMIT_PREIMAGE = 'Submit Preimage',
 	// SUBMIT_PROPOSAL = 'Submit Proposal',
-	SET_IDENTITY = 'Set Identity'
-	// DELEGATE = 'Delegate',
+	SET_IDENTITY = 'Set Identity',
+	DELEGATE = 'Delegate'
 	// CREATE_NFT = 'Create NFT'
+}
+
+export enum ESupportedApps {
+	POLKASSEMBLY = 'polkassembly',
+	ASTAR = 'astar',
+	SET_IDENTITY = 'set_identity',
+	DELEGATE = 'delegate'
 }

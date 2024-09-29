@@ -4,9 +4,12 @@
 
 'use client';
 
-import { ENetwork } from '@common/enum/substrate';
-import NewTransaction from '@common/modals/NewTransaction';
+import { ENetwork, ETransactionCreationType } from '@common/enum/substrate';
+import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import { SendTransaction } from '@substrate/app/(Main)/components/SendTransaction';
+import NewTransaction from '@common/modals/NewTransaction';
+import { useState } from 'react';
 
 export function TransferByMultisig({
 	address,
@@ -17,17 +20,25 @@ export function TransferByMultisig({
 	network?: ENetwork;
 	proxyAddress: string;
 }) {
+	const [openModal, setOpenModal] = useState(false);
 	return (
 		<SendTransaction
 			address={address}
 			network={network}
 			proxyAddress={proxyAddress}
 		>
-			<NewTransaction
-				label='Send'
-				className='w-auto min-w-0 px-3 py-2'
-				icon={false}
+			<Button
+				variant={EButtonVariant.PRIMARY}
+				className='min-w-0 px-3 py-2'
 				size='small'
+				onClick={() => setOpenModal(true)}
+			>
+				Send
+			</Button>
+			<NewTransaction
+				transactionType={ETransactionCreationType.SEND_TOKEN}
+				openModal={openModal}
+				setOpenModal={setOpenModal}
 			/>
 		</SendTransaction>
 	);

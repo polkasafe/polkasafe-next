@@ -5,6 +5,7 @@ import {
 	ICancelTransaction,
 	ICreateProxyTransaction,
 	IDashboardTransaction,
+	IDelegateMultisigTransaction,
 	IEditMultisigTransaction,
 	IGenericObject,
 	IRecipient,
@@ -407,13 +408,61 @@ const setIdentity = async ({
 	};
 };
 
+const delegate = async ({
+	api,
+	proxyAddress,
+	proxyType,
+	multisig,
+	sender: substrateSender,
+	onSuccess
+}: IDelegateMultisigTransaction) => {
+	const { address, network, threshold, signatories: allSignatories } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+
+	// Sort signatories
+	const signatories = sortAddresses(
+		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+
+	const tx = api.tx.proxy.addProxy(proxyAddress, proxyType, 0);
+	const callData = api.createType('Call', tx.method.toHex());
+	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
+	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, tx, MAX_WEIGHT as any);
+	const afterSuccess = (tx: IGenericObject) => {
+		const newTransaction = {
+			callData: tx.method.toHex(),
+			callHash: tx.method.hash.toString(),
+			network,
+			amountToken: '0',
+			createdAt: new Date(),
+			multisigAddress: address,
+			from: address,
+			approvals: [sender]
+		} as IDashboardTransaction;
+		console.log(newTransaction, 'Transaction');
+		onSuccess && onSuccess({ newTransaction });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: mainTx as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		onSuccess: afterSuccess,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
+};
+
 const TRANSACTION_BUILDER = {
 	[ETxType.TRANSFER]: transfer,
 	[ETxType.CREATE_PROXY]: createProxy,
 	[ETxType.CANCEL]: cancelTransaction,
 	[ETxType.APPROVE]: approveTransaction,
 	[ETxType.EDIT_PROXY]: editProxy,
-	[ETxType.SET_IDENTITY]: setIdentity
+	[ETxType.SET_IDENTITY]: setIdentity,
+	[ETxType.DELEGATE]: delegate
 };
 
 export { TRANSACTION_BUILDER };

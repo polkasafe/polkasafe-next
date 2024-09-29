@@ -15,7 +15,7 @@ module.exports = {
 		extend: {
 			colors: {
 				primary: 'var(--primary)',
-				'label': 'var(--label)',
+				label: 'var(--label)',
 				highlight: 'var(--highlight)',
 				danger: 'var(--danger)',
 				'bg-main': 'var(--bg-main)',
@@ -34,7 +34,8 @@ module.exports = {
 				'proxy-pink': 'var(--proxy-pink)',
 				'org-primary-bg': 'var(--org-primary-bg)',
 				'bg-success': 'var(--bg-success)',
-				'bg-failure': 'var(--bg-failure)'
+				'bg-failure': 'var(--bg-failure)',
+				'bg-main-dark': 'var(--bg-main-dark)'
 			},
 			fontFamily: {
 				primary: ['Inter', 'sans-serif'],

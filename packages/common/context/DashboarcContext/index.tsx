@@ -5,12 +5,13 @@ import {
 	IMultisig,
 	IMultisigAssets,
 	IReviewTransaction,
-	ISendTransaction
+	ISendTransaction,
+	ISetIdentityTransaction
 } from '@common/types/substrate';
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo } from 'react';
 
 interface IDashboardProvider extends PropsWithChildren {
-	buildTransaction: (values: ISendTransaction) => Promise<void>;
+	buildTransaction: (values: ISendTransaction | ISetIdentityTransaction) => Promise<void>;
 	signTransaction: () => Promise<void>;
 	onFundMultisig: (value: IFundMultisig) => Promise<void>;
 	assets: Array<IMultisigAssets> | null;

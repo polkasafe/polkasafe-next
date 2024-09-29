@@ -11,6 +11,7 @@ import { IMultisigAssets } from '@common/types/substrate';
 import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
 import { TransferByMultisig } from '@substrate/app/(Main)/assets/components/AssetsTable/components/Transfer';
 import { Table } from 'antd';
+import { Fragment } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface IAssetsTableProps {
@@ -74,11 +75,16 @@ function AssetsTable({ dataSource, currency, isExpandable }: IAssetsTableProps) 
 				const symbol = getCurrencySymbol(currency);
 				return (
 					<div className='flex gap-2'>
-						{symbol} {(allData.allCurrency?.[allData.network === ENetwork.POLKADOT_ASSETHUB
-								? ENetwork.POLKADOT
-								: allData.network === ENetwork.KUSAMA_ASSETHUB
-									? ENetwork.KUSAMA
-									: allData.network]?.[currency.toLowerCase()] || 0).toFixed(2)}
+						{symbol}{' '}
+						{(
+							allData.allCurrency?.[
+								allData.network === ENetwork.POLKADOT_ASSETHUB
+									? ENetwork.POLKADOT
+									: allData.network === ENetwork.KUSAMA_ASSETHUB
+										? ENetwork.KUSAMA
+										: allData.network
+							]?.[currency.toLowerCase()] || 0
+						).toFixed(2)}
 					</div>
 				);
 			}
@@ -123,7 +129,7 @@ function AssetsTable({ dataSource, currency, isExpandable }: IAssetsTableProps) 
 		}
 	];
 	return (
-		<>
+		<Fragment>
 			<div className='flex bg-bg-secondary my-1 p-3 rounded-lg mr-1 basis-1/'>
 				{columns.map((column) => (
 					<Typography
@@ -146,7 +152,7 @@ function AssetsTable({ dataSource, currency, isExpandable }: IAssetsTableProps) 
 					dataSource={dataSource}
 				/>
 			</div>
-		</>
+		</Fragment>
 	);
 }
 

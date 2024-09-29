@@ -314,14 +314,24 @@ export interface ISendTransaction {
 	transactionFields?: ITxnCategory;
 	tip?: string;
 	type: ETransactionCreationType;
-	identityData?: {
-		displayName?: string;
-		legalName?: string;
-		elementHandle?: string;
-		websiteUrl?: string;
-		twitterHandle?: string;
-		email?: string;
-	};
+}
+
+export interface ISetIdentityTransaction {
+	sender: IMultisig;
+	displayName?: string;
+	legalName?: string;
+	elementHandle?: string;
+	websiteUrl?: string;
+	twitterHandle?: string;
+	email?: string;
+	type: ETransactionCreationType;
+}
+
+export interface IDelegateTransaction {
+	sender: IMultisig;
+	proxyAddress: string;
+	proxyType: string;
+	type: ETransactionCreationType;
 }
 
 export interface IGenericObject {
@@ -494,6 +504,16 @@ export interface ISetIdentityMultisigTransaction {
 		twitterHandle?: string;
 		email?: string;
 	};
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
+}
+
+export interface IDelegateMultisigTransaction {
+	api: ApiPromise;
+	multisig: IMultisig;
+	sender: string;
+	proxyAddress: string;
+	proxyType: string;
 	onSuccess: (data: IGenericObject) => void;
 	onFailed: () => void;
 }
