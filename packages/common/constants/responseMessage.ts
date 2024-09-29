@@ -15,7 +15,7 @@ export const ResponseMessages = {
 	INVALID_NETWORK: 'Invalid network.',
 	INVALID_REQUEST: 'Invalid request.',
 	UNAUTHORIZED: 'Unauthorized.',
-	INTERNAL: 'Internal error occured.',
+	INTERNAL: 'Internal error occurred.',
 	MIN_SINGATORIES: 'Minimum number of signatories is 2.',
 	INVALID_ORGANIZATION: 'invalid organization',
 	INVALID_THRESHOLD: 'Threshold should be a number less than or equal to the number of signatories.',
@@ -33,7 +33,7 @@ export const ResponseMessages = {
 	SUCCESS: 'Success',
 	INVALID_2FA_CODE: 'Invalid 2FA code.',
 	INVALID_2FA_TOKEN: 'Invalid 2FA token.',
-	TWO_FACTOR_AUTH_NOT_INIT: '2FA not initialised.',
+	TWO_FACTOR_AUTH_NOT_INIT: '2FA not initialized.',
 	ADDRESS_NOT_REGISTERED: 'Address not registered.',
 	TFA_TOKEN_EXPIRED: '2FA token expired.',
 	ADDRESS_NOT_IN_DB: 'no user with this address',
@@ -41,5 +41,6 @@ export const ResponseMessages = {
 	INVALID_INVOICE_ID: 'Invalid invoice id;',
 	INVALID_ADDRESS: 'Invalid address',
 	INVALID_ORGANISATION_ID: 'Invalid organisation id',
-	ORGANISATION_ALREADY_EXISTS: 'Organisation already exists'
+	ORGANISATION_ALREADY_EXISTS: 'Organisation already exists',
+	INVALID_TRANSACTION_ID: 'Invalid transaction id'
 };

@@ -7,11 +7,11 @@ import { isValidRequest } from '@common/utils/isValidRequest';
 import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const GET = withErrorHandling(async (req: NextRequest) => {
+export const GET = withErrorHandling(async (req: NextRequest, { params }) => {
 	const { headers } = req;
 	const address = headers.get('x-address');
 	const signature = headers.get('x-signature');
-	const invoiceId = req?.nextUrl?.searchParams?.get('invoiceId');
+	const invoiceId = params;
 	try {
 		if (!invoiceId) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_PARAMS });
@@ -41,11 +41,11 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
 	}
 });
 
-export const POST = withErrorHandling(async (req: NextRequest) => {
+export const POST = withErrorHandling(async (req: NextRequest, { params }) => {
 	const { headers } = req;
 	const address = headers.get('x-address');
 	const signature = headers.get('x-signature');
-	const invoiceId = req?.nextUrl?.searchParams?.get('invoiceId');
+	const invoiceId = params;
 	try {
 		// check if address is valid
 		const substrateAddress = getSubstrateAddress(String(address));
@@ -102,11 +102,11 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 	}
 });
 
-export const PUT = withErrorHandling(async (req: NextRequest) => {
+export const PUT = withErrorHandling(async (req: NextRequest, { params }) => {
 	const { headers } = req;
 	const address = headers.get('x-address');
 	const signature = headers.get('x-signature');
-	const invoiceId = req?.nextUrl?.searchParams?.get('invoiceId');
+	const invoiceId = params;
 	try {
 		// check if address is valid
 		const substrateAddress = getSubstrateAddress(String(address));

@@ -10,6 +10,7 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "cSpell.words": [
+    "callhash",
     "multisigs",
     "ORGANISATION",
     "organisations",
