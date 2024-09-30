@@ -52,6 +52,7 @@ export interface IDashboardTransaction {
 	multisigAddress: string;
 	from: string;
 	to?: string;
+	transactionFields?: ITxnCategory;
 	approvals: string[];
 	callModule?: string;
 	callModuleFunction?: string;
@@ -550,6 +551,7 @@ export enum EFieldType {
 }
 
 export interface IInvoice {
+	id?: string;
 	organisationId: string;
 	title: string;
 	from: string;

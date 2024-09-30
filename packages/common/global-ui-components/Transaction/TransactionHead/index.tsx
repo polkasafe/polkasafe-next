@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { IReviewTransaction } from '@common/types/substrate';
 import { Tooltip } from 'antd';
+import { ReactNode } from 'react';
 
 interface ITransactionHeadProps {
 	type: ETransactionOptions;
@@ -36,6 +37,7 @@ interface ITransactionHeadProps {
 	signTransaction: () => Promise<{ error: boolean }>;
 	isSignatory?: boolean;
 	initiator: boolean;
+	updateTransactionFieldsComponent: ReactNode;
 }
 
 function TransactionIcon({ type }: { type: ETransactionOptions }) {
@@ -84,7 +86,8 @@ export function TransactionHead({
 	reviewTransaction,
 	signTransaction,
 	isSignatory,
-	initiator
+	initiator,
+	updateTransactionFieldsComponent
 }: ITransactionHeadProps) {
 	const allRecipes = to?.map((recipe) => recipe.address);
 	const allAmountsAndCurrency = to?.map((recipe) => ({ amount: recipe?.amount, currency: recipe?.currency }));
@@ -129,9 +132,11 @@ export function TransactionHead({
 									</div>
 								}
 							>
-								<span className='px-2 py-1 rounded-xl text-label bg-highlight'>
-									{Boolean(allAmountsAndCurrency.length - 1) && `+${allAmountsAndCurrency.length - 1}`}
-								</span>
+								{Boolean(allAmountsAndCurrency.length - 1) && (
+									<span className='px-2 py-1 rounded-xl text-label bg-highlight'>
+										+{allAmountsAndCurrency.length - 1}
+									</span>
+								)}
 							</Tooltip>
 						</div>
 					) : Boolean(amountToken) && Number(amountToken) ? (
@@ -189,9 +194,9 @@ export function TransactionHead({
 									</div>
 								}
 							>
-								<span className='px-2 py-1 rounded-xl text-label bg-highlight'>
-									{Boolean(allRecipes.length - 1) && `+${allRecipes.length - 1}`}
-								</span>
+								{Boolean(allRecipes.length - 1) && (
+									<span className='px-2 py-1 rounded-xl text-label bg-highlight'>{`+${allRecipes.length - 1}`}</span>
+								)}
 							</Tooltip>
 						</div>
 					) : (
@@ -214,63 +219,66 @@ export function TransactionHead({
 						<span className='text-success'>Success</span>
 					</Typography>
 				)}
-				{ETransactionType.QUEUE_TRANSACTION === transactionType && isSignatory ? (
-					<div className='flex items-center gap-x-4 basis-1/5 justify-end'>
-						{!isHomePage && (
-							<div className='flex items-center gap-x-4'>
-								{!isHomePage && (
-									<Typography
-										variant={ETypographyVariants.p}
-										className='text-waiting'
-									>
-										{!hasApproved ? 'Awaiting your Confirmation' : `(${approvals?.length}/${threshold})`}
-									</Typography>
-								)}
-								{!hasApproved && isHomePage && (
-									<ReviewModal
-										buildTransaction={() => onAction(ETxType.APPROVE)}
-										reviewTransaction={reviewTransaction}
-										signTransaction={signTransaction}
-										className='w-auto min-w-0 bg-[#06d6a0]/[0.1] text-success'
-										size='middle'
-									>
-										<OutlineCheckIcon />
-									</ReviewModal>
-								)}
-							</div>
-						)}
-						{isHomePage && !hasApproved && (
-							<ReviewModal
-								buildTransaction={() => onAction(ETxType.APPROVE)}
-								reviewTransaction={reviewTransaction}
-								signTransaction={signTransaction}
-								className='w-auto min-w-0 bg-[#06d6a0]/[0.1] text-success'
-								size='middle'
-							>
-								<OutlineCheckIcon />
-							</ReviewModal>
-						)}
+				<div className='flex items-center gap-x-4 basis-1/5 justify-end'>
+					{!isHomePage && <p onClick={(e) => e.stopPropagation()}>{updateTransactionFieldsComponent}</p>}
+					{ETransactionType.QUEUE_TRANSACTION === transactionType && isSignatory ? (
+						<>
+							{!isHomePage && (
+								<div className='flex items-center gap-x-4'>
+									{!isHomePage && (
+										<Typography
+											variant={ETypographyVariants.p}
+											className='text-waiting'
+										>
+											{!hasApproved ? 'Awaiting your Confirmation' : `(${approvals?.length}/${threshold})`}
+										</Typography>
+									)}
+									{!hasApproved && isHomePage && (
+										<ReviewModal
+											buildTransaction={() => onAction(ETxType.APPROVE)}
+											reviewTransaction={reviewTransaction}
+											signTransaction={signTransaction}
+											className='w-auto min-w-0 bg-[#06d6a0]/[0.1] text-success'
+											size='middle'
+										>
+											<OutlineCheckIcon />
+										</ReviewModal>
+									)}
+								</div>
+							)}
+							{isHomePage && !hasApproved && (
+								<ReviewModal
+									buildTransaction={() => onAction(ETxType.APPROVE)}
+									reviewTransaction={reviewTransaction}
+									signTransaction={signTransaction}
+									className='w-auto min-w-0 bg-[#06d6a0]/[0.1] text-success'
+									size='middle'
+								>
+									<OutlineCheckIcon />
+								</ReviewModal>
+							)}
 
-						{isHomePage && initiator && (
-							<ReviewModal
-								buildTransaction={() => onAction(ETxType.CANCEL)}
-								reviewTransaction={reviewTransaction}
-								signTransaction={signTransaction}
-								className='w-auto min-w-0 bg-[#e63946]/[0.1] text-text-danger'
-								size='middle'
-							>
-								<OutlineCloseIcon />
-							</ReviewModal>
-						)}
-					</div>
-				) : ETransactionType.HISTORY_TRANSACTION !== transactionType ? (
-					<Typography
-						variant={ETypographyVariants.p}
-						className='flex items-center gap-x-4 basis-1/5 '
-					>
-						Not a signatories
-					</Typography>
-				) : null}
+							{isHomePage && initiator && (
+								<ReviewModal
+									buildTransaction={() => onAction(ETxType.CANCEL)}
+									reviewTransaction={reviewTransaction}
+									signTransaction={signTransaction}
+									className='w-auto min-w-0 bg-[#e63946]/[0.1] text-text-danger'
+									size='middle'
+								>
+									<OutlineCloseIcon />
+								</ReviewModal>
+							)}
+						</>
+					) : ETransactionType.HISTORY_TRANSACTION !== transactionType ? (
+						<Typography
+							variant={ETypographyVariants.p}
+							className='flex items-center gap-x-4'
+						>
+							Not a signatories
+						</Typography>
+					) : null}
+				</div>
 			</div>
 		</div>
 	);

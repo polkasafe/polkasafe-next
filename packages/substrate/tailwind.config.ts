@@ -18,6 +18,7 @@ module.exports = {
 				label: 'var(--label)',
 				highlight: 'var(--highlight)',
 				danger: 'var(--danger)',
+				'light-red': 'var(--light-red)',
 				'bg-main': 'var(--bg-main)',
 				'bg-secondary': 'var(--bg-secondary)',
 				success: 'var(--success)',
