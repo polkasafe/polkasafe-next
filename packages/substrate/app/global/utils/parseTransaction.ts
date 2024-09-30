@@ -18,6 +18,7 @@ export const parseTransaction = (transaction: any) => {
 		approvals: transaction.approvals,
 		callModule: transaction.call_module,
 		initiator: transaction.initiator,
-		callModuleFunction: transaction.call_module_function
+		callModuleFunction: transaction.call_module_function,
+		transactionFields: transaction.transactionFields
 	} as unknown as IDashboardTransaction;
 };

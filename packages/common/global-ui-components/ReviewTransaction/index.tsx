@@ -9,6 +9,8 @@ import { Spin } from 'antd';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
 import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { ENetwork } from '@common/enum/substrate';
 
 interface IReviewTransactionProps {
 	onSubmit: () => Promise<void>;
@@ -100,7 +102,7 @@ export const ReviewTransaction = ({ onSubmit, onClose, reviewTransaction }: IRev
 								variant={ETypographyVariants.p}
 								className='text-text-primary'
 							>
-								{txCost}
+								Gas Fees: {txCost} {networkConstants[network || ENetwork.POLKADOT].tokenSymbol}
 							</Typography>
 						</div>
 					</div>

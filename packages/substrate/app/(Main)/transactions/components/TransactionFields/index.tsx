@@ -259,13 +259,13 @@ const TransactionFields = ({
 					>
 						<div className='flex max-w-full'>
 							<div
-								className={`border-x-[0.5px] border-y-[0.5px] ${
+								className={`border-[0.5px] ${
 									!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none'
 										? 'border-light-red text-failure'
 										: 'border-waiting text-waiting'
-								} rounded-[20px] p-2 bg-bg-secondary cursor-pointer flex items-center gap-x-3 max-w-full`}
+								} rounded-2xl p-2 bg-bg-secondary cursor-pointer flex items-center gap-x-3 max-w-full`}
 							>
-								<span className='truncate text-xs'>
+								<span className='truncate text-xs capitalize'>
 									{!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none'
 										? 'Category'
 										: transactionFieldsObject?.category}
@@ -296,13 +296,13 @@ const TransactionFields = ({
 				!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none' ? null :
 				<div className='flex max-w-full gap-x-2'>
 					<div
-						className={`border-x-[0.5px] border-y-[0.5px] ${
+						className={`border-[0.5px] ${
 							!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none'
 								? 'border-light-red text-failure'
 								: 'border-waiting text-waiting'
-						} rounded-[20px] p-2 bg-bg-secondary flex items-center gap-x-3 max-w-full`}
+						} rounded-2xl p-2 bg-bg-secondary flex items-center gap-x-3 max-w-full`}
 					>
-						<span className='truncate text-xs'>
+						<span className='truncate text-xs capitalize'>
 							{!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none'
 								? 'Category'
 								: transactionFieldsObject?.category}

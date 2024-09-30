@@ -559,6 +559,16 @@ function TransactionRow({
 							signTransaction={signTransaction}
 							reviewTransaction={reviewTransaction}
 							onAction={buildTransaction}
+							transactionFields={transactionFieldsObject}
+							updateTransactionFieldsComponent={<TransactionFields
+								callHash={callHash}
+								category={category}
+								setCategory={setCategory}
+								transactionFieldsObject={transactionFieldsObject}
+								setTransactionFieldsObject={setTransactionFieldsObject}
+								network={network}
+								initiator={isInitiator}
+							/>}
 						/>
 					)
 				}

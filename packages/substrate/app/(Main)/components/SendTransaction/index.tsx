@@ -41,6 +41,7 @@ import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import { sendNotification } from '@sdk/polkasafe-sdk/src';
 import { findMultisig } from '@common/utils/findMultisig';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { updateTransaction } from '@sdk/polkasafe-sdk/src/transaction/callhash';
 
 interface ISendTransactionProps {
 	address: string | null;
@@ -82,7 +83,7 @@ export function SendTransaction({
 		onSuccess: ({ newTransaction }: IGenericObject) => void
 	) => {
 		const { address } = user;
-		const { recipients, sender: multisig, selectedProxy } = values;
+		const { recipients, sender: multisig, selectedProxy, transactionFields } = values;
 		const data = recipients.map((recipient) => ({
 			amount: recipient.amount,
 			recipient: recipient.address,
@@ -236,12 +237,22 @@ export function SendTransaction({
 				if (!queueTransaction) {
 					return;
 				}
-				const payload = [newTransaction, ...(queueTransaction?.transactions || [])];
+				const transactionFields = (values as ISendTransaction).transactionFields;
+				const newTransactionWithCategories = {...newTransaction, transactionFields}
+				const payload = [newTransactionWithCategories, ...(queueTransaction?.transactions || [])];
 				const { callHash, network, multisigAddress } = newTransaction;
 				const multisig = findMultisig(organisation?.multisigs || [], multisigAddress);
 
 				setQueueTransactions({ ...queueTransaction, transactions: payload });
 				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
+				if (transactionFields) {
+					updateTransaction({
+						address: user.address, 
+						signature: user.signature, 
+						callhash: callHash,
+						transactionFields
+					})
+				}
 				sendNotification({
 					address: user?.address,
 					signature: user?.signature,
@@ -359,6 +370,7 @@ export function SendTransaction({
 			currency={currency}
 			multisigs={multisig ? [multisig] : organisation?.multisigs || []}
 			addressBook={organisation?.addressBook || []}
+			transactionFields={organisation?.transactionFields || {}}
 			allApi={allApi}
 			transactionState={transactionState}
 			setTransactionState={setTransactionState}

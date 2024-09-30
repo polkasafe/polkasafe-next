@@ -10,12 +10,13 @@ import {
 	OutlineCloseIcon
 } from '@common/global-ui-components/Icons';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
-import { IReviewTransaction } from '@common/types/substrate';
+import { IReviewTransaction, ITxnCategory } from '@common/types/substrate';
 import copyText from '@common/utils/copyText';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import shortenAddress from '@common/utils/shortenAddress';
 import { Divider, Timeline, Collapse } from 'antd';
 import dayjs from 'dayjs';
+import { ReactNode } from 'react';
 
 interface ITransactionDetails {
 	type: ETransactionOptions;
@@ -38,6 +39,8 @@ interface ITransactionDetails {
 	onAction: (actionType: ETxType) => Promise<{ error: boolean }>;
 	reviewTransaction: IReviewTransaction | null;
 	signTransaction: () => Promise<{ error: boolean }>;
+	updateTransactionFieldsComponent: ReactNode;
+	transactionFields?: ITxnCategory;
 }
 
 export default function TransactionDetails({
@@ -56,7 +59,9 @@ export default function TransactionDetails({
 	hasApproved,
 	onAction,
 	reviewTransaction,
-	signTransaction
+	signTransaction,
+	updateTransactionFieldsComponent,
+	transactionFields
 }: ITransactionDetails) {
 	console.log(amountToken);
 	return (
@@ -135,6 +140,32 @@ export default function TransactionDetails({
 						<span className='text-text-secondary'>Created on</span>
 						<span className='text-white'>{dayjs(createdAt).format('DD MMM YYYY, hh:mm:ss A')}</span>
 					</div>
+					{!!transactionFields &&
+						Object.keys(transactionFields).length !== 0 &&
+						transactionFields.category !== 'none' && (
+							<>
+								<p className='flex items-center justify-between mt-3'>
+									<span className='text-text-secondary font-normal text-sm'>Category:</span>
+									{updateTransactionFieldsComponent}
+								</p>
+								{transactionFields &&
+									transactionFields.subfields &&
+									Object.keys(transactionFields?.subfields).map((key) => {
+										const subfield = transactionFields.subfields[key];
+										return (
+											<div
+												key={key}
+												className='flex items-center justify-between mt-3'
+											>
+												<span className='text-text_secondary font-normal text-sm leading-[15px]'>{subfield.name}:</span>
+												<span className='text-waiting bg-waiting bg-opacity-5 border border-solid border-waiting rounded-lg px-[6px] py-[3px]'>
+													{subfield.value}
+												</span>
+											</div>
+										);
+									})}
+							</>
+						)}
 				</div>
 			</div>
 			{type !== ETransactionOptions.RECEIVED && (

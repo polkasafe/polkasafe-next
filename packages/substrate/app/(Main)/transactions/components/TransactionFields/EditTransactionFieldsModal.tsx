@@ -6,6 +6,7 @@ import { queueNotification } from '@common/global-ui-components/QueueNotificatio
 import { NotificationStatus } from '@common/enum/substrate';
 import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { ActionButtons } from '@common/global-ui-components/ActionButtons';
+import ActionButton from '@common/global-ui-components/ActionButton';
 
 const EditTransactionFieldsModal = ({
 	defaultCategory,
@@ -225,7 +226,7 @@ const EditTransactionFieldsModal = ({
 				})}
 
 			<div className='flex items-center justify-between gap-x-5 mt-[30px]'>
-				<ActionButtons onCancel={onCancel} onClick={handleUpdateTransactionCategory} loading={loading} disabled={
+				<ActionButton onClick={handleUpdateTransactionCategory} loading={loading} disabled={
 						JSON.stringify(defaultTransactionFields) === JSON.stringify(transactionFieldsObject)
 					} label='Add' />
 			</div>
