@@ -1,4 +1,4 @@
-import { ITransactionFields } from '@common/types/substrate';
+import { ITxnCategory } from '@common/types/substrate';
 import { request } from '../../utils/request';
 import { handleHeaders } from '../../utils/handleHeaders';
 
@@ -6,7 +6,7 @@ interface IUpdateTransaction {
 	address: string;
 	signature: string;
 	callhash: string;
-	transactionFields: ITransactionFields;
+	transactionFields: ITxnCategory;
 }
 
 export function updateTransaction({ address, signature, callhash, transactionFields }: IUpdateTransaction) {
