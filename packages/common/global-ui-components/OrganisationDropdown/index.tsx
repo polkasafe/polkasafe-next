@@ -9,6 +9,8 @@ import emptyImage from '@common/assets/icons/empty-image.png';
 import Address from '@common/global-ui-components/Address';
 import { useSearchParams } from 'next/navigation';
 import { ENetwork } from '@common/enum/substrate';
+import { DangerTriangleIcon } from '@common/global-ui-components/Icons';
+import { Tooltip } from 'antd';
 
 interface IOrganisationDropdown {
 	organisations: Array<IOrganisation>;
@@ -37,17 +39,24 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 						key: item.id,
 						label: (
 							<Link
-								className='flex items-center'
+								className='flex items-center gap-x-3'
 								href={ORGANISATION_DASHBOARD_URL({ id: item.id })}
 								onClick={() => {
 									localStorage.setItem('currentOrganisation', item.id);
 								}}
 							>
+								<div
+									className={`h-[16px] w-[16px] p-1 rounded-full border ${item.id === organisationId ? 'border-primary' : 'border-text-secondary'}`}
+								>
+									<div
+										className={`w-full h-full rounded-full ${item.id === organisationId ? 'bg-primary' : 'bg-transparent'}`}
+									/>
+								</div>
 								<div className='flex items-center gap-x-3'>
 									<Image
-										width={30}
-										height={30}
-										className='rounded-full h-[30px] w-[30px]'
+										width={35}
+										height={35}
+										className='rounded-full h-[35px] w-[35px]'
 										src={emptyImage}
 										alt='empty profile image'
 									/>
@@ -62,10 +71,18 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 							key: `${m.address}_${m.network}`,
 							label: (
 								<div
-									className={`${m.address === multisigId && network === m.network && item.id === organisationId ? 'bg-highlight rounded-lg p-2' : ''}`}
+									className={`flex items-center gap-x-3 px-2 ${m.address === multisigId && network === m.network && item.id === organisationId ? 'bg-highlight rounded-lg py-2' : ''}`}
 								>
+									<div
+										className={`h-[16px] w-[16px] p-1 rounded-full border ${m.address === multisigId && network === m.network && item.id === organisationId ? 'border-primary' : 'border-text-secondary'}`}
+									>
+											<div
+												className={`w-full h-full rounded-full ${m.address === multisigId && network === m.network && item.id === organisationId ? 'bg-primary' : 'bg-transparent'}`}
+											/>
+									</div>
 									<Link
 										href={MULTISIG_DASHBOARD_URL({ multisig: m.address, network: m.network, organisationId: item.id })}
+										className='flex items-start gap-x-3 justify-between w-full'
 									>
 										<span>
 											<Address
@@ -73,10 +90,17 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 												name={m.name}
 												network={m.network || ENetwork.POLKADOT}
 												isMultisig
+												signatories={m.signatories.length}
+												threshold={m.threshold}
 												showNetworkBadge
 												withBadge={false}
 											/>
 										</span>
+										{(!m.proxy || m.proxy.length === 0) && 
+											<Tooltip title='This Multisig has no Proxy'>
+												<DangerTriangleIcon className='text-waiting' />
+											</Tooltip>
+										}
 									</Link>
 								</div>
 							)

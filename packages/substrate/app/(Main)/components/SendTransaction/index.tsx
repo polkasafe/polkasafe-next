@@ -245,14 +245,12 @@ export function SendTransaction({
 
 				setQueueTransactions({ ...queueTransaction, transactions: payload });
 				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
-				if (transactionFields) {
-					updateTransaction({
-						address: user.address,
-						signature: user.signature,
-						callhash: callHash,
-						transaction: newTransactionWithCategories
-					});
-				}
+				updateTransaction({
+					address: user.address,
+					signature: user.signature,
+					callhash: callHash,
+					transaction: newTransactionWithCategories
+				});
 				sendNotification({
 					address: user?.address,
 					signature: user?.signature,
