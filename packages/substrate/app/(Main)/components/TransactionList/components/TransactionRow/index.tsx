@@ -25,7 +25,7 @@ import { Collapse } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { useHistoryAtom, useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
-import { IGenericObject, IReviewTransaction, ISubstrateExecuteProps } from '@common/types/substrate';
+import { IGenericObject, IReviewTransaction, ISubstrateExecuteProps, ITxnCategory } from '@common/types/substrate';
 import { ERROR_MESSAGES, INFO_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
 import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuilder';
@@ -37,6 +37,7 @@ import formatBnBalance from '@common/utils/formatBnBalance';
 import BN from 'bn.js';
 import { sendNotification } from '@sdk/polkasafe-sdk/src';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import TransactionFields, { generateCategoryKey } from '@substrate/app/(Main)/transactions/components/TransactionFields';
 
 interface ITransactionRow {
 	callData?: string;
@@ -52,6 +53,7 @@ interface ITransactionRow {
 	approvals: Array<string>;
 	variant: ETransactionVariant;
 	initiator: string;
+	transactionFields?: ITxnCategory;
 }
 
 const getLabelForTransaction = (type: ETransactionOptions, label?: string) => {
@@ -185,7 +187,8 @@ function TransactionRow({
 	multisig,
 	approvals = [],
 	variant = ETransactionVariant.SIMPLE,
-	initiator
+	initiator,
+	transactionFields
 }: ITransactionRow) {
 	const { getApi } = useAllAPI();
 	const [user] = useUser();
@@ -194,6 +197,14 @@ function TransactionRow({
 	const [historyTransaction, setHistoryTransaction] = useHistoryAtom();
 	const notification = useNotification();
 	const isInitiator = getSubstrateAddress(initiator) === getSubstrateAddress(user?.address || '');
+
+	const [category, setCategory] = useState<string>(
+		transactionFields?.category ? generateCategoryKey(transactionFields?.category) : 'none'
+	);
+
+	const [transactionFieldsObject, setTransactionFieldsObject] = useState<ITxnCategory>(
+		transactionFields || { category: 'none', subfields: {} }
+	);
 
 	const { data, isLoading, error } = useDecodeCallData({
 		callData,
@@ -474,6 +485,15 @@ function TransactionRow({
 				onAction={buildTransaction}
 				isSignatory={isSignatory}
 				initiator={isInitiator}
+				updateTransactionFieldsComponent={<TransactionFields
+					callHash={callHash}
+					category={category}
+					setCategory={setCategory}
+					transactionFieldsObject={transactionFieldsObject}
+					setTransactionFieldsObject={setTransactionFieldsObject}
+					network={network}
+					initiator={isInitiator}
+				/>}
 			/>
 		);
 	}
@@ -511,6 +531,15 @@ function TransactionRow({
 							onAction={buildTransaction}
 							isSignatory={isSignatory}
 							initiator={isInitiator}
+							updateTransactionFieldsComponent={<TransactionFields
+								callHash={callHash}
+								category={category}
+								setCategory={setCategory}
+								transactionFieldsObject={transactionFieldsObject}
+								setTransactionFieldsObject={setTransactionFieldsObject}
+								network={network}
+								initiator={isInitiator}
+							/>}
 						/>
 					),
 					children: (
