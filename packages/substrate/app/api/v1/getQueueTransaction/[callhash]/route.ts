@@ -73,22 +73,8 @@ export const POST = withErrorHandling(async (req: NextRequest, { params }) => {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
 		const txRef = TRANSACTION_COLLECTION.doc(callhash);
-		const txDoc = await txRef.get();
-		const txData = txDoc.data() as IDBTransaction;
-
-		const multisigAddress = getEncodedAddress(txData.from, txData.network);
-		const multisigData = await MULTISIG_COLLECTION.doc(`${multisigAddress}_${txData.network}`).get();
-		const multisig = multisigData.data() as IDBMultisig;
-		if (!multisig.signatories.map((a) => getSubstrateAddress(a)).includes(substrateAddress)) {
-			return NextResponse.json({ error: ResponseMessages.MISSING_USER_SIGNATORY }, { status: 400 });
-		}
-
-		if (txDoc.exists) {
-			txRef.update({ transactionFields });
-			return NextResponse.json({ data: { transactionFields }, error: null }, { status: 200 });
-		}
-
-		return NextResponse.json({ error: ResponseMessages.INVALID_TRANSACTION_ID }, { status: 400 });
+		txRef.update({ transactionFields });
+		return NextResponse.json({ data: { transactionFields }, error: null }, { status: 200 });
 	} catch (err: unknown) {
 		console.error(err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
