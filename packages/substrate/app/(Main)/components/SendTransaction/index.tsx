@@ -238,7 +238,7 @@ export function SendTransaction({
 					return;
 				}
 				const transactionFields = (values as ISendTransaction).transactionFields;
-				const newTransactionWithCategories = {...newTransaction, transactionFields}
+				const newTransactionWithCategories = { ...newTransaction, transactionFields };
 				const payload = [newTransactionWithCategories, ...(queueTransaction?.transactions || [])];
 				const { callHash, network, multisigAddress } = newTransaction;
 				const multisig = findMultisig(organisation?.multisigs || [], multisigAddress);
@@ -247,11 +247,11 @@ export function SendTransaction({
 				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
 				if (transactionFields) {
 					updateTransaction({
-						address: user.address, 
-						signature: user.signature, 
+						address: user.address,
+						signature: user.signature,
 						callhash: callHash,
-						transactionFields
-					})
+						transaction: newTransactionWithCategories
+					});
 				}
 				sendNotification({
 					address: user?.address,
