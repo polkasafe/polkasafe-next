@@ -11,7 +11,7 @@ import { Form, FormInstance, Spin } from 'antd';
 import BN from 'bn.js';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { findMultisig } from '@common/utils/findMultisig';
-import { IMultisig } from '@common/types/substrate';
+import { IMultisig, ITxnCategory } from '@common/types/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
@@ -23,8 +23,14 @@ export interface IRecipientAndAmount {
 }
 
 export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormInstance }) => {
-	const { multisigs, buildTransaction, addressBook = [], assets } = useDashboardContext();
+	const { multisigs, buildTransaction, addressBook = [], assets, transactionFields } = useDashboardContext();
 	const notification = useNotification();
+
+	const [transactionFieldsObject, setTransactionFieldsObject] = useState<ITxnCategory>({
+		category: 'none',
+		subfields: {}
+	});
+
 	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
 		address: string;
 		network: ENetwork;
@@ -70,7 +76,8 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 				sender: findMultisig(multisigs, multisigId) as IMultisig,
 				selectedProxy: selectedMultisigDetails.proxy,
 				tip,
-				type: ETransactionCreationType.SEND_TOKEN
+				type: ETransactionCreationType.SEND_TOKEN,
+				transactionFields: transactionFieldsObject
 			};
 
 			console.log({
@@ -81,7 +88,8 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 				})),
 				sender: findMultisig(multisigs, multisigId) as IMultisig,
 				selectedProxy: selectedMultisigDetails.proxy,
-				tip
+				tip,
+				transactionFields: transactionFieldsObject
 			});
 			setLoading(true);
 			await buildTransaction({ ...payload });
@@ -137,6 +145,52 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 						formName='tipBalance'
 						required={false}
 					/>
+					<div className='max-w-[500px]'>
+						<Typography
+							variant={ETypographyVariants.p}
+							className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'
+						>
+							Category
+						</Typography>
+						<div className='flex-1 flex items-center gap-3 flex-wrap'>
+							{Object.keys(transactionFields)
+								.filter((field) => field !== 'none')
+								.map((field) => (
+									<Button
+										onClick={() =>
+											setTransactionFieldsObject({
+												category: field,
+												subfields: {}
+											})
+										}
+										className={`text-xs border border-solid ${
+											transactionFieldsObject.category === field
+												? 'border-primary text-primary bg-highlight'
+												: 'text-text-secondary border-text-secondary'
+										} rounded-xl px-[10px] py-1`}
+										key='field'
+									>
+										{transactionFields[field].fieldName}
+									</Button>
+								))}
+							<Button
+								onClick={() =>
+									setTransactionFieldsObject({
+										category: 'none',
+										subfields: {}
+									})
+								}
+								className={`text-xs border border-solid ${
+									transactionFieldsObject.category === 'none'
+										? 'border-primary text-primary bg-highlight'
+										: 'text-text-secondary border-text-secondary'
+								} rounded-xl px-[10px] py-1`}
+								key='field'
+							>
+								{transactionFields.none.fieldName}
+							</Button>
+						</div>
+					</div>
 				</div>
 				<div className='flex items-center gap-x-4 w-full'>
 					<div className='w-full'>

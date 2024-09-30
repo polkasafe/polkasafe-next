@@ -6,7 +6,8 @@ import {
 	IMultisigAssets,
 	IReviewTransaction,
 	ISendTransaction,
-	ISetIdentityTransaction
+	ISetIdentityTransaction,
+	ITransactionFields
 } from '@common/types/substrate';
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo } from 'react';
 
@@ -22,6 +23,7 @@ interface IDashboardProvider extends PropsWithChildren {
 	transactionState: ETransactionState;
 	setTransactionState: Dispatch<SetStateAction<ETransactionState>>;
 	reviewTransaction: IReviewTransaction | null;
+	transactionFields: ITransactionFields;
 }
 
 export const DashboardContext = createContext({} as IDashboardProvider);
@@ -38,7 +40,8 @@ export function DashboardProvider({
 	allApi,
 	transactionState,
 	setTransactionState,
-	reviewTransaction
+	reviewTransaction,
+	transactionFields
 }: IDashboardProvider) {
 	const value = useMemo(
 		() => ({
@@ -52,7 +55,8 @@ export function DashboardProvider({
 			allApi,
 			transactionState,
 			reviewTransaction,
-			setTransactionState
+			setTransactionState,
+			transactionFields
 		}),
 		[
 			setTransactionState,
@@ -65,7 +69,8 @@ export function DashboardProvider({
 			onFundMultisig,
 			transactionState,
 			buildTransaction,
-			reviewTransaction
+			reviewTransaction,
+			transactionFields
 		]
 	);
 	return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;
