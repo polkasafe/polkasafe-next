@@ -157,8 +157,8 @@ export default function TransactionDetails({
 												key={key}
 												className='flex items-center justify-between mt-3'
 											>
-												<span className='text-text_secondary font-normal text-sm leading-[15px]'>{subfield.name}:</span>
-												<span className='text-waiting bg-waiting bg-opacity-5 border border-solid border-waiting rounded-lg px-[6px] py-[3px]'>
+												<span className='text-text-secondary font-normal text-sm leading-[15px]'>{subfield.name}:</span>
+												<span className='text-waiting bg-[#ff9f1c]/[0.1] border border-waiting rounded-lg px-[6px] py-[3px]'>
 													{subfield.value}
 												</span>
 											</div>

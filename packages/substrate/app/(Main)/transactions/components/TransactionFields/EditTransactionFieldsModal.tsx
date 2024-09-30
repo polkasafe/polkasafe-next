@@ -66,7 +66,9 @@ const EditTransactionFieldsModal = ({
 				setLoading(true);
 
 				const { data } = (await updateTransaction({ address: userAddress, signature: userSignature, callhash: callHash,
-					transactionFields: transactionFieldsObject
+					transaction: {
+						transactionFields: transactionFieldsObject
+					}
 				})) as { data: string };
 
 				// if (updateTransactionFieldsError) {
