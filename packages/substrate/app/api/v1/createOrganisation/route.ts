@@ -130,3 +130,116 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
 	}
 });
+
+const updateOrganisationDB = async (
+	organisationId: string,
+	organisation: IDBOrganisation,
+	multisigs: Array<IDBMultisig>
+) => {
+	try {
+		const orgRef = ORGANISATION_COLLECTION.doc(organisationId);
+		console.log('orgRef', orgRef.id);
+		await orgRef.set(organisation);
+		console.log('orgRef set the data');
+		await Promise.all(
+			multisigs.map(async (multisig) => {
+				console.log('multisig', multisig);
+				const docId = `${multisig.address}_${multisig.network}`;
+				const multisigRef = MULTISIG_COLLECTION.doc(docId);
+				await multisigRef.set(multisig, { merge: true });
+				return docId;
+			})
+		);
+		console.log('orgRef setting done');
+		return orgRef.id;
+	} catch (err: unknown) {
+		console.log('Error in updateDB:', err);
+	}
+};
+
+export const PUT = withErrorHandling(async (req: NextRequest) => {
+	const { headers } = req;
+	const address = headers.get('x-address');
+	const signature = headers.get('x-signature');
+	try {
+		// check if address is valid
+		const substrateAddress = getSubstrateAddress(String(address));
+		if (!substrateAddress) {
+			return NextResponse.json({ error: ResponseMessages.INVALID_ADDRESS });
+		}
+
+		// check if signature is valid
+		const { isValid, error } = await isValidRequest(substrateAddress, signature);
+		if (!isValid) return NextResponse.json({ error }, { status: 400 });
+
+		const {
+			name,
+			multisigs: allMultisigs = [],
+			imageURI = '',
+			country = '',
+			state = '',
+			city = '',
+			postalCode = '',
+			organisationAddress = '',
+			taxNumber = '',
+			description = '',
+			organisationId
+		} = await req.json();
+
+		if (!organisationId) {
+			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
+		}
+
+		const oldOrganisationDoc = await ORGANISATION_COLLECTION.doc(organisationId).get();
+		if (!oldOrganisationDoc.exists) {
+			return NextResponse.json({ error: ResponseMessages.INVALID_ORGANISATION_ID }, { status: 400 });
+		}
+
+		const oldOrganisation = oldOrganisationDoc.data() as IDBOrganisation;
+
+		const multisigPayload = (allMultisigs as Array<IDBMultisig>).map((multisig) => {
+			return {
+				name: multisig.name,
+				signatories: multisig.signatories.map((signatory) =>
+					signatory ? getSubstrateAddress(signatory) : signatory
+				) as Array<string>,
+				network: multisig.network,
+				address: multisig.address,
+				threshold: multisig.threshold,
+				type: EUserType.SUBSTRATE,
+				proxy: multisig.proxy || [],
+				description,
+				created_at: new Date(),
+				updated_at: new Date()
+			};
+		});
+		const members = multisigPayload
+			.map((multisig) => multisig.signatories)
+			.flat()
+			.map((signatory) => (signatory ? getSubstrateAddress(signatory) : signatory)) as Array<string>;
+
+		const newOrganisation: IDBOrganisation = {
+			...oldOrganisation,
+			name: String(name),
+			multisigs: [
+				...oldOrganisation.multisigs,
+				...multisigPayload.map((multisig) => `${multisig.address}_${multisig.network}`)
+			],
+			imageURI,
+			country,
+			state,
+			city,
+			postal_code: postalCode,
+			organisation_address: organisationAddress,
+			tax_number: taxNumber,
+			members,
+			updated_at: new Date()
+		};
+		console.log('newOrganisation', multisigPayload, newOrganisation);
+		const docId = await updateOrganisationDB(organisationId, newOrganisation, multisigPayload);
+		return NextResponse.json({ data: { ...newOrganisation, id: docId }, error: null });
+	} catch (err: unknown) {
+		console.log('Error in create organisation:', err);
+		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
+	}
+});

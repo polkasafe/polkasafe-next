@@ -58,6 +58,7 @@ export interface IDashboardTransaction {
 	callModuleFunction?: string;
 	txType?: ETxType;
 	initiator?: string;
+	multiId?: string;
 }
 
 export interface ITransaction {
@@ -406,6 +407,16 @@ export interface ICreateOrganisationDetails {
 	name: string;
 	description: string;
 	image?: string;
+	multisigs?: Array<IDBMultisig>;
+	organisationAddress?: string;
+	city?: string;
+	country?: string;
+	postalCode?: string;
+	state?: string;
+	taxNumber?: string;
+	imageURI?: string;
+	addressBook?: Array<string>;
+	transactionFields?: ITransactionFields;
 }
 
 export interface IReviewTransaction {

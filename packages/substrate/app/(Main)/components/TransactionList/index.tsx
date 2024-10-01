@@ -82,6 +82,7 @@ export function TransactionList({ transactions = [], txType, className, variant 
 				{transactions &&
 					filterTransactions(transactions, multisig, network).map((transaction) => (
 						<TransactionRow
+							multiId={transaction.multiId}
 							callHash={transaction.callHash}
 							callData={transaction.callData}
 							key={`${transaction.callHash}`}
