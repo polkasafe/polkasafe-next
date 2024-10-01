@@ -73,9 +73,8 @@ export const AddressBookTable = () => {
 			dataIndex: 'name',
 			key: 'name',
 			fixed: 'left',
-			width: 150,
 			className: 'bg-bg-main text-white',
-			render: (text: string) => <span>{text.length > 5 ? `${text.substring(0, 7)}...` : text}</span>
+			render: (text: string) => <span>{text}</span>
 		},
 		{
 			title: 'Address',
@@ -141,7 +140,7 @@ export const AddressBookTable = () => {
 	}));
 
 	return (
-		<div className='flex flex-col gap-y-6'>
+		<div className='flex flex-col gap-y-6 h-full'>
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center gap-x-2'>
 					<ConfigProvider
@@ -196,13 +195,15 @@ export const AddressBookTable = () => {
 					/>
 				</div>
 			</div>
-
-			<Table
-				pagination={false}
-				dataSource={dataSource}
-				columns={columns}
-				scroll={{ x: 1300 }}
-			/>
+			<div className='flex-1 overflow-y-auto h-full'>
+				<Table
+					pagination={false}
+					dataSource={dataSource}
+					columns={columns}
+					scroll={{ x: 1300 }}
+					rowClassName='bg-bg-main'
+				/>
+			</div>
 		</div>
 	);
 };
