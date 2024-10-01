@@ -153,11 +153,10 @@ export const LinkMultisig = ({
 				</div>
 				<Divider variant='solid' />
 
-				<Spin spinning={loading} indicator={
-					<LoadingLottie
-						width={200}
-					/>
-				}>
+				<Spin
+					spinning={loading}
+					indicator={<LoadingLottie width={200} />}
+				>
 					<div className='flex flex-col gap-y-3 max-h-80 overflow-x-auto px-3'>
 						{availableMultisig.length === 0 && <Empty description='No onChain Multisig available on this network' />}
 						{availableMultisig.length > 0 &&

@@ -15,6 +15,7 @@ import AssetsOverview from '@substrate/app/(Main)/dashboard/components/Organisat
 import { Suspense } from 'react';
 import { ETransactionTab } from '@common/enum/substrate';
 import ProxyWarning from '@common/global-ui-components/ProxyWarning';
+import { EditOrganisation } from '@common/modals/EditOrganisation';
 
 interface IOrganisationDashboard {
 	id: string;
@@ -35,7 +36,10 @@ export default async function OrganisationDashboard({ id, selectedTab }: IOrgani
 				<ProxyWarning multisigs={multisigs} />
 				<div className='flex gap-5'>
 					<div className='flex flex-col gap-4 basis-[55%]'>
-						<Typography variant={ETypographyVariants.h1}>Overview</Typography>
+						<div className='flex justify-between items-center'>
+							<Typography variant={ETypographyVariants.h1}>Overview</Typography>
+							<EditOrganisation />
+						</div>
 						<DashboardOverview />
 					</div>
 					<div className='flex flex-col gap-4 basis-[45%]'>

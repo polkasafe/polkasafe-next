@@ -41,12 +41,15 @@ export const AddAddressForm = ({
 	};
 
 	return (
-		<Spin spinning={loading} indicator={
-			<LoadingLottie
-				width={200}
-				message={'Adding Address to Address Book'}
-			/>
-		}>
+		<Spin
+			spinning={loading}
+			indicator={
+				<LoadingLottie
+					width={200}
+					message='Adding Address to Address Book'
+				/>
+			}
+		>
 			<Form
 				initialValues={initialValue}
 				layout='vertical'
