@@ -58,6 +58,7 @@ export interface IDashboardTransaction {
 	callModuleFunction?: string;
 	txType?: ETxType;
 	initiator?: string;
+	multiId?: string;
 }
 
 export interface ITransaction {

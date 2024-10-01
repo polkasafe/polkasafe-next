@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { IReviewTransaction } from '@common/types/substrate';
 import { Tooltip } from 'antd';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 interface ITransactionHeadProps {
 	type: ETransactionOptions;
@@ -37,7 +37,10 @@ interface ITransactionHeadProps {
 	signTransaction: () => Promise<{ error: boolean }>;
 	isSignatory?: boolean;
 	initiator: boolean;
+	proxyAddress?: string;
 	updateTransactionFieldsComponent: ReactNode;
+	callHash: string;
+	multiId?: string;
 }
 
 function TransactionIcon({ type }: { type: ETransactionOptions }) {
@@ -87,10 +90,16 @@ export function TransactionHead({
 	signTransaction,
 	isSignatory,
 	initiator,
-	updateTransactionFieldsComponent
+	proxyAddress,
+	updateTransactionFieldsComponent,
+	callHash,
+	multiId
 }: ITransactionHeadProps) {
 	const allRecipes = to?.map((recipe) => recipe.address);
 	const allAmountsAndCurrency = to?.map((recipe) => ({ amount: recipe?.amount, currency: recipe?.currency }));
+
+	const subscanLink = `https://${network}.subscan.io/multisig_extrinsic/${multiId}?call_hash=${callHash}`;
+
 	return (
 		<div className={isHomePage ? 'border-b border-text-secondary p-3 mr-2' : ''}>
 			<div className='flex items-center max-sm:flex max-sm:flex-wrap max-sm:gap-2'>
@@ -161,9 +170,10 @@ export function TransactionHead({
 						className='basis-1/5 justify-start text-text-primary flex items-center gap-2'
 					>
 						<Address
-							address={from}
+							address={proxyAddress || from}
+							isProxy={Boolean(proxyAddress)}
 							network={network}
-							withBadge={false}
+							withBadge={Boolean(proxyAddress)}
 							isMultisig
 						/>
 					</Typography>
@@ -212,12 +222,26 @@ export function TransactionHead({
 					</Typography>
 				)}
 				{ETransactionType.HISTORY_TRANSACTION === transactionType && (
-					<Typography
-						variant={ETypographyVariants.p}
-						className='flex items-center gap-x-4 basis-1/5 justify-start'
-					>
-						<span className='text-success'>Success</span>
-					</Typography>
+					<div className='basis-1/5 flex gap-x-4'>
+						<Typography
+							variant={ETypographyVariants.p}
+							className='flex items-center gap-x-4 justify-start'
+						>
+							<span className='text-success'>Extrinsics Success</span>
+						</Typography>
+						<a
+							href={subscanLink}
+							target='_blank'
+							rel='noreferrer'
+						>
+							<Typography
+								variant={ETypographyVariants.p}
+								className='flex items-center gap-x-4 justify-start text-white'
+							>
+								<span className='text-success'>View on Subscan</span>
+							</Typography>
+						</a>
+					</div>
 				)}
 				<div className='flex items-center gap-x-4 basis-1/5 justify-end'>
 					{!isHomePage && <p onClick={(e) => e.stopPropagation()}>{updateTransactionFieldsComponent}</p>}

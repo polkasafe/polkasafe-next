@@ -7,6 +7,7 @@ import { IDashboardTransaction } from '@common/types/substrate';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const parseTransaction = (transaction: any) => {
 	return {
+		multiId: transaction.multi_id || '',
 		multisigAddress: transaction.multisigAddress,
 		from: transaction.from,
 		to: transaction.to || '',

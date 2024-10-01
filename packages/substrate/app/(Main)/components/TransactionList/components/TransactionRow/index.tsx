@@ -33,11 +33,11 @@ import { useState } from 'react';
 import { setSigner } from '@substrate/app/global/utils/setSigner';
 import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { AFTER_EXECUTE } from '@substrate/app/global/utils/afterExceute';
-import formatBnBalance from '@common/utils/formatBnBalance';
-import BN from 'bn.js';
 import { sendNotification } from '@sdk/polkasafe-sdk/src';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
-import TransactionFields, { generateCategoryKey } from '@substrate/app/(Main)/transactions/components/TransactionFields';
+import TransactionFields, {
+	generateCategoryKey
+} from '@substrate/app/(Main)/transactions/components/TransactionFields';
 
 interface ITransactionRow {
 	callData?: string;
@@ -54,6 +54,7 @@ interface ITransactionRow {
 	variant: ETransactionVariant;
 	initiator: string;
 	transactionFields?: ITxnCategory;
+	multiId?: string;
 }
 
 const getLabelForTransaction = (type: ETransactionOptions, label?: string) => {
@@ -135,45 +136,6 @@ const getTransactionDetail = (data: Array<any>, network: ENetwork) => {
 	return transaction;
 };
 
-const getTransactionDetails = (data: any[], network: ENetwork, type: ETransactionOptions) => {
-	if (!data || !Array.isArray(data) || data.length === 0) {
-		return {
-			label: getLabelForTransaction(type),
-			amount: 0,
-			to: []
-		};
-	}
-
-	const sections: string[] = [];
-	const methods: string[] = [];
-
-	const amounts: BN[] = [];
-	const to: string[] = [];
-
-	let label = '';
-
-	data.forEach((item) => {
-		sections.push(item.section || '');
-		methods.push(item.method || '');
-
-		if (item.section === 'balances' && item.method === 'transferKeepAlive') {
-			amounts.push(new BN(item.value || 0));
-			item.to && to.push(item.to);
-		}
-	});
-
-	label = getLabelForTransaction(type, `${sections[sections.length - 1]}.${methods[methods.length - 1]}`);
-
-	const amount = amounts.reduce((prev, curr) => new BN(prev).add(new BN(curr)), new BN(0));
-
-	return {
-		label,
-		amounts,
-		amount: formatBnBalance(amount, { numberAfterComma: 4 }, network),
-		to
-	};
-};
-
 function TransactionRow({
 	callData,
 	callHash,
@@ -188,7 +150,8 @@ function TransactionRow({
 	approvals = [],
 	variant = ETransactionVariant.SIMPLE,
 	initiator,
-	transactionFields
+	transactionFields,
+	multiId
 }: ITransactionRow) {
 	const { getApi } = useAllAPI();
 	const [user] = useUser();
@@ -464,12 +427,14 @@ function TransactionRow({
 	if (variant === ETransactionVariant.SIMPLE) {
 		return (
 			<TransactionHead
+				multiId={multiId}
 				createdAt={createdAt}
 				to={
 					transactionDetails.to || [
 						{ address: to, currency: networkConstants[network].tokenSymbol, amount: amountToken }
 					]
 				}
+				callHash={callHash}
 				network={network}
 				amountToken={amountToken}
 				from={from}
@@ -484,16 +449,19 @@ function TransactionRow({
 				reviewTransaction={reviewTransaction}
 				onAction={buildTransaction}
 				isSignatory={isSignatory}
+				proxyAddress={transactionDetails.proxyAddress}
 				initiator={isInitiator}
-				updateTransactionFieldsComponent={<TransactionFields
-					callHash={callHash}
-					category={category}
-					setCategory={setCategory}
-					transactionFieldsObject={transactionFieldsObject}
-					setTransactionFieldsObject={setTransactionFieldsObject}
-					network={network}
-					initiator={isInitiator}
-				/>}
+				updateTransactionFieldsComponent={
+					<TransactionFields
+						callHash={callHash}
+						category={category}
+						setCategory={setCategory}
+						transactionFieldsObject={transactionFieldsObject}
+						setTransactionFieldsObject={setTransactionFieldsObject}
+						network={network}
+						initiator={isInitiator}
+					/>
+				}
 			/>
 		);
 	}
@@ -511,6 +479,7 @@ function TransactionRow({
 					key: callHash,
 					label: (
 						<TransactionHead
+							multiId={multiId}
 							createdAt={createdAt}
 							to={
 								transactionDetails.to || [
@@ -520,6 +489,7 @@ function TransactionRow({
 							network={network}
 							amountToken={transactionDetails.amount}
 							from={from}
+							proxyAddress={transactionDetails.proxyAddress}
 							label={transactionDetails.label}
 							type={type}
 							transactionType={transactionType}
@@ -531,15 +501,17 @@ function TransactionRow({
 							onAction={buildTransaction}
 							isSignatory={isSignatory}
 							initiator={isInitiator}
-							updateTransactionFieldsComponent={<TransactionFields
-								callHash={callHash}
-								category={category}
-								setCategory={setCategory}
-								transactionFieldsObject={transactionFieldsObject}
-								setTransactionFieldsObject={setTransactionFieldsObject}
-								network={network}
-								initiator={isInitiator}
-							/>}
+							updateTransactionFieldsComponent={
+								<TransactionFields
+									callHash={callHash}
+									category={category}
+									setCategory={setCategory}
+									transactionFieldsObject={transactionFieldsObject}
+									setTransactionFieldsObject={setTransactionFieldsObject}
+									network={network}
+									initiator={isInitiator}
+								/>
+							}
 						/>
 					),
 					children: (
@@ -560,15 +532,17 @@ function TransactionRow({
 							reviewTransaction={reviewTransaction}
 							onAction={buildTransaction}
 							transactionFields={transactionFieldsObject}
-							updateTransactionFieldsComponent={<TransactionFields
-								callHash={callHash}
-								category={category}
-								setCategory={setCategory}
-								transactionFieldsObject={transactionFieldsObject}
-								setTransactionFieldsObject={setTransactionFieldsObject}
-								network={network}
-								initiator={isInitiator}
-							/>}
+							updateTransactionFieldsComponent={
+								<TransactionFields
+									callHash={callHash}
+									category={category}
+									setCategory={setCategory}
+									transactionFieldsObject={transactionFieldsObject}
+									setTransactionFieldsObject={setTransactionFieldsObject}
+									network={network}
+									initiator={isInitiator}
+								/>
+							}
 						/>
 					)
 				}
