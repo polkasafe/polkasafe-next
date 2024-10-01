@@ -121,7 +121,7 @@ const TransactionFields = ({
 			setLoadingCategoryChange(true);
 
 			const { data } = (await updateTransaction({ address: user.address, signature: user.signature, callhash: callHash,
-				transactionFields: { category: c, subfields: {} }
+				transaction: { transactionFields: { category: c, subfields: {} } }
 			})) as { data: string };
 
 			// if (updateTransactionFieldsError) {

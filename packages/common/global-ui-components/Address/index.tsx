@@ -88,7 +88,7 @@ const Address: React.FC<IAddressComponent> = ({
 							theme='substrate'
 						/>
 						{!!threshold && !!signatories && (
-							<div className=' bg-primary text-white text-xs rounded-md absolute bottom-0 px-2'>
+							<div className='bg-primary text-white text-xs rounded-md absolute bottom-[-6px] px-2 py-[1px]'>
 								{threshold}/{signatories}
 							</div>
 						)}
