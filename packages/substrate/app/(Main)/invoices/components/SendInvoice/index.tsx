@@ -29,8 +29,8 @@ const SendInvoice = ({
 
 	const [sendInvoiceStep, setSendInvoiceStep] = useState<number>(0);
 
-	const [selectedOrg, setSelectedOrg] = useState<IOrganisation | null>(organisation);
-	const [multisig, setMultisig] = useState<IMultisig | undefined>(organisation?.multisigs?.[0]);
+	const [selectedOrg, setSelectedOrg] = useState<IOrganisation>(organisation || {} as IOrganisation);
+	const [multisig, setMultisig] = useState<IMultisig>(organisation?.multisigs?.[0] || {} as IMultisig);
 	const [amount, setAmount] = useState<string>('0');
 	const [title, setTitle] = useState<string>('');
 	const [note, setNote] = useState<string>('');
