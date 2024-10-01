@@ -15,7 +15,7 @@ export default function Apps({ searchParams }: IApps) {
 	}
 
 	return (
-		<div className='rounded-3xl bg-bg-main p-8 h-full flex flex-col gap-4'>
+		<div className='rounded-3xl bg-bg-main p-8 h-full flex flex-col gap-y-4'>
 			<Typography variant={ETypographyVariants.h1}>All Apps</Typography>
 			<AppList />
 		</div>

@@ -6,6 +6,7 @@ import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import {
 	ArrowDownLeftIcon,
 	ArrowUpRightIcon,
+	ExternalLinkIcon,
 	OutlineCheckIcon,
 	OutlineCloseIcon
 } from '@common/global-ui-components/Icons';
@@ -221,30 +222,26 @@ export function TransactionHead({
 						{dayjs(createdAt).format('MM/DD/YYYY, hh:mm A')}
 					</Typography>
 				)}
-				{ETransactionType.HISTORY_TRANSACTION === transactionType && (
-					<div className='basis-1/5 flex gap-x-4'>
-						<Typography
-							variant={ETypographyVariants.p}
-							className='flex items-center gap-x-4 justify-start'
-						>
-							<span className='text-success'>Extrinsics Success</span>
-						</Typography>
-						<a
-							href={subscanLink}
-							target='_blank'
-							rel='noreferrer'
-						>
-							<Typography
-								variant={ETypographyVariants.p}
-								className='flex items-center gap-x-4 justify-start text-white'
-							>
-								<span className='text-success'>View on Subscan</span>
-							</Typography>
-						</a>
-					</div>
-				)}
 				<div className='flex items-center gap-x-4 basis-1/5 justify-end'>
 					{!isHomePage && <p onClick={(e) => e.stopPropagation()}>{updateTransactionFieldsComponent}</p>}
+					{ETransactionType.HISTORY_TRANSACTION === transactionType && (
+						<div className='flex items-center gap-x-2 '>
+							<Typography
+								variant={ETypographyVariants.p}
+							>
+								<span className='text-success'>Success</span>
+							</Typography>
+							<Tooltip title='View on Subscan'>
+								<a
+									href={subscanLink}
+									target='_blank'
+									rel='noreferrer'
+								>
+									<ExternalLinkIcon className='text-label' />
+								</a>
+							</Tooltip>
+						</div>
+					)}
 					{ETransactionType.QUEUE_TRANSACTION === transactionType && isSignatory ? (
 						<>
 							{!isHomePage && (

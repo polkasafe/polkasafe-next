@@ -68,7 +68,7 @@ export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IReci
 
 	return (
 		<div>
-			<div className='flex flex-col gap-y-3 max-h-72 overflow-y-auto pr-2'>
+			<div className='flex flex-col gap-y-3 max-h-72 overflow-y-auto pr-1'>
 				<div className='flex flex-col gap-1'>
 					{recipientAndAmount?.map(({ recipient }, i) => (
 						<div

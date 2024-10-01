@@ -74,7 +74,7 @@ const list = [
 ];
 export const AppList = () => {
 	return (
-		<div className='flex gap-6 flex-wrap'>
+		<div className='flex gap-6 flex-wrap flex-1 overflow-y-auto'>
 			{list.map((app) => (
 				<AppCard
 					description={app.description}

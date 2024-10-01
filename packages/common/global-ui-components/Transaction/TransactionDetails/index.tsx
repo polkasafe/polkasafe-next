@@ -41,6 +41,7 @@ interface ITransactionDetails {
 	signTransaction: () => Promise<{ error: boolean }>;
 	updateTransactionFieldsComponent: ReactNode;
 	transactionFields?: ITxnCategory;
+	multiId?: string;
 }
 
 export default function TransactionDetails({
@@ -61,9 +62,13 @@ export default function TransactionDetails({
 	reviewTransaction,
 	signTransaction,
 	updateTransactionFieldsComponent,
-	transactionFields
+	transactionFields,
+	multiId
 }: ITransactionDetails) {
-	console.log(amountToken);
+	const subscanLink = `https://${network}.subscan.io/multisig_extrinsic/${multiId}?call_hash=${callHash}`;
+
+	const isQueue = transactionType === ETransactionType.QUEUE_TRANSACTION;
+	const isHistory = transactionType === ETransactionType.HISTORY_TRANSACTION;
 	return (
 		<div className='p-4 bg-bg-secondary flex items-start gap-x-4'>
 			<div className='rounded-xl p-4 bg-bg-main basis-2/3'>
@@ -114,7 +119,7 @@ export default function TransactionDetails({
 									<CopyIcon className='text-text-secondary hover:text-label' />
 								</button>
 								<a
-									href={`https://${network}.subscan.io/extrinsic/${callHash}`}
+									href={subscanLink}
 									target='_blank'
 									rel='noreferrer'
 								>
@@ -193,13 +198,17 @@ export default function TransactionDetails({
 								<div className='text-white font-normal text-sm leading-[15px]'>
 									Confirmations{' '}
 									<span className='text-text_secondary'>
-										{transactionType === ETransactionType.HISTORY_TRANSACTION ? threshold : approvals?.length} of{' '}
+										{isHistory ? threshold : approvals?.length} of{' '}
 										{threshold}
 									</span>
 								</div>
 							</Timeline.Item>
 							<Timeline.Item
 								dot={
+									isHistory ? 
+									<span className='bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
+										<CircleCheckIcon className='text-success text-sm' />
+									</span> :
 									<span className='bg-[#ff9f1c]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
 										<CircleWatchIcon className='text-waiting text-sm' />
 									</span>
@@ -239,7 +248,7 @@ export default function TransactionDetails({
 												</Timeline.Item>
 											))}
 
-											{signatories
+											{isQueue && signatories
 												?.filter((item) => {
 													const encodedApprovals = approvals?.map((a) => getEncodedAddress(a, network));
 													return !encodedApprovals?.includes(getEncodedAddress(item, network));
@@ -249,7 +258,7 @@ export default function TransactionDetails({
 														<Timeline.Item
 															key={i}
 															dot={
-																<span className='bg-waiting bg-opacity-10 flex items-center justify-center p-1 rounded-md h-6 w-6'>
+																<span className='bg-[#ff9f1c]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
 																	<CircleWatchIcon className='text-waiting text-sm' />
 																</span>
 															}
@@ -270,22 +279,28 @@ export default function TransactionDetails({
 							</Timeline.Item>
 							<Timeline.Item
 								dot={
+									isHistory ? 
+									<span className='bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
+										<CircleCheckIcon className='text-success text-sm' />
+									</span> :
 									<span className='bg-[#ff9f1c]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
 										<CircleWatchIcon className='text-waiting text-sm' />
 									</span>
 								}
-								className='warning'
+								className={isHistory ? 'success' : 'warning'}
 							>
 								<div className='text-white font-normal text-sm leading-[15px]'>
 									<p>Executed</p>
-									<div className='mt-2 text-text-secondary text-sm'>
-										The transaction will be executed once the threshold is reached.
-									</div>
+									{isQueue &&
+										<div className='mt-2 text-text-secondary text-sm'>
+											The transaction will be executed once the threshold is reached.
+										</div>
+									}
 								</div>
 							</Timeline.Item>
 						</Timeline>
 					</div>
-					{transactionType === ETransactionType.QUEUE_TRANSACTION && (
+					{isQueue && (
 						<div className='mt-2 flex flex-col gap-y-4 px-2'>
 							{!hasApproved && (
 								<ReviewModal
