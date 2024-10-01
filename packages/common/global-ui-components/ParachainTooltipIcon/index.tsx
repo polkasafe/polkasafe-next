@@ -8,12 +8,14 @@ function ParachainTooltipIcon({
 	src,
 	className,
 	size = 20,
-	tooltip
+	tooltip,
+	noBg
 }: {
 	src: string | StaticImport;
 	className?: string;
 	size?: number;
 	tooltip?: string;
+	noBg?: boolean;
 }) {
 	const [err, setErr] = useState<boolean>(false);
 
@@ -22,7 +24,7 @@ function ParachainTooltipIcon({
 	}, [src]);
 	return (
 		<Tooltip title={tooltip}>
-			<div className='flex items-center justify-center p-[2px] bg-white rounded-md'>
+			<div className={`flex items-center justify-center p-[2px] rounded-md ${noBg ? 'bg-transparent' : 'bg-white'}`}>
 				<Image
 					className={`${className} block rounded-full`}
 					height={size}

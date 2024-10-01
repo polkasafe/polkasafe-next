@@ -40,7 +40,8 @@ export const menuItems = [
 		baseURL: '/watch-list',
 		icon: <StarIcon />,
 		authenticated: true,
-		title: 'Watchlist'
+		title: 'Watchlist',
+		noShow: true
 	},
 	{
 		baseURL: '/address-book',

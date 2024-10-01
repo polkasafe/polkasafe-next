@@ -98,7 +98,7 @@ export function ActionAndDetails({
 				</div>
 			</div>
 			{selectedTab === ETransactionTab.QUEUE && <QuickQueue multisigs={multisigs} />}
-			{!isSingleMultisig && selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs multisigs={multisigs} />}
+			{!isSingleMultisig && selectedTab === ETransactionTab.MULTISIGS && <QuickMultisigs organisationId={organisationId} multisigs={multisigs} />}
 			{selectedTab === ETransactionTab.MEMBERS && <Members members={members} />}
 			{selectedTab === ETransactionTab.HISTORY && <QuickHistory multisigs={multisigs} />}
 		</div>
