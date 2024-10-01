@@ -39,6 +39,7 @@ const getExcHistoryResponse = async (multisigAddress: string, network: string, p
 		return {
 			multi_id: transaction.multi_id || '',
 			multisigAddress,
+			approvals: transaction?.approve_record?.map((item: any) => item?.account_display?.address),
 			amount_token: dbTransactionDoc.exists && dbTransaction?.amount_token ? dbTransaction?.amount_token : '',
 			amount_usd: String(Number(transaction.usd_amount) * Number(1)),
 			block_number: Number(transaction.block_num || 0),

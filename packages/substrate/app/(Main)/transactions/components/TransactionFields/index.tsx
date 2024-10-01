@@ -40,7 +40,8 @@ const TransactionFields = ({
 	transactionFieldsObject,
 	setTransactionFieldsObject,
 	network,
-	initiator
+	initiator,
+	maxWidth
 }: {
 	category: string;
 	callHash: string;
@@ -49,6 +50,7 @@ const TransactionFields = ({
 	setTransactionFieldsObject: React.Dispatch<React.SetStateAction<ITxnCategory>>;
 	network: string;
 	initiator: boolean;
+	maxWidth?: number;
 }) => {
 	const [user] = useUser();
 	const [organisation, setOrgananisation] = useOrganisation();
@@ -203,7 +205,7 @@ const TransactionFields = ({
 												<span
 													className={`flex justify-between gap-x-2 items-center ${
 														userTransactionFields[c]?.fieldName === transactionFieldsObject?.category
-															? 'text-text_placeholder'
+															? 'text-label'
 															: 'text-white'
 													}`}
 												>
@@ -257,13 +259,13 @@ const TransactionFields = ({
 							</div>
 						)}
 					>
-						<div className='flex max-w-full'>
+						<div className={'flex'}>
 							<div
-								className={`border-[0.5px] ${
+								className={`${maxWidth ? `max-w-[${maxWidth}px]` : ''} border-[0.5px] ${
 									!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none'
 										? 'border-light-red text-failure'
 										: 'border-waiting text-waiting'
-								} rounded-2xl p-2 bg-bg-secondary cursor-pointer flex items-center gap-x-3 max-w-full`}
+								} rounded-2xl p-2 bg-bg-secondary cursor-pointer flex items-center gap-x-3`}
 							>
 								<span className='truncate text-xs capitalize'>
 									{!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none'
@@ -294,13 +296,13 @@ const TransactionFields = ({
 				</div>
 			) : (
 				!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none' ? null :
-				<div className='flex max-w-full gap-x-2'>
+				<div className='flex gap-x-2'>
 					<div
-						className={`border-[0.5px] ${
+						className={`${maxWidth ? `max-w-[${maxWidth}px]` : ''} border-[0.5px] ${
 							!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none'
 								? 'border-light-red text-failure'
 								: 'border-waiting text-waiting'
-						} rounded-2xl p-2 bg-bg-secondary flex items-center gap-x-3 max-w-full`}
+						} rounded-2xl p-2 bg-bg-secondary flex items-center gap-x-3`}
 					>
 						<span className='truncate text-xs capitalize'>
 							{!transactionFieldsObject?.category || transactionFieldsObject?.category === 'none'

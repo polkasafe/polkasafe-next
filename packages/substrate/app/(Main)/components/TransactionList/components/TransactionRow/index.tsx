@@ -460,6 +460,7 @@ function TransactionRow({
 						setTransactionFieldsObject={setTransactionFieldsObject}
 						network={network}
 						initiator={isInitiator}
+						maxWidth={100}
 					/>
 				}
 			/>
@@ -486,6 +487,7 @@ function TransactionRow({
 									{ address: to, currency: networkConstants[network].tokenSymbol, amount: amountToken }
 								]
 							}
+							callHash={callHash}
 							network={network}
 							amountToken={transactionDetails.amount}
 							from={from}
@@ -510,18 +512,21 @@ function TransactionRow({
 									setTransactionFieldsObject={setTransactionFieldsObject}
 									network={network}
 									initiator={isInitiator}
+									maxWidth={100}
 								/>
 							}
 						/>
 					),
 					children: (
 						<TransactionDetails
+							multiId={multiId}
 							createdAt={createdAt}
 							to={transactionDetails.to}
 							network={network}
 							amountToken={transactionDetails.amount}
 							from={from}
 							type={type}
+							signatories={txMultisig?.signatories || []}
 							transactionType={transactionType}
 							approvals={approvals}
 							threshold={txMultisig?.threshold || 2}

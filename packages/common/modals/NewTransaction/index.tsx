@@ -24,63 +24,61 @@ function NewTransaction({
 	const [form] = Form.useForm();
 
 	return (
-		<div className='w-full'>
-			<Modal
-				open={openModal}
-				onCancel={() => {
-					setTransactionState(ETransactionState.BUILD);
-					setOpenModal(false);
-					form.resetFields();
-				}}
-				title={transactionType}
-			>
-				{transactionState === ETransactionState.BUILD && (
-					<div className='flex flex-col gap-5'>
-						<NewTransactionForm
-							onClose={() => setOpenModal(false)}
-							form={form}
-							type={transactionType}
-						/>
-					</div>
-				)}
-				{transactionState === ETransactionState.REVIEW && (
-					<ReviewTransaction
-						onSubmit={signTransaction}
-						onClose={() => setTransactionState(ETransactionState.BUILD)}
-						reviewTransaction={reviewTransaction as IReviewTransaction}
+		<Modal
+			open={openModal}
+			onCancel={() => {
+				setTransactionState(ETransactionState.BUILD);
+				setOpenModal(false);
+				form.resetFields();
+			}}
+			title={transactionType}
+		>
+			{transactionState === ETransactionState.BUILD && (
+				<div className='flex flex-col gap-5'>
+					<NewTransactionForm
+						onClose={() => setOpenModal(false)}
+						form={form}
+						type={transactionType}
 					/>
-				)}
-				{transactionState === ETransactionState.CONFIRM && (
-					<TransactionSuccessScreen
-						network={reviewTransaction?.network || ENetwork.POLKADOT}
-						successMessage='Transaction in Progress!'
-						waitMessage='All Threshold Signatories need to Approve the Transaction.'
-						amount={new BN(0)}
-						txnHash=''
-						created_at={new Date()}
-						sender={reviewTransaction?.from || ''}
-						recipients={[reviewTransaction?.to || '']}
-						onDone={() => {
-							setTransactionState(ETransactionState.BUILD);
-							setOpenModal(false);
-						}}
-					/>
-				)}
-				{transactionState === ETransactionState.FAILED && (
-					<TransactionFailedScreen
-						onDone={() => {
-							setTransactionState(ETransactionState.BUILD);
-							setOpenModal(false);
-						}}
-						txnHash=''
-						sender={reviewTransaction?.from || ''}
-						failedMessage='Oh no! Something went wrong.'
-						waitMessage='Your transaction has failed due to some technical error. Please try again...Details of the transaction are included below'
-						created_at={new Date()}
-					/>
-				)}
-			</Modal>
-		</div>
+				</div>
+			)}
+			{transactionState === ETransactionState.REVIEW && (
+				<ReviewTransaction
+					onSubmit={signTransaction}
+					onClose={() => setTransactionState(ETransactionState.BUILD)}
+					reviewTransaction={reviewTransaction as IReviewTransaction}
+				/>
+			)}
+			{transactionState === ETransactionState.CONFIRM && (
+				<TransactionSuccessScreen
+					network={reviewTransaction?.network || ENetwork.POLKADOT}
+					successMessage='Transaction in Progress!'
+					waitMessage='All Threshold Signatories need to Approve the Transaction.'
+					amount={new BN(0)}
+					txnHash=''
+					created_at={new Date()}
+					sender={reviewTransaction?.from || ''}
+					recipients={[reviewTransaction?.to || '']}
+					onDone={() => {
+						setTransactionState(ETransactionState.BUILD);
+						setOpenModal(false);
+					}}
+				/>
+			)}
+			{transactionState === ETransactionState.FAILED && (
+				<TransactionFailedScreen
+					onDone={() => {
+						setTransactionState(ETransactionState.BUILD);
+						setOpenModal(false);
+					}}
+					txnHash=''
+					sender={reviewTransaction?.from || ''}
+					failedMessage='Oh no! Something went wrong.'
+					waitMessage='Your transaction has failed due to some technical error. Please try again...Details of the transaction are included below'
+					created_at={new Date()}
+				/>
+			)}
+		</Modal>
 	);
 }
 
