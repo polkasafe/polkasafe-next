@@ -6,7 +6,7 @@ import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown'
 import { RecipientsInputs } from '@common/global-ui-components/RecipientsInputs';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { useNotification } from '@common/utils/notification';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, FormInstance, Spin } from 'antd';
 import BN from 'bn.js';
 import { ERROR_MESSAGES } from '@common/utils/messages';
@@ -41,6 +41,8 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 		network: multisigs[0].network,
 		name: multisigs[0].name
 	});
+
+	const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
 
 	const [loading, setLoading] = useState(false);
 
@@ -135,7 +137,9 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 					<RecipientsInputs
 						form={form}
 						autocompleteAddresses={autocompleteAddresses}
-						network={selectedMultisigDetails.network}
+						setDisableSubmit={setDisableSubmit}
+						assets={assets || undefined}
+						selectedMultisig={selectedMultisigDetails}
 					/>
 
 					<BalanceInput
@@ -206,7 +210,7 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 					</div>
 					<div className='w-full'>
 						<Button
-							disabled={form.getFieldsError().filter(({ errors }) => errors.length).length > 0}
+							disabled={disableSubmit || form.getFieldsError().filter(({ errors }) => errors.length).length > 0}
 							fullWidth
 							size='large'
 							onClick={handleSubmit}
