@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { AutoComplete, FormInstance } from 'antd';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { CirclePlusIcon, DeleteIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
@@ -9,14 +9,31 @@ import Button from '@common/global-ui-components/Button';
 import Address from '@common/global-ui-components/Address';
 import { MULTIPLE_CURRENCY_NETWORKS } from '@common/constants/multipleCurrencyNetworks';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { IMultisigAssets } from '@common/types/substrate';
+import { IRecipientAndAmount } from '@common/modals/NewTransaction/components/NewTransactionForm';
+import inputToBn from '@common/utils/inputToBn';
 
 interface IRecipientInputs {
 	autocompleteAddresses: Array<any>;
-	network: ENetwork;
 	form: FormInstance;
+	setDisableSubmit?: Dispatch<SetStateAction<boolean>>;
+	selectedMultisig: {
+		address: string;
+		network: ENetwork;
+		name: string;
+		proxy?: string;
+	},
+	assets?: IMultisigAssets[];
 }
 
-export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IRecipientInputs) => {
+const getDecimalByToken = (token: string, network: ENetwork) => {
+	const tokens = (networkConstants[network] as any).supportedTokens;
+	const tokenData = tokens.find((t: any) => t.symbol === token);
+	return tokenData?.decimals;
+};
+
+export const RecipientsInputs = ({ autocompleteAddresses, form, setDisableSubmit, assets, selectedMultisig }: IRecipientInputs) => {
+	const network = selectedMultisig.network;
 	const [recipientAndAmount, setRecipientAndAmount] = useState([
 		{
 			amount: new BN('0'),
@@ -24,6 +41,8 @@ export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IReci
 			currency: networkConstants[network].tokenSymbol
 		}
 	]);
+	const [amountExceeded, setAmountExceeded] = useState<boolean>(false);
+
 	const isSelected = (recipient: string) => {
 		return getSubstrateAddress(String(recipient)) !== null;
 	};
@@ -65,6 +84,93 @@ export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IReci
 	useEffect(() => {
 		form.setFieldsValue({ recipients: recipientAndAmount });
 	}, [form, recipientAndAmount]);
+
+
+
+	useEffect(() => {
+		if (!assets || !setDisableSubmit || !selectedMultisig) return;
+		const proxyMultiSigAssets = assets
+		?.map((a) => a.proxy || [])
+		.flat()
+		.find((a) => a.proxyAddress === selectedMultisig.proxy && a.network === selectedMultisig.network);
+		
+		const network = selectedMultisig.network;
+		const multiSigAssets = assets?.find((asset) => asset?.address === selectedMultisig.address && asset?.network === network);
+
+		const checkRecipient = recipientAndAmount.filter((item) => !item.recipient || !item.amount || item.amount.isZero());
+		if (checkRecipient.length) {
+			setDisableSubmit(true);
+			return;
+		}
+		setDisableSubmit(false);
+		setAmountExceeded(false);
+
+		if (proxyMultiSigAssets) {
+			const checkBalance = recipientAndAmount.filter((item) => {
+				const token = item.currency;
+				if (token === proxyMultiSigAssets.symbol) {
+					const [balance] = inputToBn(
+						proxyMultiSigAssets.free,
+						network,
+						false,
+						getDecimalByToken(item.currency, network)
+					);
+					return balance.lt(item.amount);
+				}
+				else {
+					const tokenValue = proxyMultiSigAssets?.[`${token.toLowerCase()}` as 'usdc' | 'usdt']?.free || '0';
+					const [balance] = inputToBn(
+						tokenValue,
+						network,
+						false,
+						getDecimalByToken(item.currency, network)
+					);
+					return balance.lt(item.amount);
+				}
+			})
+			if (checkBalance.length) {
+				setDisableSubmit(true);
+				setAmountExceeded(true);
+				return;
+			}
+			setDisableSubmit(false);
+			setAmountExceeded(false);
+			return;
+		}
+
+		if (multiSigAssets) {
+			const checkBalance = recipientAndAmount.filter((item) => {
+				const token = item.currency;
+				if (token === multiSigAssets.symbol) {
+					const [balance] = inputToBn(
+						multiSigAssets.free,
+						network,
+						false,
+						getDecimalByToken(item.currency, network)
+					);
+					return balance.lt(item.amount);
+				}
+				else {
+					const tokenValue = multiSigAssets?.[`${token.toLowerCase()}` as 'usdc' | 'usdt']?.free || '0';
+					const [balance] = inputToBn(
+						tokenValue,
+						network,
+						false,
+						getDecimalByToken(item.currency, network)
+					);
+					return balance.lt(item.amount);
+				}
+			})
+			if (checkBalance.length) {
+				setDisableSubmit(true);
+				setAmountExceeded(true);
+				return;
+			}
+			setDisableSubmit(false);
+			setAmountExceeded(false);
+			return;
+		}
+	}, [selectedMultisig, recipientAndAmount, assets]);
 
 	return (
 		<div>
@@ -113,6 +219,7 @@ export const RecipientsInputs = ({ autocompleteAddresses, network, form }: IReci
 							<div className='flex items-center gap-x-2 w-[40%]'>
 								<BalanceInput
 									network={network}
+									amountExceeded={amountExceeded}
 									label='Amount*'
 									formName={`recipients[${i}].amount`}
 									onChange={(balance, currency) => onAmountChange(balance, i, currency)}

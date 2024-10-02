@@ -14,7 +14,7 @@ import inputToBn from '@common/utils/inputToBn';
 import USDTLogo from '@common/assets/token-icons/usdt-logo.png';
 import USDCLogo from '@common/assets/token-icons/usdc-logo.png';
 import { twMerge } from 'tailwind-merge';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface Props {
 	className?: string;
@@ -26,6 +26,7 @@ interface Props {
 	formName?: string;
 	required?: boolean;
 	multipleCurrency?: boolean;
+	amountExceeded?: boolean;
 }
 
 const getCurrencyLogo = (currency: string) => {
@@ -90,10 +91,16 @@ const BalanceInput: React.FC<Props> = ({
 	network,
 	formName,
 	required = true,
-	multipleCurrency = false
+	multipleCurrency = false,
+	amountExceeded
 }: Props) => {
 	const [selectedCurrency, setSelectedCurrency] = useState(networkConstants[network]?.tokenSymbol);
 	const ref = useRef<string>('');
+	useEffect(() => {
+		setSelectedCurrency(networkConstants[network]?.tokenSymbol);
+		onChange(new BN(0), networkConstants[network]?.tokenSymbol);
+		ref.current = '';
+	}, [network]);
 	return (
 		<section className={`${className}`}>
 			<label
@@ -132,7 +139,7 @@ const BalanceInput: React.FC<Props> = ({
 									const [balance, isValid] = inputToBn(
 										a.target.value,
 										network,
-										false,
+										true,
 										getDecimalByToken(selectedCurrency, network)
 									);
 									if (isValid) {
@@ -140,6 +147,7 @@ const BalanceInput: React.FC<Props> = ({
 										onChange(balance, selectedCurrency);
 									}
 								}}
+								value={ref.current}
 								placeholder={`${placeholder} ${networkConstants[network]?.tokenSymbol}`}
 								defaultValue={defaultValue}
 								className={twMerge(
