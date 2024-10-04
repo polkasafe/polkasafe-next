@@ -72,7 +72,7 @@ export default function CreateOrganisationLayout({ children }: { children: React
 								</div>
 							),
 							title: (
-								<span className={`text-sm ${i < step ? 'text-success' : i === step ? 'text-primary' : 'text-white'}`}>
+								<span className={`text-sm ${i < step ? 'text-success' : i === step ? 'text-label' : 'text-white'}`}>
 									{title}
 								</span>
 							)

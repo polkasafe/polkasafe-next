@@ -537,6 +537,7 @@ function TransactionRow({
 							reviewTransaction={reviewTransaction}
 							onAction={buildTransaction}
 							transactionFields={transactionFieldsObject}
+							initiator={isInitiator}
 							updateTransactionFieldsComponent={
 								<TransactionFields
 									callHash={callHash}

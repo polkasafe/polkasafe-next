@@ -92,6 +92,7 @@ const BalanceInput: React.FC<Props> = ({
 	formName,
 	required = true,
 	multipleCurrency = false,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	amountExceeded
 }: Props) => {
 	const [selectedCurrency, setSelectedCurrency] = useState(networkConstants[network]?.tokenSymbol);
@@ -100,6 +101,7 @@ const BalanceInput: React.FC<Props> = ({
 		setSelectedCurrency(networkConstants[network]?.tokenSymbol);
 		onChange(new BN(0), networkConstants[network]?.tokenSymbol);
 		ref.current = '';
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [network]);
 	return (
 		<section className={`${className}`}>

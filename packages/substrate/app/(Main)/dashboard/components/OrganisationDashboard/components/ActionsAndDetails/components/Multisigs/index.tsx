@@ -53,7 +53,7 @@ function QuickMultisigs({ multisigs, organisationId }: { multisigs: IMultisig[],
 					<Typography
 						key={column.title}
 						variant={column.variant}
-						className={`basis-${column.span}/7 text-base text-${column.align}`}
+						className={`basis-${column.span}/7 text-base ${column.align === 'right' && 'text-right'}`}
 					>
 						{column.title}
 					</Typography>

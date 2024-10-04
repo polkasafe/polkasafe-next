@@ -34,12 +34,19 @@ export const AddMultisigsToOrganisation = () => {
 			>
 				MultiSig is a secure digital wallet that requires one or multiple owners to authorize the transaction.
 			</Typography>
-			<AddMultisig
-				userAddress={userAddress}
-				networks={networks}
-				availableSignatories={availableSignatories}
-				onSubmit={onCreateMultisigSubmit}
-			/>
+			<div className='w-full mb-4'>
+				<div className='flex justify-between rounded-xl p-6 bg-bg-main'>
+					<div className='flex-1 pr-10'>
+						<p className='text-white font-bold text-base'>Create MultiSig</p>
+					</div>
+					<AddMultisig
+						userAddress={userAddress}
+						networks={networks}
+						availableSignatories={availableSignatories}
+						onSubmit={onCreateMultisigSubmit}
+					/>
+				</div>
+			</div>
 
 			<LinkMultisigOrganisation
 				networks={networks}

@@ -4,14 +4,27 @@ import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
 import NetworkCard from '@common/global-ui-components/NetworkCard';
+import { useEffect } from 'react';
 
 interface ISelectNetwork {
 	networks: Array<ENetwork>;
 	onChange?: (value: ENetwork) => void;
 	selectedNetwork: ENetwork;
+	fetchOnMount?: boolean;
 }
 
-export function SelectNetwork({ networks, onChange, selectedNetwork = ENetwork.POLKADOT }: ISelectNetwork) {
+export function SelectNetwork({
+	networks,
+	onChange,
+	selectedNetwork = ENetwork.POLKADOT,
+	fetchOnMount
+}: ISelectNetwork) {
+	useEffect(() => {
+		if (fetchOnMount) {
+			onChange?.(selectedNetwork);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 	const networkOptions = networks.map((item) => ({
 		key: item,
 		label: (

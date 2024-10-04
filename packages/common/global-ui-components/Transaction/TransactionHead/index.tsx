@@ -226,9 +226,7 @@ export function TransactionHead({
 					{!isHomePage && <p onClick={(e) => e.stopPropagation()}>{updateTransactionFieldsComponent}</p>}
 					{ETransactionType.HISTORY_TRANSACTION === transactionType && (
 						<div className='flex items-center gap-x-2 '>
-							<Typography
-								variant={ETypographyVariants.p}
-							>
+							<Typography variant={ETypographyVariants.p}>
 								<span className='text-success'>Success</span>
 							</Typography>
 							<Tooltip title='View on Subscan'>

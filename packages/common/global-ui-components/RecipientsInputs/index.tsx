@@ -10,7 +10,6 @@ import Address from '@common/global-ui-components/Address';
 import { MULTIPLE_CURRENCY_NETWORKS } from '@common/constants/multipleCurrencyNetworks';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { IMultisigAssets } from '@common/types/substrate';
-import { IRecipientAndAmount } from '@common/modals/NewTransaction/components/NewTransactionForm';
 import inputToBn from '@common/utils/inputToBn';
 
 interface IRecipientInputs {
@@ -22,7 +21,7 @@ interface IRecipientInputs {
 		network: ENetwork;
 		name: string;
 		proxy?: string;
-	},
+	};
 	assets?: IMultisigAssets[];
 }
 
@@ -32,8 +31,14 @@ const getDecimalByToken = (token: string, network: ENetwork) => {
 	return tokenData?.decimals;
 };
 
-export const RecipientsInputs = ({ autocompleteAddresses, form, setDisableSubmit, assets, selectedMultisig }: IRecipientInputs) => {
-	const network = selectedMultisig.network;
+export const RecipientsInputs = ({
+	autocompleteAddresses,
+	form,
+	setDisableSubmit,
+	assets,
+	selectedMultisig
+}: IRecipientInputs) => {
+	const { network } = selectedMultisig;
 	const [recipientAndAmount, setRecipientAndAmount] = useState([
 		{
 			amount: new BN('0'),
@@ -85,17 +90,17 @@ export const RecipientsInputs = ({ autocompleteAddresses, form, setDisableSubmit
 		form.setFieldsValue({ recipients: recipientAndAmount });
 	}, [form, recipientAndAmount]);
 
-
-
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!assets || !setDisableSubmit || !selectedMultisig) return;
 		const proxyMultiSigAssets = assets
-		?.map((a) => a.proxy || [])
-		.flat()
-		.find((a) => a.proxyAddress === selectedMultisig.proxy && a.network === selectedMultisig.network);
-		
-		const network = selectedMultisig.network;
-		const multiSigAssets = assets?.find((asset) => asset?.address === selectedMultisig.address && asset?.network === network);
+			?.map((a) => a.proxy || [])
+			.flat()
+			.find((a) => a.proxyAddress === selectedMultisig.proxy && a.network === selectedMultisig.network);
+
+		const multiSigAssets = assets?.find(
+			(asset) => asset?.address === selectedMultisig.address && asset?.network === network
+		);
 
 		const checkRecipient = recipientAndAmount.filter((item) => !item.recipient || !item.amount || item.amount.isZero());
 		if (checkRecipient.length) {
@@ -108,6 +113,7 @@ export const RecipientsInputs = ({ autocompleteAddresses, form, setDisableSubmit
 		if (proxyMultiSigAssets) {
 			const checkBalance = recipientAndAmount.filter((item) => {
 				const token = item.currency;
+				// eslint-disable-next-line security/detect-possible-timing-attacks
 				if (token === proxyMultiSigAssets.symbol) {
 					const [balance] = inputToBn(
 						proxyMultiSigAssets.free,
@@ -117,17 +123,11 @@ export const RecipientsInputs = ({ autocompleteAddresses, form, setDisableSubmit
 					);
 					return balance.lt(item.amount);
 				}
-				else {
-					const tokenValue = proxyMultiSigAssets?.[`${token.toLowerCase()}` as 'usdc' | 'usdt']?.free || '0';
-					const [balance] = inputToBn(
-						tokenValue,
-						network,
-						false,
-						getDecimalByToken(item.currency, network)
-					);
-					return balance.lt(item.amount);
-				}
-			})
+
+				const tokenValue = proxyMultiSigAssets?.[`${token.toLowerCase()}` as 'usdc' | 'usdt']?.free || '0';
+				const [balance] = inputToBn(tokenValue, network, false, getDecimalByToken(item.currency, network));
+				return balance.lt(item.amount);
+			});
 			if (checkBalance.length) {
 				setDisableSubmit(true);
 				setAmountExceeded(true);
@@ -141,26 +141,16 @@ export const RecipientsInputs = ({ autocompleteAddresses, form, setDisableSubmit
 		if (multiSigAssets) {
 			const checkBalance = recipientAndAmount.filter((item) => {
 				const token = item.currency;
+				// eslint-disable-next-line security/detect-possible-timing-attacks
 				if (token === multiSigAssets.symbol) {
-					const [balance] = inputToBn(
-						multiSigAssets.free,
-						network,
-						false,
-						getDecimalByToken(item.currency, network)
-					);
+					const [balance] = inputToBn(multiSigAssets.free, network, false, getDecimalByToken(item.currency, network));
 					return balance.lt(item.amount);
 				}
-				else {
-					const tokenValue = multiSigAssets?.[`${token.toLowerCase()}` as 'usdc' | 'usdt']?.free || '0';
-					const [balance] = inputToBn(
-						tokenValue,
-						network,
-						false,
-						getDecimalByToken(item.currency, network)
-					);
-					return balance.lt(item.amount);
-				}
-			})
+
+				const tokenValue = multiSigAssets?.[`${token.toLowerCase()}` as 'usdc' | 'usdt']?.free || '0';
+				const [balance] = inputToBn(tokenValue, network, false, getDecimalByToken(item.currency, network));
+				return balance.lt(item.amount);
+			});
 			if (checkBalance.length) {
 				setDisableSubmit(true);
 				setAmountExceeded(true);
@@ -168,8 +158,8 @@ export const RecipientsInputs = ({ autocompleteAddresses, form, setDisableSubmit
 			}
 			setDisableSubmit(false);
 			setAmountExceeded(false);
-			return;
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedMultisig, recipientAndAmount, assets]);
 
 	return (

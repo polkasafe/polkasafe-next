@@ -2,14 +2,24 @@ import { useOrganisationContext } from '@common/context/CreateOrganisationContex
 import { CreateOrganisationActionButtons } from '@common/global-ui-components/createOrganisation/components/CreateOrganisationActionButtons';
 import Image from 'next/image';
 import emptyImage from '@common/assets/icons/empty-image.png';
-import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import Button from '@common/global-ui-components/Button';
 import { EditIcon } from '@common/global-ui-components/Icons';
 import Address from '@common/global-ui-components/Address';
 import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
 import { ECreateOrganisationSteps } from '@common/enum/substrate';
+import { AddMultisig } from '@common/modals/AddMultisig';
 
 export const ReviewOrganisation = () => {
-	const { organisationDetails, linkedMultisig, onCreateOrganisation } = useOrganisationContext();
+	const {
+		organisationDetails,
+		linkedMultisig,
+		onCreateOrganisation,
+		networks,
+		userAddress,
+		availableSignatories,
+		onCreateMultisigSubmit,
+		createOrgLoading
+	} = useOrganisationContext();
 	const { setStep } = useOrgStepsContext();
 	return (
 		<div>
@@ -65,11 +75,20 @@ export const ReviewOrganisation = () => {
 								/>
 							</div>
 						))}
+						<AddMultisig
+							userAddress={userAddress}
+							networks={networks}
+							availableSignatories={availableSignatories}
+							onSubmit={onCreateMultisigSubmit}
+							className='bg-highlight text-label w-full mt-4'
+							iconClassName='text-label'
+						/>
 					</div>
 				</div>
 			</div>
 			<CreateOrganisationActionButtons
-				loading={false}
+				loading={createOrgLoading}
+				nextButtonDisabled={linkedMultisig.length === 0}
 				onNextClick={onCreateOrganisation}
 				onCancelClick={() => setStep(ECreateOrganisationSteps.ADD_MULTISIG)}
 			/>
