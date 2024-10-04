@@ -1,7 +1,7 @@
 import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
 import { ECreateOrganisationSteps } from '@common/enum/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
-import { ArrowLeftCircle, ArrowRightCircle } from '@common/global-ui-components/Icons';
+import { ArrowLeftCircle, ArrowRightCircle, CircleCheckIcon } from '@common/global-ui-components/Icons';
 
 interface ICreateOrganisationActionButtons {
 	loading: boolean;
@@ -21,7 +21,7 @@ export const CreateOrganisationActionButtons = ({
 		<div className='flex w-full justify-between mt-5'>
 			<Button
 				variant={EButtonVariant.DANGER}
-				disabled={step === ECreateOrganisationSteps.ORGANISATION_DETAILS || loading}
+				disabled={loading}
 				fullWidth
 				loading={loading}
 				onClick={onCancelClick}
@@ -38,6 +38,7 @@ export const CreateOrganisationActionButtons = ({
 				loading={Boolean(loading)}
 				onClick={onNextClick}
 				size='large'
+				icon={step === ECreateOrganisationSteps.REVIEW && <CircleCheckIcon />}
 			>
 				{step === ECreateOrganisationSteps.REVIEW ? 'Confirm' : 'Next'}
 				{step !== ECreateOrganisationSteps.REVIEW && <ArrowRightCircle className='text-sm' />}

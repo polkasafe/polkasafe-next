@@ -42,6 +42,7 @@ interface ITransactionDetails {
 	updateTransactionFieldsComponent: ReactNode;
 	transactionFields?: ITxnCategory;
 	multiId?: string;
+	initiator: boolean;
 }
 
 export default function TransactionDetails({
@@ -49,6 +50,7 @@ export default function TransactionDetails({
 	callHash,
 	callData,
 	createdAt,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	amountToken,
 	to,
 	network,
@@ -63,7 +65,8 @@ export default function TransactionDetails({
 	signTransaction,
 	updateTransactionFieldsComponent,
 	transactionFields,
-	multiId
+	multiId,
+	initiator
 }: ITransactionDetails) {
 	const subscanLink = `https://${network}.subscan.io/multisig_extrinsic/${multiId}?call_hash=${callHash}`;
 
@@ -198,20 +201,21 @@ export default function TransactionDetails({
 								<div className='text-white font-normal text-sm leading-[15px]'>
 									Confirmations{' '}
 									<span className='text-text_secondary'>
-										{isHistory ? threshold : approvals?.length} of{' '}
-										{threshold}
+										{isHistory ? threshold : approvals?.length} of {threshold}
 									</span>
 								</div>
 							</Timeline.Item>
 							<Timeline.Item
 								dot={
-									isHistory ? 
-									<span className='bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
-										<CircleCheckIcon className='text-success text-sm' />
-									</span> :
-									<span className='bg-[#ff9f1c]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
-										<CircleWatchIcon className='text-waiting text-sm' />
-									</span>
+									isHistory ? (
+										<span className='bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
+											<CircleCheckIcon className='text-success text-sm' />
+										</span>
+									) : (
+										<span className='bg-[#ff9f1c]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
+											<CircleWatchIcon className='text-waiting text-sm' />
+										</span>
+									)
 								}
 								className='warning'
 							>
@@ -248,54 +252,57 @@ export default function TransactionDetails({
 												</Timeline.Item>
 											))}
 
-											{isQueue && signatories
-												?.filter((item) => {
-													const encodedApprovals = approvals?.map((a) => getEncodedAddress(a, network));
-													return !encodedApprovals?.includes(getEncodedAddress(item, network));
-												})
-												.map((address, i) => {
-													return (
-														<Timeline.Item
-															key={i}
-															dot={
-																<span className='bg-[#ff9f1c]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
-																	<CircleWatchIcon className='text-waiting text-sm' />
-																</span>
-															}
-															className='warning bg-transaparent'
-														>
-															<div className='mb-3 flex items-center gap-x-4 relative'>
-																<Address
-																	address={address}
-																	network={network}
-																/>
-															</div>
-														</Timeline.Item>
-													);
-												})}
+											{isQueue &&
+												signatories
+													?.filter((item) => {
+														const encodedApprovals = approvals?.map((a) => getEncodedAddress(a, network));
+														return !encodedApprovals?.includes(getEncodedAddress(item, network));
+													})
+													.map((address, i) => {
+														return (
+															<Timeline.Item
+																key={i}
+																dot={
+																	<span className='bg-[#ff9f1c]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
+																		<CircleWatchIcon className='text-waiting text-sm' />
+																	</span>
+																}
+																className='warning bg-transaparent'
+															>
+																<div className='mb-3 flex items-center gap-x-4 relative'>
+																	<Address
+																		address={address}
+																		network={network}
+																	/>
+																</div>
+															</Timeline.Item>
+														);
+													})}
 										</Timeline>
 									</Collapse.Panel>
 								</Collapse>
 							</Timeline.Item>
 							<Timeline.Item
 								dot={
-									isHistory ? 
-									<span className='bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
-										<CircleCheckIcon className='text-success text-sm' />
-									</span> :
-									<span className='bg-[#ff9f1c]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
-										<CircleWatchIcon className='text-waiting text-sm' />
-									</span>
+									isHistory ? (
+										<span className='bg-[#06d6a0]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
+											<CircleCheckIcon className='text-success text-sm' />
+										</span>
+									) : (
+										<span className='bg-[#ff9f1c]/[0.1] flex items-center justify-center p-1 rounded-md h-6 w-6'>
+											<CircleWatchIcon className='text-waiting text-sm' />
+										</span>
+									)
 								}
 								className={isHistory ? 'success' : 'warning'}
 							>
 								<div className='text-white font-normal text-sm leading-[15px]'>
 									<p>Executed</p>
-									{isQueue &&
+									{isQueue && (
 										<div className='mt-2 text-text-secondary text-sm'>
 											The transaction will be executed once the threshold is reached.
 										</div>
-									}
+									)}
 								</div>
 							</Timeline.Item>
 						</Timeline>
@@ -313,15 +320,17 @@ export default function TransactionDetails({
 									Approve
 								</ReviewModal>
 							)}
-							<ReviewModal
-								buildTransaction={() => onAction(ETxType.CANCEL)}
-								reviewTransaction={reviewTransaction}
-								signTransaction={signTransaction}
-								className='bg-[#e63946]/[0.1] text-text-danger'
-								buttonIcon={<OutlineCloseIcon className='text-text-danger' />}
-							>
-								Reject
-							</ReviewModal>
+							{initiator && (
+								<ReviewModal
+									buildTransaction={() => onAction(ETxType.CANCEL)}
+									reviewTransaction={reviewTransaction}
+									signTransaction={signTransaction}
+									className='bg-[#e63946]/[0.1] text-text-danger'
+									buttonIcon={<OutlineCloseIcon className='text-text-danger' />}
+								>
+									Reject
+								</ReviewModal>
+							)}
 						</div>
 					)}
 				</div>

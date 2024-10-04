@@ -41,8 +41,8 @@ export default function Button({ variant, className, fullWidth, children, ...pro
 					<AntDButton
 						size='large'
 						className={twMerge(
-							'bg-highlight text-white rounded-lg min-w-[120px] flex justify-center items-center gap-x-2 text-sm shadow-none text-text-label border-none',
-							props.disabled && 'bg-opacity-60 text-disabled-btn-text',
+							'bg-highlight text-white rounded-lg min-w-[120px] flex justify-center items-center gap-x-2 text-sm shadow-none text-label border-none',
+							props.disabled && 'bg-opacity-60 text-text-disabled',
 							fullWidth && 'w-full',
 							className
 						)}

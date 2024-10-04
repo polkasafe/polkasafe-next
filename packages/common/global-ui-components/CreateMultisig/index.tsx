@@ -6,6 +6,7 @@ import SelectSignatories from '@common/global-ui-components/CreateMultisig/Selec
 import { createMultisigFormFields } from '@common/global-ui-components/CreateMultisig/utils/form';
 import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import InfoBox from '@common/global-ui-components/InfoBox';
+import Input from '@common/global-ui-components/Input';
 import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 import { SelectNetwork } from '@common/global-ui-components/SelectNetwork';
 import { ICreateMultisig } from '@common/types/substrate';
@@ -21,6 +22,7 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 	const notification = useNotification();
 
 	const [signatories, setSignatories] = useState<string[]>([userAddress]);
+	const [threshold, setThreshold] = useState<number>(0);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const signatoriesOptions = availableSignatories?.map((signatory) => ({
@@ -28,14 +30,9 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 		value: signatory.address
 	}));
 
-	const handleSubmit = async (values: {
-		name: string;
-		signatories: Array<string>;
-		network: ENetwork;
-		threshold: number;
-	}) => {
+	const handleSubmit = async (values: { name: string; signatories: Array<string>; network: ENetwork }) => {
 		try {
-			const { name, threshold } = values;
+			const { name } = values;
 			if (!signatories) {
 				notification({ ...ERROR_MESSAGES.CREATE_MULTISIG_FAILED, description: 'Please select signatories' });
 				return;
@@ -44,6 +41,13 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 				notification({
 					...ERROR_MESSAGES.CREATE_MULTISIG_FAILED,
 					description: 'Please select at least 2 signatories'
+				});
+				return;
+			}
+			if (!threshold || threshold < 2 || threshold > signatories.length) {
+				notification({
+					...ERROR_MESSAGES.CREATE_MULTISIG_FAILED,
+					description: 'Threshold is Incorrect'
 				});
 				return;
 			}
@@ -85,6 +89,17 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 					layout='vertical'
 					onFinish={handleSubmit}
 				>
+					{createMultisigFormFields.map((field) => (
+						<Form.Item
+							label={field.label}
+							name={field.name}
+							rules={field.rules}
+							key={field.name}
+						>
+							{field.input}
+						</Form.Item>
+					))}
+
 					<h1 className='text-label mb-2 max-sm:text-xs'>Select Network</h1>
 					<SelectNetwork
 						networks={networks}
@@ -98,17 +113,37 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 						setSignatories={setSignatories}
 						userAddress={userAddress}
 					/>
-
-					{createMultisigFormFields.map((field) => (
-						<Form.Item
-							label={field.label}
-							name={field.name}
-							rules={field.rules}
-							key={field.name}
-						>
-							{field.input}
-						</Form.Item>
-					))}
+					<Form.Item
+						label='Threshold'
+						name='threshold'
+						key='threshold'
+						rules={[
+							{
+								required: true,
+								message: 'Please input the threshold!'
+							}
+						]}
+						validateStatus={threshold < 2 || threshold > signatories.length ? 'error' : ''}
+						help={
+							threshold && threshold < 2
+								? 'Threshold Must Be More Than 1.'
+								: threshold > signatories.length && signatories.length > 1
+									? 'Threshold Must Be Less Than Or Equal To Selected Signatories.'
+									: ''
+						}
+					>
+						<Input
+							max={signatories.length}
+							min={2}
+							placeholder='2'
+							onChange={(e) => {
+								if (!Number.isNaN(Number(e.target.value))) {
+									setThreshold(Number(e.target.value));
+								}
+							}}
+							value={threshold}
+						/>
+					</Form.Item>
 					{/* {availableSignatories && (
 							<Form.Item
 								label='Signatories'
@@ -137,6 +172,7 @@ export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userA
 								fullWidth
 								size='large'
 								variant={EButtonVariant.PRIMARY}
+								disabled={signatories.length < 2 || threshold < 2 || threshold > signatories.length}
 							>
 								Create
 							</Button>

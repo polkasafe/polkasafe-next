@@ -10,10 +10,13 @@ import Button from '@common/global-ui-components/Button';
 import { NEXT_PUBLIC_IMBB_KEY } from '@common/envs';
 import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
 import { ECreateOrganisationSteps } from '@common/enum/substrate';
+import { useRouter } from 'next/navigation';
 
 export const OrganisationDetailForm = () => {
 	const { onChangeOrganisationDetails } = useOrganisationContext();
 	const { setStep } = useOrgStepsContext();
+
+	const router = useRouter();
 
 	const [loading, setLoading] = useState<boolean>(false);
 
@@ -109,7 +112,10 @@ export const OrganisationDetailForm = () => {
 						{field.input}
 					</Form.Item>
 				))}
-				<CreateOrganisationActionButtons loading={false} />
+				<CreateOrganisationActionButtons
+					onCancelClick={() => router.back()}
+					loading={false}
+				/>
 			</Form>
 		</div>
 	);

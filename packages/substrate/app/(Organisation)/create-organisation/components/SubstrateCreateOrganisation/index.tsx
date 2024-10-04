@@ -27,6 +27,8 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 	const router = useRouter();
 	const notification = useNotification();
 
+	const [loading, setLoading] = useState<boolean>(false);
+
 	const [multisigs, setMultisigs] = useState<Array<IMultisig>>([]);
 	const [linkedMultisigs, setLinkedMultisigs] = useState<Array<IMultisig>>([]);
 	const [organisationDetails, setOrganisationDetails] = useState<ICreateOrganisationDetails>({
@@ -55,7 +57,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 			const newMultisig = (await createMultisig(multisig)) as { data: IMultisig };
 			console.log('newMultisigs', newMultisig?.data);
 			setMultisigs([...multisigs, { ...newMultisig?.data, linked: true }]);
-			setLinkedMultisigs([...linkedMultisigs, newMultisig?.data]);
+			setLinkedMultisigs([newMultisig?.data, ...linkedMultisigs]);
 		} catch (e) {
 			console.error('error', e);
 		}
@@ -64,13 +66,13 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 	const onLinkedMultisig = async (multisig: IMultisig) => {
 		const payload = multisigs.filter((m) => m.address !== multisig.address);
 		setMultisigs(payload);
-		setLinkedMultisigs([...linkedMultisigs, multisig]);
+		setLinkedMultisigs([multisig, ...linkedMultisigs]);
 	};
 
 	const onRemoveMultisig = async (multisig: IMultisig) => {
 		const payload = linkedMultisigs.filter((m) => m.address !== multisig.address);
 		setLinkedMultisigs(payload);
-		setMultisigs([...multisigs, multisig]);
+		setMultisigs([multisig, ...multisigs]);
 	};
 
 	const fetchMultisig = async (network: ENetwork) => {
@@ -86,6 +88,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 	};
 
 	const handleCreateOrganisation = async () => {
+		setLoading(true);
 		const payload = {
 			name: organisationDetails.name,
 			description: organisationDetails.description,
@@ -106,6 +109,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 		if (data?.data?.id) {
 			return router.push(ORGANISATION_DASHBOARD_URL({ id: data?.data.id }));
 		}
+		setLoading(false);
 		notification(ERROR_MESSAGES.CREATE_ORGANISATION_FAILED);
 	};
 
@@ -132,6 +136,7 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 				organisationDetails={organisationDetails}
 				onChangeOrganisationDetails={handleOrganisationDetails}
 				userAddress={user.address}
+				createOrgLoading={loading}
 			>
 				<div className='flex flex-col'>
 					<div className='flex justify-end mb-10 pr-20'>

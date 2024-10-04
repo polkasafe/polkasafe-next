@@ -1,3 +1,4 @@
+/* eslint-disable no-tabs */
 import Input from '@common/global-ui-components/Input';
 
 export const createMultisigFormFields = [
@@ -14,19 +15,19 @@ export const createMultisigFormFields = [
 			}
 		],
 		input: <Input placeholder='Give the MultiSig a unique name' />
-	},
-	{
-		label: 'Threshold',
-		name: 'threshold',
-		type: 'number',
-		required: true,
-		placeholder: 'Enter the threshold',
-		rules: [
-			{
-				required: true,
-				message: 'Please input the threshold!'
-			}
-		],
-		input: <Input placeholder='2' />
 	}
+	// {
+	// 	label: 'Threshold',
+	// 	name: 'threshold',
+	// 	type: 'number',
+	// 	required: true,
+	// 	placeholder: 'Enter the threshold',
+	// 	rules: [
+	// 		{
+	// 			required: true,
+	// 			message: 'Please input the threshold!'
+	// 		}
+	// 	],
+	// 	input: <Input placeholder='2' />
+	// }
 ];

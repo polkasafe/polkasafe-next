@@ -1,35 +1,40 @@
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { useState } from 'react';
-import { PlusCircleOutlined } from '@ant-design/icons';
 import Modal from '@common/global-ui-components/Modal';
 import { CreateMultisig } from '@common/global-ui-components/CreateMultisig';
 import { ENetwork } from '@common/enum/substrate';
 import { IAddressBook, IMultisigCreate } from '@common/types/substrate';
+import { CreateMultisigIcon } from '@common/global-ui-components/Icons';
 
 interface IAddMultisig {
 	networks: Array<ENetwork>;
 	availableSignatories: Array<IAddressBook>;
 	onSubmit: (values: IMultisigCreate) => Promise<void>;
 	userAddress: string;
+	className?: string;
+	iconClassName?: string;
 }
 
-export const AddMultisig = ({ networks, availableSignatories, onSubmit, userAddress }: IAddMultisig) => {
+export const AddMultisig = ({
+	networks,
+	availableSignatories,
+	onSubmit,
+	userAddress,
+	className,
+	iconClassName
+}: IAddMultisig) => {
 	const [openModal, setOpenModal] = useState(false);
 	return (
-		<div className='w-full mb-4'>
-			<div className='flex justify-between rounded-xl p-6 bg-bg-main'>
-				<div className='flex-1 pr-10'>
-					<p className='text-white font-bold text-base'>Create MultiSig</p>
-				</div>
-				<Button
-					variant={EButtonVariant.PRIMARY}
-					icon={<PlusCircleOutlined />}
-					onClick={() => setOpenModal(true)}
-					size='large'
-				>
-					Create Multisig
-				</Button>
-			</div>
+		<div>
+			<Button
+				variant={EButtonVariant.PRIMARY}
+				icon={<CreateMultisigIcon className={iconClassName} />}
+				onClick={() => setOpenModal(true)}
+				size='large'
+				className={className}
+			>
+				Create Multisig
+			</Button>
 			<Modal
 				open={openModal}
 				onCancel={() => setOpenModal(false)}

@@ -11,7 +11,10 @@ const Input = ({ className, ...props }: IInputProps) => {
 	return (
 		<AntDInput
 			{...props}
-			className={twMerge('text-sm font-normal m-0 leading-[15px] border-0 outline-0 p-3 placeholder:text-[#505050] bg-bg-secondary rounded-lg text-white', className)}
+			className={twMerge(
+				'text-sm font-normal m-0 leading-[15px] border-0 outline-0 p-3 placeholder:text-[#505050] bg-bg-secondary rounded-lg text-white',
+				className
+			)}
 		/>
 	);
 };

@@ -6,7 +6,7 @@ import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown'
 import { RecipientsInputs } from '@common/global-ui-components/RecipientsInputs';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { useNotification } from '@common/utils/notification';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Form, FormInstance, Spin } from 'antd';
 import BN from 'bn.js';
 import { ERROR_MESSAGES } from '@common/utils/messages';

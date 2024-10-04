@@ -7,7 +7,7 @@ import Collapse from '@common/global-ui-components/Collapse';
 import { SelectNetwork } from '@common/global-ui-components/SelectNetwork';
 import { ILinkMultisig, IMultisig } from '@common/types/substrate';
 import { ERROR_MESSAGES } from '@common/utils/messages';
-import { Divider, Spin } from 'antd';
+import { Divider } from 'antd';
 import { Empty } from '@common/global-ui-components/Empty';
 import { useNotification } from '@common/utils/notification';
 import { useState } from 'react';
@@ -71,6 +71,7 @@ export const LinkMultisig = ({
 							setLoading(false);
 						}}
 						selectedNetwork={selectedNetwork}
+						fetchOnMount={availableMultisig.length === 0 && linkedMultisig.length === 0}
 					/>
 				</p>
 				<p className='text-sm text-text-secondary mb-4'>
@@ -79,88 +80,10 @@ export const LinkMultisig = ({
 
 				{/* {Boolean(linkedMultisig.length) && <Typography className='text-text-secondary' variant={ETypographyVariants.h3}>Linked Multisig</Typography>} */}
 
-				<div className='flex flex-col gap-y-3 mb-4 px-3'>
-					{linkedMultisig.map((multisig) =>
-						multisig.proxy && multisig.proxy.length > 0 ? (
-							<Collapse
-								className='border-none rounded-xl'
-								items={[
-									{
-										key: multisig.address,
-										label: (
-											<Address
-												address={multisig.address}
-												name={multisig.name}
-												network={multisig.network}
-												isMultisig
-												withBadge={false}
-											/>
-										),
-										children: multisig.proxy && (
-											<div className='flex flex-col gap-y-3 p-4 pl-12 relative'>
-												{multisig.proxy.map((item) => (
-													<div className='py-3 px-4 rounded-xl border border-text-disabled flex justify-between relative'>
-														<div className='absolute w-[24px] h-[50px] rounded-es-[11px] border-b-[2px] border-l-[2px] border-primary left-[-25px] top-[-16px]' />
-														<Address
-															address={item.address}
-															network={multisig.network}
-															name={item.name}
-															isProxy
-															withBadge={false}
-														/>
-														<Button
-															icon={<UnlinkIcon className='text-white' />}
-															className='bg-bg-secondary border-none text-white'
-															onClick={() => handleRemoveSubmit({ multisig })}
-														>
-															Unlink
-														</Button>
-													</div>
-												))}
-											</div>
-										),
-										extra: (
-											<Button
-												icon={<UnlinkIcon className='text-white' />}
-												className='bg-bg-secondary border-none text-white'
-												onClick={() => handleRemoveSubmit({ multisig })}
-											>
-												Unlink Multisig
-											</Button>
-										)
-									}
-								]}
-							/>
-						) : (
-							<div className='border border-primary rounded-xl py-3 px-4 flex items-center justify-between'>
-								<Address
-									address={multisig.address}
-									name={multisig.name}
-									network={multisig.network}
-									isMultisig
-									withBadge={false}
-								/>
-								<Button
-									icon={<UnlinkIcon className='text-white' />}
-									className='bg-bg-secondary border-none text-white'
-									onClick={() => handleRemoveSubmit({ multisig })}
-								>
-									Unlink Multisig
-								</Button>
-							</div>
-						)
-					)}
-				</div>
-				<Divider variant='solid' />
-
-				<Spin
-					spinning={loading}
-					indicator={<LoadingLottie width={200} />}
-				>
-					<div className='flex flex-col gap-y-3 max-h-80 overflow-x-auto px-3'>
-						{availableMultisig.length === 0 && <Empty description='No onChain Multisig available on this network' />}
-						{availableMultisig.length > 0 &&
-							availableMultisig.map((multisig) =>
+				{linkedMultisig && linkedMultisig.length > 0 && (
+					<>
+						<div className='flex flex-col gap-y-3 mb-4 max-h-80 overflow-y-auto px-3'>
+							{linkedMultisig.map((multisig) =>
 								multisig.proxy && multisig.proxy.length > 0 ? (
 									<Collapse
 										className='border-none rounded-xl'
@@ -174,27 +97,30 @@ export const LinkMultisig = ({
 														network={multisig.network}
 														isMultisig
 														withBadge={false}
+														showNetworkBadge
+														signatories={multisig.signatories.length}
+														threshold={multisig.threshold}
 													/>
 												),
 												children: multisig.proxy && (
 													<div className='flex flex-col gap-y-3 p-4 pl-12 relative'>
-														{[...multisig.proxy, ...multisig.proxy].map((item, i) => (
+														{multisig.proxy.map((item) => (
 															<div className='py-3 px-4 rounded-xl border border-text-disabled flex justify-between relative'>
-																<div
-																	className={`absolute w-[24px] h-[74px] ${i === 0 ? 'h-[74px] top-[-44px]' : 'h-[90px] top-[-60px]'} rounded-es-[11px] border-b-[2px] border-l-[2px] border-primary left-[-25px]`}
-																/>
+																<div className='absolute w-[24px] h-[50px] rounded-es-[11px] border-b-[2px] border-l-[2px] border-primary left-[-25px] top-[-16px]' />
 																<Address
 																	address={item.address}
 																	network={multisig.network}
 																	name={item.name}
 																	isProxy
+																	withBadge={false}
+																	showNetworkBadge
 																/>
 																<Button
-																	icon={<LinkIcon className='text-label' />}
-																	className='bg-highlight border-none text-label'
-																	onClick={() => handleSubmit({ multisig })}
+																	icon={<UnlinkIcon className='text-white' />}
+																	className='bg-bg-secondary border-none text-white'
+																	onClick={() => handleRemoveSubmit({ multisig })}
 																>
-																	Link
+																	Unlink
 																</Button>
 															</div>
 														))}
@@ -202,11 +128,11 @@ export const LinkMultisig = ({
 												),
 												extra: (
 													<Button
-														icon={<LinkIcon className='text-label' />}
-														className='bg-highlight border-none text-label'
-														onClick={() => handleSubmit({ multisig })}
+														icon={<UnlinkIcon className='text-white' />}
+														className='bg-bg-secondary border-none text-white'
+														onClick={() => handleRemoveSubmit({ multisig })}
 													>
-														Link Multisig
+														Unlink Multisig
 													</Button>
 												)
 											}
@@ -220,19 +146,122 @@ export const LinkMultisig = ({
 											network={multisig.network}
 											isMultisig
 											withBadge={false}
+											showNetworkBadge
+											signatories={multisig.signatories.length}
+											threshold={multisig.threshold}
 										/>
 										<Button
-											icon={<LinkIcon className='text-label' />}
-											className='bg-highlight border-none text-label'
-											onClick={() => handleSubmit({ multisig })}
+											icon={<UnlinkIcon className='text-white' />}
+											className='bg-bg-secondary border-none text-white'
+											onClick={() => handleRemoveSubmit({ multisig })}
 										>
-											Link Multisig
+											Unlink Multisig
 										</Button>
 									</div>
 								)
 							)}
-					</div>
-				</Spin>
+						</div>
+						<Divider
+							variant='solid'
+							className='border-text-disabled'
+						/>
+					</>
+				)}
+
+				<div className='flex flex-col gap-y-3 max-h-80 overflow-y-auto px-3'>
+					{loading ? (
+						<LoadingLottie
+							message={`Fetching Multisigs of ${selectedNetwork}`}
+							width={150}
+						/>
+					) : (
+						<>
+							{availableMultisig.length === 0 &&
+								linkedMultisig.filter((item) => item.network === selectedNetwork).length === 0 && (
+									<Empty description='No onChain Multisig available on this network' />
+								)}
+							{availableMultisig.length > 0 &&
+								availableMultisig.map((multisig) =>
+									multisig.proxy && multisig.proxy.length > 0 ? (
+										<Collapse
+											className='border-none rounded-xl'
+											items={[
+												{
+													key: multisig.address,
+													label: (
+														<Address
+															address={multisig.address}
+															name={multisig.name}
+															network={multisig.network}
+															isMultisig
+															withBadge={false}
+															showNetworkBadge
+															signatories={multisig.signatories.length}
+															threshold={multisig.threshold}
+														/>
+													),
+													children: multisig.proxy && (
+														<div className='flex flex-col gap-y-3 p-4 pl-12 relative'>
+															{[...multisig.proxy, ...multisig.proxy].map((item, i) => (
+																<div className='py-3 px-4 rounded-xl border border-text-disabled flex justify-between relative'>
+																	<div
+																		className={`absolute w-[24px] h-[74px] ${i === 0 ? 'h-[74px] top-[-44px]' : 'h-[90px] top-[-60px]'} rounded-es-[11px] border-b-[2px] border-l-[2px] border-primary left-[-25px]`}
+																	/>
+																	<Address
+																		address={item.address}
+																		network={multisig.network}
+																		name={item.name}
+																		isProxy
+																		showNetworkBadge
+																	/>
+																	<Button
+																		icon={<LinkIcon className='text-label' />}
+																		className='bg-highlight border-none text-label'
+																		onClick={() => handleSubmit({ multisig })}
+																	>
+																		Link
+																	</Button>
+																</div>
+															))}
+														</div>
+													),
+													extra: (
+														<Button
+															icon={<LinkIcon className='text-label' />}
+															className='bg-highlight border-none text-label'
+															onClick={() => handleSubmit({ multisig })}
+														>
+															Link Multisig
+														</Button>
+													)
+												}
+											]}
+										/>
+									) : (
+										<div className='border border-primary rounded-xl py-3 px-4 flex items-center justify-between'>
+											<Address
+												address={multisig.address}
+												name={multisig.name}
+												network={multisig.network}
+												isMultisig
+												withBadge={false}
+												showNetworkBadge
+												signatories={multisig.signatories.length}
+												threshold={multisig.threshold}
+											/>
+											<Button
+												icon={<LinkIcon className='text-label' />}
+												className='bg-highlight border-none text-label'
+												onClick={() => handleSubmit({ multisig })}
+											>
+												Link Multisig
+											</Button>
+										</div>
+									)
+								)}
+						</>
+					)}
+				</div>
 				<Divider />
 			</div>
 		</div>

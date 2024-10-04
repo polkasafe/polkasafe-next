@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { SwapOutlined } from '@ant-design/icons';
-import { Badge, Tooltip } from 'antd';
+import { Badge, Tooltip, Form, Divider } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import { getWalletAccounts } from '@common/utils/getWalletAccounts';
@@ -14,6 +14,7 @@ import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import shortenAddress from '@common/utils/shortenAddress';
 import Input from '@common/global-ui-components/Input';
 import { SearchIcon } from '@common/global-ui-components/Icons';
+import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 
 interface ISignature {
 	name: string;
@@ -42,18 +43,15 @@ const SelectSignatories = ({
 }: ISignatoryProps) => {
 	const [walletAccounts, setWalletAccounts] = useState<InjectedAccount[]>([]);
 
-	const addresses: ISignature[] =
-		addressBook
-			// ?.filter(
-			//     (item) =>
-			//         !signatories.includes(item.address) &&
-			//         (filterAddress ? item.address.includes(filterAddress, 0) || item.name.includes(filterAddress, 0) : true)
-			// )
-			?.map((item, i) => ({
-				address: item.address,
-				key: signatories.length + i,
-				name: item.name
-			})) || [];
+	const [addAddress, setAddAddress] = useState<string>('');
+
+	const [addresses, setAddresses] = useState<ISignature[]>(
+		addressBook?.map((item, i) => ({
+			address: item.address,
+			key: signatories.length + i,
+			name: item.name
+		})) || []
+	);
 
 	const dragStart = (event: any) => {
 		event.dataTransfer.setData('text', event.target.id);
@@ -75,6 +73,7 @@ const SelectSignatories = ({
 
 	useEffect(() => {
 		fetchWalletAccounts();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const drop = (event: any) => {
@@ -162,50 +161,93 @@ const SelectSignatories = ({
 	};
 
 	return (
-		<div className='flex w-full max-sm:w-full'>
+		<div className='w-full max-sm:w-full'>
 			{/* <NewUserModal
 				open={addWalletAddress}
 				onCancel={() => setAddWalletAddress(false)}
 			/> */}
 			<div className=''>
 				<h1 className='text-label mt-3 mb-2 max-sm:text-xs'>Add Addresses</h1>
-				<Input placeholder='Enter name, address or account index to add as signatory' prefix={<SearchIcon className='text-label' />} className='border border-label' />
+				<div className='flex items-start gap-x-3'>
+					<Form.Item
+						validateStatus={
+							addAddress && (!getSubstrateAddress(addAddress) || signatories.includes(addAddress)) ? 'error' : ''
+						}
+						help={addAddress && !getSubstrateAddress(addAddress) && 'Enter a valid Address.'}
+						className='w-full'
+					>
+						<Input
+							// placeholder='Enter name, address or account index to add as signatory'
+							prefix={<SearchIcon className='text-label' />}
+							className='border border-label p-2'
+							value={addAddress}
+							onChange={(e) => setAddAddress(e.target.value)}
+						/>
+					</Form.Item>
+					<Button
+						variant={EButtonVariant.SECONDARY}
+						disabled={
+							!addAddress ||
+							!getSubstrateAddress(addAddress) ||
+							signatories.includes(addAddress) ||
+							addresses.some((item) => getSubstrateAddress(addAddress) === getSubstrateAddress(item.address))
+						}
+						onClick={() => {
+							if (!signatories.includes(addAddress) && getSubstrateAddress(addAddress)) {
+								setSignatories((prev) => [...prev, addAddress]);
+								setAddresses((prev) => [{ address: addAddress, name: '', key: prev.length + 1 }, ...prev]);
+								setAddAddress('');
+							}
+						}}
+					>
+						<p className='font-normal text-sm'>Add</p>
+					</Button>
+				</div>
 			</div>
 			<div className='flex w-full items-center justify-center'>
 				<div
 					id='div1'
-					className='flex flex-col my-2 w-1/2 mr-1 cursor-grab'
+					className='flex flex-col my-2 w-1/2 mr-1'
 					onDrop={dropReturn}
 					onDragOver={dragOver}
 				>
-					<h1 className='text-label mt-3 mb-2 max-sm:text-xs'>Available Signatories</h1>
+					<h1 className='text-label mb-2 max-sm:text-xs'>Available Signatories</h1>
 					<div
 						id={`drop1${homepage && '-home'}`}
 						className='flex flex-col bg-bg-secondary p-4 rounded-lg my-1 h-[30vh] overflow-y-auto max-sm:p-1'
 					>
-						{addresses && addresses.length > 0 ? (
-							addresses.map((address) => {
-								return (
-									// eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-									<p
-										onClick={clickDrop}
-										title={address.address || ''}
-										id={`${address.key}-${address.address}`}
-										key={`${address.key}-${address.address}`}
-										className='bg-bg-main p-2 m-1 rounded-md text-white flex items-center gap-x-2 max-sm:text-[8px]'
-										draggable
-										onDragStart={dragStart}
-									>
-										{address.name || shortenAddress(getEncodedAddress(address.address, network) || address.address)}
-									</p>
-								);
-							})
-						) : (
-							// <Tooltip title='Import Addresses From Your Wallet.'>
-							// <Button onClick={() => setAddWalletAddress(true)} className='bg-primary flex items-center justify-center border-none outline-none text-white w-full' icon={<AddIcon/>}>
-							// Import
-							// </Button>
-							// </Tooltip>
+						{addresses && addresses.length > 0 && (
+							<>
+								{addresses
+									.filter((item) => !signatories.includes(item.address))
+									.map((address, i) => {
+										return (
+											// eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+											<>
+												<p
+													onClick={clickDrop}
+													title={address.address || ''}
+													id={`${address.key}-${address.address}`}
+													key={`${address.key}-${address.address}`}
+													className='bg-bg-main p-2 m-1 cursor-grab rounded-md text-white flex items-center gap-x-2 max-sm:text-[8px]'
+													draggable
+													onDragStart={dragStart}
+												>
+													{address.name ? address.name : null} (
+													{shortenAddress(getEncodedAddress(address.address, network) || address.address)})
+												</p>
+												{i === addresses.length - 1 && (
+													<Divider
+														variant='solid'
+														className='border-text-disabled my-1'
+													/>
+												)}
+											</>
+										);
+									})}
+							</>
+						)}
+						{
 							<>
 								<div className='text-sm text-text-disabled'>
 									Addresses imported directly from your Polkadot.js wallet
@@ -217,17 +259,18 @@ const SelectSignatories = ({
 										<p
 											onClick={clickDrop}
 											title={account.address || ''}
-											id={`${i + 1}-${account.address}`}
-											key={`${i + 1}-${account.address}`}
-											className='bg-bg-main p-2 m-1 rounded-md text-white'
+											id={`${i + 1 + addresses.length}-${account.address}`}
+											key={`${i + 1 + addresses.length}-${account.address}`}
+											className='bg-bg-main cursor-grab p-2 m-1 rounded-md text-white'
 											draggable
 											onDragStart={dragStart}
 										>
-											{account.name}
+											{account.name ? account.name : null} (
+											{shortenAddress(getEncodedAddress(account.address, network) || account.address)})
 										</p>
 									))}
 							</>
-						)}
+						}
 					</div>
 				</div>
 				<SwapOutlined className='text-primary' />
@@ -235,10 +278,10 @@ const SelectSignatories = ({
 					id='div2'
 					className='flex flex-col my-2 pd-2 w-1/2 ml-2'
 				>
-					<h1 className='text-label mt-3 mb-2 max-sm:text-xs'>Selected Signatories</h1>
+					<h1 className='text-label mb-2 max-sm:text-xs'>Selected Signatories</h1>
 					<div
 						id={`drop2${homepage && '-home'}`}
-						className='flex flex-col bg-bg-secondary p-2 rounded-lg my-1 h-[30vh] overflow-auto cursor-grab max-sm:p-1'
+						className='flex flex-col bg-bg-secondary p-2 rounded-lg my-1 h-[30vh] overflow-auto max-sm:p-1'
 						onDrop={drop}
 						onDragOver={dragOver}
 					>
@@ -248,10 +291,12 @@ const SelectSignatories = ({
 								title={a || ''}
 								id={`${i}-${a}`}
 								key={`${i}-${a}`}
-								className='bg-bg-main p-2 m-1 rounded-md text-white cursor-default flex items-center gap-x-2 max-sm:text-[8px]'
+								className='bg-bg-main p-2 m-1 rounded-md text-white cursor-grab flex items-center gap-x-2 max-sm:text-[8px]'
 							>
 								{addressBook?.find((item) => getSubstrateAddress(item.address) === getSubstrateAddress(a))?.name ||
-									shortenAddress(getEncodedAddress(a, network) || a)}{' '}
+									walletAccounts?.find((item) => getSubstrateAddress(item.address) === getSubstrateAddress(a))?.name ||
+									null}{' '}
+								({shortenAddress(getEncodedAddress(a, network) || a)})
 								{getSubstrateAddress(a) === getSubstrateAddress(userAddress) && (
 									<Tooltip title={<span className='text-sm text-text_secondary'>Your Wallet Address</span>}>
 										<Badge status='success' />

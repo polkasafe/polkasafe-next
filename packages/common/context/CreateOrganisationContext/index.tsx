@@ -15,6 +15,7 @@ interface ICreateOrganisationProvider extends PropsWithChildren {
 	onRemoveMultisig: (multisig: IMultisig) => Promise<void>;
 	fetchMultisig: (network: ENetwork) => Promise<void>;
 	userAddress: string;
+	createOrgLoading: boolean;
 }
 
 export const CreateOrganisationContext = createContext({} as ICreateOrganisationProvider);
@@ -32,7 +33,8 @@ export function CreateOrganisationProvider({
 	onRemoveMultisig,
 	onChangeOrganisationDetails,
 	userAddress,
-	children
+	children,
+	createOrgLoading
 }: ICreateOrganisationProvider) {
 	const value = useMemo(
 		() => ({
@@ -47,7 +49,8 @@ export function CreateOrganisationProvider({
 			onRemoveMultisig,
 			organisationDetails,
 			fetchMultisig,
-			userAddress
+			userAddress,
+			createOrgLoading
 		}),
 		[
 			onRemoveMultisig,
@@ -61,7 +64,8 @@ export function CreateOrganisationProvider({
 			onLinkedMultisig,
 			organisationDetails,
 			onCreateOrganisation,
-			userAddress
+			userAddress,
+			createOrgLoading
 		]
 	);
 	return <CreateOrganisationContext.Provider value={value}>{children}</CreateOrganisationContext.Provider>;
