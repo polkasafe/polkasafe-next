@@ -1,63 +1,65 @@
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Input from '@common/global-ui-components/Input';
-import { ICreateOrganisationDetails } from '@common/types/substrate';
+import { ICreateOrganisationDetails, IOrganisation } from '@common/types/substrate';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
 import { Form, Spin } from 'antd';
 import { useState } from 'react';
 
-const organisationForm = [
-	{
-		label: 'Organisation Name',
-		name: 'organisationName',
-		type: 'text',
-		required: true
-	},
-	{
-		label: 'Full Name',
-		name: 'fullName',
-		type: 'text',
-		required: true
-	},
-	{
-		label: 'Address',
-		name: 'address',
-		type: 'text',
-		required: true
-	},
-	{
-		label: 'City',
-		name: 'city',
-		type: 'text',
-		required: true
-	},
-	{
-		label: 'State',
-		name: 'state',
-		type: 'text',
-		required: true
-	},
-	{
-		label: 'Postal Code',
-		name: 'postalCode',
-		type: 'text',
-		required: true
-	},
-	{
-		label: 'Country',
-		name: 'country',
-		type: 'text',
-		required: true
-	},
-	{
-		label: 'Tax Number',
-		name: 'taxNumber',
-		type: 'text',
-		required: false
-	}
-];
 
-export const OrganisationInfo = ({ onSubmit, isEdit }: { onSubmit: (value: ICreateOrganisationDetails) => void, isEdit?: boolean }) => {
+export const OrganisationInfo = ({ onSubmit, isEdit, organisation, onChange }: { onSubmit: (value: ICreateOrganisationDetails) => void, onChange?: (value: ICreateOrganisationDetails) => void, isEdit?: boolean, organisation: IOrganisation }) => {
+	const organisationForm = [
+		{
+			label: 'Organisation Name',
+			name: 'name',
+			type: 'text',
+			required: true,
+			initialValue: organisation.name
+		},
+		{
+			label: 'Full Name',
+			name: 'fullName',
+			type: 'text',
+			required: true,
+			initialValue: ''
+		},
+		{
+			label: 'Address',
+			name: 'address',
+			type: 'text',
+			initialValue: organisation.address
+		},
+		{
+			label: 'City',
+			name: 'city',
+			type: 'text',
+			initialValue: organisation.city
+		},
+		{
+			label: 'State',
+			name: 'state',
+			type: 'text',
+			initialValue: organisation.state
+		},
+		{
+			label: 'Postal Code',
+			name: 'postalCode',
+			type: 'text',
+			initialValue: organisation.postalCode
+		},
+		{
+			label: 'Country',
+			name: 'country',
+			type: 'text',
+			initialValue: organisation.country
+		},
+		{
+			label: 'Tax Number',
+			name: 'taxNumber',
+			type: 'text',
+			initialValue: organisation.taxNumber
+		}
+	];
 	const [loading, setLoading] = useState(false);
 	const notification = useNotification();
 
@@ -81,11 +83,13 @@ export const OrganisationInfo = ({ onSubmit, isEdit }: { onSubmit: (value: ICrea
 			<Form
 				layout='vertical'
 				onFinish={handleFinish}
+				onValuesChange={(changedValues, allValues) => onChange?.(allValues)}
 			>
 				{organisationForm.map((field) => (
 					<Form.Item
 						label={field.label}
 						name={field.name}
+						initialValue={field.initialValue}
 						rules={[{ required: field.required, message: `Please input your ${field.label}` }]}
 						key={field.name}
 						className='m-2'

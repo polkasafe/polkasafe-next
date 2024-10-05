@@ -11,7 +11,7 @@ import {
 } from '@common/types/substrate';
 import { UpdateMultisigForm } from '@common/global-ui-components/UpdateMultisigForm';
 import { twMerge } from 'tailwind-merge';
-import { ETransactionState, ETriggers, ETxType, Wallet } from '@common/enum/substrate';
+import { ENetwork, ETransactionState, ETriggers, ETxType, Wallet } from '@common/enum/substrate';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
@@ -25,6 +25,9 @@ import { ReviewTransaction } from '@common/global-ui-components/ReviewTransactio
 import { ApiPromise } from '@polkadot/api';
 import { sendNotification } from '@sdk/polkasafe-sdk/src';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import TransactionSuccessScreen from '@common/global-ui-components/TransactionSuccessScreen';
+import TransactionFailedScreen from '@common/global-ui-components/TransactionFailedScreen';
+import BN from 'bn.js';
 
 interface IUpdateMultisig {
 	multisig: IMultisig;
@@ -196,8 +199,35 @@ export const UpdateMultisig = ({ multisig, proxyAddress, addresses, className }:
 						reviewTransaction={reviewTransaction as IReviewTransaction}
 					/>
 				)}
-				{transactionState === ETransactionState.CONFIRM && <div>Success</div>}
-				{transactionState === ETransactionState.FAILED && <div>Failed</div>}
+				{transactionState === ETransactionState.CONFIRM && (
+					<TransactionSuccessScreen
+						network={reviewTransaction?.network || ENetwork.POLKADOT}
+						successMessage='Transaction in Progress!'
+						waitMessage='All Threshold Signatories need to Approve the Transaction.'
+						txnHash=''
+						amount={new BN(0)}
+						created_at={new Date()}
+						sender={reviewTransaction?.from || ''}
+						recipients={[reviewTransaction?.to || '']}
+						onDone={() => {
+							setTransactionState(ETransactionState.BUILD);
+							setOpenModal(false);
+						}}
+					/>
+				)}
+				{transactionState === ETransactionState.FAILED && (
+					<TransactionFailedScreen
+						onDone={() => {
+							setTransactionState(ETransactionState.BUILD);
+							setOpenModal(false);
+						}}
+						txnHash=''
+						sender={reviewTransaction?.from || ''}
+						failedMessage='Oh no! Something went wrong.'
+						waitMessage='Your transaction has failed due to some technical error. Please try again...Details of the transaction are included below'
+						created_at={new Date()}
+					/>
+				)}
 			</Modal>
 		</div>
 	);

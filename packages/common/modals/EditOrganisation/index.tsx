@@ -3,7 +3,7 @@
 'use client';
 
 import Button from '@common/global-ui-components/Button';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import Modal from '@common/global-ui-components/Modal';
 import { EditForm } from '@common/modals/EditOrganisation/components/EditForm';
@@ -22,11 +22,18 @@ export const EditOrganisation = () => {
 	const availableSignatories = useWalletAccounts();
 	const [user] = useUser();
 	const [organisation] = useOrganisation();
+	
 	const [multisigs, setMultisigs] = useState<Array<IMultisig>>([]);
 	const [linkedMultisigs, setLinkedMultisigs] = useState<Array<IMultisig>>(organisation?.multisigs || []);
-	if (!user || !organisation) return;
+
+	useEffect(() => {
+		if (organisation) {
+			setLinkedMultisigs(organisation.multisigs);
+		}
+	}, [organisation]);
 
 	const onOrganisationEdit = async (organisationDetails: ICreateOrganisationDetails) => {
+		if (!organisation || !user) return;
 		const payload = {
 			name: organisationDetails.name,
 			description: organisationDetails.description,
@@ -122,6 +129,9 @@ export const EditOrganisation = () => {
 		setMultisigs(leftMultisig);
 	};
 
+	if (!user || !organisation) 
+		return null;
+
 	return (
 		<>
 			<Button
@@ -153,6 +163,7 @@ export const EditOrganisation = () => {
 					userAddress={user.address}
 					onCancel={() => setOpenModal(false)}
 					prevLinked={organisation.multisigs || []}
+					organisation={organisation}
 				/>
 			</Modal>
 		</>
