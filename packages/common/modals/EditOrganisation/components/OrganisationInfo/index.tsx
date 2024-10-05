@@ -57,7 +57,7 @@ const organisationForm = [
 	}
 ];
 
-export const OrganisationInfo = ({ onSubmit }: { onSubmit: (value: ICreateOrganisationDetails) => void }) => {
+export const OrganisationInfo = ({ onSubmit, isEdit }: { onSubmit: (value: ICreateOrganisationDetails) => void, isEdit?: boolean }) => {
 	const [loading, setLoading] = useState(false);
 	const notification = useNotification();
 
@@ -93,15 +93,17 @@ export const OrganisationInfo = ({ onSubmit }: { onSubmit: (value: ICreateOrgani
 						<Input className='bg-bg-main' />
 					</Form.Item>
 				))}
-				<div className='pr-1'>
-					<Button
-						variant={EButtonVariant.PRIMARY}
-						htmlType='submit'
-						fullWidth
-					>
-						Submit
-					</Button>
-				</div>
+				{!isEdit && 
+					<div className='pr-1'>
+						<Button
+							variant={EButtonVariant.PRIMARY}
+							htmlType='submit'
+							fullWidth
+						>
+							Submit
+						</Button>
+					</div>
+				}
 			</Form>
 		</Spin>
 	);

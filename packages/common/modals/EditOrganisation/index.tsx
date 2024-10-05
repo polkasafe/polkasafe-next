@@ -15,6 +15,7 @@ import { ENetwork } from '@common/enum/substrate';
 import { getMultisigsByAddress } from '@sdk/polkasafe-sdk/src/get-all-multisig-by-address';
 import { createMultisig } from '@sdk/polkasafe-sdk/src/create-multisig';
 import { useWalletAccounts } from '@substrate/app/global/hooks/useWalletAccounts';
+import { EditIcon } from '@common/global-ui-components/Icons';
 
 export const EditOrganisation = () => {
 	const [openModal, setOpenModal] = useState(false);
@@ -22,7 +23,7 @@ export const EditOrganisation = () => {
 	const [user] = useUser();
 	const [organisation] = useOrganisation();
 	const [multisigs, setMultisigs] = useState<Array<IMultisig>>([]);
-	const [linkedMultisigs, setLinkedMultisigs] = useState<Array<IMultisig>>([]);
+	const [linkedMultisigs, setLinkedMultisigs] = useState<Array<IMultisig>>(organisation?.multisigs || []);
 	if (!user || !organisation) return;
 
 	const onOrganisationEdit = async (organisationDetails: ICreateOrganisationDetails) => {
@@ -124,7 +125,7 @@ export const EditOrganisation = () => {
 	return (
 		<>
 			<Button
-				icon={<PlusCircleOutlined />}
+				icon={<EditIcon />}
 				onClick={() => setOpenModal(true)}
 				size='large'
 				className='outline-none border-none text-sm bg-transparent p-0 m-0 text-primary'
@@ -150,6 +151,8 @@ export const EditOrganisation = () => {
 					onLinkedMultisig={onLinkedMultisig}
 					onRemoveMultisig={onRemoveMultisig}
 					userAddress={user.address}
+					onCancel={() => setOpenModal(false)}
+					prevLinked={organisation.multisigs || []}
 				/>
 			</Modal>
 		</>

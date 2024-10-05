@@ -108,7 +108,7 @@ function DashboardCard() {
 						</span>
 					</div>
 				</div>
-				<div className='flex gap-3 items-center'>
+				<div className='flex gap-3 items-center py-3'>
 					{/* <Typography
 						variant={ETypographyVariants.p}
 						className='text-base text-text-success capitalize font-raleway'
@@ -116,12 +116,12 @@ function DashboardCard() {
 						{lastTransactionsValue > 0 ? '+' : '-'} {symbol}
 						{Math.abs(lastTransactionsValue)}
 					</Typography> */}
-					<Typography
+					{/* <Typography
 						variant={ETypographyVariants.p}
 						className='text-xs text-text-primary border-2 inline-block px-2 py-1 rounded-lg uppercase font-semibold'
 					>
 						24h
-					</Typography>
+					</Typography> */}
 				</div>
 			</div>
 		</div>
