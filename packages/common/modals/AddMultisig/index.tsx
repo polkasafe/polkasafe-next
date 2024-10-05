@@ -13,6 +13,7 @@ interface IAddMultisig {
 	userAddress: string;
 	className?: string;
 	iconClassName?: string;
+	size?: 'small' | 'middle' | 'large';
 }
 
 export const AddMultisig = ({
@@ -21,7 +22,8 @@ export const AddMultisig = ({
 	onSubmit,
 	userAddress,
 	className,
-	iconClassName
+	iconClassName,
+	size
 }: IAddMultisig) => {
 	const [openModal, setOpenModal] = useState(false);
 	return (
@@ -30,7 +32,7 @@ export const AddMultisig = ({
 				variant={EButtonVariant.PRIMARY}
 				icon={<CreateMultisigIcon className={iconClassName} />}
 				onClick={() => setOpenModal(true)}
-				size='large'
+				size={size || 'large'}
 				className={className}
 			>
 				Create Multisig

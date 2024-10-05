@@ -7,7 +7,8 @@ export const LinkMultisigOrganisation = ({
 	onRemoveSubmit,
 	availableMultisig,
 	onSubmit,
-	fetchMultisig
+	fetchMultisig,
+	className
 }: ILinkMultisig) => {
 	return (
 		<div>
@@ -18,6 +19,7 @@ export const LinkMultisigOrganisation = ({
 				onSubmit={onSubmit}
 				onRemoveSubmit={onRemoveSubmit}
 				fetchMultisig={fetchMultisig}
+				className={className}
 			/>
 		</div>
 	);

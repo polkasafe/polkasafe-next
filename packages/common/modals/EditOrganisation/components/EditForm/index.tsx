@@ -1,11 +1,14 @@
 import { ENetwork } from '@common/enum/substrate';
+import { ActionButtons } from '@common/global-ui-components/ActionButtons';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Collapse from '@common/global-ui-components/Collapse';
 import { LinkMultisigOrganisation } from '@common/global-ui-components/createOrganisation/components/AddMultisig/components/LinkMultisig';
+import { CircleArrowDownIcon, CircleCheckIcon } from '@common/global-ui-components/Icons';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { AddMultisig } from '@common/modals/AddMultisig';
 import { OrganisationInfo } from '@common/modals/EditOrganisation/components/OrganisationInfo';
 import { IAddressBook, ICreateOrganisationDetails, IMultisig, IMultisigCreate } from '@common/types/substrate';
+import { twMerge } from 'tailwind-merge';
 
 export const EditForm = ({
 	onSubmit,
@@ -18,7 +21,9 @@ export const EditForm = ({
 	onLinkedMultisig,
 	onRemoveMultisig,
 	fetchMultisig,
-	userAddress
+	userAddress,
+	onCancel,
+	prevLinked
 }: {
 	onSubmit: (value: ICreateOrganisationDetails) => void;
 	onMultisigUpdate: () => void;
@@ -31,68 +36,51 @@ export const EditForm = ({
 	onRemoveMultisig: (multisig: IMultisig) => Promise<void>;
 	fetchMultisig: (network: ENetwork) => Promise<void>;
 	userAddress: string;
+	onCancel: () => void;
+	prevLinked: Array<IMultisig>;
 }) => {
 	const items = [
 		{
 			key: '1',
 			label: (
-				<div className='flex gap-2 justify-between items-start'>
+				<div className='flex gap-x-8 justify-between items-start'>
 					<Typography
 						variant={ETypographyVariants.h2}
 						className='text-base font-bold'
 					>
 						Organisation Info
 					</Typography>
-					<div className='w-48'>
-						<Typography variant={ETypographyVariants.p}>
-							This info will be standard for any project/company or individual and can go on every invoice
-						</Typography>
-					</div>
+					<Typography className='flex-1' variant={ETypographyVariants.p}>
+						This info will be standard for any project/company or individual and can go on every invoice
+					</Typography>
 				</div>
 			),
-			children: <OrganisationInfo onSubmit={onSubmit} />,
+			children: <div className='p-2 bg-bg-secondary'>
+				<OrganisationInfo onSubmit={onSubmit} isEdit />
+			</div>,
 			style: {
 				marginBottom: 24,
-				border: 'none'
+				border: 'none',
+				overflow: 'hidden'
 			}
 		},
 		{
 			key: '2',
 			label: (
-				<div className='flex gap-2 justify-between items-start'>
+				<div className='flex gap-x-4 justify-between items-start'>
 					<Typography
 						variant={ETypographyVariants.h2}
 						className='text-base font-bold'
 					>
 						Multisigs
 					</Typography>
-					<div className='w-48'>
-						<Typography variant={ETypographyVariants.p}>
-							‘Link’ new multisig(s) or ‘Unlink’ existing multisig(s)
-						</Typography>
-					</div>
+					<Typography variant={ETypographyVariants.p}>
+						‘Link’ new multisig(s) or ‘Unlink’ existing multisig(s)
+					</Typography>
 				</div>
 			),
 			children: (
-				<div>
-					<Typography
-						variant={ETypographyVariants.p}
-						className='text-lg font-bold mb-2 text-white'
-					>
-						Create/Link Multisig
-					</Typography>
-					<Typography
-						variant={ETypographyVariants.p}
-						className='text-sm text-text-secondary mb-5'
-					>
-						MultiSig is a secure digital wallet that requires one or multiple owners to authorize the transaction.
-					</Typography>
-					<AddMultisig
-						userAddress={userAddress}
-						networks={networks}
-						availableSignatories={availableSignatories}
-						onSubmit={onCreateMultisigSubmit}
-					/>
+				<div className='p-2 pb-4'>
 					<LinkMultisigOrganisation
 						networks={networks}
 						linkedMultisig={linkedMultisig}
@@ -100,15 +88,18 @@ export const EditForm = ({
 						onSubmit={onLinkedMultisig}
 						fetchMultisig={fetchMultisig}
 						onRemoveSubmit={onRemoveMultisig}
+						className='bg-transparent'
 					/>
-					<Button
-						variant={EButtonVariant.PRIMARY}
-						size='large'
-						className='mt-4'
-						onClick={onMultisigUpdate}
-					>
-						Update Multisig
-					</Button>
+					<div className='px-6'>
+						<AddMultisig
+							userAddress={userAddress}
+							networks={networks}
+							availableSignatories={availableSignatories}
+							onSubmit={onCreateMultisigSubmit}
+							className='w-full mt-4'
+							size='middle'
+						/>
+					</div>
 				</div>
 			),
 			style: {
@@ -118,14 +109,21 @@ export const EditForm = ({
 		}
 	];
 	return (
-		<div>
+		<div className='max-w-[600px] flex flex-col gap-y-6'>
 			<Collapse
 				className='[&_.ant-collapse-item>.ant-collapse-header]:border-0 [&_.ant-collapse-item>.ant-collapse-header]:bg-bg-secondary [&_.ant-collapse-item]:bg-bg-main bg-bg-main [&_.ant-collapse-item>.ant-collapse-content]:bg-bg-secondary [&_.ant-collapse-item-active>.ant-collapse-header]:rounded-b-none [&_.ant-collapse-item-active]:rounded-b-lg'
 				bordered={false}
-				expandIcon={() => null}
+				expandIconPosition='end'
+				expandIcon={({ isActive }) => (
+					<CircleArrowDownIcon className={twMerge('text-text-secondary text-lg', isActive && 'rotate-[180deg]')} />
+				)}
+				defaultActiveKey={['2']}
 				items={items}
-				defaultActiveKey={['1']}
+				accordion
 			/>
+			<ActionButtons icon={<CircleCheckIcon />} label='Confirm' onClick={() => {
+				onMultisigUpdate();
+			}} onCancel={onCancel} disabled={linkedMultisig.toString() === prevLinked.toString()} />
 		</div>
 	);
 };

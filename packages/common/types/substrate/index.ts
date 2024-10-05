@@ -401,6 +401,7 @@ export interface ILinkMultisig {
 	onSubmit: (multisigs: IMultisig) => Promise<void>;
 	onRemoveSubmit: (multisigs: IMultisig) => Promise<void>;
 	fetchMultisig: (network: ENetwork) => Promise<void>;
+	className?: string;
 }
 
 export interface ICreateOrganisationDetails {

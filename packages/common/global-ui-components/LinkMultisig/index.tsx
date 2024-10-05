@@ -13,6 +13,7 @@ import { useNotification } from '@common/utils/notification';
 import { useState } from 'react';
 import { LinkIcon, UnlinkIcon } from '@common/global-ui-components/Icons';
 import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
+import { twMerge } from 'tailwind-merge';
 // use availableSignatories to populate the select options
 export const LinkMultisig = ({
 	networks,
@@ -20,7 +21,8 @@ export const LinkMultisig = ({
 	availableMultisig,
 	onSubmit,
 	onRemoveSubmit,
-	fetchMultisig
+	fetchMultisig,
+	className
 }: ILinkMultisig) => {
 	const [loading, setLoading] = useState(false);
 	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
@@ -58,7 +60,7 @@ export const LinkMultisig = ({
 	};
 
 	return (
-		<div className='rounded-xl p-6 bg-bg-main'>
+		<div className={twMerge('rounded-xl p-6 bg-bg-main', className)}>
 			<div className='w-full h-full'>
 				<p className='text-base font-bold mb-2 text-white flex justify-between w-full items-center'>
 					Link MultiSig(s)
