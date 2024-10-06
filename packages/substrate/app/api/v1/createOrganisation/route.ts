@@ -74,7 +74,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		);
 
 		const multisigs = allMultisigs.map((multisig: IDBMultisig) => ({
-			...multisigs,
+			...multisig,
 			address: getEncodedAddress(multisig.address, multisig.network),
 			signatories: multisig.signatories.map((signatory) => getSubstrateAddress(signatory))
 		}));
