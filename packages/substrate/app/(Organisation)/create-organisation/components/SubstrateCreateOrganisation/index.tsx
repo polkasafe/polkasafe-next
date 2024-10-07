@@ -56,7 +56,6 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 		try {
 			const newMultisig = (await createMultisig(multisig)) as { data: IMultisig };
 			console.log('newMultisigs', newMultisig?.data);
-			setMultisigs([...multisigs, { ...newMultisig?.data, linked: true }]);
 			setLinkedMultisigs([newMultisig?.data, ...linkedMultisigs]);
 		} catch (e) {
 			console.error('error', e);

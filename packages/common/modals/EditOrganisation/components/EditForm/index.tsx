@@ -7,7 +7,8 @@ import { CircleArrowDownIcon, CircleCheckIcon } from '@common/global-ui-componen
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { AddMultisig } from '@common/modals/AddMultisig';
 import { OrganisationInfo } from '@common/modals/EditOrganisation/components/OrganisationInfo';
-import { IAddressBook, ICreateOrganisationDetails, IMultisig, IMultisigCreate } from '@common/types/substrate';
+import { IAddressBook, ICreateOrganisationDetails, IMultisig, IMultisigCreate, IOrganisation } from '@common/types/substrate';
+import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export const EditForm = ({
@@ -23,7 +24,8 @@ export const EditForm = ({
 	fetchMultisig,
 	userAddress,
 	onCancel,
-	prevLinked
+	prevLinked,
+	organisation
 }: {
 	onSubmit: (value: ICreateOrganisationDetails) => void;
 	onMultisigUpdate: () => void;
@@ -38,7 +40,9 @@ export const EditForm = ({
 	userAddress: string;
 	onCancel: () => void;
 	prevLinked: Array<IMultisig>;
+	organisation: IOrganisation;
 }) => {
+	const [orgDetails, setOrgDetails] = useState<ICreateOrganisationDetails>();
 	const items = [
 		{
 			key: '1',
@@ -56,7 +60,7 @@ export const EditForm = ({
 				</div>
 			),
 			children: <div className='p-2 bg-bg-secondary'>
-				<OrganisationInfo onSubmit={onSubmit} isEdit />
+				<OrganisationInfo onChange={(values) => setOrgDetails(values)} organisation={organisation} onSubmit={onSubmit} isEdit />
 			</div>,
 			style: {
 				marginBottom: 24,
@@ -117,13 +121,15 @@ export const EditForm = ({
 				expandIcon={({ isActive }) => (
 					<CircleArrowDownIcon className={twMerge('text-text-secondary text-lg', isActive && 'rotate-[180deg]')} />
 				)}
-				defaultActiveKey={['2']}
 				items={items}
 				accordion
 			/>
 			<ActionButtons icon={<CircleCheckIcon />} label='Confirm' onClick={() => {
+				if (orgDetails) {
+					onSubmit(orgDetails);
+				}
 				onMultisigUpdate();
-			}} onCancel={onCancel} disabled={linkedMultisig.toString() === prevLinked.toString()} />
+			}} onCancel={onCancel} disabled={linkedMultisig.toString() === prevLinked.toString() && !orgDetails} />
 		</div>
 	);
 };

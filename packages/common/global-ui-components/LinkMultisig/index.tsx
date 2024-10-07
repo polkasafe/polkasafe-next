@@ -264,7 +264,6 @@ export const LinkMultisig = ({
 						</>
 					)}
 				</div>
-				<Divider />
 			</div>
 		</div>
 	);

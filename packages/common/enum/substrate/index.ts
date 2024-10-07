@@ -127,7 +127,8 @@ export enum ETxType {
 	CREATE_PROXY = 'create_roxy',
 	EDIT_PROXY = 'edit_proxy',
 	SET_IDENTITY = 'set_identity',
-	DELEGATE = 'delegate'
+	DELEGATE = 'delegate',
+	TELEPORT = 'teleport'
 }
 
 export enum ETransactionTab {
@@ -245,7 +246,8 @@ export enum ETransactionCreationType {
 	// SUBMIT_PREIMAGE = 'Submit Preimage',
 	// SUBMIT_PROPOSAL = 'Submit Proposal',
 	SET_IDENTITY = 'Set Identity',
-	DELEGATE = 'Delegate'
+	DELEGATE = 'Delegate',
+	TELEPORT = 'Teleport Assets'
 	// CREATE_NFT = 'Create NFT'
 }
 

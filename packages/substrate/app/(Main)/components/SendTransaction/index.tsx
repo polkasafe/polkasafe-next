@@ -20,7 +20,9 @@ import {
 	IReviewTransaction,
 	ISendTransaction,
 	ISetIdentityTransaction,
-	ISubstrateExecuteProps
+	ISubstrateExecuteProps,
+	ITeleportAssetTransaction,
+	ITeleportTransaction
 } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { useAssets } from '@substrate/app/atoms/assets/assetsAtom';
@@ -130,6 +132,57 @@ export function SendTransaction({
 		setTransactionState(ETransactionState.REVIEW);
 	};
 
+	const teleport = async (
+		values: ITeleportAssetTransaction,
+		user: IConnectedUser,
+		api: ApiPromise,
+		onSuccess: ({ newTransaction }: IGenericObject) => void
+	) => {
+		const { address } = user;
+		const { recipientAddress, sender: multisig, selectedProxy, recipientNetwork, amount } = values;
+		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.TELEPORT]({
+			api,
+			recipientAddress,
+			recipientNetwork,
+			amount,
+			params: {
+				tip: values.tip
+			},
+			isProxy: Boolean(selectedProxy),
+			proxyAddress: selectedProxy,
+			multisig,
+			sender: address,
+			onSuccess
+		})) as ISubstrateExecuteProps;
+		if (!transaction) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+			return;
+		}
+
+		const fee = (await transaction.tx.paymentInfo(address)).partialFee;
+		const formattedFee = formatBalance(
+			fee.toString(),
+			{
+				numberAfterComma: 3,
+				withThousandDelimitor: false
+			},
+			multisig.network
+		);
+
+		const reviewData = {
+			tx: transaction.tx.toHuman(),
+			from: values.sender?.address,
+			to: recipientAddress || '',
+			proxyAddress: values.selectedProxy || '',
+			txCost: formattedFee.toString(),
+			network: values.sender.network,
+			createAt: new Date().toISOString()
+		} as IReviewTransaction;
+		setExecutableTransaction(transaction);
+		setReviewTransaction(reviewData);
+		setTransactionState(ETransactionState.REVIEW);
+	};
+
 	const setIdentity = async (
 		values: ISetIdentityTransaction,
 		user: IConnectedUser,
@@ -226,7 +279,7 @@ export function SendTransaction({
 		setTransactionState(ETransactionState.REVIEW);
 	};
 
-	const buildTransaction = async (values: ISendTransaction | ISetIdentityTransaction | IDelegateTransaction) => {
+	const buildTransaction = async (values: ISendTransaction | ITeleportAssetTransaction | ISetIdentityTransaction | IDelegateTransaction) => {
 		if (!user) {
 			notification({ ...ERROR_MESSAGES.AUTHENTICATION_FAILED });
 			return;
@@ -292,6 +345,9 @@ export function SendTransaction({
 			switch (type) {
 				case ETransactionCreationType.SEND_TOKEN:
 					await sendTokens(values as ISendTransaction, user, api, onSuccess);
+					break;
+				case ETransactionCreationType.TELEPORT:
+					await teleport(values as ITeleportAssetTransaction, user, api, onSuccess);
 					break;
 				case ETransactionCreationType.SET_IDENTITY:
 					await setIdentity(values as ISetIdentityTransaction, user, api, peopleApi, onSuccess);

@@ -199,5 +199,18 @@ export const networkConstants = {
 		blockExplorerUrl: 'https://westend.subscan.io/',
 		rpcEndpoint: 'wss://westend-rpc.polkadot.io',
 		chainId: 'polkadot:e143f23803ac50e8f6f8e62695d1ce9e'
+	},
+	[ENetwork.PEOPLE]: {
+		disabled: false,
+		key: ENetwork.PEOPLE,
+		name: 'People',
+		blockTime: 6000,
+		ss58Format: 0,
+		subsquidUrl: '',
+		tokenDecimals: 10,
+		tokenSymbol: 'DOT',
+		blockExplorerUrl: 'https://people-polkadot.subscan.io/',
+		rpcEndpoint: 'wss://polkadot-people-rpc.polkadot.io',
+		chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182'
 	}
 };

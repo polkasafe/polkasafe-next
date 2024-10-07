@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import React, { useState } from 'react';
-import PayWithMultisig from './PayWithMultisig';
-import PayWithAccount from './PayWithAccount';
+// import PayWithMultisig from './PayWithMultisig';
+// import PayWithAccount from './PayWithAccount';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 
 enum ETab {
@@ -52,7 +52,7 @@ const PayInvoice = ({
 					{ETab.PAY_WITH_CONNECTED_ACCOUNT}
 				</Button>
 			</div>
-			{tab === ETab.PAY_WITH_MULTISIG ? (
+			{/* {tab === ETab.PAY_WITH_MULTISIG ? (
 				<PayWithMultisig
 					requestedNetwork={requestedNetwork}
 					invoiceId={invoiceId}
@@ -68,7 +68,7 @@ const PayInvoice = ({
 					network={requestedNetwork}
 					invoiceId={invoiceId}
 				/>
-			)}
+			)} */}
 		</div>
 	);
 };
