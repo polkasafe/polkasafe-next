@@ -93,7 +93,7 @@ export const fetchTokenToUSDPrice = async (token: number, network: ENetwork) => 
 	try {
 		const response = await fetch(`https://${network}.api.subscan.io/api/open/price_converter`, {
 			body: JSON.stringify({
-				from: networkConstants[network]?.tokenSymbol,
+				from: networkConstants[network].tokenSymbol,
 				quote: 'USD',
 				value: token
 			}),
