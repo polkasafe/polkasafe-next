@@ -17,9 +17,11 @@ import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { AddBoxIcon } from '@common/global-ui-components/Icons';
 interface ICreateProxyModal {
 	multisig: IMultisig;
+	buttonClassName?: string;
+	iconClassName?: string;
 }
 
-export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
+export const CreateProxyModal = ({ multisig, buttonClassName, iconClassName }: ICreateProxyModal) => {
 	const [user] = useUser();
 	const notification = useNotification();
 	const [queueTransaction, setQueueTransactions] = useQueueAtom();
@@ -133,8 +135,8 @@ export const CreateProxyModal = ({ multisig }: ICreateProxyModal) => {
 				buildTransaction={buildTransaction}
 				signTransaction={signTransaction}
 				reviewTransaction={reviewTransaction}
-				className='text-label'
-				buttonIcon={<AddBoxIcon className='text-label' />}
+				className={buttonClassName || 'text-label'}
+				buttonIcon={<AddBoxIcon className={iconClassName || 'text-label'} />}
 			>
 				Create Proxy
 			</ReviewModal>

@@ -11,6 +11,7 @@ import { MULTIPLE_CURRENCY_NETWORKS } from '@common/constants/multipleCurrencyNe
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { IMultisigAssets } from '@common/types/substrate';
 import inputToBn from '@common/utils/inputToBn';
+import { Form } from 'antd';
 
 interface IRecipientInputs {
 	autocompleteAddresses: Array<any>;
@@ -47,6 +48,8 @@ export const RecipientsInputs = ({
 		}
 	]);
 	const [amountExceeded, setAmountExceeded] = useState<boolean>(false);
+
+	const [validRecipient, setValidRecipient] = useState<boolean[]>([true]);
 
 	const isSelected = (recipient: string) => {
 		return getSubstrateAddress(String(recipient)) !== null;
@@ -87,7 +90,31 @@ export const RecipientsInputs = ({
 	};
 
 	useEffect(() => {
-		form.setFieldsValue({ recipients: recipientAndAmount });
+		if (!recipientAndAmount) return;
+		const isValid: boolean[] = [];
+		recipientAndAmount.forEach((item, i) => {
+			if (
+				item.recipient &&
+				!getSubstrateAddress(item.recipient)
+			) {
+				isValid.push(false);
+				setValidRecipient((prev) => {
+					const copyArray = [...prev];
+					copyArray[i] = false;
+					return copyArray;
+				});
+			} else {
+				isValid.push(true);
+				setValidRecipient((prev) => {
+					const copyArray = [...prev];
+					copyArray[i] = true;
+					return copyArray;
+				});
+			}
+		});
+		if (!isValid.includes(false)) {
+			form.setFieldsValue({ recipients: recipientAndAmount });
+		}
 	}, [form, recipientAndAmount]);
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
@@ -174,37 +201,50 @@ export const RecipientsInputs = ({
 							<div className='w-[60%] max-sm:w-full'>
 								<label className='text-label font-normal text-xs leading-[13px] block mb-[5px]'>Recipient*</label>
 
-								<div className='h-[50px]'>
-									{recipient && isSelected(recipient) ? (
-										<div className='border border-solid border-primary rounded-lg px-2 h-full flex justify-between items-center w-full'>
-											<Address
-												address={recipient}
-												network={network}
-											/>
-											<button
-												className='outline-none border-none bg-highlight w-6 h-6 rounded-full flex items-center justify-center z-100'
-												onClick={() => {
-													onRecipientChange('', i);
+								<Form.Item
+									name='recipient'
+									rules={[{ required: true }]}
+									help={
+										(!recipient && 'Recipient Address is Required') ||
+										(!validRecipient[i] && 'Please add a valid Address')
+									}
+									className='border-0 outline-0 my-0 p-0'
+									validateStatus={recipient && validRecipient[i] ? 'success' : 'error'}
+								>
+
+									<div className='h-[50px]'>
+										{recipient && isSelected(recipient) ? (
+											<div className='border border-solid border-primary rounded-lg px-2 h-full flex justify-between items-center w-full'>
+												<Address
+													address={recipient}
+													network={network}
+												/>
+												<button
+													className='outline-none border-none bg-highlight w-6 h-6 rounded-full flex items-center justify-center z-100'
+													onClick={() => {
+														onRecipientChange('', i);
+													}}
+												>
+													<OutlineCloseIcon className='text-primary w-2 h-2' />
+												</button>
+											</div>
+										) : (
+											<AutoComplete
+												className='[&>div>span>input]:px-[12px] w-full'
+												filterOption={(inputValue, options) => {
+													return inputValue && options?.value
+														? getSubstrateAddress(String(options?.value) || '') === getSubstrateAddress(inputValue)
+														: true;
 												}}
-											>
-												<OutlineCloseIcon className='text-primary w-2 h-2' />
-											</button>
-										</div>
-									) : (
-										<AutoComplete
-											className='[&>div>span>input]:px-[12px] w-full'
-											filterOption={(inputValue, options) => {
-												return inputValue && options?.value
-													? getSubstrateAddress(String(options?.value) || '') === getSubstrateAddress(inputValue)
-													: true;
-											}}
-											options={autocompleteAddresses}
-											id='recipient'
-											placeholder='Send to Address..'
-											onChange={(value) => onRecipientChange(value, i)}
-										/>
-									)}
-								</div>
+												options={autocompleteAddresses}
+												id='recipient'
+												placeholder='Send to Address..'
+												value={recipientAndAmount[i].recipient}
+												onChange={(value) => onRecipientChange(value, i)}
+											/>
+										)}
+									</div>
+								</Form.Item>
 							</div>
 							<div className='flex items-center gap-x-2 w-[40%]'>
 								<BalanceInput
