@@ -9,8 +9,9 @@ import emptyImage from '@common/assets/icons/empty-image.png';
 import Button from '@common/global-ui-components/Button';
 import { NEXT_PUBLIC_IMBB_KEY } from '@common/envs';
 import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
-import { ECreateOrganisationSteps } from '@common/enum/substrate';
+import { ECreateOrganisationSteps, NotificationStatus } from '@common/enum/substrate';
 import { useRouter } from 'next/navigation';
+import { queueNotification } from '@common/global-ui-components/QueueNotification';
 
 export const OrganisationDetailForm = () => {
 	const { onChangeOrganisationDetails } = useOrganisationContext();
@@ -21,6 +22,8 @@ export const OrganisationDetailForm = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const [orgImageUrl, setOrgImageUrl] = useState<string>('');
+
+	const IMGBB_KEY = process.env.NEXT_PUBLIC_IMBB_KEY;
 
 	const props: UploadProps = {
 		name: 'file',
@@ -33,7 +36,7 @@ export const OrganisationDetailForm = () => {
 				setLoading(true);
 				const form = new FormData();
 				form.append('image', file, `${file.name}`);
-				const res = await fetch(`https://api.imgbb.com/1/upload?key=${NEXT_PUBLIC_IMBB_KEY}`, {
+				const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
 					body: form,
 					method: 'POST'
 				});
@@ -41,17 +44,17 @@ export const OrganisationDetailForm = () => {
 				if (uploadData?.success && uploadData?.data?.url) {
 					setOrgImageUrl(uploadData.data.url);
 					setLoading(false);
-					// queueNotification({
-					// header: 'Uploaded!',
-					// message: 'Organisation Image Uploaded.',
-					// status: NotificationStatus.SUCCESS
-					// });
+					queueNotification({
+						header: 'Uploaded!',
+						message: 'Organisation Image Uploaded.',
+						status: NotificationStatus.SUCCESS
+					});
 				} else {
-					// queueNotification({
-					// header: 'Error!',
-					// message: 'There was an issue uploading Image.',
-					// status: NotificationStatus.ERROR
-					// });
+					queueNotification({
+						header: 'Error!',
+						message: 'There was an issue uploading Image.',
+						status: NotificationStatus.ERROR
+					});
 					setLoading(false);
 				}
 			});
