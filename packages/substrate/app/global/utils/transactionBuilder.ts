@@ -10,6 +10,7 @@ import {
 	IGenericObject,
 	IRecipient,
 	ISetIdentityMultisigTransaction,
+	ITeleportTransaction,
 	ITransferTransaction
 } from '@common/types/substrate';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
@@ -107,6 +108,122 @@ const transfer = async ({
 				network
 			),
 			to: data?.[0]?.recipient || '',
+			createdAt: new Date(),
+			multisigAddress: address,
+			from: address,
+			approvals: [sender],
+			initiator: sender
+		} as IDashboardTransaction;
+		console.log(tx, 'transaction hash');
+		console.log(newTransaction, 'Transaction');
+		onSuccess && onSuccess({ newTransaction });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: signableTransaction as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		params,
+		onSuccess: afterSuccess,
+		onFailed,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
+};
+
+const teleportAssets = async ({
+	api,
+	recipientAddress,
+	recipientNetwork,
+	amount,
+	multisig,
+	proxyAddress,
+	isProxy,
+	params = {},
+	sender: substrateSender,
+	onSuccess,
+	onFailed
+}: ITeleportTransaction) => {
+	const { address, network, threshold, signatories: allSignatories } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+
+	// Sort signatories
+	const signatories = sortAddresses(
+		allSignatories
+			.map((s) => getEncodedAddress(s, network) || s)
+			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+
+	const accountId = u8aToHex(decodeAddress(recipientAddress));
+
+	const assets = [
+		{
+			id: {
+				Concrete: {
+					parents: "0",
+					interior: "Here",
+				},
+			},
+			fun: {
+				Fungible: amount.toString(),
+			},
+		},
+	];
+
+	const tx = api.tx.polkadotXcm.limitedTeleportAssets(
+		{ V3: {
+			parents: "1",
+			interior: "Here"
+		} },
+		{ V3: {
+			parents: "0",
+			interior: {
+                X1: {
+                    AccountId32: {
+                        network: null,
+                        id: accountId,
+                    },
+                },
+            }
+		} },
+		{ V3: assets },
+		"0",
+		"Unlimited"
+	);
+
+	if (!tx) {
+		return;
+		// throw new Error(ERROR_MESSAGES.INVALID_TRANSACTION);
+	}
+
+	const getTransaction = (tx: SubmittableExtrinsic<'promise'>) => {
+		if (isProxy) {
+			return api.tx.proxy.proxy(proxyAddress, null, tx);
+		}
+		return tx;
+	};
+
+	const MAX_WEIGHT = (await tx.paymentInfo(address)).weight;
+	const transaction = getTransaction(tx);
+	const signableTransaction = api.tx.multisig.asMulti(threshold, signatories, null, transaction, MAX_WEIGHT);
+
+	const afterSuccess = (tx: IGenericObject) => {
+		const newTransaction = {
+			callData: transaction.method.toHex(),
+			callHash: transaction.method.hash.toString(),
+			network,
+			amountToken: formatBalance(
+				amount.toString() || '0',
+				{
+					numberAfterComma: 3,
+					withThousandDelimitor: false
+				},
+				network
+			),
+			recipientNetwork,
+			to: recipientAddress || '',
 			createdAt: new Date(),
 			multisigAddress: address,
 			from: address,
@@ -462,7 +579,8 @@ const TRANSACTION_BUILDER = {
 	[ETxType.APPROVE]: approveTransaction,
 	[ETxType.EDIT_PROXY]: editProxy,
 	[ETxType.SET_IDENTITY]: setIdentity,
-	[ETxType.DELEGATE]: delegate
+	[ETxType.DELEGATE]: delegate,
+	[ETxType.TELEPORT]: teleportAssets
 };
 
 export { TRANSACTION_BUILDER };

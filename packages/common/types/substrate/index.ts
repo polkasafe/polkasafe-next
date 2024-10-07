@@ -317,6 +317,17 @@ export interface ISendTransaction {
 	tip?: string;
 	type: ETransactionCreationType;
 }
+export interface ITeleportAssetTransaction {
+	recipientAddress: string;
+	recipientNetwork: ENetwork;
+	amount: BN;
+	note?: string;
+	sender: IMultisig;
+	selectedProxy?: string;
+	transactionFields?: ITxnCategory;
+	tip?: string;
+	type: ETransactionCreationType;
+}
 
 export interface ISetIdentityTransaction {
 	sender: IMultisig;
@@ -459,6 +470,20 @@ export interface ITransferTransaction {
 		recipient: string;
 		currency: string;
 	}>;
+	multisig: IMultisig;
+	proxyAddress?: string;
+	isProxy?: boolean;
+	params?: Partial<SignerOptions>;
+	sender: string;
+	onSuccess?: (data: IGenericObject) => void;
+	onFailed?: () => void;
+}
+
+export interface ITeleportTransaction {
+	api: ApiPromise;
+	recipientAddress: string;
+	amount: BN;
+	recipientNetwork: ENetwork
 	multisig: IMultisig;
 	proxyAddress?: string;
 	isProxy?: boolean;
