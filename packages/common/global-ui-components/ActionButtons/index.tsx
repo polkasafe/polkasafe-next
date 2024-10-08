@@ -41,7 +41,7 @@ export function ActionButtons({
 			<div className='w-full'>
 				<Button
 					variant={EButtonVariant.DANGER}
-					disabled={disabled}
+					disabled={loading}
 					size='large'
 					fullWidth
 					loading={Boolean(loading)}

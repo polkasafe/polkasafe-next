@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 import emptyImage from '@common/assets/icons/empty-image.png';
 import Button from '@common/global-ui-components/Button';
-import { NEXT_PUBLIC_IMBB_KEY } from '@common/envs';
 import { useOrgStepsContext } from '@common/context/CreateOrgStepsContext';
 import { ECreateOrganisationSteps, NotificationStatus } from '@common/enum/substrate';
 import { useRouter } from 'next/navigation';

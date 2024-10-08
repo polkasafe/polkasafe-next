@@ -24,13 +24,13 @@ const TokenFlow = ({
 				outgoingPercent={outgoingPercent}
 				outerWidth={200}
 				innerWidth={150}
-				netBalance={incomingAmount - outgoingAmount}
+				netBalance={Math.abs(incomingAmount - outgoingAmount)}
 			/>
 			<div className='flex flex-col items-center max-sm:mt-2'>
 				<div className='w-full max-sm:flex max-sm:gap-2'>
 					<label className='text-text_secondary text-sm mb-1'>Incoming</label>
 					<div className='text-success font-bold text-[18px] xl:text-[22px]'>
-						$ {Number(incomingAmount)
+						$ {Number.isNaN(Number(incomingAmount)) ? '0.00' : Number(incomingAmount)
 							.toFixed(2)
 							.replace(/\d(?=(\d{3})+\.)/g, '$&,')}
 					</div>
@@ -42,7 +42,7 @@ const TokenFlow = ({
 				<div className='w-full max-sm:flex max-sm:gap-2'>
 					<label className='text-text_secondary text-sm mb-1'>Outgoing</label>
 					<div className='text-failure font-bold text-[18px] xl:text-[22px]'>
-						$ {Number(outgoingAmount)
+						$ {Number.isNaN(Number(outgoingAmount)) ? '0.00' : Number(outgoingAmount)
 							.toFixed(2)
 							.replace(/\d(?=(\d{3})+\.)/g, '$&,')}
 					</div>

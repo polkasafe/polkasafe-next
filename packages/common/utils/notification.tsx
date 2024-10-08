@@ -26,13 +26,24 @@ export const useNotification = () => {
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const { notification: antdNotification } = App.useApp();
 	return ({ description, closeIcon, className, message, durationInSeconds = 4.5, status, placement }: Props) => {
+		const customClassNames = `bg-bg-main text-white bg-gradient-to-r p-4 rounded-md ${
+			status === NotificationStatus.SUCCESS
+				? '   from-[#06d6a0]/[0.2] '
+				: status === NotificationStatus.ERROR
+					? 'from-[#e63946]/[0.2]'
+					: status === NotificationStatus.INFO
+						? 'from-[#1573fe]/[0.2]'
+						: ''
+		}`;
+
 		const args = {
-			className,
+			className: className || customClassNames || '',
 			closeIcon,
-			message,
-			description,
+			message: <span className='text-white text-semibold'>{message}</span>,
+			description: <span className='text-white'>{description}</span>,
 			duration: durationInSeconds,
 			placement: placement || 'topRight',
+			maxCount: 1,
 			...(status === NotificationStatus.INFO ? { icon: <Loader /> } : {})
 		};
 		antdNotification[status](args);

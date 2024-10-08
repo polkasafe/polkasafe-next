@@ -17,6 +17,7 @@ type Props = {
 	state?: string;
 	taxNumber?: string;
 	transactionFields?: ITransactionFields;
+	organisationId?: string;
 };
 
 export function createOrganisation({
@@ -66,7 +67,8 @@ export function updateOrganisation({
 	state,
 	taxNumber,
 	addressBook,
-	transactionFields
+	transactionFields,
+	organisationId
 }: Props) {
 	if (!name) {
 		throw new Error('Invalid address or network');
@@ -84,7 +86,8 @@ export function updateOrganisation({
 		state,
 		taxNumber,
 		addressBook,
-		transactionFields
+		transactionFields,
+		organisationId
 	});
 	return request('/createOrganisation', { ...handleHeaders({ address, signature }) }, { method: 'PUT', body });
 }

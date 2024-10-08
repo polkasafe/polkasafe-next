@@ -115,7 +115,7 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 		>
 			<Form
 				layout='vertical'
-				className='flex flex-col gap-y-6'
+				className='flex flex-col gap-y-6 max-w-[550px]'
 				form={form}
 			>
 				<div className='flex flex-col gap-y-6'>
@@ -134,13 +134,15 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 							assets={assets || null}
 						/>
 					</div>
-					<RecipientsInputs
-						form={form}
-						autocompleteAddresses={autocompleteAddresses}
-						setDisableSubmit={setDisableSubmit}
-						assets={assets || undefined}
-						selectedMultisig={selectedMultisigDetails}
-					/>
+					<div className='w-full'>
+						<RecipientsInputs
+							form={form}
+							autocompleteAddresses={autocompleteAddresses}
+							setDisableSubmit={setDisableSubmit}
+							assets={assets || undefined}
+							selectedMultisig={selectedMultisigDetails}
+						/>
+					</div>
 
 					<BalanceInput
 						network={selectedMultisigDetails.network}
@@ -149,14 +151,14 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 						formName='tipBalance'
 						required={false}
 					/>
-					<div className='max-w-[500px]'>
+					<div className='w-auto'>
 						<Typography
 							variant={ETypographyVariants.p}
 							className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'
 						>
 							Category
 						</Typography>
-						<div className='flex-1 flex items-center gap-3 flex-wrap'>
+						<div className='flex-1 flex items-center gap-2 flex-wrap'>
 							{Object.keys(transactionFields)
 								.filter((field) => field !== 'none')
 								.map((field) => (
@@ -171,7 +173,7 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 											transactionFieldsObject.category === field
 												? 'border-primary text-primary bg-highlight'
 												: 'text-text-secondary border-text-secondary'
-										} rounded-xl px-[10px] py-1`}
+										} rounded-2xl px-2 py-[1px]`}
 										key='field'
 									>
 										{transactionFields[field].fieldName}
@@ -188,7 +190,7 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 									transactionFieldsObject.category === 'none'
 										? 'border-primary text-primary bg-highlight'
 										: 'text-text-secondary border-text-secondary'
-								} rounded-xl px-[10px] py-1`}
+								} rounded-2xl px-2 py-[1px]`}
 								key='field'
 							>
 								{transactionFields.none.fieldName}

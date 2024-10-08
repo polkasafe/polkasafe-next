@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import Modal from '@common/global-ui-components/Modal';
 import { EditForm } from '@common/modals/EditOrganisation/components/EditForm';
-import { ICreateOrganisationDetails, IMultisig } from '@common/types/substrate';
+import { ICreateOrganisationDetails, IMultisig, IOrganisation } from '@common/types/substrate';
 import { updateOrganisation } from '@sdk/polkasafe-sdk/src/create-organisation';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
@@ -16,15 +16,20 @@ import { getMultisigsByAddress } from '@sdk/polkasafe-sdk/src/get-all-multisig-b
 import { createMultisig } from '@sdk/polkasafe-sdk/src/create-multisig';
 import { useWalletAccounts } from '@substrate/app/global/hooks/useWalletAccounts';
 import { EditIcon } from '@common/global-ui-components/Icons';
+import { useNotification } from '@common/utils/notification';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 
 export const EditOrganisation = () => {
 	const [openModal, setOpenModal] = useState(false);
 	const availableSignatories = useWalletAccounts();
 	const [user] = useUser();
-	const [organisation] = useOrganisation();
+	const [organisation, setOrgananisation] = useOrganisation();
+	const notification = useNotification();
 	
 	const [multisigs, setMultisigs] = useState<Array<IMultisig>>([]);
 	const [linkedMultisigs, setLinkedMultisigs] = useState<Array<IMultisig>>(organisation?.multisigs || []);
+
+	const [updateLoading, setUpdateLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (organisation) {
@@ -34,29 +39,38 @@ export const EditOrganisation = () => {
 
 	const onOrganisationEdit = async (organisationDetails: ICreateOrganisationDetails) => {
 		if (!organisation || !user) return;
+		setUpdateLoading(true);
+
 		const payload = {
-			name: organisationDetails.name,
-			description: organisationDetails.description,
-			image: organisationDetails.image,
-			organisationAddress: organisationDetails.organisationAddress,
-			city: organisationDetails.city,
-			country: organisationDetails.country,
-			postalCode: organisationDetails.postalCode,
-			state: organisationDetails.state,
-			taxNumber: organisationDetails.taxNumber,
+			name: organisationDetails.name || organisation.name,
+			description: organisationDetails.description || '',
+			image: organisationDetails.image || organisation.image,
+			organisationAddress: organisationDetails.organisationAddress || organisation.address,
+			city: organisationDetails.city || organisation.city,
+			country: organisationDetails.country || organisation.country,
+			postalCode: organisationDetails.postalCode || organisation.postalCode,
+			state: organisationDetails.state || organisation.state,
+			taxNumber: organisationDetails.taxNumber || organisation.taxNumber,
 			addressBook: organisation.addressBook,
 			transactionFields: organisation.transactionFields,
-			multisigs: organisation.multisigs,
 			address: user.address,
-			signature: user.signature
+			signature: user.signature,
+			organisationId: organisation.id,
+			multisigs: [...linkedMultisigs],
 		};
 
-		const response = await updateOrganisation(payload as any);
+		const { data, error } = (await updateOrganisation(payload as any)) as { data: IOrganisation, error: string };
 
-		if (response) {
-			console.log('response', response);
+		if (data && !error) {
+			console.log('response', data);
+			setOrgananisation({ ...organisation, ...data });
+			notification(SUCCESS_MESSAGES.UPDATE_ORGANISATION_SUCCESS);
+			setOpenModal(false);
+		} else {
+			console.log('error', error);
+			notification(ERROR_MESSAGES.UPDATE_ORGANISATION_FAILED);
 		}
-		setOpenModal(false);
+		setUpdateLoading(false);
 	};
 
 	const updateMultisig = async () => {
@@ -98,7 +112,6 @@ export const EditOrganisation = () => {
 		try {
 			const newMultisig = (await createMultisig(multisig)) as { data: IMultisig };
 			console.log('newMultisigs', newMultisig?.data);
-			setMultisigs([...multisigs, { ...newMultisig?.data, linked: true }]);
 			setLinkedMultisigs([...linkedMultisigs, newMultisig?.data]);
 		} catch (e) {
 			console.error('error', e);
@@ -164,6 +177,7 @@ export const EditOrganisation = () => {
 					onCancel={() => setOpenModal(false)}
 					prevLinked={organisation.multisigs || []}
 					organisation={organisation}
+					updateLoading={updateLoading}
 				/>
 			</Modal>
 		</>

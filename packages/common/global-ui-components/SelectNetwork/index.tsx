@@ -25,7 +25,7 @@ export function SelectNetwork({
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	const networkOptions = networks.map((item) => ({
+	const networkOptions = networks.filter((item) => item !== ENetwork.PEOPLE).map((item) => ({
 		key: item,
 		label: (
 			<NetworkCard

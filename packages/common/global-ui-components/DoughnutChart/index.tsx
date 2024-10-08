@@ -3,6 +3,7 @@
 import { Doughnut } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend as ChartLegend } from 'chart.js';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+import NoAssetsSVG from '@assets/icons/no-transaction-home.svg';
 
 type IChartData = {
 	label: string;
@@ -143,11 +144,16 @@ const DoughnutChartWithLegend = ({
 }) => {
 	return (
 		<div className='flex justify-center items-center gap-6'>
-			{data?.filter((item) => Boolean(item) && item?.label && item?.color && item?.value).length > 0 && (
+			{data?.filter((item) => Boolean(item) && item?.label && item?.color && item?.value).length > 0 ? (
 				<>
 					<DoughnutChart data={data as any} />
 					<Legend data={data as any} />
 				</>
+			) : (
+				<div className='flex flex-col gap-y-2 items-center justify-center'>
+					<NoAssetsSVG />
+					<p className='font-normal text-xs leading-[15px] text-text_secondary'>No Assets Found.</p>
+				</div>
 			)}
 		</div>
 	);

@@ -60,8 +60,7 @@ const Address: React.FC<IAddressComponent> = ({
 
 	return (
 		<div className=' flex items-center gap-x-3'>
-			{noIdenticon ? null :
-			isProxy ? (
+			{noIdenticon ? null : isProxy ? (
 				<Identicon
 					className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
 					value={address}
@@ -103,8 +102,7 @@ const Address: React.FC<IAddressComponent> = ({
 					size={iconSize}
 					theme='substrate'
 				/>
-			)
-			 }
+			)}
 			{onlyAddress ? (
 				<div className='text-text-secondary flex items-center gap-x-3 text-sm font-normal'>
 					<span className='text-white'>{name || shortenAddress(address || '', addressLength || 10)}</span>

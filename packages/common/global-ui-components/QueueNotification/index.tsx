@@ -26,12 +26,23 @@ export function queueNotification({
 	status,
 	placement
 }: Props) {
+	const customClassNames = `bg-bg-main text-white bg-gradient-to-r p-4 rounded-md ${
+		status === NotificationStatus.SUCCESS
+			? '   from-[#06d6a0]/[0.2] '
+			: status === NotificationStatus.ERROR
+				? 'from-[#e63946]/[0.2]'
+				: status === NotificationStatus.INFO
+					? 'from-[#1573fe]/[0.2]'
+					: ''
+	}`;
+
 	const args = {
-		className: `scale-90 ${className}`,
+		className: className || customClassNames || '',
 		closeIcon,
-		message: header,
-		description: message,
+		message: <span className='text-white text-semibold'>{header}</span>,
+		description: <span className='text-white'>{message}</span>,
 		duration: durationInSeconds,
+		maxCount: 1,
 		placement: placement || 'topRight'
 	};
 

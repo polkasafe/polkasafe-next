@@ -483,7 +483,7 @@ export interface ITeleportTransaction {
 	api: ApiPromise;
 	recipientAddress: string;
 	amount: BN;
-	recipientNetwork: ENetwork
+	recipientNetwork: ENetwork;
 	multisig: IMultisig;
 	proxyAddress?: string;
 	isProxy?: boolean;
