@@ -1,7 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { ReactNode } from 'react';
-import { Select, Dropdown as AntdDropdown, DropdownProps } from 'antd';
-import { CircleArrowDownIcon } from '@common/global-ui-components/Icons';
-import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
+import { Dropdown as AntdDropdown, DropdownProps } from 'antd';
 
 interface IDropdownProps extends DropdownProps {
 	children: ReactNode;

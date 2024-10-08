@@ -222,7 +222,6 @@ export const PUT = withErrorHandling(async (req: NextRequest) => {
 			...oldOrganisation,
 			name: String(name),
 			multisigs: [
-				...oldOrganisation.multisigs,
 				...multisigPayload.map((multisig) => `${multisig.address}_${multisig.network}`)
 			],
 			imageURI,
@@ -237,7 +236,7 @@ export const PUT = withErrorHandling(async (req: NextRequest) => {
 		};
 		console.log('newOrganisation', multisigPayload, newOrganisation);
 		const docId = await updateOrganisationDB(organisationId, newOrganisation, multisigPayload);
-		return NextResponse.json({ data: { ...newOrganisation, id: docId }, error: null });
+		return NextResponse.json({ data: { ...newOrganisation, multisigs: multisigPayload, id: docId }, error: null });
 	} catch (err: unknown) {
 		console.log('Error in create organisation:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });

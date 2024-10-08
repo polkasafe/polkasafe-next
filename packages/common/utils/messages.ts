@@ -18,7 +18,12 @@ export const ERROR_MESSAGES = {
 	},
 	CREATE_ORGANISATION_FAILED: {
 		message: 'Create Organisation failed',
-		description: 'Create Organisation failed',
+		description: 'There was some problem creating your organisation',
+		status: NotificationStatus.ERROR
+	},
+	UPDATE_ORGANISATION_FAILED: {
+		message: 'Update Organisation failed',
+		description: 'There was some problem updating your organisation',
 		status: NotificationStatus.ERROR
 	},
 	INVALID_ADDRESS: {
@@ -104,6 +109,16 @@ export const SUCCESS_MESSAGES = {
 		description: 'Transaction has been sent successfully',
 		status: NotificationStatus.SUCCESS
 	},
+	TRANSACTION_APPROVE_SUCCESS: {
+		message: 'Approved',
+		description: 'Transaction has been approved successfully',
+		status: NotificationStatus.SUCCESS
+	},
+	TRANSACTION_REJECT_SUCCESS: {
+		message: 'Cancelled',
+		description: 'Transaction has been cancelled successfully',
+		status: NotificationStatus.SUCCESS
+	},
 	CREATE_MULTISIG_SUCCESS: {
 		message: 'Create Multisig Success',
 		description: 'Create Multisig has been sent successfully',
@@ -115,8 +130,13 @@ export const SUCCESS_MESSAGES = {
 		status: NotificationStatus.SUCCESS
 	},
 	CREATE_ORGANISATION_SUCCESS: {
-		message: 'Create Organisation Success',
-		description: 'Create Organisation has been sent successfully',
+		message: 'New Organisation Created',
+		description: '',
+		status: NotificationStatus.SUCCESS
+	},
+	UPDATE_ORGANISATION_SUCCESS: {
+		message: 'Organisation Updated',
+		description: '',
 		status: NotificationStatus.SUCCESS
 	},
 	ADD_ADDRESS_SUCCESS: {

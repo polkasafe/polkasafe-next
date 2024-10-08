@@ -72,8 +72,10 @@ const Menu = ({ userAddress, organisation, organisations }: IMenuProps) => {
 							selectedOrganisation={organisation}
 						/>
 					) : (
-						<Skeleton paragraph={{ rows: 1 }}
-						active />
+						<Skeleton
+							paragraph={{ rows: 1 }}
+							active
+						/>
 					)}
 				</section>
 

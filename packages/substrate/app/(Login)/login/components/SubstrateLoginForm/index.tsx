@@ -195,6 +195,12 @@ export function SubstrateLoginForm() {
 
 				localStorage.setItem('logged_in_wallet', selectedWallet);
 
+				queueNotification({
+					header: 'Wallet connected successfully!',
+					status: NotificationStatus.SUCCESS,
+					closeIcon: null
+				});
+
 				if (userData.currentOrganisation) {
 					router.push(ORGANISATION_DASHBOARD_URL({ id: userData.currentOrganisation }));
 					return;

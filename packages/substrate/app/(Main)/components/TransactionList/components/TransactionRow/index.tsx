@@ -313,6 +313,7 @@ function TransactionRow({
 					const transactions = payload.filter((tx) => tx !== null);
 
 					setQueueTransactions({ ...queueTransaction, transactions });
+					notification(SUCCESS_MESSAGES.TRANSACTION_APPROVE_SUCCESS);
 				} else {
 					const payload = (queueTransaction?.transactions || []).map((tx) => {
 						const approvals = tx.approvals || [];
@@ -340,9 +341,8 @@ function TransactionRow({
 
 					const transactions = payload;
 					setQueueTransactions({ ...queueTransaction, transactions });
+					notification(SUCCESS_MESSAGES.TRANSACTION_REJECT_SUCCESS);
 				}
-
-				notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
 			} catch (error) {
 				notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: error || error.message });
 			}

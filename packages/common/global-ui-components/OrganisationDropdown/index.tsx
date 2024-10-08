@@ -97,7 +97,7 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 											/>
 										</span>
 										{(!m.proxy || m.proxy.length === 0) && 
-											<Tooltip title='This Multisig has no Proxy'>
+											<Tooltip title='This Multisig has no Proxy' className='mt-1'>
 												<DangerTriangleIcon className='text-waiting' />
 											</Tooltip>
 										}

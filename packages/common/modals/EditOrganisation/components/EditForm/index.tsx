@@ -25,7 +25,8 @@ export const EditForm = ({
 	userAddress,
 	onCancel,
 	prevLinked,
-	organisation
+	organisation,
+	updateLoading
 }: {
 	onSubmit: (value: ICreateOrganisationDetails) => void;
 	onMultisigUpdate: () => void;
@@ -41,6 +42,7 @@ export const EditForm = ({
 	onCancel: () => void;
 	prevLinked: Array<IMultisig>;
 	organisation: IOrganisation;
+	updateLoading: boolean;
 }) => {
 	const [orgDetails, setOrgDetails] = useState<ICreateOrganisationDetails>();
 	const items = [
@@ -124,12 +126,12 @@ export const EditForm = ({
 				items={items}
 				accordion
 			/>
-			<ActionButtons icon={<CircleCheckIcon />} label='Confirm' onClick={() => {
-				if (orgDetails) {
-					onSubmit(orgDetails);
-				}
-				onMultisigUpdate();
-			}} onCancel={onCancel} disabled={linkedMultisig.toString() === prevLinked.toString() && !orgDetails} />
+			<ActionButtons loading={updateLoading} icon={<CircleCheckIcon />} label='Confirm' onClick={() => {
+				onSubmit(orgDetails || {
+					name: organisation.name,
+					description: ''
+				});
+			}} onCancel={onCancel} disabled={(linkedMultisig.toString() === prevLinked.toString() && !orgDetails) || linkedMultisig.length === 0} />
 		</div>
 	);
 };

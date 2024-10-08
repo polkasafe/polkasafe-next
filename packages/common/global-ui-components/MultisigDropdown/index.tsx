@@ -58,7 +58,7 @@ export const MultisigDropdown = ({ multisigs, onChange, assets }: IMultisigDropd
 		<div>
 			<Dropdown
 				trigger={['click']}
-				className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-[500px] max-sm:w-full'
+				className='border border-dashed border-text-disabled hover:border-primary rounded-lg p-2 bg-bg-secondary cursor-pointer w-full max-sm:w-full'
 				menu={{
 					items: multisigOptions
 				}}
@@ -78,9 +78,9 @@ export const MultisigDropdown = ({ multisigs, onChange, assets }: IMultisigDropd
 							<div>
 								<Typography
 									variant={ETypographyVariants.p}
-									className='text-text-primary text-3xs'
+									className='text-text-primary text-2xs px-2 bg-highlight rounded-lg'
 								>
-									Balance: {selectedAddressAsset.free} {selectedAddressAsset.symbol}
+									<span className='text-label'>Balance:</span> {selectedAddressAsset.free} {selectedAddressAsset.symbol}
 								</Typography>
 							</div>
 						)}
