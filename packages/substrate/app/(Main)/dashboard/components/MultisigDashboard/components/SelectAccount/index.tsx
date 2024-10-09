@@ -5,7 +5,6 @@
 'use client';
 
 import Address from '@common/global-ui-components/Address';
-import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IMultisig } from '@common/types/substrate';
 import { MULTISIG_DASHBOARD_URL, PROXY_URL } from '@substrate/app/global/end-points';
