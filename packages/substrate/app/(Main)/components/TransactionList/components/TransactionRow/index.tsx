@@ -316,30 +316,28 @@ function TransactionRow({
 					notification(SUCCESS_MESSAGES.TRANSACTION_APPROVE_SUCCESS);
 				} else {
 					const payload = (queueTransaction?.transactions || []).map((tx) => {
-						const approvals = tx.approvals || [];
-						if (!approvals.includes(user.address)) {
-							approvals.push(user.address);
-						}
 						const multisig = findMultisig(organisation?.multisigs || [], `${tx.multisigAddress}_${tx.network}`);
-						sendNotification({
-							address: user.address,
-							signature: user.signature,
-							args: {
+						if (tx.callHash === callHash)
+							sendNotification({
 								address: user.address,
-								addresses:
-									multisig?.signatories.filter(
-										(signatory) => getSubstrateAddress(signatory) !== getSubstrateAddress(user?.address || '')
-									) || [],
-								callHash: callHash,
-								multisigAddress: txMultisig.address,
-								network
-							},
-							trigger: ETriggers.CANCELLED_TRANSACTION
-						});
-						return tx.callHash === callHash ? { ...tx, approvals } : tx;
+								signature: user.signature,
+								args: {
+									address: user.address,
+									addresses:
+										multisig?.signatories.filter(
+											(signatory) => getSubstrateAddress(signatory) !== getSubstrateAddress(user?.address || '')
+										) || [],
+									callHash: callHash,
+									multisigAddress: txMultisig.address,
+									network
+								},
+								trigger: ETriggers.CANCELLED_TRANSACTION
+							});
+						return tx.callHash === callHash ? null : tx;
 					});
 
-					const transactions = payload;
+					const transactions = payload.filter((tx) => tx !== null);
+
 					setQueueTransactions({ ...queueTransaction, transactions });
 					notification(SUCCESS_MESSAGES.TRANSACTION_REJECT_SUCCESS);
 				}
