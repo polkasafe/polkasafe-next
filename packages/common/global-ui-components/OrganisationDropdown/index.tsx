@@ -1,4 +1,4 @@
-import { Dropdown } from 'antd';
+import { Dropdown, Tooltip } from 'antd';
 import { SlideInMotion } from '@common/global-ui-components/Motion/SlideIn';
 import { MULTISIG_DASHBOARD_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import { IOrganisation } from '@common/types/substrate';
@@ -10,7 +10,6 @@ import Address from '@common/global-ui-components/Address';
 import { useSearchParams } from 'next/navigation';
 import { ENetwork } from '@common/enum/substrate';
 import { DangerTriangleIcon } from '@common/global-ui-components/Icons';
-import { Tooltip } from 'antd';
 
 interface IOrganisationDropdown {
 	organisations: Array<IOrganisation>;
@@ -76,9 +75,9 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 									<div
 										className={`h-[16px] w-[16px] p-1 rounded-full border ${m.address === multisigId && network === m.network && item.id === organisationId ? 'border-primary' : 'border-text-secondary'}`}
 									>
-											<div
-												className={`w-full h-full rounded-full ${m.address === multisigId && network === m.network && item.id === organisationId ? 'bg-primary' : 'bg-transparent'}`}
-											/>
+										<div
+											className={`w-full h-full rounded-full ${m.address === multisigId && network === m.network && item.id === organisationId ? 'bg-primary' : 'bg-transparent'}`}
+										/>
 									</div>
 									<Link
 										href={MULTISIG_DASHBOARD_URL({ multisig: m.address, network: m.network, organisationId: item.id })}
@@ -96,11 +95,14 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 												withBadge={false}
 											/>
 										</span>
-										{(!m.proxy || m.proxy.length === 0) && 
-											<Tooltip title='This Multisig has no Proxy' className='mt-1'>
+										{(!m.proxy || m.proxy.length === 0) && (
+											<Tooltip
+												title='This Multisig has no Proxy'
+												className='mt-1'
+											>
 												<DangerTriangleIcon className='text-waiting' />
 											</Tooltip>
-										}
+										)}
 									</Link>
 								</div>
 							)

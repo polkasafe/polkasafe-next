@@ -16,9 +16,15 @@ interface IReviewTransactionProps {
 	onSubmit: () => Promise<void>;
 	onClose: () => void;
 	reviewTransaction: IReviewTransaction;
+	disabled?: boolean;
 }
 
-export const ReviewTransaction = ({ onSubmit, onClose, reviewTransaction }: IReviewTransactionProps) => {
+export const ReviewTransaction = ({
+	onSubmit,
+	onClose,
+	reviewTransaction,
+	disabled = false
+}: IReviewTransactionProps) => {
 	const { tx, from, to, network, name, proxyAddress, txCost } = reviewTransaction;
 	const [loading, setLoading] = useState(false);
 	const notification = useNotification();
@@ -111,7 +117,7 @@ export const ReviewTransaction = ({ onSubmit, onClose, reviewTransaction }: IRev
 					<ActionButtons
 						label='Sign Transaction'
 						onClick={handleSignTransaction}
-						disabled={false}
+						disabled={disabled}
 						onCancel={onClose}
 					/>
 				</div>

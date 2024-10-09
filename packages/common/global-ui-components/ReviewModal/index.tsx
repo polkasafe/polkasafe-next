@@ -2,12 +2,16 @@ import { ENetwork, ETransactionState } from '@common/enum/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import Modal from '@common/global-ui-components/Modal';
 import { IReviewTransaction } from '@common/types/substrate';
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 import { ReviewTransaction } from '@common/global-ui-components/ReviewTransaction';
 import { SizeType } from 'antd/lib/config-provider/SizeContext';
 import TransactionSuccessScreen from '@common/global-ui-components/TransactionSuccessScreen';
 import TransactionFailedScreen from '@common/global-ui-components/TransactionFailedScreen';
 import BN from 'bn.js';
+import { ApiPromise } from '@polkadot/api';
+import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
+import formatBnBalance from '@common/utils/formatBnBalance';
+import InfoBox from '@common/global-ui-components/InfoBox';
 
 interface IReviewModal {
 	buildTransaction: () => Promise<{ error: boolean }>;
@@ -16,6 +20,8 @@ interface IReviewModal {
 	size?: SizeType;
 	reviewTransaction: IReviewTransaction | null;
 	buttonIcon?: ReactNode;
+	isCreateProxyTx?: boolean;
+	api?: ApiPromise | AvailApiPromise;
 }
 
 export const ReviewModal = ({
@@ -25,11 +31,49 @@ export const ReviewModal = ({
 	className,
 	children,
 	buttonIcon,
-	size
+	size,
+	isCreateProxyTx,
+	api
 }: PropsWithChildren<IReviewModal>) => {
 	const [openModal, setOpenModal] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [transactionState, setTransactionState] = useState(ETransactionState.BUILD);
+
+	const [multisigBalance, setMultisigBalance] = useState<BN>(new BN(0));
+	const [reservedProxyDeposit, setReservedProxyDeposit] = useState<BN>(new BN(0));
+	const [totalDeposit, setTotalDeposit] = useState<BN>(new BN(0));
+
+	const multisigAddress = reviewTransaction?.from || '';
+	const network = reviewTransaction?.network || ENetwork.POLKADOT;
+
+	useEffect(() => {
+		if (!api || !multisigAddress) return;
+
+		const depositBase = api.consts.multisig.depositBase.toString();
+		const depositFactor = api.consts.multisig.depositFactor.toString();
+		setTotalDeposit(new BN(depositBase).add(new BN(depositFactor)));
+
+		api.query?.system
+			?.account(multisigAddress)
+			.then((res: any) => {
+				const balanceStr = res?.data?.free;
+				setMultisigBalance(balanceStr);
+			})
+			.catch((e) => console.error(e));
+
+		if (isCreateProxyTx) {
+			setReservedProxyDeposit(
+				(api.consts.proxy.proxyDepositFactor as unknown as BN)
+					.muln(1)
+					.iadd(api.consts.proxy.proxyDepositBase as unknown as BN)
+					.add((api.consts.balances.existentialDeposit as unknown as BN).muln(2))
+			);
+		}
+	}, [api, isCreateProxyTx, multisigAddress]);
+
+	const infoMessage = isCreateProxyTx
+		? `A Small Deposit of ${formatBnBalance(reservedProxyDeposit, { numberAfterComma: 3, withUnit: true }, network)} should be present in your Multisig account to Create a Proxy and ${formatBnBalance(totalDeposit, { numberAfterComma: 3, withUnit: true }, network)} should be present in the Initiator's account.`
+		: `${formatBnBalance(totalDeposit, { numberAfterComma: 3, withUnit: true }, network)} should be present in the Initiator's account to create the Transaction.`;
 
 	const actionClicked = async () => {
 		setLoading(true);
@@ -74,14 +118,23 @@ export const ReviewModal = ({
 				title='Review Transaction'
 			>
 				{transactionState === ETransactionState.REVIEW && (
-					<ReviewTransaction
-						onSubmit={modalClicked}
-						onClose={() => {
-							setTransactionState(ETransactionState.BUILD);
-							setOpenModal(false);
-						}}
-						reviewTransaction={reviewTransaction as IReviewTransaction}
-					/>
+					<div>
+						{api && (
+							<InfoBox
+								message={infoMessage}
+								className='max-w-[500px]'
+							/>
+						)}
+						<ReviewTransaction
+							onSubmit={modalClicked}
+							onClose={() => {
+								setTransactionState(ETransactionState.BUILD);
+								setOpenModal(false);
+							}}
+							reviewTransaction={reviewTransaction as IReviewTransaction}
+							disabled={isCreateProxyTx && multisigBalance.lt(reservedProxyDeposit)}
+						/>
+					</div>
 				)}
 				{transactionState === ETransactionState.CONFIRM && (
 					<TransactionSuccessScreen
