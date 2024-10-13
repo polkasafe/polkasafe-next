@@ -347,12 +347,19 @@ export interface IDelegateTransaction {
 	type: ETransactionCreationType;
 }
 
+export interface ICallDataTransaction {
+	sender: IMultisig;
+	callData: string;
+	type: ETransactionCreationType;
+	proxyAddress?: string;
+}
+
 export interface IGenericObject {
 	[key: string]: any;
 }
 
 export interface IFundMultisig {
-	multisigAddress: IMultisig;
+	multisig: IMultisig;
 	amount: string;
 	selectedProxy?: string;
 }
@@ -554,6 +561,17 @@ export interface IDelegateMultisigTransaction {
 	proxyType: string;
 	onSuccess: (data: IGenericObject) => void;
 	onFailed: () => void;
+}
+
+export interface ICallDataMultisigTransaction {
+	api: ApiPromise;
+	multisig: IMultisig;
+	proxyAddress?: string;
+	sender: string;
+	callDataString: string;
+	onSuccess: (data: IGenericObject) => void;
+	onFailed: () => void;
+	type: ETransactionCreationType;
 }
 
 export interface IDropdownOptions {

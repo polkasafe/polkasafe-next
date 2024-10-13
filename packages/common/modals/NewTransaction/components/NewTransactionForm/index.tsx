@@ -7,6 +7,8 @@ import SetIdentity from '@common/modals/NewTransaction/components/NewTransaction
 import { Delegation } from '@common/modals/NewTransaction/components/NewTransactionForm/components/Delegation';
 import { SendTokens } from '@common/modals/NewTransaction/components/NewTransactionForm/components/SendToken';
 import { TeleportAssets } from '@common/modals/NewTransaction/components/NewTransactionForm/components/TeleportAssets';
+import CallData from '@common/modals/NewTransaction/components/NewTransactionForm/components/CallData';
+import SubmitPreImage from '@common/modals/NewTransaction/components/NewTransactionForm/components/SubmitPreimage';
 
 export enum ETransactionSteps {
 	BUILD_TRANSACTION = 'New Transaction',
@@ -52,6 +54,19 @@ export function NewTransactionForm({
 				<SendTokens
 					onClose={onClose}
 					form={form}
+				/>
+			)}
+			{type === ETransactionCreationType.CALL_DATA && (
+				<CallData
+					onClose={onClose}
+					form={form}
+				/>
+			)}
+			{(type === ETransactionCreationType.SUBMIT_PREIMAGE || type === ETransactionCreationType.MANUAL_EXTRINSIC) && (
+				<SubmitPreImage
+					onClose={onClose}
+					form={form}
+					type={type}
 				/>
 			)}
 		</div>

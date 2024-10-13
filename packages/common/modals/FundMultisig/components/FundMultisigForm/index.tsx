@@ -31,7 +31,7 @@ export function FundMultisigForm() {
 			const { amount } = values;
 			const payload = {
 				amount,
-				multisigAddress: findMultisig(multisigs, selectedMultisigDetails.address) as IMultisig,
+				multisig: findMultisig(multisigs, selectedMultisigDetails.address) as IMultisig,
 				selectedProxy: selectedMultisigDetails.proxy
 			};
 			setLoading(true);

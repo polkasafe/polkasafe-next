@@ -13,6 +13,7 @@ import {
 	Wallet
 } from '@common/enum/substrate';
 import {
+	ICallDataTransaction,
 	IConnectedUser,
 	IDelegateTransaction,
 	IGenericObject,
@@ -279,7 +280,55 @@ export function SendTransaction({
 		setTransactionState(ETransactionState.REVIEW);
 	};
 
-	const buildTransaction = async (values: ISendTransaction | ITeleportAssetTransaction | ISetIdentityTransaction | IDelegateTransaction) => {
+	const callData = async (
+		values: ICallDataTransaction,
+		user: IConnectedUser,
+		api: ApiPromise,
+		onSuccess: ({ newTransaction }: IGenericObject) => void
+	) => {
+		const { address } = user;
+		const { callData, sender: multisig, proxyAddress, type } = values;
+		console.log('multisig', callData, multisig, proxyAddress);
+		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.CALL_DATA]({
+			api,
+			callDataString: callData,
+			proxyAddress,
+			multisig,
+			sender: address,
+			onSuccess,
+			type,
+			onFailed: () => {}
+		})) as ISubstrateExecuteProps;
+		if (!transaction) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+			return;
+		}
+
+		const fee = (await transaction.tx.paymentInfo(address)).partialFee;
+		const formattedFee = formatBalance(
+			fee.toString(),
+			{
+				numberAfterComma: 3,
+				withThousandDelimitor: false
+			},
+			multisig.network
+		);
+
+		const reviewData = {
+			tx: transaction.tx.toHuman(),
+			from: values.sender?.address,
+			txCost: formattedFee.toString(),
+			network: values.sender.network,
+			createAt: new Date().toISOString()
+		} as IReviewTransaction;
+		setExecutableTransaction(transaction);
+		setReviewTransaction(reviewData);
+		setTransactionState(ETransactionState.REVIEW);
+	};
+
+	const buildTransaction = async (
+		values: ISendTransaction | ITeleportAssetTransaction | ISetIdentityTransaction | IDelegateTransaction
+	) => {
 		if (!user) {
 			notification({ ...ERROR_MESSAGES.AUTHENTICATION_FAILED });
 			return;
@@ -346,15 +395,23 @@ export function SendTransaction({
 				case ETransactionCreationType.SEND_TOKEN:
 					await sendTokens(values as ISendTransaction, user, api, onSuccess);
 					break;
+
 				case ETransactionCreationType.TELEPORT:
 					await teleport(values as ITeleportAssetTransaction, user, api, onSuccess);
 					break;
+
 				case ETransactionCreationType.SET_IDENTITY:
 					await setIdentity(values as ISetIdentityTransaction, user, api, peopleApi, onSuccess);
 					break;
 
 				case ETransactionCreationType.DELEGATE:
 					await delegation(values as IDelegateTransaction, user, api, onSuccess);
+					break;
+
+				case ETransactionCreationType.CALL_DATA:
+				case ETransactionCreationType.SUBMIT_PREIMAGE:
+				case ETransactionCreationType.MANUAL_EXTRINSIC:
+					await callData(values as ICallDataTransaction, user, api, onSuccess);
 					break;
 			}
 		} catch (error) {
@@ -381,12 +438,12 @@ export function SendTransaction({
 	};
 
 	const fundTransaction = async ({
-		multisigAddress,
+		multisig,
 		amount,
 		selectedProxy
 	}: {
 		amount: string;
-		multisigAddress: IMultisig;
+		multisig: IMultisig;
 		selectedProxy?: string;
 	}) => {
 		if (!user) {
@@ -394,7 +451,7 @@ export function SendTransaction({
 		}
 		const { address } = user;
 		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
-		const apiAtom = getApi(multisigAddress.network);
+		const apiAtom = getApi(multisig.network);
 		if (!apiAtom) {
 			return;
 		}
@@ -402,6 +459,7 @@ export function SendTransaction({
 		if (!api || !api.isReady) {
 			return;
 		}
+		await setSigner(api, multisig.network);
 		// await initiateTransaction({
 		// 	wallet,
 		// 	type: ETxType.FUND,

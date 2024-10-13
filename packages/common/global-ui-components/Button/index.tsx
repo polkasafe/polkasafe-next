@@ -25,7 +25,7 @@ export default function Button({ variant, className, fullWidth, children, ...pro
 						size='large'
 						className={twMerge(
 							'bg-primary text-white rounded-lg border-none min-w-[120px] flex justify-center items-center gap-x-2 text-sm shadow-none',
-							props.disabled && 'bg-opacity-60 text-disabled-btn-text',
+							props.disabled && 'opacity-60 text-disabled-btn-text',
 							fullWidth && 'w-full',
 							className
 						)}
@@ -42,7 +42,7 @@ export default function Button({ variant, className, fullWidth, children, ...pro
 						size='large'
 						className={twMerge(
 							'bg-highlight text-white rounded-lg min-w-[120px] flex justify-center items-center gap-x-2 text-sm shadow-none text-label border-none',
-							props.disabled && 'bg-opacity-60 text-text-disabled',
+							props.disabled && 'opacity-60 text-text-disabled',
 							fullWidth && 'w-full',
 							className
 						)}

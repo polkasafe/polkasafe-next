@@ -5,7 +5,6 @@ import { useDashboardContext } from '@common/context/DashboarcContext';
 import { ENetwork, ETransactionCreationType } from '@common/enum/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
-import Input from '@common/global-ui-components/Input';
 import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
@@ -18,11 +17,22 @@ import { useState } from 'react';
 // only import this here because Call Data will not be in treasurease.xyz
 import { ApiPromise } from '@polkadot/api';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
+import ManualExtrinsic from '@common/modals/NewTransaction/components/NewTransactionForm/components/ManualExtrinsic';
 
-const CallData = ({ onClose, form }: { onClose: () => void; form: FormInstance }) => {
+const SubmitPreImage = ({
+	onClose,
+	form,
+	type
+}: {
+	onClose: () => void;
+	form: FormInstance;
+	type: ETransactionCreationType;
+}) => {
 	const { getApi } = useAllAPI();
+	const [callData, setCallData] = useState<string>('');
 	const { multisigs, buildTransaction, assets } = useDashboardContext();
 	const notification = useNotification();
+
 	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
 		address: string;
 		network: ENetwork;
@@ -35,15 +45,19 @@ const CallData = ({ onClose, form }: { onClose: () => void; form: FormInstance }
 	});
 
 	const [loading, setLoading] = useState(false);
+	const apiAtom = getApi(selectedMultisigDetails.network);
 
-	const handleSubmit = async (values: { callData: string }) => {
+	const api = apiAtom?.api;
+
+	const handleSubmit = async () => {
+		console.log('callData', callData);
 		try {
 			const multisigId = `${selectedMultisigDetails.address}_${selectedMultisigDetails.network}`;
 			const payload = {
-				callData: values.callData,
+				callData,
 				sender: findMultisig(multisigs, multisigId) as IMultisig,
 				proxyAddress: selectedMultisigDetails.proxy,
-				type: ETransactionCreationType.CALL_DATA
+				type
 			};
 
 			setLoading(true);
@@ -89,39 +103,15 @@ const CallData = ({ onClose, form }: { onClose: () => void; form: FormInstance }
 				</div>
 
 				<section className='w-full'>
-					<label className='text-primary font-normal text-xs leading-[13px] block mb-[5px]'>Call Data*</label>
 					<div className='flex items-center gap-x-[10px]'>
-						<article className='w-full'>
-							<Form.Item
-								className='border-0 outline-0 my-0 p-0'
-								name='callData'
-								rules={[
-									{ message: 'Required', required: true },
-									() => ({
-										validator(_, value) {
-											try {
-												if (getApi(selectedMultisigDetails.network) === undefined) {
-													return Promise.reject(new Error('API not found'));
-												}
-												const allApi = getApi(selectedMultisigDetails.network);
-												const api = allApi?.api;
-												if (!api) {
-													return Promise.reject(new Error('API not found'));
-												}
-												(api as ApiPromise).createType('Call', value);
-												return Promise.resolve();
-											} catch (error) {
-												return Promise.reject(new Error('Invalid Call Data'));
-											}
-										}
-									})
-								]}
-							>
-								<div className='flex items-center h-[50px]'>
-									<Input placeholder='John' />
-								</div>
-							</Form.Item>
-						</article>
+						{api && (
+							<ManualExtrinsic
+								network={selectedMultisigDetails.network}
+								apiReady
+								api={api as ApiPromise}
+								setCallData={setCallData}
+							/>
+						)}
 					</div>
 				</section>
 
@@ -139,7 +129,7 @@ const CallData = ({ onClose, form }: { onClose: () => void; form: FormInstance }
 					</div>
 					<div className='w-full'>
 						<Button
-							disabled={form.getFieldsError().filter(({ errors }) => errors.length).length > 0}
+							disabled={!callData || form.getFieldsError().filter(({ errors }) => errors.length).length > 0}
 							fullWidth
 							htmlType='submit'
 							size='large'
@@ -154,4 +144,4 @@ const CallData = ({ onClose, form }: { onClose: () => void; form: FormInstance }
 	);
 };
 
-export default CallData;
+export default SubmitPreImage;

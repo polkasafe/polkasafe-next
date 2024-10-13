@@ -128,7 +128,9 @@ export enum ETxType {
 	EDIT_PROXY = 'edit_proxy',
 	SET_IDENTITY = 'set_identity',
 	DELEGATE = 'delegate',
-	TELEPORT = 'teleport'
+	TELEPORT = 'teleport',
+	CALL_DATA = 'call_data',
+	SET_PREIMAGE = 'set_preimage'
 }
 
 export enum ETransactionTab {
@@ -242,12 +244,13 @@ export enum EInvoiceStatus {
 export enum ETransactionCreationType {
 	SEND_TOKEN = 'Send Token',
 	// MANUAL_EXTRINSIC = 'Manual Extrinsic',
-	// CALL_DATA = 'Call Data',
-	// SUBMIT_PREIMAGE = 'Submit Preimage',
+	CALL_DATA = 'Call Data',
+	SUBMIT_PREIMAGE = 'Submit Preimage',
 	// SUBMIT_PROPOSAL = 'Submit Proposal',
 	SET_IDENTITY = 'Set Identity',
 	DELEGATE = 'Delegate',
-	TELEPORT = 'Teleport Assets'
+	TELEPORT = 'Teleport Assets',
+	MANUAL_EXTRINSIC = 'Manual Extrinsic'
 	// CREATE_NFT = 'Create NFT'
 }
 

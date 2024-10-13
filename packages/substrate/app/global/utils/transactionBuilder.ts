@@ -1,7 +1,8 @@
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
-import { ENetwork, ETxType } from '@common/enum/substrate';
+import { ENetwork, ETransactionCreationType, ETxType } from '@common/enum/substrate';
 import {
 	IApproveTransaction,
+	ICallDataMultisigTransaction,
 	ICancelTransaction,
 	ICreateProxyTransaction,
 	IDashboardTransaction,
@@ -43,6 +44,91 @@ const getTransferCalls = (api: ApiPromise, data: IRecipient, network: ENetwork) 
 		return api.tx.assets.transfer(token.id, data.address, data.amount);
 	}
 	return null;
+};
+
+const fund = async ({
+	api,
+	data,
+	multisig,
+	proxyAddress,
+	isProxy,
+	sender: substrateSender,
+	onSuccess,
+	onFailed
+}: ITransferTransaction) => {
+	const { address, network, threshold, signatories: allSignatories } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+
+	// Sort signatories
+	const signatories = sortAddresses(
+		allSignatories
+			.map((s) => getEncodedAddress(s, network) || s)
+			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+	const tx = data
+		.map((d) => {
+			if (!d?.amount || !d?.recipient) {
+				throw new Error('Amount and recipient are required');
+			}
+			const { amount, recipient, currency } = d;
+			const accountId = u8aToHex(decodeAddress(recipient));
+			return getTransferCalls(api, { amount, address: accountId, currency: d.currency }, network);
+		})
+		.filter((tx) => tx !== null);
+
+	if (!tx || tx.length === 0) {
+		return;
+		// throw new Error(ERROR_MESSAGES.INVALID_TRANSACTION);
+	}
+
+	const getTransaction = (tx: SubmittableExtrinsic<'promise'>) => {
+		if (isProxy) {
+			return api.tx.proxy.proxy(proxyAddress, null, tx);
+		}
+		return tx;
+	};
+
+	const batchOrSingleTx = tx.length > 1 ? api.tx.utility.batchAll(tx) : tx[0];
+	const MAX_WEIGHT = (await batchOrSingleTx.paymentInfo(address)).weight;
+	const transaction = getTransaction(batchOrSingleTx);
+	const signableTransaction = api.tx.multisig.asMulti(threshold, signatories, null, transaction, MAX_WEIGHT);
+
+	const afterSuccess = (tx: IGenericObject) => {
+		const newTransaction = {
+			callData: transaction.method.toHex(),
+			callHash: transaction.method.hash.toString(),
+			network,
+			amountToken: formatBalance(
+				data?.[0]?.amount.toString() || '0',
+				{
+					numberAfterComma: 3,
+					withThousandDelimitor: false
+				},
+				network
+			),
+			to: data?.[0]?.recipient || '',
+			createdAt: new Date(),
+			multisigAddress: address,
+			from: address,
+			approvals: [sender],
+			initiator: sender
+		} as IDashboardTransaction;
+		console.log(tx, 'transaction hash');
+		console.log(newTransaction, 'Transaction');
+		onSuccess && onSuccess({ newTransaction });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: signableTransaction as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		onSuccess: afterSuccess,
+		onFailed,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
 };
 
 const transfer = async ({
@@ -162,35 +248,39 @@ const teleportAssets = async ({
 		{
 			id: {
 				Concrete: {
-					parents: "0",
-					interior: "Here",
-				},
+					parents: '0',
+					interior: 'Here'
+				}
 			},
 			fun: {
-				Fungible: amount.toString(),
-			},
-		},
+				Fungible: amount.toString()
+			}
+		}
 	];
 
 	const tx = api.tx.polkadotXcm.limitedTeleportAssets(
-		{ V3: {
-			parents: "1",
-			interior: "Here"
-		} },
-		{ V3: {
-			parents: "0",
-			interior: {
-                X1: {
-                    AccountId32: {
-                        network: null,
-                        id: accountId,
-                    },
-                },
-            }
-		} },
+		{
+			V3: {
+				parents: '1',
+				interior: 'Here'
+			}
+		},
+		{
+			V3: {
+				parents: '0',
+				interior: {
+					X1: {
+						AccountId32: {
+							network: null,
+							id: accountId
+						}
+					}
+				}
+			}
+		},
 		{ V3: assets },
-		"0",
-		"Unlimited"
+		'0',
+		'Unlimited'
 	);
 
 	if (!tx) {
@@ -572,7 +662,65 @@ const delegate = async ({
 	};
 };
 
+const callData = async ({
+	api,
+	callDataString,
+	multisig,
+	type,
+	proxyAddress,
+	sender: substrateSender,
+	onSuccess
+}: ICallDataMultisigTransaction) => {
+	const { address, network, threshold, signatories: allSignatories } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+
+	// Sort signatories
+	const signatories = sortAddresses(
+		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+
+	const callData = api.createType('Call', callDataString);
+
+	let tx = api.tx(callData);
+
+	if (type === ETransactionCreationType.SUBMIT_PREIMAGE) {
+		tx = api.tx.preimage.notePreimage(callDataString);
+	}
+
+	if (proxyAddress) {
+		tx = api.tx.proxy.proxy(proxyAddress, null, tx);
+	}
+	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
+	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, tx, MAX_WEIGHT as any);
+	const afterSuccess = (tx: IGenericObject) => {
+		const newTransaction = {
+			callData: callData.toHex(),
+			callHash: callData.hash.toString(),
+			network,
+			amountToken: '0',
+			createdAt: new Date(),
+			multisigAddress: address,
+			from: address,
+			approvals: [sender]
+		} as IDashboardTransaction;
+		console.log(newTransaction, 'Transaction');
+		onSuccess && onSuccess({ newTransaction });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: mainTx as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		onSuccess: afterSuccess,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
+};
+
 const TRANSACTION_BUILDER = {
+	[ETxType.FUND]: fund,
 	[ETxType.TRANSFER]: transfer,
 	[ETxType.CREATE_PROXY]: createProxy,
 	[ETxType.CANCEL]: cancelTransaction,
@@ -580,7 +728,8 @@ const TRANSACTION_BUILDER = {
 	[ETxType.EDIT_PROXY]: editProxy,
 	[ETxType.SET_IDENTITY]: setIdentity,
 	[ETxType.DELEGATE]: delegate,
-	[ETxType.TELEPORT]: teleportAssets
+	[ETxType.TELEPORT]: teleportAssets,
+	[ETxType.CALL_DATA]: callData
 };
 
 export { TRANSACTION_BUILDER };

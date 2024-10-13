@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { AutoComplete, FormInstance } from 'antd';
+import { AutoComplete, FormInstance, Form } from 'antd';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { CirclePlusIcon, DeleteIcon, OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import BN from 'bn.js';
@@ -11,7 +11,6 @@ import { MULTIPLE_CURRENCY_NETWORKS } from '@common/constants/multipleCurrencyNe
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { IMultisigAssets } from '@common/types/substrate';
 import inputToBn from '@common/utils/inputToBn';
-import { Form } from 'antd';
 
 interface IRecipientInputs {
 	autocompleteAddresses: Array<any>;
@@ -93,10 +92,7 @@ export const RecipientsInputs = ({
 		if (!recipientAndAmount) return;
 		const isValid: boolean[] = [];
 		recipientAndAmount.forEach((item, i) => {
-			if (
-				item.recipient &&
-				!getSubstrateAddress(item.recipient)
-			) {
+			if (item.recipient && !getSubstrateAddress(item.recipient)) {
 				isValid.push(false);
 				setValidRecipient((prev) => {
 					const copyArray = [...prev];
@@ -211,7 +207,6 @@ export const RecipientsInputs = ({
 									className='border-0 outline-0 my-0 p-0'
 									validateStatus={recipient && validRecipient[i] ? 'success' : 'error'}
 								>
-
 									<div className='h-[50px]'>
 										{recipient && isSelected(recipient) ? (
 											<div className='border border-solid border-primary rounded-lg px-2 h-full flex justify-between items-center w-full'>
