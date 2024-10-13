@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { Form, Spin } from 'antd';
 import ActionButton from '@common/global-ui-components/ActionButton';
-import { IMultisig } from '@common/types/substrate';
 import { useDashboardContext } from '@common/context/DashboarcContext';
-import { findMultisig } from '@common/utils/findMultisig';
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
+import { ERROR_MESSAGES } from '@common/utils/messages';
 import { fundFormFields } from '@common/modals/FundMultisig/utils/form';
 import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown';
 import { ENetwork } from '@common/enum/substrate';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { useNotification } from '@common/utils/notification';
 import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
+import { IMultisig } from '@common/types/substrate';
 
 export function FundMultisigForm() {
 	const { multisigs, onFundMultisig } = useDashboardContext();
@@ -28,15 +27,16 @@ export function FundMultisigForm() {
 	});
 	const handleSubmit = async (values: { amount: string }) => {
 		try {
+			console.log('values', selectedMultisigDetails);
+
 			const { amount } = values;
 			const payload = {
 				amount,
-				multisig: findMultisig(multisigs, selectedMultisigDetails.address) as IMultisig,
+				multisig: selectedMultisigDetails as unknown as IMultisig,
 				selectedProxy: selectedMultisigDetails.proxy
 			};
 			setLoading(true);
 			await onFundMultisig(payload);
-			notification(SUCCESS_MESSAGES.TRANSACTION_SUCCESS);
 		} catch (e) {
 			console.log(e);
 			notification({ ...ERROR_MESSAGES.TRANSACTION_FAILED, description: e || e.message });

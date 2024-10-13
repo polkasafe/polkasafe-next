@@ -45,6 +45,7 @@ import { sendNotification } from '@sdk/polkasafe-sdk/src';
 import { findMultisig } from '@common/utils/findMultisig';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { updateTransaction } from '@sdk/polkasafe-sdk/src/transaction/callhash';
+import { BN } from '@polkadot/util';
 
 interface ISendTransactionProps {
 	address: string | null;
@@ -449,8 +450,9 @@ export function SendTransaction({
 		if (!user) {
 			return;
 		}
+
+		console.log('multisig', multisig);
 		const { address } = user;
-		const wallet = (localStorage.getItem('logged_in_wallet') as Wallet) || Wallet.POLKADOT;
 		const apiAtom = getApi(multisig.network);
 		if (!apiAtom) {
 			return;
@@ -459,17 +461,39 @@ export function SendTransaction({
 		if (!api || !api.isReady) {
 			return;
 		}
-		await setSigner(api, multisig.network);
-		// await initiateTransaction({
-		// 	wallet,
-		// 	type: ETxType.FUND,
-		// 	api,
-		// 	data: [{ amount: new BN(amount), recipient: multisigAddress.address }],
-		// 	isProxy: !!selectedProxy,
-		// 	proxyAddress: selectedProxy,
-		// 	multisig: multisigAddress,
-		// 	sender: address
-		// });
+
+		const transaction = (await TRANSACTION_BUILDER[ETxType.FUND]({
+			api,
+			data: [{ amount: new BN(amount), recipient: selectedProxy || multisig.address }],
+			multisig,
+			sender: address,
+			onSuccess: () => {}
+		})) as ISubstrateExecuteProps;
+		if (!transaction) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+			return;
+		}
+		const fee = (await transaction.tx.paymentInfo(address)).partialFee;
+		const formattedFee = formatBalance(
+			fee.toString(),
+			{
+				numberAfterComma: 3,
+				withThousandDelimitor: false
+			},
+			multisig.network
+		);
+
+		const reviewData = {
+			tx: transaction.tx.toHuman(),
+			from: address,
+			to: selectedProxy || multisig.address,
+			txCost: formattedFee.toString(),
+			network: multisig.network,
+			createAt: new Date().toISOString()
+		} as IReviewTransaction;
+		setExecutableTransaction(transaction);
+		setReviewTransaction(reviewData);
+		setTransactionState(ETransactionState.REVIEW);
 	};
 
 	return (

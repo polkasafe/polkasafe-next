@@ -8,6 +8,7 @@ import {
 	IDashboardTransaction,
 	IDelegateMultisigTransaction,
 	IEditMultisigTransaction,
+	IFundTransaction,
 	IGenericObject,
 	IRecipient,
 	ISetIdentityMultisigTransaction,
@@ -46,53 +47,26 @@ const getTransferCalls = (api: ApiPromise, data: IRecipient, network: ENetwork) 
 	return null;
 };
 
-const fund = async ({
-	api,
-	data,
-	multisig,
-	proxyAddress,
-	isProxy,
-	sender: substrateSender,
-	onSuccess,
-	onFailed
-}: ITransferTransaction) => {
-	const { address, network, threshold, signatories: allSignatories } = multisig;
+const fund = async ({ api, data, multisig, sender: substrateSender, onSuccess, onFailed }: IFundTransaction) => {
+	const { address, network } = multisig;
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
 
-	// Sort signatories
-	const signatories = sortAddresses(
-		allSignatories
-			.map((s) => getEncodedAddress(s, network) || s)
-			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
-		networkConstants[network].ss58Format
-	);
 	const tx = data
 		.map((d) => {
 			if (!d?.amount || !d?.recipient) {
 				throw new Error('Amount and recipient are required');
 			}
-			const { amount, recipient, currency } = d;
+			const { amount, recipient } = d;
 			const accountId = u8aToHex(decodeAddress(recipient));
-			return getTransferCalls(api, { amount, address: accountId, currency: d.currency }, network);
+			return api.tx.balances.transferKeepAlive(accountId, amount);
 		})
 		.filter((tx) => tx !== null);
 
 	if (!tx || tx.length === 0) {
 		return;
-		// throw new Error(ERROR_MESSAGES.INVALID_TRANSACTION);
 	}
 
-	const getTransaction = (tx: SubmittableExtrinsic<'promise'>) => {
-		if (isProxy) {
-			return api.tx.proxy.proxy(proxyAddress, null, tx);
-		}
-		return tx;
-	};
-
-	const batchOrSingleTx = tx.length > 1 ? api.tx.utility.batchAll(tx) : tx[0];
-	const MAX_WEIGHT = (await batchOrSingleTx.paymentInfo(address)).weight;
-	const transaction = getTransaction(batchOrSingleTx);
-	const signableTransaction = api.tx.multisig.asMulti(threshold, signatories, null, transaction, MAX_WEIGHT);
+	const transaction = tx.length > 1 ? api.tx.utility.batchAll(tx) : tx[0];
 
 	const afterSuccess = (tx: IGenericObject) => {
 		const newTransaction = {
@@ -110,9 +84,7 @@ const fund = async ({
 			to: data?.[0]?.recipient || '',
 			createdAt: new Date(),
 			multisigAddress: address,
-			from: address,
-			approvals: [sender],
-			initiator: sender
+			from: address
 		} as IDashboardTransaction;
 		console.log(tx, 'transaction hash');
 		console.log(newTransaction, 'Transaction');
@@ -122,7 +94,7 @@ const fund = async ({
 	return {
 		api,
 		apiReady: true,
-		tx: signableTransaction as SubmittableExtrinsic<'promise'>,
+		tx: transaction as SubmittableExtrinsic<'promise'>,
 		address: sender,
 		onSuccess: afterSuccess,
 		onFailed,

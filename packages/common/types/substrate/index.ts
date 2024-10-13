@@ -486,6 +486,18 @@ export interface ITransferTransaction {
 	onFailed?: () => void;
 }
 
+export interface IFundTransaction {
+	api: ApiPromise;
+	data: Array<{
+		amount: BN;
+		recipient: string;
+	}>;
+	multisig: IMultisig;
+	sender: string;
+	onSuccess?: (data: IGenericObject) => void;
+	onFailed?: () => void;
+}
+
 export interface ITeleportTransaction {
 	api: ApiPromise;
 	recipientAddress: string;
