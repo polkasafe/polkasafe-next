@@ -13,7 +13,7 @@ const linkProxy = async ({
 	address: string;
 	signature: string;
 }) => {
-	createProxy({ multisigAddress, network, address, signature });
+	return createProxy({ multisigAddress, network, address, signature });
 };
 
 const editProxy = async ({

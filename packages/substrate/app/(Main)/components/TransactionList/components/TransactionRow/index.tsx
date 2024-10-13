@@ -25,7 +25,14 @@ import { Collapse } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { useHistoryAtom, useQueueAtom } from '@substrate/app/atoms/transaction/transactionAtom';
-import { IGenericObject, IReviewTransaction, ISubstrateExecuteProps, ITxnCategory } from '@common/types/substrate';
+import {
+	IGenericObject,
+	IMultisig,
+	IOrganisation,
+	IReviewTransaction,
+	ISubstrateExecuteProps,
+	ITxnCategory
+} from '@common/types/substrate';
 import { ERROR_MESSAGES, INFO_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
 import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuilder';
@@ -155,7 +162,7 @@ function TransactionRow({
 }: ITransactionRow) {
 	const { getApi } = useAllAPI();
 	const [user] = useUser();
-	const [organisation] = useOrganisation();
+	const [organisation, setOrganisation] = useOrganisation();
 	const [queueTransaction, setQueueTransactions] = useQueueAtom();
 	const [historyTransaction, setHistoryTransaction] = useHistoryAtom();
 	const notification = useNotification();
@@ -205,13 +212,13 @@ function TransactionRow({
 			return { error: true };
 		}
 		// After successful transaction add the transaction to the queue with the latest transaction on top
-		const onSuccess = ({ callHash }: IGenericObject) => {
+		const onSuccess = async ({ callHash }: IGenericObject) => {
 			try {
 				if (!callHash || !queueTransaction) {
 					return;
 				}
 				if (type === ETxType.APPROVE) {
-					const payload = (queueTransaction?.transactions || []).map((tx) => {
+					const payload = (queueTransaction?.transactions || []).map(async (tx) => {
 						if (tx.callHash === callHash) {
 							const approvals = tx.approvals || [];
 							if (!approvals.includes(user.address)) {
@@ -228,12 +235,29 @@ function TransactionRow({
 								);
 								const proxy = data.find((d: IGenericObject) => d.method === 'proxy' && d.section === 'proxy');
 								if (tx.callModule === 'Proxy' && tx.callModuleFunction === 'create_pure') {
-									AFTER_EXECUTE[EAfterExecute.LINK_PROXY]({
+									const data = (await AFTER_EXECUTE[EAfterExecute.LINK_PROXY]({
 										multisigAddress: txMultisig.address,
 										network: txMultisig.network,
 										address: user.address,
 										signature: user.signature
-									});
+									})) as IGenericObject;
+									const filteredMultisig = organisation?.multisigs.map((multisig) => {
+										if (multisig.address === txMultisig.address && multisig.network === txMultisig.network) {
+											return {
+												...multisig,
+												proxy: multisig.proxy.push({ address: data.proxy, name: '' })
+											};
+										}
+										return multisig;
+									}) as Array<IMultisig>;
+
+									const payload = {
+										...organisation,
+										multisigs: filteredMultisig
+									} as IOrganisation;
+
+									setOrganisation(payload);
+
 									sendNotification({
 										address: user.address,
 										signature: user.signature,
@@ -261,6 +285,36 @@ function TransactionRow({
 										address: user.address,
 										signature: user.signature
 									});
+									let flag = false;
+									const filteredMultisig = organisation?.multisigs.map((multisig) => {
+										if (multisig.address === isRemoveTransaction.delegate && multisig.network === txMultisig.network) {
+											return {
+												...multisig,
+												proxy: multisig.proxy.filter((p) => p.address !== proxy.proxyAddress)
+											};
+										}
+										if (
+											multisig.address === isEditProxyTransaction.delegate &&
+											multisig.network === txMultisig.network
+										) {
+											{
+												flag = true;
+												return {
+													...multisig,
+													proxy: [...multisig.proxy, { address: proxy.proxyAddress, name: '' }]
+												};
+											}
+										}
+										return multisig;
+									}) as Array<IMultisig>;
+
+									const payload = {
+										...organisation,
+										multisigs: filteredMultisig
+									} as IOrganisation;
+
+									setOrganisation(payload);
+
 									sendNotification({
 										address: user.address,
 										signature: user.signature,
@@ -310,7 +364,9 @@ function TransactionRow({
 						return tx;
 					});
 
-					const transactions = payload.filter((tx) => tx !== null);
+					const txWithNull = await Promise.all(payload);
+
+					const transactions = txWithNull.filter((tx) => tx !== null);
 
 					setQueueTransactions({ ...queueTransaction, transactions });
 					notification(SUCCESS_MESSAGES.TRANSACTION_APPROVE_SUCCESS);
