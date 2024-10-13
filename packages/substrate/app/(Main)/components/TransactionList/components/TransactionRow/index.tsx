@@ -513,7 +513,7 @@ function TransactionRow({
 						transactionFieldsObject={transactionFieldsObject}
 						setTransactionFieldsObject={setTransactionFieldsObject}
 						network={network}
-						initiator={isInitiator}
+						initiator={isSignatory || false}
 						maxWidth={100}
 					/>
 				}
@@ -565,7 +565,7 @@ function TransactionRow({
 									transactionFieldsObject={transactionFieldsObject}
 									setTransactionFieldsObject={setTransactionFieldsObject}
 									network={network}
-									initiator={isInitiator}
+									initiator={isSignatory || false}
 									maxWidth={100}
 								/>
 							}
@@ -600,7 +600,7 @@ function TransactionRow({
 									transactionFieldsObject={transactionFieldsObject}
 									setTransactionFieldsObject={setTransactionFieldsObject}
 									network={network}
-									initiator={isInitiator}
+									initiator={isSignatory || false}
 								/>
 							}
 						/>

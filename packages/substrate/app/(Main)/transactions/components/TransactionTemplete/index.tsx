@@ -13,6 +13,10 @@ import { useOrganisation } from '@substrate/app/atoms/organisation/organisationA
 import { IMultisig } from '@common/types/substrate';
 import { twMerge } from 'tailwind-merge';
 import { History } from '@substrate/app/(Main)/transactions/components/History';
+import { Dropdown } from 'antd';
+import { useState } from 'react';
+import { EExportType } from '@substrate/app/(Main)/transactions/components/ExportTransactionsHistory';
+import { ExportArrowIcon, QuickbooksIcon, XeroIcon } from '@common/global-ui-components/Icons';
 
 interface ITransactionTemplateProps {
 	organisationId: string;
@@ -31,6 +35,19 @@ function TransactionTemplate({ organisationId, network, multisig, tab: selectedT
 	const [organisation] = useOrganisation();
 	const isSingleMultisig = multisig && network;
 	const multisigs = (organisation?.multisigs || []) as Array<IMultisig>;
+
+	const [openExportModal, setOpenExportModal] = useState<boolean>(false);
+	const [exportType, setExportType] = useState<EExportType>(EExportType.QUICKBOOKS);
+
+	const exportTypesOptions = Object.values(EExportType).map((item) => ({
+		key: item,
+		label: (
+			<span className='text-white flex items-center gap-x-2 capitalize '>
+				{item === EExportType.QUICKBOOKS ? <QuickbooksIcon className='text-lg' /> : <XeroIcon className='text-lg' />}
+				Export To {item}
+			</span>
+		)
+	}));
 
 	const tabs = [
 		{
@@ -74,33 +91,51 @@ function TransactionTemplate({ organisationId, network, multisig, tab: selectedT
 	];
 
 	return (
-		<div className='flex flex-col gap-y-6 h-full'>
+		<div className='flex flex-col gap-y-6 h-full relative'>
 			<div className='flex justify-between items-center'>
 				<div className='flex gap-x-4 items-center'>
-					<div className='flex gap-x-4 items-center'>
-						{tabs.map((tab) => (
-							<Link
-								key={tab.tab}
-								href={tab.link}
+					{tabs.map((tab) => (
+						<Link
+							key={tab.tab}
+							href={tab.link}
+						>
+							<Button
+								variant={EButtonVariant.PRIMARY}
+								className={twMerge(
+									selectedTab === tab.tab && styles.selectedTab,
+									selectedTab !== tab.tab && styles.tab
+								)}
+								size='large'
 							>
-								<Button
-									variant={EButtonVariant.PRIMARY}
-									className={twMerge(
-										selectedTab === tab.tab && styles.selectedTab,
-										selectedTab !== tab.tab && styles.tab
-									)}
-									size='large'
-								>
-									{tab.label}
-								</Button>
-							</Link>
-						))}
-					</div>
+								{tab.label}
+							</Button>
+						</Link>
+					))}
 				</div>
+				{selectedTab === ETransactionTab.HISTORY && (
+						<Dropdown
+							menu={{
+								items: exportTypesOptions,
+								onClick: (e) => {
+									setExportType(e.key as EExportType);
+									setOpenExportModal(true);
+								}
+							}}
+							trigger={['click']}
+						>
+							<Button
+								size='large'
+								icon={<ExportArrowIcon className='text-primary' />}
+								className='text-primary mr-3 bg-highlight outline-none border-none font-medium text-sm max-sm:text-xs'
+							>
+								Export
+							</Button>
+						</Dropdown>
+					)}
 			</div>
 			<div className='flex-1 overflow-y-auto'>
 				{selectedTab === ETransactionTab.QUEUE && <Queue multisigs={multisigs} />}
-				{selectedTab === ETransactionTab.HISTORY && <History multisigs={multisigs} />}
+				{selectedTab === ETransactionTab.HISTORY && <History setOpenExportModal={setOpenExportModal} exportType={exportType} openExportModal={openExportModal} multisigs={multisigs} />}
 			</div>
 		</div>
 	);

@@ -30,6 +30,8 @@ export const onChainTreasuryData = async ({
 
 		const { data } = await multisigHistoryRes.data;
 
+		console.log('data', data);
+
 		let totalIncomingUSD = 0;
 		let totalOutgoingUSD = 0;
 		const incomingTxns: ITreasuryTxns[] = [];
