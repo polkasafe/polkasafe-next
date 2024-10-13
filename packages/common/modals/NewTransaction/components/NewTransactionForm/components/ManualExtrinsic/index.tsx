@@ -254,7 +254,7 @@ const ManualExtrinsic = ({
 	}, [api, areAllParamsFilled, callable, palletRpc, transformedParams, setCallData, apiReady]);
 
 	return (
-		<section className='w-[500px] max-sm:w-full'>
+		<section className='min-w-[500px] w-full'>
 			<div className='flex items-center gap-x-2'>
 				<div className='w-full'>
 					<label className='text-primary font-normal text-xs leading-[13px] block mb-[5px]'>Pallet</label>

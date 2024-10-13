@@ -131,50 +131,46 @@ export const RecipientsInputs = ({
 			return;
 		}
 		setDisableSubmit(false);
-		setAmountExceeded(false);
 
-		if (proxyMultiSigAssets) {
-			const checkBalance = recipientAndAmount.filter((item) => {
+		const selectedAccountAssets = proxyMultiSigAssets || multiSigAssets;
+
+		if (selectedAccountAssets) {
+			const [nativeBalanceBN] = inputToBn(
+				selectedAccountAssets.free || '0',
+				network,
+				false,
+				getDecimalByToken(selectedAccountAssets.symbol, network)
+			);
+			const [usdcBalanceBN] = inputToBn(
+				selectedAccountAssets?.usdc?.free || '0',
+				network,
+				false,
+				getDecimalByToken('USDC', network)
+			);
+
+			const [usdtBalanceBN] = inputToBn(
+				selectedAccountAssets?.usdt?.free || '0',
+				network,
+				false,
+				getDecimalByToken('USDT', network)
+			);
+
+			const totalAmounts: { [symbol: string]: BN } = {
+				[selectedAccountAssets.symbol]: new BN(0),
+				USDC: new BN(0),
+				USDT: new BN(0)
+			};
+
+			recipientAndAmount.forEach((item) => {
 				const token = item.currency;
-				// eslint-disable-next-line security/detect-possible-timing-attacks
-				if (token === proxyMultiSigAssets.symbol) {
-					const [balance] = inputToBn(
-						proxyMultiSigAssets.free,
-						network,
-						false,
-						getDecimalByToken(item.currency, network)
-					);
-					return balance.lt(item.amount);
-				}
-
-				const tokenValue = proxyMultiSigAssets?.[`${token.toLowerCase()}` as 'usdc' | 'usdt']?.free || '0';
-				const [balance] = inputToBn(tokenValue, network, false, getDecimalByToken(item.currency, network));
-				return balance.lt(item.amount);
+				totalAmounts[token] = totalAmounts[token] ? totalAmounts[token].add(item.amount) : item.amount;
 			});
-			if (checkBalance.length) {
-				setDisableSubmit(true);
-				setAmountExceeded(true);
-				return;
-			}
-			setDisableSubmit(false);
-			setAmountExceeded(false);
-			return;
-		}
 
-		if (multiSigAssets) {
-			const checkBalance = recipientAndAmount.filter((item) => {
-				const token = item.currency;
-				// eslint-disable-next-line security/detect-possible-timing-attacks
-				if (token === multiSigAssets.symbol) {
-					const [balance] = inputToBn(multiSigAssets.free, network, false, getDecimalByToken(item.currency, network));
-					return balance.lt(item.amount);
-				}
-
-				const tokenValue = multiSigAssets?.[`${token.toLowerCase()}` as 'usdc' | 'usdt']?.free || '0';
-				const [balance] = inputToBn(tokenValue, network, false, getDecimalByToken(item.currency, network));
-				return balance.lt(item.amount);
-			});
-			if (checkBalance.length) {
+			if (
+				totalAmounts[selectedAccountAssets.symbol]?.gt(nativeBalanceBN) ||
+				totalAmounts.USDC?.gt(usdcBalanceBN) ||
+				totalAmounts.USDT?.gt(usdtBalanceBN)
+			) {
 				setDisableSubmit(true);
 				setAmountExceeded(true);
 				return;
@@ -249,6 +245,7 @@ export const RecipientsInputs = ({
 									formName={`recipients[${i}].amount`}
 									onChange={(balance, currency) => onAmountChange(balance, i, currency)}
 									multipleCurrency={MULTIPLE_CURRENCY_NETWORKS.includes(network)}
+									className='w-full'
 								/>
 								{i !== 0 && (
 									<Button
@@ -263,14 +260,16 @@ export const RecipientsInputs = ({
 					))}
 				</div>
 			</div>
-			<div className='flex'>
+			<div className='flex items-center gap-x-3'>
 				<Button
-					className='bg-transparent p-0 border-none outline-none shadow-none text-label text-sm'
+					className={`bg-transparent p-0 border-none outline-none shadow-none text-sm ${amountExceeded ? 'text-text-disabled' : 'text-label'}`}
 					onClick={onAddRecipient}
-					icon={<CirclePlusIcon className='text-label' />}
+					icon={<CirclePlusIcon className={`${amountExceeded ? 'text-text-disabled' : 'text-label'}`} />}
+					disabled={amountExceeded}
 				>
 					Add Another
 				</Button>
+				{amountExceeded && <span className='text-xs text-failure'>Insufficient Balance in Selected Multisig</span>}
 			</div>
 		</div>
 	);

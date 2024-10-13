@@ -80,7 +80,8 @@ export const MultisigDropdown = ({ multisigs, onChange, assets }: IMultisigDropd
 									variant={ETypographyVariants.p}
 									className='text-text-primary text-2xs px-2 bg-highlight rounded-lg'
 								>
-									<span className='text-label'>Balance:</span> {selectedAddressAsset.free} {selectedAddressAsset.symbol}
+									<span className='text-label'>Balance:</span> {Number(selectedAddressAsset.free)?.toFixed(2) || '0.00'}{' '}
+									{selectedAddressAsset.symbol}
 								</Typography>
 							</div>
 						)}

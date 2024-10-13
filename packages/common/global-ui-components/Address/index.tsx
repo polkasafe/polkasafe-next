@@ -105,7 +105,7 @@ const Address: React.FC<IAddressComponent> = ({
 			)}
 			{onlyAddress ? (
 				<div className='text-text-secondary flex items-center gap-x-3 text-sm font-normal'>
-					<span className='text-white'>{name || shortenAddress(address || '', addressLength || 10)}</span>
+					<span className='text-white truncate'>{name || shortenAddress(address || '', addressLength || 10)}</span>
 					<span className='flex items-center gap-x-2 max-sm:gap-0'>
 						<button onClick={() => copyText(address, true, network)}>
 							<CopyIcon className='hover:text-primary' />
@@ -122,7 +122,7 @@ const Address: React.FC<IAddressComponent> = ({
 			) : (
 				<div>
 					<div className='font-medium text-sm flex items-center gap-x-3 text-white max-sm:text-xs'>
-						{name || DEFAULT_ADDRESS_NAME}
+						<span className='truncate'>{name || DEFAULT_ADDRESS_NAME}</span>
 						{network && showNetworkBadge && (
 							<div
 								style={{ backgroundColor: '#5065E4', fontSize: '9px' }}
