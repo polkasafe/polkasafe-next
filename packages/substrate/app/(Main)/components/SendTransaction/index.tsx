@@ -5,15 +5,16 @@
 'use client';
 
 import {
+	EProposalType,
 	ENetwork,
 	ETransactionCreationType,
 	ETransactionState,
 	ETriggers,
-	ETxType,
-	Wallet
+	ETxType
 } from '@common/enum/substrate';
 import {
 	ICallDataTransaction,
+	ICancelOrKillTransaction,
 	IConnectedUser,
 	IDelegateTransaction,
 	IGenericObject,
@@ -22,8 +23,7 @@ import {
 	ISendTransaction,
 	ISetIdentityTransaction,
 	ISubstrateExecuteProps,
-	ITeleportAssetTransaction,
-	ITeleportTransaction
+	ITeleportAssetTransaction
 } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { useAssets } from '@substrate/app/atoms/assets/assetsAtom';
@@ -327,8 +327,104 @@ export function SendTransaction({
 		setTransactionState(ETransactionState.REVIEW);
 	};
 
+	const cancelOrKill = async (
+		values: ICancelOrKillTransaction,
+		user: IConnectedUser,
+		api: ApiPromise,
+		onSuccess: ({ newTransaction }: IGenericObject) => void
+	) => {
+		const { address } = user;
+		const { postIndex, sender: multisig, proxyAddress, proposalType } = values;
+		console.log('multisig', callData, multisig, proxyAddress);
+		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.CANCEL_OR_KILL]({
+			api,
+			proxyAddress,
+			postIndex,
+			multisig,
+			sender: address,
+			onSuccess,
+			type: proposalType
+		})) as ISubstrateExecuteProps;
+		if (!transaction) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+			return;
+		}
+
+		const fee = (await transaction.tx.paymentInfo(address)).partialFee;
+		const formattedFee = formatBalance(
+			fee.toString(),
+			{
+				numberAfterComma: 3,
+				withThousandDelimitor: false
+			},
+			multisig.network
+		);
+
+		const reviewData = {
+			tx: transaction.tx.toHuman(),
+			from: values.sender?.address,
+			txCost: formattedFee.toString(),
+			network: values.sender.network,
+			createAt: new Date().toISOString()
+		} as IReviewTransaction;
+		setExecutableTransaction(transaction);
+		setReviewTransaction(reviewData);
+		setTransactionState(ETransactionState.REVIEW);
+	};
+
+	const createProposal = async (
+		values: ICancelOrKillTransaction,
+		user: IConnectedUser,
+		api: ApiPromise,
+		onSuccess: ({ newTransaction }: IGenericObject) => void
+	) => {
+		const { address } = user;
+		const { postIndex, sender: multisig, proxyAddress, proposalType } = values;
+		console.log('multisig', callData, multisig, proxyAddress);
+		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.CANCEL_OR_KILL]({
+			api,
+			proxyAddress,
+			postIndex,
+			multisig,
+			sender: address,
+			onSuccess,
+			type: proposalType
+		})) as ISubstrateExecuteProps;
+		if (!transaction) {
+			notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
+			return;
+		}
+
+		const fee = (await transaction.tx.paymentInfo(address)).partialFee;
+		const formattedFee = formatBalance(
+			fee.toString(),
+			{
+				numberAfterComma: 3,
+				withThousandDelimitor: false
+			},
+			multisig.network
+		);
+
+		const reviewData = {
+			tx: transaction.tx.toHuman(),
+			from: values.sender?.address,
+			txCost: formattedFee.toString(),
+			network: values.sender.network,
+			createAt: new Date().toISOString()
+		} as IReviewTransaction;
+		setExecutableTransaction(transaction);
+		setReviewTransaction(reviewData);
+		setTransactionState(ETransactionState.REVIEW);
+	};
+
 	const buildTransaction = async (
-		values: ISendTransaction | ITeleportAssetTransaction | ISetIdentityTransaction | IDelegateTransaction
+		values:
+			| ISendTransaction
+			| ITeleportAssetTransaction
+			| ISetIdentityTransaction
+			| IDelegateTransaction
+			| ICallDataTransaction
+			| ICancelOrKillTransaction
 	) => {
 		if (!user) {
 			notification({ ...ERROR_MESSAGES.AUTHENTICATION_FAILED });
@@ -408,6 +504,17 @@ export function SendTransaction({
 				case ETransactionCreationType.DELEGATE:
 					await delegation(values as IDelegateTransaction, user, api, onSuccess);
 					break;
+
+				case ETransactionCreationType.CREATE_PROPOSAL: {
+					const { proposalType } = values as ICancelOrKillTransaction;
+					if (proposalType === EProposalType.CANCEL || proposalType === EProposalType.KILL) {
+						await cancelOrKill(values as ICancelOrKillTransaction, user, api, onSuccess);
+					}
+					if (proposalType === EProposalType.CREATE) {
+						await cancelOrKill(values as ICancelOrKillTransaction, user, api, onSuccess);
+					}
+					break;
+				}
 
 				case ETransactionCreationType.CALL_DATA:
 				case ETransactionCreationType.SUBMIT_PREIMAGE:
@@ -503,7 +610,13 @@ export function SendTransaction({
 			reviewTransaction={reviewTransaction}
 			assets={assets || null}
 			currency={currency}
-			multisigs={multisig ? [multisig] : organisation?.multisigs || []}
+			multisigs={
+				multisig
+					? [multisig]
+					: (organisation?.multisigs || []).filter((item) =>
+							item.signatories.map((a) => getSubstrateAddress(a)).includes(getSubstrateAddress(user?.address || ''))
+						)
+			}
 			addressBook={organisation?.addressBook || []}
 			transactionFields={organisation?.transactionFields || {}}
 			allApi={allApi}

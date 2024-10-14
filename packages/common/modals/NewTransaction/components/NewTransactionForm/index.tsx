@@ -9,6 +9,7 @@ import { SendTokens } from '@common/modals/NewTransaction/components/NewTransact
 import { TeleportAssets } from '@common/modals/NewTransaction/components/NewTransactionForm/components/TeleportAssets';
 import CallData from '@common/modals/NewTransaction/components/NewTransactionForm/components/CallData';
 import SubmitPreImage from '@common/modals/NewTransaction/components/NewTransactionForm/components/SubmitPreimage';
+import CreateProposal from '@common/modals/NewTransaction/components/NewTransactionForm/components/CreatePropsal';
 
 export enum ETransactionSteps {
 	BUILD_TRANSACTION = 'New Transaction',
@@ -69,6 +70,7 @@ export function NewTransactionForm({
 					type={type}
 				/>
 			)}
+			{type === ETransactionCreationType.CREATE_PROPOSAL && <CreateProposal onClose={onClose} />}
 		</div>
 	);
 }
