@@ -33,8 +33,7 @@ export const menuItems = [
 		baseURL: '/exchange',
 		authenticated: true,
 		icon: <ExchangeIcon />,
-		title: 'Exchange',
-		noShow: true
+		title: 'Exchange'
 	},
 	{
 		baseURL: '/watch-list',
