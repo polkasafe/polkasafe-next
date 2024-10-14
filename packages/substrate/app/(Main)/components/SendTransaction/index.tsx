@@ -611,7 +611,13 @@ export function SendTransaction({
 			reviewTransaction={reviewTransaction}
 			assets={assets || null}
 			currency={currency}
-			multisigs={multisig ? [multisig] : organisation?.multisigs || []}
+			multisigs={
+				multisig
+					? [multisig]
+					: (organisation?.multisigs || []).filter((item) =>
+							item.signatories.map((a) => getSubstrateAddress(a)).includes(getSubstrateAddress(user?.address || ''))
+						)
+			}
 			addressBook={organisation?.addressBook || []}
 			transactionFields={organisation?.transactionFields || {}}
 			allApi={allApi}
