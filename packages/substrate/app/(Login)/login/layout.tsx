@@ -8,6 +8,19 @@ import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 import { PropsWithChildren } from 'react';
 import { redirect } from 'next/navigation';
 import { CREATE_ORGANISATION_URL, ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	description: 'User friendly Multisig for Polkadot & Kusama ecosystem',
+	title: 'Polkasafe',
+	viewport: {
+		height: 'device-height',
+		initialScale: 1,
+		maximumScale: 1,
+		minimumScale: 1,
+		width: 'device-width'
+	}
+};
 
 export default function LoginLayout({ children }: PropsWithChildren) {
 	const user = getUserFromCookie();

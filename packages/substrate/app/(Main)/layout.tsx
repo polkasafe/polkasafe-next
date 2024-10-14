@@ -14,8 +14,21 @@ import { LayoutWrapper } from '@common/global-ui-components/LayoutWrapper';
 import SubstrateLayout from '@substrate/app/(Main)/SubstrateLayout';
 import { getOrganisationsByUser } from '@sdk/polkasafe-sdk/src';
 import { IOrganisation } from '@common/types/substrate';
+import { Metadata } from 'next';
 // import InitializeAssets from '@substrate/app/Initializers/InializeAssets';
 // const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+	description: 'User friendly Multisig for Polkadot & Kusama ecosystem',
+	title: 'Polkasafe',
+	viewport: {
+		height: 'device-height',
+		initialScale: 1,
+		maximumScale: 1,
+		minimumScale: 1,
+		width: 'device-width'
+	}
+};
 
 export default async function MainLayout({ children }: PropsWithChildren) {
 	const user = getUserFromCookie();
