@@ -19,6 +19,7 @@ import {
 	IDelegateTransaction,
 	IGenericObject,
 	IMultisig,
+	IMultisigAssets,
 	IReviewTransaction,
 	ISendTransaction,
 	ISetIdentityTransaction,
@@ -60,7 +61,7 @@ export function SendTransaction({
 	proxyAddress
 }: PropsWithChildren<ISendTransactionProps>) {
 	// Atoms Hooks
-	const [data] = useAssets();
+	const [data, setAssets] = useAssets();
 	const currency = useAtomValue(selectedCurrencyAtom);
 	const [organisation] = useOrganisation();
 	const { getApi, allApi } = useAllAPI();
@@ -574,7 +575,9 @@ export function SendTransaction({
 			data: [{ amount: new BN(amount), recipient: selectedProxy || multisig.address }],
 			multisig,
 			sender: address,
-			onSuccess: () => {}
+			onSuccess: () => {
+				data?.refetch();
+			}
 		})) as ISubstrateExecuteProps;
 		if (!transaction) {
 			notification({ ...ERROR_MESSAGES.TRANSACTION_BUILD_FAILED });
