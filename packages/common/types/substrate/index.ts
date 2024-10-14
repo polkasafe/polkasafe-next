@@ -360,7 +360,7 @@ export interface IGenericObject {
 
 export interface IFundMultisig {
 	multisig: IMultisig;
-	amount: string;
+	amount: BN;
 	selectedProxy?: string;
 }
 

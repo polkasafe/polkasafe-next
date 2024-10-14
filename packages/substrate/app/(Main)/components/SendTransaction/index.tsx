@@ -443,7 +443,7 @@ export function SendTransaction({
 		amount,
 		selectedProxy
 	}: {
-		amount: string;
+		amount: BN;
 		multisig: IMultisig;
 		selectedProxy?: string;
 	}) => {
@@ -451,7 +451,6 @@ export function SendTransaction({
 			return;
 		}
 
-		console.log('multisig', multisig);
 		const { address } = user;
 		const apiAtom = getApi(multisig.network);
 		if (!apiAtom) {
