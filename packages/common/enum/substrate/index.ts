@@ -130,7 +130,9 @@ export enum ETxType {
 	DELEGATE = 'delegate',
 	TELEPORT = 'teleport',
 	CALL_DATA = 'call_data',
-	SET_PREIMAGE = 'set_preimage'
+	SET_PREIMAGE = 'set_preimage',
+	CREATE_PROPOSAL = 'create_proposal',
+	CANCEL_OR_KILL = 'cancel_or_kill'
 }
 
 export enum ETransactionTab {
@@ -243,10 +245,9 @@ export enum EInvoiceStatus {
 
 export enum ETransactionCreationType {
 	SEND_TOKEN = 'Send Token',
-	// MANUAL_EXTRINSIC = 'Manual Extrinsic',
 	CALL_DATA = 'Call Data',
 	SUBMIT_PREIMAGE = 'Submit Preimage',
-	// SUBMIT_PROPOSAL = 'Submit Proposal',
+	CREATE_PROPOSAL = 'Create Proposal',
 	SET_IDENTITY = 'Set Identity',
 	DELEGATE = 'Delegate',
 	TELEPORT = 'Teleport Assets',
@@ -259,4 +260,38 @@ export enum ESupportedApps {
 	ASTAR = 'astar',
 	SET_IDENTITY = 'set_identity',
 	DELEGATE = 'delegate'
+}
+
+export enum EProposalType {
+	CREATE = 'create',
+	KILL = 'kill',
+	CANCEL = 'cancel'
+}
+
+export enum PostOrigin {
+	AUCTION_ADMIN = 'AuctionAdmin',
+	BIG_SPENDER = 'BigSpender',
+	BIG_TIPPER = 'BigTipper',
+	CANDIDATES = 'Candidates',
+	EXPERTS = 'Experts',
+	FELLOWS = 'Fellows',
+	FELLOWSHIP_ADMIN = 'FellowshipAdmin',
+	GENERAL_ADMIN = 'GeneralAdmin',
+	GRAND_MASTERS = 'GrandMasters',
+	LEASE_ADMIN = 'LeaseAdmin',
+	MASTERS = 'Masters',
+	MEDIUM_SPENDER = 'MediumSpender',
+	MEMBERS = 'Members',
+	PROFICIENTS = 'Proficients',
+	REFERENDUM_CANCELLER = 'ReferendumCanceller',
+	REFERENDUM_KILLER = 'ReferendumKiller',
+	ROOT = 'root',
+	SENIOR_EXPERTS = 'SeniorExperts',
+	SENIOR_FELLOWS = 'SeniorFellows',
+	SENIOR_MASTERS = 'SeniorMasters',
+	SMALL_SPENDER = 'SmallSpender',
+	SMALL_TIPPER = 'SmallTipper',
+	STAKING_ADMIN = 'StakingAdmin',
+	TREASURER = 'Treasurer',
+	WHITELISTED_CALLER = 'WhitelistedCaller'
 }

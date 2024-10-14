@@ -2,7 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { ECHANNEL, ENetwork, ETransactionCreationType, ETxType, EUserType } from '@common/enum/substrate';
+import {
+	ECHANNEL,
+	EProposalType,
+	ENetwork,
+	ETransactionCreationType,
+	ETxType,
+	EUserType
+} from '@common/enum/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { ApiPromise as AvailApiPromise } from 'avail-js-sdk';
 import { SignerOptions, SubmittableExtrinsic, SignerResult } from '@polkadot/api/types';
@@ -351,6 +358,13 @@ export interface ICallDataTransaction {
 	sender: IMultisig;
 	callData: string;
 	type: ETransactionCreationType;
+	proxyAddress?: string;
+}
+export interface ICancelOrKillTransaction {
+	sender: IMultisig;
+	postIndex: number;
+	type: ETransactionCreationType;
+	proposalType: EProposalType;
 	proxyAddress?: string;
 }
 

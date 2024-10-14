@@ -1,5 +1,5 @@
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
-import { ENetwork, ETransactionCreationType, ETxType } from '@common/enum/substrate';
+import { EProposalType, ENetwork, ETransactionCreationType, ETxType, PostOrigin } from '@common/enum/substrate';
 import {
 	IApproveTransaction,
 	ICallDataMultisigTransaction,
@@ -10,6 +10,7 @@ import {
 	IEditMultisigTransaction,
 	IFundTransaction,
 	IGenericObject,
+	IMultisig,
 	IRecipient,
 	ISetIdentityMultisigTransaction,
 	ITeleportTransaction,
@@ -19,10 +20,11 @@ import getEncodedAddress from '@common/utils/getEncodedAddress';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { u8aToHex } from '@polkadot/util';
+import { BN_HUNDRED, u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress, encodeMultiAddress, sortAddresses } from '@polkadot/util-crypto';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
+import createPreImage from '@substrate/app/global/utils/createPreimage';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
 import getMultisigInfo from '@substrate/app/global/utils/getMultisigInfo';
 
@@ -691,6 +693,73 @@ const callData = async ({
 	};
 };
 
+const cancelOrKill = async ({
+	api,
+	sender: substrateSender,
+	multisig,
+	postIndex,
+	type,
+	onSuccess
+}: {
+	api: ApiPromise;
+	multisig: IMultisig;
+	proxyAddress?: string;
+	postIndex: Number;
+	sender: string;
+	type: EProposalType;
+	onSuccess: (data: IGenericObject) => void;
+}) => {
+	const { address, network, threshold, signatories: allSignatories } = multisig;
+	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+
+	// Sort signatories
+	const signatories = sortAddresses(
+		allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
+		networkConstants[network].ss58Format
+	);
+
+	const proposal =
+		type === EProposalType.CANCEL
+			? api.tx.referenda.cancel(Number(postIndex))
+			: api.tx.referenda.kill(Number(postIndex));
+	const proposalPreImage = createPreImage(api, proposal);
+	const preImageTx = proposalPreImage.notePreimageTx;
+	const origin: any = { Origins: PostOrigin.REFERENDUM_CANCELLER };
+	const proposalTx = api.tx.referenda.submit(
+		origin,
+		{ Lookup: { hash: proposalPreImage.preimageHash, len: proposalPreImage.preimageLength } },
+		{ After: BN_HUNDRED }
+	);
+	const tx = api.tx.utility.batchAll([preImageTx, proposalTx as any]);
+	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
+	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, tx, MAX_WEIGHT as any);
+
+	const afterSuccess = (tx: IGenericObject) => {
+		const newTransaction = {
+			callData: tx.method.toHex(),
+			callHash: tx.method.hash.toString(),
+			network,
+			amountToken: '0',
+			createdAt: new Date(),
+			multisigAddress: address,
+			from: address,
+			approvals: [sender]
+		} as IDashboardTransaction;
+		console.log(newTransaction, 'Transaction');
+		onSuccess && onSuccess({ newTransaction });
+	};
+
+	return {
+		api,
+		apiReady: true,
+		tx: mainTx as SubmittableExtrinsic<'promise'>,
+		address: sender,
+		onSuccess: afterSuccess,
+		network,
+		errorMessageFallback: ERROR_MESSAGES.TRANSACTION_FAILED
+	};
+};
+
 const TRANSACTION_BUILDER = {
 	[ETxType.FUND]: fund,
 	[ETxType.TRANSFER]: transfer,
@@ -701,7 +770,8 @@ const TRANSACTION_BUILDER = {
 	[ETxType.SET_IDENTITY]: setIdentity,
 	[ETxType.DELEGATE]: delegate,
 	[ETxType.TELEPORT]: teleportAssets,
-	[ETxType.CALL_DATA]: callData
+	[ETxType.CALL_DATA]: callData,
+	[ETxType.CANCEL_OR_KILL]: cancelOrKill
 };
 
 export { TRANSACTION_BUILDER };

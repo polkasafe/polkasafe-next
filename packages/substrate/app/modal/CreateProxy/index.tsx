@@ -1,9 +1,9 @@
-import { ENetwork, ETriggers, ETxType, Wallet } from '@common/enum/substrate';
+import { ETriggers, ETxType } from '@common/enum/substrate';
 import { IGenericObject, IMultisig, IReviewTransaction, ISubstrateExecuteProps } from '@common/types/substrate';
 import { ApiPromise } from '@polkadot/api';
 import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useAllAPI } from '@substrate/app/global/hooks/useAllAPI';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ERROR_MESSAGES, INFO_MESSAGES, SUCCESS_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
 import { TRANSACTION_BUILDER } from '@substrate/app/global/utils/transactionBuilder';
@@ -14,10 +14,7 @@ import { executeTx } from '@substrate/app/global/utils/executeTransaction';
 import { ReviewModal } from '@common/global-ui-components/ReviewModal';
 import { sendNotification } from '@sdk/polkasafe-sdk/src';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-import { AddBoxIcon, WarningCircleIcon } from '@common/global-ui-components/Icons';
-import BN from 'bn.js';
-import formatBnBalance from '@common/utils/formatBnBalance';
-import InfoBox from '@common/global-ui-components/InfoBox';
+import { AddBoxIcon } from '@common/global-ui-components/Icons';
 interface ICreateProxyModal {
 	multisig: IMultisig;
 	buttonClassName?: string;
