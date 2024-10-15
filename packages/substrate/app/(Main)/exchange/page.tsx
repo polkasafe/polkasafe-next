@@ -28,7 +28,7 @@ enum EOnramp {
 }
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const Exchange = ({ className }: { className?: string }) => {
+const Exchange = () => {
 	const [user] = useUser();
 	const [organisation] = useOrganisation();
 
@@ -110,9 +110,7 @@ const Exchange = ({ className }: { className?: string }) => {
 	};
 
 	return (
-		<div
-			className={`p-5 origin-top-left bg-bg-main rounded-lg flex justify-center h-full ${className}`}
-		>
+		<div className={`p-5 origin-top-left bg-bg-main rounded-lg flex justify-center h-full`}>
 			{user && user.address ? (
 				<div className='h-full flex flex-col gap-y-5 bg-bg-secondary rounded-lg p-5'>
 					<div className='w-full flex items-center gap-x-3'>
@@ -180,7 +178,6 @@ const Exchange = ({ className }: { className?: string }) => {
 										/>
 										<Dropdown
 											trigger={['click']}
-											className={className}
 											menu={{
 												items: currencyOptions,
 												onClick: (e) => setCoinCode(e.key as any)
