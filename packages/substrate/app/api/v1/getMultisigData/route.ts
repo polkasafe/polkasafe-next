@@ -55,7 +55,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			encodedMultisigAddress,
 			network
 		);
-		if (multisigMetaDataErr) {
+		if (multisigMetaData.signatories.length < 2 || !Boolean(multisigMetaData.threshold) || multisigMetaDataErr) {
 			const data = await getDataFromDB(docId);
 			if (data) {
 				return NextResponse.json(
