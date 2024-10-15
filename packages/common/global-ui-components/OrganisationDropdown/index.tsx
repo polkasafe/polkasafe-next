@@ -56,7 +56,7 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 										width={35}
 										height={35}
 										className='rounded-full h-[35px] w-[35px]'
-										src={emptyImage}
+										src={item.imageURI || emptyImage}
 										alt='empty profile image'
 									/>
 									<div className='flex flex-col gap-y-[1px]'>

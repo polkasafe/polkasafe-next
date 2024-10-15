@@ -129,7 +129,7 @@ export interface IOrganisation {
 	transactionFields: ITransactionFields;
 	city: string;
 	country: string;
-	image: string;
+	imageURI: string;
 	name: string;
 	address: string;
 	postalCode: string;
