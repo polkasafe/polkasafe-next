@@ -28,6 +28,8 @@ import FundMultisig from '@common/modals/FundMultisig';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { TransactionDropdown } from '@substrate/app/(Main)/dashboard/components/TransactionDropdown';
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
+import EditAddressName from '@common/modals/EditAddressName';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 
 const ExternalLink = ({ network, address }: { network: ENetwork; address: string }) => (
 	<div className='absolute right-5 top-5'>
@@ -88,6 +90,10 @@ interface IOverviewCardProps {
 function OverviewCard({ address, name, threshold, signatories, network, className }: IOverviewCardProps) {
 	const [data] = useAssets();
 	const [organisation] = useOrganisation();
+
+	const addressBook = organisation?.addressBook;
+
+	const addressBookDetails = addressBook?.find((item) => getSubstrateAddress(item.address) === getSubstrateAddress(address));
 
 	const proxyAddress = useSearchParams().get('_proxy');
 
@@ -159,7 +165,8 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 					</div>
 					<div>
 						<div className='text-base font-bold text-white flex items-center gap-x-2'>
-							{name || DEFAULT_MULTISIG_NAME}
+							{addressBookDetails?.name || name || DEFAULT_MULTISIG_NAME}
+							<EditAddressName address={selectedAddress} />
 							<div
 								className={twMerge(
 									`px-2 py-[2px] rounded-md text-xs font-medium bg-primary text-white`,

@@ -93,12 +93,13 @@ function OrganisationDropdown({ organisations, selectedOrganisation }: IOrganisa
 												threshold={m.threshold}
 												showNetworkBadge
 												withBadge={false}
+												allowEdit={false}
 											/>
 										</span>
 										{(!m.proxy || m.proxy.length === 0) && (
 											<Tooltip
 												title='This Multisig has no Proxy'
-												className='mt-1'
+												className='mt-2'
 											>
 												<DangerTriangleIcon className='text-waiting' />
 											</Tooltip>
