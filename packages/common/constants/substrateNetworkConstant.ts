@@ -3,15 +3,15 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { StaticImageData } from 'next/image';
-import acalaLogo from '@common/assets/parachains-logos/acala-logo.png';
+// import acalaLogo from '@common/assets/parachains-logos/acala-logo.png';
 import alephzeroLogo from '@common/assets/parachains-logos/aleph-zero-logo.jpeg';
 import assethubLogo from '@common/assets/parachains-logos/assethub-logo.png';
 import astarLogo from '@common/assets/parachains-logos/astar-logo.png';
 import kusamaLogo from '@common/assets/parachains-logos/kusama-logo.gif';
-import moonbeamLogo from '@common/assets/parachains-logos/moonbeam-logo.png';
-import moonriverLogo from '@common/assets/parachains-logos/moonriver-logo.png';
+// import moonbeamLogo from '@common/assets/parachains-logos/moonbeam-logo.png';
+// import moonriverLogo from '@common/assets/parachains-logos/moonriver-logo.png';
 import polkadotLogo from '@common/assets/parachains-logos/polkadot-logo.jpg';
-import polymeshLogo from '@common/assets/parachains-logos/polymesh-logo.png';
+// import polymeshLogo from '@common/assets/parachains-logos/polymesh-logo.png';
 import westendLogo from '@common/assets/parachains-logos/westend-logo.png';
 import rococoLogo from '@common/assets/parachains-logos/rococo-logo.jpeg';
 import phalaLogo from '@common/assets/parachains-logos/phala-logo.png';
@@ -21,12 +21,12 @@ import { ENetwork } from '@common/enum/substrate';
 
 export const onrampTokens = {
 	POLKADOT: 'polkadot',
-	KUSAMA: 'kusama',
-	ASTAR: 'astar',
-	MOONBEAM: 'moonbeam',
-	MOONRIVER: 'moonriver',
-	POLYMESH: 'polymesh',
-	ACALA: 'acala'
+	KUSAMA: 'kusama'
+	// ASTAR: 'astar',
+	// MOONBEAM: 'moonbeam',
+	// MOONRIVER: 'moonriver',
+	// POLYMESH: 'polymesh',
+	// ACALA: 'acala'
 };
 
 export const onrampTokenProperties: {
@@ -41,28 +41,28 @@ export const onrampTokenProperties: {
 		tokenSymbol: 'ksm',
 		logo: kusamaLogo,
 		offramp: true
-	},
-	[onrampTokens.ASTAR]: {
-		tokenSymbol: 'astr',
-		logo: astarLogo
-	},
-	[onrampTokens.MOONBEAM]: {
-		tokenSymbol: 'glmr',
-		logo: moonbeamLogo,
-		offramp: true
-	},
-	[onrampTokens.MOONRIVER]: {
-		tokenSymbol: 'movr',
-		logo: moonriverLogo
-	},
-	[onrampTokens.POLYMESH]: {
-		tokenSymbol: 'polyx',
-		logo: polymeshLogo
-	},
-	[onrampTokens.ACALA]: {
-		tokenSymbol: 'aca',
-		logo: acalaLogo
 	}
+	// [onrampTokens.ASTAR]: {
+	// 	tokenSymbol: 'astr',
+	// 	logo: astarLogo
+	// },
+	// [onrampTokens.MOONBEAM]: {
+	// 	tokenSymbol: 'glmr',
+	// 	logo: moonbeamLogo,
+	// 	offramp: true
+	// },
+	// [onrampTokens.MOONRIVER]: {
+	// 	tokenSymbol: 'movr',
+	// 	logo: moonriverLogo
+	// },
+	// [onrampTokens.POLYMESH]: {
+	// 	tokenSymbol: 'polyx',
+	// 	logo: polymeshLogo
+	// },
+	// [onrampTokens.ACALA]: {
+	// 	tokenSymbol: 'aca',
+	// 	logo: acalaLogo
+	// }
 };
 
 export const networkConstants = {

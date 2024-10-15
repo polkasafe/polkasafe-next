@@ -8,11 +8,24 @@ import { redirect } from 'next/navigation';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
 import { ISearchParams } from '@common/types/substrate';
 import { LOGIN_URL, MULTISIG_DASHBOARD_URL, ORGANISATION_DASHBOARD_URL } from '../global/end-points';
+import { Metadata } from 'next';
 // import { cookies } from 'next/headers';
 
 export interface IHomeProps {
 	searchParams: ISearchParams;
 }
+
+export const metadata: Metadata = {
+	description: 'User friendly Multisig for Polkadot & Kusama ecosystem',
+	title: 'Polkasafe',
+	viewport: {
+		height: 'device-height',
+		initialScale: 1,
+		maximumScale: 1,
+		minimumScale: 1,
+		width: 'device-width'
+	}
+};
 
 export default function Home({ searchParams }: IHomeProps) {
 	const user = getUserFromCookie();
