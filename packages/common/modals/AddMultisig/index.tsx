@@ -14,6 +14,7 @@ interface IAddMultisig {
 	className?: string;
 	iconClassName?: string;
 	size?: 'small' | 'middle' | 'large';
+	disabled?: boolean;
 }
 
 export const AddMultisig = ({
@@ -23,7 +24,8 @@ export const AddMultisig = ({
 	userAddress,
 	className,
 	iconClassName,
-	size
+	size,
+	disabled
 }: IAddMultisig) => {
 	const [openModal, setOpenModal] = useState(false);
 	return (
@@ -34,6 +36,7 @@ export const AddMultisig = ({
 				onClick={() => setOpenModal(true)}
 				size={size || 'large'}
 				className={className}
+				disabled={disabled}
 			>
 				Create Multisig
 			</Button>

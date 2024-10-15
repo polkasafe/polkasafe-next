@@ -102,7 +102,7 @@ const TreasuryAnalyticsComponents = () => {
 					width={30}
 					height={30}
 					className='rounded-full h-[30px] w-[30px]'
-					src={organisation?.image || emptyImage}
+					src={organisation?.imageURI || emptyImage}
 					alt='empty profile image'
 				/>
 				<div className='flex flex-col gap-y-[1px]'>
@@ -204,7 +204,7 @@ const TreasuryAnalyticsComponents = () => {
 										width={20}
 										height={20}
 										className='rounded-full h-[30px] w-[30px]'
-										src={organisation?.image || emptyImage}
+										src={organisation?.imageURI || emptyImage}
 										alt='empty profile image'
 									/>
 									<div>
