@@ -360,6 +360,7 @@ export interface ICallDataTransaction {
 	callData: string;
 	type: ETransactionCreationType;
 	proxyAddress?: string;
+	transactionFields?: ITxnCategory;
 }
 export interface ICancelOrKillTransaction {
 	sender: IMultisig;
