@@ -8,6 +8,7 @@ import Address from "@common/global-ui-components/Address";
 import { ArrowRightIcon } from "@common/global-ui-components/Icons";
 import ParachainTooltipIcon from "@common/global-ui-components/ParachainTooltipIcon";
 import Typography, { ETypographyVariants } from "@common/global-ui-components/Typography";
+import EditAddressName from "@common/modals/EditAddressName";
 import { IMultisig } from "@common/types/substrate";
 import Identicon from "@polkadot/react-identicon";
 import { MULTISIG_DASHBOARD_URL } from "@substrate/app/global/end-points";
@@ -70,6 +71,7 @@ function QuickMultisigs({ multisigs, organisationId }: { multisigs: IMultisig[],
 								size={30}
 							/>
 							{item.name || DEFAULT_MULTISIG_NAME}
+							<EditAddressName address={item.address} />
 						</div>
 						<div className="basis-2/7">
 							<Address noIdenticon address={item.address} onlyAddress network={item.network} />

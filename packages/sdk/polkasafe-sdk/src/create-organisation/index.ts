@@ -45,7 +45,7 @@ export function createOrganisation({
 		organisationAddress,
 		city,
 		country,
-		image,
+		imageURI: image,
 		postalCode,
 		state,
 		taxNumber
@@ -81,7 +81,7 @@ export function updateOrganisation({
 		organisationAddress,
 		city,
 		country,
-		image,
+		imageURL: image,
 		postalCode,
 		state,
 		taxNumber,

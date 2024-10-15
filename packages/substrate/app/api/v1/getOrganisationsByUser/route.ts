@@ -17,7 +17,7 @@ const getOrganisations = async (address: string) => {
 			id: doc.id,
 			image: data.imageUri,
 			members: [...new Set(...[data.members])]
-		} as IOrganisation;
+		} as unknown as IOrganisation;
 	});
 };
 
@@ -55,7 +55,8 @@ const getDataFromDB = async (docId: string) => {
 		const data = {
 			name: orgData?.name || '',
 			id: docId,
-			multisigs: (await Promise.all(multisigsData)).filter((a) => Boolean(a))
+			multisigs: (await Promise.all(multisigsData)).filter((a) => Boolean(a)),
+			imageURI: orgData?.imageURI || ''
 		};
 		return data;
 	}

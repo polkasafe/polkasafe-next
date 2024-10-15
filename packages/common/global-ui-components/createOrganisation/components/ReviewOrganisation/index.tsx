@@ -36,7 +36,7 @@ export const ReviewOrganisation = () => {
 								width={45}
 								height={45}
 								className='rounded-full h-[45px] w-[45px]'
-								src={emptyImage}
+								src={organisationDetails.image || emptyImage}
 								alt='empty profile image'
 							/>
 							<div className='flex flex-col gap-y-[1px]'>
@@ -49,6 +49,7 @@ export const ReviewOrganisation = () => {
 						<Button
 							className='bg-primary border-none'
 							icon={<EditIcon className='text-xs' />}
+							disabled={createOrgLoading}
 							onClick={() => setStep(ECreateOrganisationSteps.ORGANISATION_DETAILS)}
 						>
 							Edit
@@ -82,6 +83,7 @@ export const ReviewOrganisation = () => {
 							onSubmit={onCreateMultisigSubmit}
 							className='bg-highlight text-label w-full mt-4'
 							iconClassName='text-label'
+							disabled={createOrgLoading}
 						/>
 					</div>
 				</div>

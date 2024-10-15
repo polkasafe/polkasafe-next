@@ -10,6 +10,8 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { DefaultOptionType } from 'antd/es/select';
 import { twMerge } from 'tailwind-merge';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import EditAddressName from '@common/modals/EditAddressName';
 
 interface ISignatories {
 	multisigs: Array<IMultisig>;
@@ -76,6 +78,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 											isProxy={false}
 											isMultisig={true}
 											withBadge={false}
+											showNetworkBadge
 										/>
 									)
 								}))}
@@ -121,6 +124,7 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 																	network={selectedMultisig.network}
 																	isProxy={true}
 																	isMultisig={false}
+																	showNetworkBadge
 																/>
 															)
 														}
@@ -139,7 +143,10 @@ export const Signatories = ({ multisigs }: ISignatories) => {
 					className='w-full bg-bg-main'
 					columns={columns}
 					dataSource={selectedMultisig.signatories?.map((signatory) => ({
-						name: DEFAULT_ADDRESS_NAME,
+						name: <div className='flex items-center gap-x-2 text-white'>
+							{addresses.find((item) => getSubstrateAddress(signatory) === getSubstrateAddress(item.address))?.name || DEFAULT_ADDRESS_NAME}
+							<EditAddressName address={signatory} />
+						</div>,
 						address: (
 							<Address
 								address={signatory}

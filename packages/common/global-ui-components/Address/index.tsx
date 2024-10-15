@@ -13,7 +13,10 @@ import copyText from '@common/utils/copyText';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
 import shortenAddress from '@common/utils/shortenAddress';
 import Identicon from '@polkadot/react-identicon';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { Badge } from 'antd';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import EditAddressName from '@common/modals/EditAddressName';
 
 interface IAddressComponent {
 	address: string;
@@ -32,6 +35,7 @@ interface IAddressComponent {
 	withEmail?: boolean;
 	email?: string;
 	noIdenticon?: boolean;
+	allowEdit?: boolean;
 }
 
 const Address: React.FC<IAddressComponent> = ({
@@ -50,6 +54,7 @@ const Address: React.FC<IAddressComponent> = ({
 	fullAddress,
 	withEmail,
 	showNetworkBadge,
+	allowEdit = true,
 	email // eslint-disable-next-line sonarjs/cognitive-complexity
 }: IAddressComponent) => {
 	const encodedMultisigAddress = getEncodedAddress(address, network);
@@ -57,6 +62,11 @@ const Address: React.FC<IAddressComponent> = ({
 	if (!encodedMultisigAddress) {
 		return null;
 	}
+
+	const [organisation] = useOrganisation();
+	const addressBook = organisation?.addressBook;
+
+	const addressBookDetails = addressBook?.find((item) => getSubstrateAddress(address) === getSubstrateAddress(item.address));
 
 	return (
 		<div className=' flex items-center gap-x-3'>
@@ -105,7 +115,7 @@ const Address: React.FC<IAddressComponent> = ({
 			)}
 			{onlyAddress ? (
 				<div className='text-text-secondary flex items-center gap-x-3 text-sm font-normal'>
-					<span className='text-white truncate'>{name || shortenAddress(address || '', addressLength || 10)}</span>
+					<span className='text-white truncate'>{shortenAddress(address || '', addressLength || 10)}</span>
 					<span className='flex items-center gap-x-2 max-sm:gap-0'>
 						<button onClick={() => copyText(address, true, network)}>
 							<CopyIcon className='hover:text-primary' />
@@ -122,7 +132,10 @@ const Address: React.FC<IAddressComponent> = ({
 			) : (
 				<div>
 					<div className='font-medium text-sm flex items-center gap-x-3 text-white max-sm:text-xs'>
-						<span className='truncate'>{name || DEFAULT_ADDRESS_NAME}</span>
+						<span className='truncate max-w-[100px]'>{addressBookDetails?.name || name || DEFAULT_ADDRESS_NAME}</span>
+						{allowEdit && 
+							<EditAddressName address={address} />
+						}
 						{network && showNetworkBadge && (
 							<div
 								style={{ backgroundColor: '#5065E4', fontSize: '9px' }}
