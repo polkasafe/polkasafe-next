@@ -3,9 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-import { INotificationPreferences, IOrganisation, IUser, IUserResponse } from '@common/types/substrate';
+import { INotificationPreferences, IUser, IUserResponse } from '@common/types/substrate';
 import { ECHANNEL, EUserType } from '@common/enum/substrate';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
@@ -30,8 +29,6 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		// check if signature is valid
 		const { isValid, error } = await isValidRequest(substrateAddress, signature);
 		if (!isValid) return NextResponse.json({ error }, { status: 400 });
-
-		const cookie = cookies();
 		const { currentOrganisation = null } = await req.json();
 
 		// default notification preferences

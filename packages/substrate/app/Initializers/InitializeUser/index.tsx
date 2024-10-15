@@ -9,6 +9,7 @@ import { userAtom, useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { useHydrateAtoms } from 'jotai/utils';
 import { useEffect } from 'react';
 import { notificationPreferences } from '@sdk/polkasafe-sdk/src/notification-preferences';
+import { watchList } from '@sdk/polkasafe-sdk/src/watch-list';
 
 interface IInitializeUserProps {
 	userAddress: string;
@@ -24,15 +25,23 @@ function InitializeUser({ userAddress, signature, organisations }: IInitializeUs
 			return;
 		}
 		const getNotificationPreferences = async () => {
-			const { data } = (await notificationPreferences({ address: userAddress, signature })) as {
-				data: INotificationPreferences;
-			};
-			setUser({ ...user, notificationPreferences: data });
-			console.log('Notification Preferences:', data);
+			const userWatchlistPromise = watchList({ address: userAddress, signature });
+			const notificationPreferencePromise = notificationPreferences({ address: userAddress, signature });
+			const [{ data: watchlist }, { data: preferences }] = (await Promise.all([
+				userWatchlistPromise,
+				notificationPreferencePromise
+			])) as [
+				{
+					data: any;
+				},
+				{
+					data: INotificationPreferences;
+				}
+			];
+			setUser({ ...user, notificationPreferences: preferences, watchlists: watchlist });
 		};
 		getNotificationPreferences();
 	}, [user]);
-	console.log('User:', user);
 	return null;
 }
 

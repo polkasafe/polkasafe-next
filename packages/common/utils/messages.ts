@@ -100,6 +100,11 @@ export const ERROR_MESSAGES = {
 		message: 'Error in sending email',
 		description: 'Error in sending email',
 		status: NotificationStatus.ERROR
+	},
+	ERROR_IN_ADDING_WATCHLIST: {
+		message: 'Error in adding watchlist',
+		description: 'Error in adding watchlist',
+		status: NotificationStatus.ERROR
 	}
 };
 

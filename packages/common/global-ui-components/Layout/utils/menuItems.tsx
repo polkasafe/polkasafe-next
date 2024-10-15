@@ -68,13 +68,12 @@ export const menuItems = [
 		icon: <AppsIcon />,
 		title: 'Apps'
 	},
-	// {
-	// baseURL: '/settings',
-	// authenticated: true,
-	// icon: <TreasuryAnalyticsIcon />,
-	// title: 'Notifications',
-	// tab: ESettingsTab.NOTIFICATIONS
-	// },
+	{
+		baseURL: '/watch-list',
+		authenticated: true,
+		icon: <TreasuryAnalyticsIcon />,
+		title: 'Watch list'
+	},
 	{
 		baseURL: '/settings',
 		authenticated: true,

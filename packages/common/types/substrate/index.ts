@@ -141,6 +141,7 @@ export interface IConnectedUser {
 	signature: string;
 	organisations: Array<IOrganisation>;
 	notificationPreferences?: INotificationPreferences;
+	watchlists?: { [address: string]: IWatchList };
 }
 
 export interface ICookieUser {
