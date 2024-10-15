@@ -8,7 +8,7 @@ import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
 import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
-import { IMultisig } from '@common/types/substrate';
+import { IMultisig, ITxnCategory } from '@common/types/substrate';
 import { findMultisig } from '@common/utils/findMultisig';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { useNotification } from '@common/utils/notification';
@@ -30,8 +30,13 @@ const SubmitPreImage = ({
 }) => {
 	const { getApi } = useAllAPI();
 	const [callData, setCallData] = useState<string>('');
-	const { multisigs, buildTransaction, assets } = useDashboardContext();
+	const { multisigs, buildTransaction, assets, transactionFields } = useDashboardContext();
 	const notification = useNotification();
+
+	const [transactionFieldsObject, setTransactionFieldsObject] = useState<ITxnCategory>({
+		category: 'none',
+		subfields: {}
+	});
 
 	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
 		address: string;
@@ -57,7 +62,8 @@ const SubmitPreImage = ({
 				callData,
 				sender: findMultisig(multisigs, multisigId) as IMultisig,
 				proxyAddress: selectedMultisigDetails.proxy,
-				type
+				type,
+				transactionFields: transactionFieldsObject
 			};
 
 			setLoading(true);
@@ -82,7 +88,7 @@ const SubmitPreImage = ({
 		>
 			<Form
 				layout='vertical'
-				className='flex flex-col gap-y-6'
+				className='flex flex-col gap-y-6 max-w-[550px]'
 				form={form}
 				onFinish={handleSubmit}
 			>
@@ -114,6 +120,53 @@ const SubmitPreImage = ({
 						)}
 					</div>
 				</section>
+
+				<div className='w-auto'>
+						<Typography
+							variant={ETypographyVariants.p}
+							className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'
+						>
+							Category
+						</Typography>
+						<div className='flex-1 flex items-center gap-2 flex-wrap'>
+							{Object.keys(transactionFields)
+								.filter((field) => field !== 'none')
+								.map((field) => (
+									<Button
+										onClick={() =>
+											setTransactionFieldsObject({
+												category: field,
+												subfields: {}
+											})
+										}
+										className={`text-xs border border-solid ${
+											transactionFieldsObject.category === field
+												? 'border-primary text-primary bg-highlight'
+												: 'text-text-secondary border-text-secondary'
+										} rounded-2xl px-2 py-[1px]`}
+										key='field'
+									>
+										{transactionFields[field].fieldName}
+									</Button>
+								))}
+							<Button
+								onClick={() =>
+									setTransactionFieldsObject({
+										category: 'none',
+										subfields: {}
+									})
+								}
+								className={`text-xs border border-solid ${
+									transactionFieldsObject.category === 'none'
+										? 'border-primary text-primary bg-highlight'
+										: 'text-text-secondary border-text-secondary'
+								} rounded-2xl px-2 py-[1px]`}
+								key='field'
+							>
+								{transactionFields.none.fieldName}
+							</Button>
+						</div>
+					</div>
 
 				<div className='flex items-center gap-x-4 w-full'>
 					<div className='w-full'>

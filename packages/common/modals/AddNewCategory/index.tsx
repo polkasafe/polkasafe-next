@@ -8,9 +8,17 @@ import { ETransactionFieldsUpdateType } from '@common/enum/substrate';
 
 const AddNewCategory = ({
 	loading,
-	onSave
+	onSave,
+	buttonClassName,
+	iconClassName,
+	buttonTitle,
+	buttonSize
 }: {
 	loading: boolean;
+	buttonClassName?: string;
+	iconClassName?: string;
+	buttonTitle?: string;
+	buttonSize?: 'small' | 'middle' | 'large';
 	onSave: (
 		updateType: ETransactionFieldsUpdateType,
 		fieldName: string,
@@ -24,12 +32,12 @@ const AddNewCategory = ({
 	return (
 		<div>
 			<Button
-				icon={<PlusCircleOutlined />}
+				icon={<PlusCircleOutlined className={iconClassName} />}
 				onClick={() => setOpenModal(true)}
-				size='large'
-				className='outline-none border-none text-xs md:text-sm font-medium bg-primary text-white rounded-md md:rounded-lg flex items-center gap-x-3'
+				size={buttonSize || 'large'}
+				className={buttonClassName || 'outline-none border-none text-xs md:text-sm font-medium bg-primary text-white rounded-md md:rounded-lg flex items-center gap-x-3'}
 			>
-				<span>Add New Category</span>
+				<span>{buttonTitle || 'Add New Category'}</span>
 			</Button>
 			<Modal
 				open={openModal}
