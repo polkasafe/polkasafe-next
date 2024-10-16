@@ -15,12 +15,12 @@ const styles = {
 };
 
 const CreateProposal = ({ onClose }: { onClose: () => void }) => {
-	const [createProposalType, selectCreateProposalType] = useState<EProposalType>(EProposalType.CREATE);
+	const [createProposalType, selectCreateProposalType] = useState<EProposalType>(EProposalType.CANCEL);
 	const tabs = [
-		{
-			label: 'Create Referenda',
-			tab: EProposalType.CREATE
-		},
+		// {
+		// label: 'Create Referenda',
+		// tab: EProposalType.CREATE
+		// },
 		{
 			label: 'Cancel Referenda',
 			tab: EProposalType.CANCEL

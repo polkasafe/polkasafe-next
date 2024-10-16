@@ -57,16 +57,18 @@ const Address: React.FC<IAddressComponent> = ({
 	allowEdit = true,
 	email // eslint-disable-next-line sonarjs/cognitive-complexity
 }: IAddressComponent) => {
+	const [organisation] = useOrganisation();
 	const encodedMultisigAddress = getEncodedAddress(address, network);
 
 	if (!encodedMultisigAddress) {
 		return null;
 	}
 
-	const [organisation] = useOrganisation();
 	const addressBook = organisation?.addressBook;
 
-	const addressBookDetails = addressBook?.find((item) => getSubstrateAddress(address) === getSubstrateAddress(item.address));
+	const addressBookDetails = addressBook?.find(
+		(item) => getSubstrateAddress(address) === getSubstrateAddress(item.address)
+	);
 
 	return (
 		<div className=' flex items-center gap-x-3'>
@@ -133,9 +135,7 @@ const Address: React.FC<IAddressComponent> = ({
 				<div>
 					<div className='font-medium text-sm flex items-center gap-x-3 text-white max-sm:text-xs'>
 						<span className='truncate max-w-[100px]'>{addressBookDetails?.name || name || DEFAULT_ADDRESS_NAME}</span>
-						{allowEdit && 
-							<EditAddressName address={address} />
-						}
+						{allowEdit && <EditAddressName address={address} />}
 						{network && showNetworkBadge && (
 							<div
 								style={{ backgroundColor: '#5065E4', fontSize: '9px' }}
