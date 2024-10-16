@@ -1,5 +1,5 @@
 import { useDashboardContext } from '@common/context/DashboarcContext';
-import { ENetwork, ETransactionCreationType } from '@common/enum/substrate';
+import { ENetwork, ETransactionCreationType, ETransactionFieldsUpdateType, NotificationStatus } from '@common/enum/substrate';
 import Address from '@common/global-ui-components/Address';
 import BalanceInput from '@common/global-ui-components/BalanceInput';
 import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown';
@@ -11,10 +11,15 @@ import { Form, FormInstance, Spin } from 'antd';
 import BN from 'bn.js';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { findMultisig } from '@common/utils/findMultisig';
-import { IMultisig, ITxnCategory } from '@common/types/substrate';
+import { IMultisig, ITransactionCategorySubfields, ITxnCategory } from '@common/types/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
+import { queueNotification } from '@common/global-ui-components/QueueNotification';
+import { addNewCategory } from '@sdk/polkasafe-sdk/src/add-new-category';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
+import AddNewCategory from '@common/modals/AddNewCategory';
 
 export interface IRecipientAndAmount {
 	recipient: string;
@@ -25,6 +30,9 @@ export interface IRecipientAndAmount {
 export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormInstance }) => {
 	const { multisigs, buildTransaction, addressBook = [], assets, transactionFields } = useDashboardContext();
 	const notification = useNotification();
+
+	const [user] = useUser();
+	const [organisation, setOrganisation] = useOrganisation();
 
 	const [transactionFieldsObject, setTransactionFieldsObject] = useState<ITxnCategory>({
 		category: 'none',
@@ -45,6 +53,7 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 	const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
 
 	const [loading, setLoading] = useState(false);
+	const [newCategoryLoading, setNewCategoryLoading] = useState(false);
 
 	const autocompleteAddresses = addressBook.map((item) => ({
 		label: (
@@ -100,6 +109,60 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 			console.error(error);
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const handleAddNewCategory = async (updateType: ETransactionFieldsUpdateType, fieldName: string, fieldDesc: string, subfields?: ITransactionCategorySubfields, onCancel?: () => void) => {
+		try {
+            if (!user) {
+                throw new Error('User not found');
+            }
+    
+            if (!organisation || !organisation.id) {
+                throw new Error('Organisation not found');
+            }
+
+            setNewCategoryLoading(true);
+
+            if (updateType === ETransactionFieldsUpdateType.ADD_CATEGORY) {
+                const { data } = (await addNewCategory({ address: user.address, signature: user.signature, organisationId: organisation.id, transactionFields: {
+                    ...transactionFields,
+                    [fieldName.toLowerCase().split(' ').join('_')]: {
+                        fieldDesc,
+                        fieldName,
+                        subfields: {}
+                    }
+                }  })) as { data: string };
+                if (data && data === 'success') {
+                    setNewCategoryLoading(false);
+                    queueNotification({
+                        header: 'Success!',
+                        message: 'Transaction Fields Updated.',
+                        status: NotificationStatus.SUCCESS
+                    });
+                    setOrganisation({ ...organisation, transactionFields: { ...organisation.transactionFields, [fieldName.toLowerCase().split(' ').join('_')]: {
+                        fieldDesc,
+                        fieldName,
+                        subfields: {}
+                    } } });
+    
+					setTransactionFieldsObject({
+						category: fieldName.toLowerCase().split(' ').join('_'),
+						subfields: {}
+					})
+                    onCancel?.();
+                }
+                return;
+            }
+
+		} catch (error) {
+			console.log('ERROR', error);
+			queueNotification({
+				header: 'Failed!',
+				message: 'Error in Updating Transaction Fields.',
+				status: NotificationStatus.ERROR
+			});
+			setNewCategoryLoading(false);
 		}
 	};
 
@@ -195,6 +258,7 @@ export const SendTokens = ({ onClose, form }: { onClose: () => void; form: FormI
 							>
 								{transactionFields.none.fieldName}
 							</Button>
+							<AddNewCategory buttonSize='middle' buttonTitle='Add New' buttonClassName='text-xs border border-solid rounded-2xl px-2 py-[1px] text-text-secondary border-text-secondary bg-transparent' iconClassName='text-text-secondary' onSave={handleAddNewCategory} loading={newCategoryLoading} />
 						</div>
 					</div>
 				</div>
