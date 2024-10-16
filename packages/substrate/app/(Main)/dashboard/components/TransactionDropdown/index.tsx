@@ -5,7 +5,7 @@ import { Dropdown } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 
-export const TransactionDropdown = () => {
+export const TransactionDropdown = ({ disabled }: { disabled?: boolean }) => {
 	const [transactionType, setTransactionType] = useState<ETransactionCreationType>(ETransactionCreationType.SEND_TOKEN);
 	const [openModal, setOpenModal] = useState(false);
 
@@ -24,12 +24,14 @@ export const TransactionDropdown = () => {
 						setTransactionType(e.key as ETransactionCreationType);
 					}
 				}}
+				disabled={disabled}
 			>
 				<Button
 					variant={EButtonVariant.PRIMARY}
 					fullWidth
 					icon={<PlusCircleOutlined />}
 					size='large'
+					disabled={disabled}
 				>
 					New Transaction
 				</Button>

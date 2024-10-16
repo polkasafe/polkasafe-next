@@ -6,7 +6,6 @@
 
 import { ENetwork, ETransactionCreationType } from '@common/enum/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
-import { PlusCircleOutlined } from '@ant-design/icons';
 import { SendTransaction } from '@substrate/app/(Main)/components/SendTransaction';
 import NewTransaction from '@common/modals/NewTransaction';
 import { useState } from 'react';
@@ -14,11 +13,13 @@ import { useState } from 'react';
 export function TransferByMultisig({
 	address,
 	network,
-	proxyAddress
+	proxyAddress,
+	disabled
 }: {
 	address: string;
-	network?: ENetwork;
 	proxyAddress: string;
+	network?: ENetwork;
+	disabled?: boolean;
 }) {
 	const [openModal, setOpenModal] = useState(false);
 	return (
@@ -32,6 +33,7 @@ export function TransferByMultisig({
 				className='min-w-0 px-3 py-2'
 				size='small'
 				onClick={() => setOpenModal(true)}
+				disabled={disabled}
 			>
 				Send
 			</Button>

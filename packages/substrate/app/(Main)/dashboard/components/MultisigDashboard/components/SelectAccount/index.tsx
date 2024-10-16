@@ -7,6 +7,8 @@
 import Address from '@common/global-ui-components/Address';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IMultisig } from '@common/types/substrate';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 import { MULTISIG_DASHBOARD_URL, PROXY_URL } from '@substrate/app/global/end-points';
 import { CreateProxyModal } from '@substrate/app/modal/CreateProxy';
 import { Divider } from 'antd';
@@ -22,6 +24,10 @@ const SelectAccount = ({
 	multisig: IMultisig;
 	organisationId: string;
 }) => {
+	const [user] = useUser();
+	const isSignatory = multisig.signatories
+		.map((a) => getSubstrateAddress(a))
+		.includes(getSubstrateAddress(user?.address || ''));
 	return (
 		<div className='flex flex-col gap-4 '>
 			<Typography variant={ETypographyVariants.h1}>Select Account</Typography>
@@ -68,7 +74,10 @@ const SelectAccount = ({
 						))}
 				</div>
 				<div className='w-full'>
-					<CreateProxyModal multisig={multisig} />
+					<CreateProxyModal
+						multisig={multisig}
+						disabled={!isSignatory}
+					/>
 				</div>
 			</div>
 		</div>

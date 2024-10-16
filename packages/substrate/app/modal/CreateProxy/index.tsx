@@ -19,9 +19,10 @@ interface ICreateProxyModal {
 	multisig: IMultisig;
 	buttonClassName?: string;
 	iconClassName?: string;
+	disabled?: boolean;
 }
 
-export const CreateProxyModal = ({ multisig, buttonClassName, iconClassName }: ICreateProxyModal) => {
+export const CreateProxyModal = ({ multisig, buttonClassName, iconClassName, disabled }: ICreateProxyModal) => {
 	const [user] = useUser();
 	const notification = useNotification();
 	const [queueTransaction, setQueueTransactions] = useQueueAtom();
@@ -139,6 +140,7 @@ export const CreateProxyModal = ({ multisig, buttonClassName, iconClassName }: I
 				buttonIcon={<AddBoxIcon className={iconClassName || 'text-label'} />}
 				api={api || undefined}
 				isCreateProxyTx
+				disabled={disabled}
 			>
 				Create Proxy
 			</ReviewModal>

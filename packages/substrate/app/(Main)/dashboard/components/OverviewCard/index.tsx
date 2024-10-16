@@ -30,6 +30,7 @@ import { TransactionDropdown } from '@substrate/app/(Main)/dashboard/components/
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
 import EditAddressName from '@common/modals/EditAddressName';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
 
 const ExternalLink = ({ network, address }: { network: ENetwork; address: string }) => (
 	<div className='absolute right-5 top-5'>
@@ -88,12 +89,17 @@ interface IOverviewCardProps {
 }
 
 function OverviewCard({ address, name, threshold, signatories, network, className }: IOverviewCardProps) {
+	const [user] = useUser();
 	const [data] = useAssets();
 	const [organisation] = useOrganisation();
 
 	const addressBook = organisation?.addressBook;
 
-	const addressBookDetails = addressBook?.find((item) => getSubstrateAddress(item.address) === getSubstrateAddress(address));
+	const isSignatory = signatories.map((a) => getSubstrateAddress(a)).includes(getSubstrateAddress(user?.address || ''));
+
+	const addressBookDetails = addressBook?.find(
+		(item) => getSubstrateAddress(item.address) === getSubstrateAddress(address)
+	);
 
 	const proxyAddress = useSearchParams().get('_proxy');
 
@@ -238,7 +244,7 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 				)}
 			</div>
 			<div className='flex w-full gap-6 justify-center items-center'>
-				<TransactionDropdown />
+				<TransactionDropdown disabled={!isSignatory} />
 				<FundMultisig />
 			</div>
 		</div>
