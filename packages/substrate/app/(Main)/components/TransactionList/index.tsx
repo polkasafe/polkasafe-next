@@ -53,7 +53,6 @@ const filterTransactions = (
 };
 
 export function TransactionList({ transactions = [], txType, className, variant }: ITransactionList) {
-	console.log('transactions', transactions);
 	const multisig = useSearchParams().get('_multisig');
 	const network = useSearchParams().get('_network') as ENetwork;
 	const isSimple = variant === ETransactionVariant.SIMPLE;
