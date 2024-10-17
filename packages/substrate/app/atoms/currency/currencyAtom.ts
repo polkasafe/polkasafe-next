@@ -3,13 +3,15 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 import { ICurrency } from '@common/types/substrate';
 import { atom, useAtom } from 'jotai';
-import { currency } from '@common/constants/currencyConstants';
+import { currencies, currency, getCurrencySymbol } from '@common/constants/currencyConstants';
 
 export const currencyAtom = atom<ICurrency | null>(null);
-let preferCurrency = currency.USD;
+let preferCurrency: any = currency.USD;
 try {
 	preferCurrency = window === undefined ? currency.USD : localStorage.getItem('currency') || currency.USD;
 } catch (error) {}
+
+preferCurrency = getCurrencySymbol(preferCurrency);
 
 export const selectedCurrencyAtom = atom<string>(preferCurrency);
 export const allCurrencyPriceAtom = atom<any>(null);
