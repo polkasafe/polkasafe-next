@@ -22,6 +22,7 @@ interface IReviewModal {
 	buttonIcon?: ReactNode;
 	isCreateProxyTx?: boolean;
 	api?: ApiPromise | AvailApiPromise;
+	disabled?: boolean;
 }
 
 export const ReviewModal = ({
@@ -33,7 +34,8 @@ export const ReviewModal = ({
 	buttonIcon,
 	size,
 	isCreateProxyTx,
-	api
+	api,
+	disabled
 }: PropsWithChildren<IReviewModal>) => {
 	const [openModal, setOpenModal] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -109,6 +111,7 @@ export const ReviewModal = ({
 				className={className}
 				size={size || 'large'}
 				icon={buttonIcon}
+				disabled={disabled}
 			>
 				{children}
 			</Button>

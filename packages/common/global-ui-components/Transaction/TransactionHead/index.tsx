@@ -41,6 +41,7 @@ interface ITransactionHeadProps {
 	proxyAddress?: string;
 	updateTransactionFieldsComponent: ReactNode;
 	callHash: string;
+	callData?: string;
 	multiId?: string;
 }
 
@@ -94,6 +95,7 @@ export function TransactionHead({
 	proxyAddress,
 	updateTransactionFieldsComponent,
 	callHash,
+	callData,
 	multiId
 }: ITransactionHeadProps) {
 	const allRecipes = to?.map((recipe) => recipe.address);
@@ -272,6 +274,7 @@ export function TransactionHead({
 									signTransaction={signTransaction}
 									className='w-auto min-w-0 bg-[#06d6a0]/[0.1] text-success'
 									size='middle'
+									disabled={!callData}
 								>
 									<OutlineCheckIcon />
 								</ReviewModal>

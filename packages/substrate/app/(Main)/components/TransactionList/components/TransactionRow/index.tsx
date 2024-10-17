@@ -84,11 +84,12 @@ const getLabelForTransaction = (type: ETransactionOptions, label?: string) => {
 const getTransactionDetail = (data: Array<any>, network: ENetwork) => {
 	if (!data || !Array.isArray(data) || data.length === 0) {
 		return {
-			label: '-',
+			label: '',
 			amount: 0,
 			to: []
 		};
 	}
+
 	const transaction: any = {};
 	const recipientsAndAmount: Array<any> = [];
 	for (let txData of data) {
@@ -105,7 +106,7 @@ const getTransactionDetail = (data: Array<any>, network: ENetwork) => {
 		) {
 			transaction.label = ETransactionOptions.SENT;
 		} else {
-			transaction.label = ETransactionOptions.CUSTOM;
+			transaction.label = `${txData.section}.${txData.method}`;
 		}
 		// AMOUNT
 		if (txData.section === 'balances' && txData.method === 'transferKeepAlive') {
@@ -172,6 +173,8 @@ function TransactionRow({
 		transactionFields?.category ? generateCategoryKey(transactionFields?.category) : 'none'
 	);
 
+	const api = getApi(network);
+
 	const [transactionFieldsObject, setTransactionFieldsObject] = useState<ITxnCategory>(
 		transactionFields || { category: 'none', subfields: {} }
 	);
@@ -179,7 +182,7 @@ function TransactionRow({
 	const { data, isLoading, error } = useDecodeCallData({
 		callData,
 		callHash,
-		apiData: getApi(network)
+		apiData: api
 	});
 
 	const transactionDetails = getTransactionDetail(data, network);
@@ -489,6 +492,7 @@ function TransactionRow({
 					]
 				}
 				callHash={callHash}
+				callData={callData}
 				network={network}
 				amountToken={amountToken}
 				from={from}
@@ -557,6 +561,7 @@ function TransactionRow({
 							onAction={buildTransaction}
 							isSignatory={isSignatory}
 							initiator={isInitiator}
+							callData={callData}
 							updateTransactionFieldsComponent={
 								<TransactionFields
 									callHash={callHash}
@@ -592,6 +597,7 @@ function TransactionRow({
 							onAction={buildTransaction}
 							transactionFields={transactionFieldsObject}
 							initiator={isInitiator}
+							api={api?.api as ApiPromise}
 							updateTransactionFieldsComponent={
 								<TransactionFields
 									callHash={callHash}
