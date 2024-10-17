@@ -1,6 +1,7 @@
 import { ENetwork, ETransactionOptions, ETransactionType, ETxType } from '@common/enum/substrate';
 import Address from '@common/global-ui-components/Address';
 import {
+	ArrowRightIcon,
 	CircleCheckIcon,
 	CirclePlusIcon,
 	CircleWatchIcon,
@@ -16,7 +17,9 @@ import getEncodedAddress from '@common/utils/getEncodedAddress';
 import shortenAddress from '@common/utils/shortenAddress';
 import { Divider, Timeline, Collapse } from 'antd';
 import dayjs from 'dayjs';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
+import { ApiPromise } from '@polkadot/api';
+import ArgumentsTable from '@common/global-ui-components/Transaction/ArgumentsTable';
 
 interface ITransactionDetails {
 	type: ETransactionOptions;
@@ -43,6 +46,7 @@ interface ITransactionDetails {
 	transactionFields?: ITxnCategory;
 	multiId?: string;
 	initiator: boolean;
+	api: ApiPromise
 }
 
 export default function TransactionDetails({
@@ -66,12 +70,16 @@ export default function TransactionDetails({
 	updateTransactionFieldsComponent,
 	transactionFields,
 	multiId,
-	initiator
+	initiator,
+	api
 }: ITransactionDetails) {
 	const subscanLink = `https://${network}.subscan.io/multisig_extrinsic/${multiId}?call_hash=${callHash}`;
 
 	const isQueue = transactionType === ETransactionType.QUEUE_TRANSACTION;
 	const isHistory = transactionType === ETransactionType.HISTORY_TRANSACTION;
+
+	const [showDetails, setShowDetails] = useState<boolean>(false);
+
 	return (
 		<div className='p-4 bg-bg-secondary flex items-start gap-x-4'>
 			<div className='rounded-xl p-4 bg-bg-main basis-2/3'>
@@ -172,6 +180,34 @@ export default function TransactionDetails({
 											</div>
 										);
 									})}
+							</>
+						)}
+
+					{callData && (
+							<>
+							{showDetails && 
+							<>
+<Divider
+	className='border-bg-secondary text-text_secondary my-5'
+	orientation='left'
+>
+	Decoded Call
+</Divider>
+<ArgumentsTable
+	api={api}
+	network={network}
+	callData={callData}
+/>
+
+							</>
+							}
+								<p
+									onClick={() => setShowDetails((prev) => !prev)}
+									className='text-primary cursor-pointer font-medium text-sm leading-[15px] mt-5 flex items-center gap-x-3'
+								>
+									<span>{showDetails ? 'Hide' : 'Advanced'} Details</span>
+									<ArrowRightIcon />
+								</p>
 							</>
 						)}
 				</div>
@@ -316,6 +352,7 @@ export default function TransactionDetails({
 									signTransaction={signTransaction}
 									className='bg-[#06d6a0]/[0.1] text-success'
 									buttonIcon={<OutlineCheckIcon className='text-success' />}
+									disabled={!callData}
 								>
 									Approve
 								</ReviewModal>
@@ -327,6 +364,7 @@ export default function TransactionDetails({
 									signTransaction={signTransaction}
 									className='bg-[#e63946]/[0.1] text-text-danger'
 									buttonIcon={<OutlineCloseIcon className='text-text-danger' />}
+									disabled={!callData}
 								>
 									Reject
 								</ReviewModal>
