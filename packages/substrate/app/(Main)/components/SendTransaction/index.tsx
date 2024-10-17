@@ -196,7 +196,7 @@ export function SendTransaction({
 		const { address } = user;
 		const { sender: multisig, displayName, legalName, elementHandle, websiteUrl, twitterHandle, email } = values;
 		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.SET_IDENTITY]({
-			api: multisig.network === ENetwork.POLKADOT ? peopleApi : api,
+			api: multisig.network === ENetwork.POLKADOT || multisig.network === ENetwork.POLKADOT_ASSETHUB ? peopleApi : api,
 			data: {
 				displayName,
 				legalName,

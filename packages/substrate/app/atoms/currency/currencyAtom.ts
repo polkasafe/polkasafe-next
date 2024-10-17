@@ -6,7 +6,7 @@ import { atom, useAtom } from 'jotai';
 import { currencies, currency, getCurrencySymbol } from '@common/constants/currencyConstants';
 
 export const currencyAtom = atom<ICurrency | null>(null);
-let preferCurrency: any = currency.USD;
+let preferCurrency: string = currency.USD;
 try {
 	preferCurrency = window === undefined ? currency.USD : localStorage.getItem('currency') || currency.USD;
 } catch (error) {}
