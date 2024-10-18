@@ -8,8 +8,12 @@ import { ENetwork } from '@common/enum/substrate';
 import Address from '@common/global-ui-components/Address';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
 import { IMultisigAssets } from '@common/types/substrate';
+import { findMultisig } from '@common/utils/findMultisig';
 import { getCurrencySymbol } from '@common/utils/getCurrencySymbol';
+import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { TransferByMultisig } from '@substrate/app/(Main)/assets/components/AssetsTable/components/Transfer';
+import { useUser } from '@substrate/app/atoms/auth/authAtoms';
+import { useOrganisation } from '@substrate/app/atoms/organisation/organisationAtom';
 import { Table } from 'antd';
 import { Fragment } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -53,6 +57,9 @@ const columns = [
 ];
 
 function AssetsTable({ dataSource, currency, isExpandable }: IAssetsTableProps) {
+	const [user] = useUser();
+	const [organisation] = useOrganisation();
+	const multisigs = organisation?.multisigs || [];
 	const assetsColumns = [
 		{
 			title: 'Asset',
@@ -116,12 +123,20 @@ function AssetsTable({ dataSource, currency, isExpandable }: IAssetsTableProps) 
 				if (data.proxyAddress) {
 					return null;
 				}
+				const multisig = findMultisig(multisigs, `${data.address}_${data.network}`);
+				if (!multisig) {
+					return null;
+				}
+				const isSignatory = multisig.signatories
+					.map((a) => getSubstrateAddress(a))
+					.includes(getSubstrateAddress(user?.address || ''));
 				return (
 					<div>
 						<TransferByMultisig
 							address={data.address}
 							network={data.network}
 							proxyAddress={data.proxyAddress}
+							disabled={!isSignatory}
 						/>
 					</div>
 				);

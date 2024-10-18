@@ -81,3 +81,23 @@ export const menuItems = [
 		tab: ESettingsTab.SIGNATORIES
 	}
 ];
+
+export const watchlistMenuItems = [
+	{
+		baseURL: '/viewAddress/dashboard',
+		icon: <HomeIcon />,
+		title: 'Home',
+		tab: ETransactionTab.QUEUE
+	},
+	{
+		baseURL: '/viewAddress/transactions',
+		icon: <TransactionIcon />,
+		title: 'Transactions',
+		tab: ETransactionTab.QUEUE
+	},
+	{
+		baseURL: '/viewAddress/assets',
+		icon: <AssetsIcon />,
+		title: 'Assets'
+	}
+];

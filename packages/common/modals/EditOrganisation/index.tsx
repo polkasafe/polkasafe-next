@@ -4,7 +4,6 @@
 
 import Button from '@common/global-ui-components/Button';
 import React, { useEffect, useState } from 'react';
-import { PlusCircleOutlined } from '@ant-design/icons';
 import Modal from '@common/global-ui-components/Modal';
 import { EditForm } from '@common/modals/EditOrganisation/components/EditForm';
 import { ICreateOrganisationDetails, IMultisig, IOrganisation } from '@common/types/substrate';
@@ -25,7 +24,7 @@ export const EditOrganisation = () => {
 	const [user] = useUser();
 	const [organisation, setOrgananisation] = useOrganisation();
 	const notification = useNotification();
-	
+
 	const [multisigs, setMultisigs] = useState<Array<IMultisig>>([]);
 	const [linkedMultisigs, setLinkedMultisigs] = useState<Array<IMultisig>>(organisation?.multisigs || []);
 
@@ -56,10 +55,10 @@ export const EditOrganisation = () => {
 			address: user.address,
 			signature: user.signature,
 			organisationId: organisation.id,
-			multisigs: [...linkedMultisigs],
+			multisigs: [...linkedMultisigs]
 		};
 
-		const { data, error } = (await updateOrganisation(payload as any)) as { data: IOrganisation, error: string };
+		const { data, error } = (await updateOrganisation(payload as any)) as { data: IOrganisation; error: string };
 
 		if (data && !error) {
 			console.log('response', data);
@@ -142,8 +141,7 @@ export const EditOrganisation = () => {
 		setMultisigs(leftMultisig);
 	};
 
-	if (!user || !organisation) 
-		return null;
+	if (!user || !organisation) return null;
 
 	return (
 		<>

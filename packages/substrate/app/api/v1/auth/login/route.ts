@@ -15,6 +15,11 @@ const getOrganisations = async (address: string) => {
 	return organisations.docs.map((doc) => doc.id as string);
 };
 
+const checkValidOrg = async (id: string) => {
+	const organisations = await ORGANISATION_COLLECTION.doc(id).get();
+	return organisations.exists;
+};
+
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	const { headers } = req;
 	const address = headers.get('x-address');

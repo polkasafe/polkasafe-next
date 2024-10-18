@@ -135,6 +135,7 @@ export interface IOrganisation {
 	postalCode: string;
 	state: string;
 	taxNumber: string;
+	image?: string;
 }
 export interface IConnectedUser {
 	address: string;

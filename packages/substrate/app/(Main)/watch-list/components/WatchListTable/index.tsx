@@ -17,6 +17,8 @@ import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipI
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import { EyeOutlined } from '@ant-design/icons';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+import Link from 'next/link';
+import { WATCH_LIST_URL } from '@substrate/app/global/end-points';
 
 export const WatchListTable = () => {
 	const [user, setUser] = useUser();
@@ -133,7 +135,16 @@ export const WatchListTable = () => {
 						isUsedInsideTable={true}
 					/>
 					<RemoveWatchlist onSubmit={() => handleDelete(allData.address, allData.network as ENetwork)} />
-					<EyeOutlined style={{ fontSize: '24px', color: 'var(--text-secondary)' }} />
+					<Link
+						href={WATCH_LIST_URL({
+							multisigAddress: allData.address,
+							network: allData.network as ENetwork,
+							proxyAddress: ''
+						})}
+						target='_blank'
+					>
+						<EyeOutlined style={{ fontSize: '24px', color: 'var(--text-secondary)' }} />
+					</Link>
 				</div>
 			)
 		}

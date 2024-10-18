@@ -7,7 +7,6 @@ import { ENetwork, ESettingsTab, ETransactionTab, ETransactionType } from '@comm
 export const LOGIN_URL = '/login';
 export const DASHBOARD_URL = '/dashboard';
 export const EXCHANGE_URL = '/exchange';
-export const WATCH_LIST_URL = '/watch-list';
 export const TRANSACTIONS_URL = '/transactions';
 export const APPS_URL = '/apps';
 export const NOTIFICATIONS_URL = '/notifications';
@@ -78,3 +77,13 @@ export const PROXY_URL = ({
 	network: ENetwork;
 }) =>
 	`/dashboard?_organisation=${organisationId}&_multisig=${multisigAddress}&_network=${network}&_proxy=${proxyAddress}&_tab=${ETransactionTab.QUEUE}`;
+
+export const WATCH_LIST_URL = ({
+	multisigAddress,
+	network,
+	proxyAddress
+}: {
+	multisigAddress: string;
+	proxyAddress: string;
+	network: ENetwork;
+}) => `/viewAddress/dashboard?_multisig=${multisigAddress}&_network=${network}&_proxy=${proxyAddress}`;
