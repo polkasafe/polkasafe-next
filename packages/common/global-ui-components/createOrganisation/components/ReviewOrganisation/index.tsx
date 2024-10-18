@@ -73,6 +73,7 @@ export const ReviewOrganisation = () => {
 									name={multisig.name}
 									isMultisig
 									withBadge={false}
+									allowEdit={false}
 								/>
 							</div>
 						))}
