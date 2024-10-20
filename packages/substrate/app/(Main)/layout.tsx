@@ -5,7 +5,7 @@ import '@common/styles/globals.scss';
 import NextTopLoader from 'nextjs-toploader';
 import React, { PropsWithChildren } from 'react';
 import { getUserFromCookie } from '@substrate/app/global/lib/cookies';
-import { LOGIN_URL } from '@substrate/app/global/end-points';
+import { CREATE_ORGANISATION_URL, LOGIN_URL } from '@substrate/app/global/end-points';
 import { redirect } from 'next/navigation';
 import { Provider } from 'jotai';
 import Initializers from '@substrate/app/Initializers';
@@ -36,12 +36,16 @@ export default async function MainLayout({ children }: PropsWithChildren) {
 	if (!user) {
 		redirect(LOGIN_URL);
 	}
-	if (!user.currentOrganisation) {
-		redirect('/create-organisation');
-	}
+
+	// if (!user.currentOrganisation) {
+	// 	redirect('/create-organisation');
+	// }
+
 	const { data: organisations } = (await getOrganisationsByUser({
 		address: user.address
 	})) as { data: Array<IOrganisation> };
+
+	if (!organisations || organisations.length === 0) redirect(CREATE_ORGANISATION_URL);
 
 	return (
 		<html lang='en'>

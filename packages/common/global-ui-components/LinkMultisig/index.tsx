@@ -102,6 +102,7 @@ export const LinkMultisig = ({
 														showNetworkBadge
 														signatories={multisig.signatories.length}
 														threshold={multisig.threshold}
+														allowEdit={false}
 													/>
 												),
 												children: multisig.proxy && (
@@ -116,6 +117,7 @@ export const LinkMultisig = ({
 																	isProxy
 																	withBadge={false}
 																	showNetworkBadge
+																	allowEdit={false}
 																/>
 																<Button
 																	icon={<UnlinkIcon className='text-white' />}
@@ -151,6 +153,7 @@ export const LinkMultisig = ({
 											showNetworkBadge
 											signatories={multisig.signatories.length}
 											threshold={multisig.threshold}
+											allowEdit={false}
 										/>
 										<Button
 											icon={<UnlinkIcon className='text-white' />}
@@ -200,6 +203,7 @@ export const LinkMultisig = ({
 															showNetworkBadge
 															signatories={multisig.signatories.length}
 															threshold={multisig.threshold}
+															allowEdit={false}
 														/>
 													),
 													children: multisig.proxy && (
@@ -215,6 +219,7 @@ export const LinkMultisig = ({
 																		name={item.name}
 																		isProxy
 																		showNetworkBadge
+																		allowEdit={false}
 																	/>
 																	<Button
 																		icon={<LinkIcon className='text-label' />}
@@ -250,6 +255,7 @@ export const LinkMultisig = ({
 												showNetworkBadge
 												signatories={multisig.signatories.length}
 												threshold={multisig.threshold}
+												allowEdit={false}
 											/>
 											<Button
 												icon={<LinkIcon className='text-label' />}

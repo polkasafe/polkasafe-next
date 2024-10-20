@@ -10,9 +10,9 @@ import { ResponseMessages } from '@common/constants/responseMessage';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import { ORGANISATION_COLLECTION, USER_COLLECTION } from '@common/db/collections';
 
-const getOrganisation = async (address: string) => {
+const getOrganisations = async (address: string) => {
 	const organisations = await ORGANISATION_COLLECTION.where('members', 'array-contains', address).limit(1).get();
-	return organisations.docs.map((doc) => doc.id as string)[0];
+	return organisations.docs.map((doc) => doc.id as string);
 };
 
 const checkValidOrg = async (id: string) => {
@@ -52,13 +52,18 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		const userRef = USER_COLLECTION.doc(String(substrateAddress));
 		const doc = await userRef.get();
 
+		const userOrgIds = await getOrganisations(substrateAddress);
+
 		// check if address doc already exists
 		if (doc.exists) {
 			const data = doc.data();
 			if (data && data.created_at) {
 				let orgId = currentOrganisation;
-				if (!orgId || !checkValidOrg(orgId)) {
-					orgId = await getOrganisation(substrateAddress);
+				if (userOrgIds.includes(currentOrganisation)) {
+					orgId = currentOrganisation;
+				}
+				else {
+					orgId = userOrgIds[0];
 				}
 
 				const resUser: IUserResponse = {
@@ -102,7 +107,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			address: substrateAddress,
 			type: EUserType.SUBSTRATE,
 			signature: signature as string,
-			currentOrganisation
+			currentOrganisation: userOrgIds[0]
 		};
 
 		await USER_COLLECTION.doc(substrateAddress).set(newUser, { merge: true });
