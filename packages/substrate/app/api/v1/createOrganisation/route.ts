@@ -5,7 +5,7 @@ import { withErrorHandling } from '@substrate/app/api/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { ResponseMessages } from '@common/constants/responseMessage';
 import { MULTISIG_COLLECTION, ORGANISATION_COLLECTION } from '@common/db/collections';
-import { IDBMultisig, IDBOrganisation } from '@common/types/substrate';
+import { IDBMultisig, IDBOrganisation, IUserResponse } from '@common/types/substrate';
 import { EUserType } from '@common/enum/substrate';
 import { isValidRequest } from '@common/utils/isValidRequest';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
@@ -221,9 +221,7 @@ export const PUT = withErrorHandling(async (req: NextRequest) => {
 		const newOrganisation: IDBOrganisation = {
 			...oldOrganisation,
 			name: String(name),
-			multisigs: [
-				...multisigPayload.map((multisig) => `${multisig.address}_${multisig.network}`)
-			],
+			multisigs: [...multisigPayload.map((multisig) => `${multisig.address}_${multisig.network}`)],
 			imageURI,
 			country,
 			state,
@@ -236,7 +234,24 @@ export const PUT = withErrorHandling(async (req: NextRequest) => {
 		};
 		console.log('newOrganisation', multisigPayload, newOrganisation);
 		const docId = await updateOrganisationDB(organisationId, newOrganisation, multisigPayload);
-		return NextResponse.json({ data: { ...newOrganisation, multisigs: multisigPayload, id: docId, image: imageURI }, error: null });
+		const response = NextResponse.json({
+			data: { ...newOrganisation, multisigs: multisigPayload, id: docId, image: imageURI },
+			error: null
+		});
+		const userResponse: IUserResponse = {
+			address: substrateAddress,
+			type: EUserType.SUBSTRATE,
+			signature: signature as string,
+			currentOrganisation: docId
+		};
+		response.cookies.set('__session', JSON.stringify(userResponse), {
+			httpOnly: false,
+			secure: true,
+			sameSite: 'strict',
+			maxAge: 60 * 60 * 24 * 365,
+			path: '/'
+		});
+		return response;
 	} catch (err: unknown) {
 		console.log('Error in create organisation:', err);
 		return NextResponse.json({ error: ResponseMessages.INTERNAL }, { status: 500 });
