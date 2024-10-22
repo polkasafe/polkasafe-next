@@ -48,7 +48,7 @@ const filterTransactions = (
 		return transactions;
 	}
 	return transactions.filter(
-		(transaction) => transaction.multisigAddress === address && transaction.network === network
+		(transaction) => transaction.multisigAddress === address && (transaction.network === ENetwork.PEOPLE && [ENetwork.POLKADOT, ENetwork.POLKADOT_ASSETHUB].includes(network) ? true : transaction.network === network)
 	);
 };
 
@@ -56,6 +56,7 @@ export function TransactionList({ transactions = [], txType, className, variant 
 	const multisig = useSearchParams().get('_multisig');
 	const network = useSearchParams().get('_network') as ENetwork;
 	const isSimple = variant === ETransactionVariant.SIMPLE;
+	console.log('unfiltered', transactions);
 	return (
 		<div className='h-full'>
 			{isSimple && (
