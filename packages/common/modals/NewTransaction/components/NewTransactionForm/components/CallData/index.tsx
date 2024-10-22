@@ -133,51 +133,51 @@ const CallData = ({ onClose, form }: { onClose: () => void; form: FormInstance }
 				</section>
 
 				<div className='w-auto'>
-						<Typography
-							variant={ETypographyVariants.p}
-							className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'
+					<Typography
+						variant={ETypographyVariants.p}
+						className='text-label font-normal mb-2 text-xs leading-[13px] flex items-center justify-between max-sm:w-full'
+					>
+						Category
+					</Typography>
+					<div className='flex-1 flex items-center gap-2 flex-wrap'>
+						{Object.keys(transactionFields)
+							.filter((field) => field !== 'none')
+							.map((field) => (
+								<Button
+									onClick={() =>
+										setTransactionFieldsObject({
+											category: field,
+											subfields: {}
+										})
+									}
+									className={`text-xs border border-solid ${
+										transactionFieldsObject.category === field
+											? 'border-primary text-primary bg-highlight'
+											: 'text-text-secondary border-text-secondary'
+									} rounded-2xl px-2 py-[1px]`}
+									key='field'
+								>
+									{transactionFields[field].fieldName}
+								</Button>
+							))}
+						<Button
+							onClick={() =>
+								setTransactionFieldsObject({
+									category: 'none',
+									subfields: {}
+								})
+							}
+							className={`text-xs border border-solid ${
+								transactionFieldsObject.category === 'none'
+									? 'border-primary text-primary bg-highlight'
+									: 'text-text-secondary border-text-secondary'
+							} rounded-2xl px-2 py-[1px]`}
+							key='field'
 						>
-							Category
-						</Typography>
-						<div className='flex-1 flex items-center gap-2 flex-wrap'>
-							{Object.keys(transactionFields)
-								.filter((field) => field !== 'none')
-								.map((field) => (
-									<Button
-										onClick={() =>
-											setTransactionFieldsObject({
-												category: field,
-												subfields: {}
-											})
-										}
-										className={`text-xs border border-solid ${
-											transactionFieldsObject.category === field
-												? 'border-primary text-primary bg-highlight'
-												: 'text-text-secondary border-text-secondary'
-										} rounded-2xl px-2 py-[1px]`}
-										key='field'
-									>
-										{transactionFields[field].fieldName}
-									</Button>
-								))}
-							<Button
-								onClick={() =>
-									setTransactionFieldsObject({
-										category: 'none',
-										subfields: {}
-									})
-								}
-								className={`text-xs border border-solid ${
-									transactionFieldsObject.category === 'none'
-										? 'border-primary text-primary bg-highlight'
-										: 'text-text-secondary border-text-secondary'
-								} rounded-2xl px-2 py-[1px]`}
-								key='field'
-							>
-								{transactionFields.none.fieldName}
-							</Button>
-						</div>
+							{transactionFields.none.fieldName}
+						</Button>
 					</div>
+				</div>
 
 				<div className='flex items-center gap-x-4 w-full'>
 					<div className='w-full'>

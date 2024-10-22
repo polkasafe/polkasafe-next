@@ -1,6 +1,5 @@
 import { useDashboardContext } from '@common/context/DashboarcContext';
 import { ENetwork, ETransactionCreationType } from '@common/enum/substrate';
-import Address from '@common/global-ui-components/Address';
 import BalanceInput from '@common/global-ui-components/BalanceInput';
 import { MultisigDropdown } from '@common/global-ui-components/MultisigDropdown';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
@@ -10,7 +9,7 @@ import { Form, FormInstance, Spin } from 'antd';
 import BN from 'bn.js';
 import { ERROR_MESSAGES } from '@common/utils/messages';
 import { findMultisig } from '@common/utils/findMultisig';
-import { IMultisig, ITeleportAssetTransaction, ITxnCategory } from '@common/types/substrate';
+import { IMultisig, ITeleportAssetTransaction } from '@common/types/substrate';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
 import { OutlineCloseIcon } from '@common/global-ui-components/Icons';
 import LoadingLottie from '@common/global-ui-components/LottieAnimations/LoadingLottie';
@@ -22,10 +21,10 @@ export interface IRecipientAndAmount {
 }
 
 export const TeleportAssets = ({ onClose, form }: { onClose: () => void; form: FormInstance }) => {
-	const { multisigs, buildTransaction, addressBook = [], assets } = useDashboardContext();
+	const { multisigs, buildTransaction, assets } = useDashboardContext();
 	const notification = useNotification();
 
-    const peopleMultisigs = multisigs.filter((item) => item.network === ENetwork.PEOPLE);
+	const peopleMultisigs = multisigs.filter((item) => item.network === ENetwork.PEOPLE);
 
 	const [selectedMultisigDetails, setSelectedMultisigDetails] = useState<{
 		address: string;
@@ -38,7 +37,7 @@ export const TeleportAssets = ({ onClose, form }: { onClose: () => void; form: F
 		name: peopleMultisigs[0].name
 	});
 
-    const [selectedRecipientDetails, setSelectedRecipientDetails] = useState<{
+	const [selectedRecipientDetails, setSelectedRecipientDetails] = useState<{
 		address: string;
 		network: ENetwork;
 		name: string;
@@ -49,21 +48,11 @@ export const TeleportAssets = ({ onClose, form }: { onClose: () => void; form: F
 		name: peopleMultisigs[0].name
 	});
 
-    const [amount, setAmount] = useState<BN>(new BN(0));
+	const [amount, setAmount] = useState<BN>(new BN(0));
 
-	const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
+	const [disableSubmit] = useState<boolean>(false);
 
 	const [loading, setLoading] = useState(false);
-
-	const autocompleteAddresses = addressBook.map((item) => ({
-		label: (
-			<Address
-				network={selectedMultisigDetails.network}
-				address={item.address}
-			/>
-		),
-		value: item.address
-	}));
 
 	const handleSubmit = async () => {
 		try {
@@ -72,8 +61,8 @@ export const TeleportAssets = ({ onClose, form }: { onClose: () => void; form: F
 			// const amount = form.getFieldValue('amount') as string;
 			const payload: ITeleportAssetTransaction = {
 				recipientAddress: selectedRecipientDetails.address,
-                recipientNetwork: selectedRecipientDetails.network,
-                amount,
+				recipientNetwork: selectedRecipientDetails.network,
+				amount,
 				sender: findMultisig(peopleMultisigs, multisigId) as IMultisig,
 				selectedProxy: selectedMultisigDetails.proxy,
 				type: ETransactionCreationType.TELEPORT
@@ -81,10 +70,10 @@ export const TeleportAssets = ({ onClose, form }: { onClose: () => void; form: F
 
 			console.log({
 				recipientAddress: selectedRecipientDetails.address,
-                recipientNetwork: selectedRecipientDetails.network,
-                amount,
+				recipientNetwork: selectedRecipientDetails.network,
+				amount,
 				sender: findMultisig(peopleMultisigs, multisigId) as IMultisig,
-				selectedProxy: selectedMultisigDetails.proxy,
+				selectedProxy: selectedMultisigDetails.proxy
 			});
 			setLoading(true);
 			await buildTransaction({ ...payload });
@@ -137,7 +126,7 @@ export const TeleportAssets = ({ onClose, form }: { onClose: () => void; form: F
 						<MultisigDropdown
 							multisigs={peopleMultisigs}
 							onChange={(value: { address: string; network: ENetwork; name: string; proxy?: string }) =>
-								setSelectedRecipientDetails({ ...value, network: ENetwork.POLKADOT})
+								setSelectedRecipientDetails({ ...value, network: ENetwork.POLKADOT })
 							}
 							assets={assets || null}
 						/>
@@ -148,7 +137,7 @@ export const TeleportAssets = ({ onClose, form }: { onClose: () => void; form: F
 						label='Amount'
 						onChange={(balance) => setAmount(balance)}
 						formName='amount'
-						required={true}
+						required
 					/>
 				</div>
 				<div className='flex items-center gap-x-4 w-full'>

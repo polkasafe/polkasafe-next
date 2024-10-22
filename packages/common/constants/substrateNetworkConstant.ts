@@ -43,25 +43,25 @@ export const onrampTokenProperties: {
 		offramp: true
 	}
 	// [onrampTokens.ASTAR]: {
-	// 	tokenSymbol: 'astr',
-	// 	logo: astarLogo
+	// tokenSymbol: 'astr',
+	// logo: astarLogo
 	// },
 	// [onrampTokens.MOONBEAM]: {
-	// 	tokenSymbol: 'glmr',
-	// 	logo: moonbeamLogo,
-	// 	offramp: true
+	// tokenSymbol: 'glmr',
+	// logo: moonbeamLogo,
+	// offramp: true
 	// },
 	// [onrampTokens.MOONRIVER]: {
-	// 	tokenSymbol: 'movr',
-	// 	logo: moonriverLogo
+	// tokenSymbol: 'movr',
+	// logo: moonriverLogo
 	// },
 	// [onrampTokens.POLYMESH]: {
-	// 	tokenSymbol: 'polyx',
-	// 	logo: polymeshLogo
+	// tokenSymbol: 'polyx',
+	// logo: polymeshLogo
 	// },
 	// [onrampTokens.ACALA]: {
-	// 	tokenSymbol: 'aca',
-	// 	logo: acalaLogo
+	// tokenSymbol: 'aca',
+	// logo: acalaLogo
 	// }
 };
 

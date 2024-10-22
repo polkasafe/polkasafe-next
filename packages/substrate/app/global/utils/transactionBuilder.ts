@@ -20,12 +20,13 @@ import getEncodedAddress from '@common/utils/getEncodedAddress';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { ApiPromise } from '@polkadot/api';
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { BN_HUNDRED, u8aToHex } from '@polkadot/util';
+import { BN, BN_HUNDRED, u8aToHex } from '@polkadot/util';
 import { decodeAddress, encodeAddress, encodeMultiAddress, sortAddresses } from '@polkadot/util-crypto';
 import { ERROR_MESSAGES } from '@substrate/app/global/genericErrors';
 import { calcWeight } from '@substrate/app/global/utils/calculateWeight';
 import createPreImage from '@substrate/app/global/utils/createPreimage';
 import { formatBalance } from '@substrate/app/global/utils/formatBalance';
+import getIdentityRegistrarIndex from '@substrate/app/global/utils/getIdentityRegistrarIndex';
 import getMultisigInfo from '@substrate/app/global/utils/getMultisigInfo';
 
 const createRawObject = (value: string | undefined) => {
@@ -559,9 +560,14 @@ const setIdentity = async ({
 
 	const tx = api.tx.identity.setIdentity(args);
 
-	const callData = api.createType('Call', tx.method.toHex());
+	const regIndex = getIdentityRegistrarIndex(network);
+	const registrars: any = await api.query.identity.registrars().then((e) => JSON.parse(e.toString()));
+	console.log(regIndex);
+	const judgment = regIndex && api.tx.identity.requestJudgement(regIndex, registrars?.[regIndex]?.fee || new BN(0));
+	const identityTx = judgment ? api.tx.utility.batchAll([tx, judgment]) : tx;
+	const callData = api.createType('Call', identityTx.method.toHex());
 	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
-	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, tx, MAX_WEIGHT as any);
+	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, identityTx, MAX_WEIGHT as any);
 
 	const afterSuccess = (tx: IGenericObject) => {
 		const newTransaction = {

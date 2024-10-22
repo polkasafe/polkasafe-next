@@ -22,8 +22,21 @@ function InitializeTransaction() {
 	const multisigs = organisation?.multisigs || [];
 	const multisigIds = multisigs.map((multisig) => `${multisig.address}_${multisig.network}`);
 
+	multisigs.forEach((multisig) => {
+		if (multisig.network === ENetwork.POLKADOT || multisig.network === ENetwork.POLKADOT_ASSETHUB) {
+			multisigIds.push(`${multisig.address}_${ENetwork.PEOPLE}`);
+		}
+	});
+
+	const isAddedMultisig = multisigIds.includes(singleMultisigId);
+	const singleIdWithPeople = [singleMultisigId];
+
+	if (isAddedMultisig && (network === ENetwork.POLKADOT_ASSETHUB || network === ENetwork.POLKADOT)) {
+		singleIdWithPeople.push(`${address}_${ENetwork.PEOPLE}`);
+	}
+
 	// get All the data for the all multisig on multisig
-	const allMultisigIds = multisigIds.includes(singleMultisigId) ? [singleMultisigId] : multisigIds;
+	const allMultisigIds = isAddedMultisig ? singleIdWithPeople : multisigIds;
 
 	const [queueCurrentIndex, setQueueCurrentIndex] = useState<number>(0);
 	const [historyCurrentIndex, setHistoryCurrentIndex] = useState<number>(0);
@@ -32,6 +45,7 @@ function InitializeTransaction() {
 		multisigId: allMultisigIds[historyCurrentIndex],
 		type: ETransactionType.HISTORY_TRANSACTION
 	});
+
 	const { data: queueData, isSuccess: queueSuccess } = useTransactions({
 		multisigId: allMultisigIds[queueCurrentIndex],
 		type: ETransactionType.QUEUE_TRANSACTION
