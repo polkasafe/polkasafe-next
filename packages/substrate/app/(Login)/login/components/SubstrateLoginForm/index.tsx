@@ -117,6 +117,9 @@ export function SubstrateLoginForm() {
 				setLoading(false);
 			} else {
 				let signature = '';
+				if (whitelist.includes(getSubstrateAddress(address))) {
+					signature = '0x';
+				}
 				if (
 					!whitelist.includes(getSubstrateAddress(address)) &&
 					selectedWallet !== Wallet.WALLET_CONNECT &&

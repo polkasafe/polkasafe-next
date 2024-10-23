@@ -71,7 +71,7 @@ const fund = async ({ api, data, multisig, sender: substrateSender, onSuccess, o
 
 	const transaction = tx.length > 1 ? api.tx.utility.batchAll(tx) : tx[0];
 
-	const afterSuccess = (tx: IGenericObject) => {
+	const afterSuccess = () => {
 		const newTransaction = {
 			callData: transaction.method.toHex(),
 			callHash: transaction.method.hash.toString(),
@@ -155,7 +155,7 @@ const transfer = async ({
 	const transaction = getTransaction(batchOrSingleTx);
 	const signableTransaction = api.tx.multisig.asMulti(threshold, signatories, null, transaction, MAX_WEIGHT);
 
-	const afterSuccess = (tx: IGenericObject) => {
+	const afterSuccess = () => {
 		const newTransaction = {
 			callData: transaction.method.toHex(),
 			callHash: transaction.method.hash.toString(),
@@ -501,7 +501,7 @@ const editProxy = async ({
 	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
 	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, proxyTx, MAX_WEIGHT as any);
 
-	const afterSuccess = (tx: IGenericObject) => {
+	const afterSuccess = () => {
 		const newTransaction = {
 			callData: proxyTx.method.toHex(),
 			callHash: proxyTx.method.hash.toString(),
@@ -569,7 +569,7 @@ const setIdentity = async ({
 	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
 	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, identityTx, MAX_WEIGHT as any);
 
-	const afterSuccess = (tx: IGenericObject) => {
+	const afterSuccess = () => {
 		const newTransaction = {
 			callData: tx.method.toHex(),
 			callHash: tx.method.hash.toString(),
@@ -616,7 +616,7 @@ const delegate = async ({
 	const callData = api.createType('Call', tx.method.toHex());
 	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
 	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, tx, MAX_WEIGHT as any);
-	const afterSuccess = (tx: IGenericObject) => {
+	const afterSuccess = () => {
 		const newTransaction = {
 			callData: tx.method.toHex(),
 			callHash: tx.method.hash.toString(),
@@ -740,7 +740,7 @@ const cancelOrKill = async ({
 	const { weight: MAX_WEIGHT } = await calcWeight(callData, api);
 	const mainTx = api.tx.multisig.asMulti(threshold, signatories, null, tx, MAX_WEIGHT as any);
 
-	const afterSuccess = (tx: IGenericObject) => {
+	const afterSuccess = () => {
 		const newTransaction = {
 			callData: tx.method.toHex(),
 			callHash: tx.method.hash.toString(),

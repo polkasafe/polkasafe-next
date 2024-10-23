@@ -7,6 +7,7 @@ import InitializeAPI from '@substrate/app/Initializers/InitializeAPI';
 import InitializeOrganisation from '@substrate/app/Initializers/InitializeOrganisation';
 import InitializeTransaction from '@substrate/app/Initializers/initializeTransaction';
 import InitializeUser from '@substrate/app/Initializers/InitializeUser';
+import InitializeWalletConnect from '@substrate/app/Initializers/initializeWalletConnect';
 
 interface IInitializer {
 	userAddress: string;
@@ -24,6 +25,7 @@ function Initializers({ userAddress, signature, organisations }: IInitializer) {
 			/>
 			<InitializeOrganisation />
 			<InitializeAssets />
+			<InitializeWalletConnect />
 			<InitializeAPI />
 			<InitializeTransaction />
 		</>

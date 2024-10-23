@@ -4,6 +4,7 @@
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 
 export const whitelist = [
+	getSubstrateAddress('5FqB9eV3C4TF2j46baoeqmz98rWCzEcq4td11DA2ZQJ1b7N3'),
 	getSubstrateAddress('16Ge612BDMd2GHKWFPhkmJizF7zgYEmtD1xPpnLwFT2WxS1'),
 	getSubstrateAddress('1tCjdvnVKEoEKwPnHjiWverQPZw7fwrHJ9beizBYWC3nTwm'),
 	getSubstrateAddress('15s78GDxmAhxNdt6pxaxGcPrzboaMem5k3jP3xXyZvVVfLLr'),

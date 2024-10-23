@@ -35,9 +35,9 @@ export function QuickQueue({ multisigs }: IQuickHistory) {
 		return <Skeleton />;
 	}
 
-	if (data.transactions.length === 0 && data.currentIndex !== multisigIds.length - 1) {
-		return <Skeleton />;
-	}
+	// if (data.transactions.length === 0 && data.currentIndex !== multisigIds.length - 1) {
+	// 	return <Skeleton />;
+	// }
 
 	if (data.transactions.length === 0 && data.currentIndex === multisigIds.length - 1) {
 		return <Empty description='No Transaction Found' />;
