@@ -212,5 +212,19 @@ export const networkConstants = {
 		blockExplorerUrl: 'https://people-polkadot.subscan.io/',
 		rpcEndpoint: 'wss://polkadot-people-rpc.polkadot.io',
 		chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182'
+	},
+	[ENetwork.CENTRIFUGE]: {
+		disabled: false,
+		key: ENetwork.CENTRIFUGE,
+		name: 'Centrifuge',
+		blockTime: 15000,
+		ss58Format: 36,
+		subsquidUrl: '',
+		tokenDecimals: 18,
+		tokenSymbol: 'CFG',
+		blockExplorerUrl: 'https://centrifuge.subscan.io/',
+		rpcEndpoint: 'wss://centrifuge-rpc.dwellir.com',
+		chainId: 'polkadot:2031',
+		supportedTokens: []
 	}
 };
