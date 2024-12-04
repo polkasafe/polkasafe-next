@@ -204,7 +204,7 @@ export const PUT = withErrorHandling(async (req: NextRequest) => {
 					signatory ? getSubstrateAddress(signatory) : signatory
 				) as Array<string>,
 				network: multisig.network,
-				address: multisig.address,
+				address: getEncodedAddress(multisig.address, multisig.network) || multisig.address,
 				threshold: multisig.threshold,
 				type: EUserType.SUBSTRATE,
 				proxy: multisig.proxy || [],

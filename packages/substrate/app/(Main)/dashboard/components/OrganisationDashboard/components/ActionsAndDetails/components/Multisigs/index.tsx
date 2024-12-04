@@ -12,7 +12,10 @@ import EditAddressName from "@common/modals/EditAddressName";
 import { IMultisig } from "@common/types/substrate";
 import Identicon from "@polkadot/react-identicon";
 import { MULTISIG_DASHBOARD_URL } from "@substrate/app/global/end-points";
+import { Tooltip } from "antd";
 import Link from "next/link";
+import { DownloadOutlined } from "@ant-design/icons";
+import getEncodedAddress from "@common/utils/getEncodedAddress";
 
 const columns = [
 	{
@@ -48,6 +51,23 @@ const columns = [
 ];
 
 function QuickMultisigs({ multisigs, organisationId }: { multisigs: IMultisig[], organisationId: string; }) {
+
+	const handleDownloadSignatories = (multisig: IMultisig) => {
+		const jsonString = JSON.stringify(multisig.signatories.map((signatory) => getEncodedAddress(signatory, multisig.network) || signatory), null, 2); // Optional pretty print with 2 spaces
+		console.log(jsonString);
+		const blob = new Blob([jsonString], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `${multisig.address}_${multisig.network}_signatories.json`; // Name of the file to download
+		document.body.appendChild(a); // Append the anchor to the document body
+		a.click(); // Trigger the click
+		document.body.removeChild(a); // Clean up by removing the anchor from the DOM
+	
+		// Release the object URL
+		URL.revokeObjectURL(url);
+	  };
+
 	return <>
 			<div className='flex bg-bg-secondary my-1 py-3 px-6 rounded-lg mr-1'>
 				{columns.map((column) => (
@@ -93,7 +113,12 @@ function QuickMultisigs({ multisigs, organisationId }: { multisigs: IMultisig[],
 								{item.threshold}/{item.signatories.length}
 							</div>
 						</div>
-						<div className="basis-1/7 flex justify-end">
+						<div className="basis-1/7 flex justify-end gap-x-2">
+							<Tooltip title="Download Signatories JSON">
+								<div className="cursor-pointer p-3 bg-bg-secondary rounded-lg flex items-center justify-center" onClick={() => handleDownloadSignatories(item)}>
+									<DownloadOutlined/>
+								</div>
+							</Tooltip>
 							<Link href={MULTISIG_DASHBOARD_URL({
 								organisationId,
 								multisig: item.address,

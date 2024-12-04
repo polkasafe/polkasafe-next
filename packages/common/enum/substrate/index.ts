@@ -14,7 +14,8 @@ export enum ENetwork {
 	KUSAMA_ASSETHUB = 'assethub-kusama',
 	POLKADOT_ASSETHUB = 'assethub-polkadot',
 	WESTEND = 'westend',
-	PEOPLE = 'people-polkadot'
+	PEOPLE = 'people-polkadot',
+	CENTRIFUGE = 'centrifuge'
 }
 
 export enum ETransactionOptions {

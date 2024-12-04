@@ -11,6 +11,7 @@ import kusamaLogo from '@common/assets/parachains-logos/kusama-logo.gif';
 // import moonbeamLogo from '@common/assets/parachains-logos/moonbeam-logo.png';
 // import moonriverLogo from '@common/assets/parachains-logos/moonriver-logo.png';
 import polkadotLogo from '@common/assets/parachains-logos/polkadot-logo.jpg';
+import centrifugeLogo from '@common/assets/parachains-logos/centrifuge-logo.png';
 // import polymeshLogo from '@common/assets/parachains-logos/polymesh-logo.png';
 import westendLogo from '@common/assets/parachains-logos/westend-logo.png';
 import rococoLogo from '@common/assets/parachains-logos/rococo-logo.jpeg';
@@ -285,6 +286,21 @@ export const networkConstants = {
 		blockExplorerUrl: 'https://people-polkadot.subscan.io/',
 		rpcEndpoint: 'wss://polkadot-people-rpc.polkadot.io',
 		chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182',
+		supportedTokens: []
+	},
+	[ENetwork.CENTRIFUGE]: {
+		disabled: false,
+		key: ENetwork.CENTRIFUGE,
+		name: 'Centrifuge',
+		blockTime: 15000,
+		logo: centrifugeLogo,
+		ss58Format: 36,
+		subsquidUrl: '',
+		tokenDecimals: 18,
+		tokenSymbol: 'CFG',
+		blockExplorerUrl: 'https://centrifuge.subscan.io/',
+		rpcEndpoint: 'wss://centrifuge-rpc.dwellir.com',
+		chainId: 'polkadot:2031',
 		supportedTokens: []
 	}
 };
