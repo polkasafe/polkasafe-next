@@ -21,6 +21,7 @@ import { ORGANISATION_DASHBOARD_URL } from '@substrate/app/global/end-points';
 import UserPopover from '@common/global-ui-components/UserPopover';
 import { logout } from '@sdk/polkasafe-sdk/src/logout';
 import { useNotification } from '@common/utils/notification';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 export default function SubstrateCreateOrganisation({ user }: { user: ICookieUser }) {
 	const availableSignatories = useWalletAccounts();
@@ -127,7 +128,9 @@ export default function SubstrateCreateOrganisation({ user }: { user: ICookieUse
 				fetchMultisig={fetchMultisig}
 				multisigs={multisigs}
 				availableSignatories={availableSignatories}
-				networks={Object.values(ENetwork)}
+				networks={Object.values(networkConstants)
+					.filter((network) => !network.disabled)
+					.map((network) => network.key)}
 				onCreateOrganisation={handleCreateOrganisation}
 				linkedMultisig={linkedMultisigs}
 				onLinkedMultisig={onLinkedMultisig}

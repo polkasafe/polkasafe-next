@@ -13,6 +13,7 @@ import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipI
 import inputToBn from '@common/utils/inputToBn';
 import USDTLogo from '@common/assets/token-icons/usdt-logo.png';
 import USDCLogo from '@common/assets/token-icons/usdc-logo.png';
+import XRPLogo from '@common/assets/token-icons/xrp-logo.png';
 import { twMerge } from 'tailwind-merge';
 import { useState, useRef, useEffect } from 'react';
 
@@ -35,8 +36,10 @@ const getCurrencyLogo = (currency: string) => {
 			return USDTLogo;
 		case 'USDC':
 			return USDCLogo;
+		case 'XRP':
+			return XRPLogo;
 		default:
-			return currency;
+			return '';
 	}
 };
 

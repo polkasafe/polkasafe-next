@@ -25,7 +25,7 @@ export const LinkMultisig = ({
 	className
 }: ILinkMultisig) => {
 	const [loading, setLoading] = useState(false);
-	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
+	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.ROOT);
 	const notification = useNotification();
 	const handleSubmit = async (values: { multisig: IMultisig }) => {
 		try {

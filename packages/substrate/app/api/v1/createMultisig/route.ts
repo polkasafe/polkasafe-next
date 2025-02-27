@@ -7,8 +7,14 @@ import { ResponseMessages } from '@common/constants/responseMessage';
 import { MULTISIG_COLLECTION } from '@common/db/collections';
 import { IDBMultisig } from '@common/types/substrate';
 import { ENetwork, EUserType } from '@common/enum/substrate';
-import { encodeAddress, encodeMultiAddress } from '@polkadot/util-crypto';
+import { addressToEvm, encodeAddress, encodeMultiAddress, evmToAddress } from '@polkadot/util-crypto';
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { keyring } from '@polkadot/ui-keyring';
+import { bnToBn, objectSpread, u8aSorted } from '@polkadot/util';
+
+import { createKeyMulti } from '@polkadot/util-crypto';
+import { KeyringInstance, KeyringOptions, KeyringPair$Meta } from '@polkadot/keyring/types';
+import { createTestKeyring } from '@polkadot/keyring';
 
 const updateDB = async (multisigs: Array<IDBMultisig>) => {
 	try {
@@ -22,9 +28,25 @@ const updateDB = async (multisigs: Array<IDBMultisig>) => {
 	}
 };
 
+function addMultisig(addresses: Array<string>, threshold: number, meta = {}, keyring: KeyringInstance) {
+	let address = createKeyMulti(addresses, threshold);
+	address = address.slice(0, 20); // for ethereum addresses
+	// we could use `sortAddresses`, but rather use internal encode/decode so we are 100%
+	const who = u8aSorted(addresses.map((who) => keyring.decodeAddress(who))).map((who) => keyring.encodeAddress(who));
+	const meta1 = objectSpread({}, meta, {
+		isMultisig: true,
+		threshold: bnToBn(threshold).toNumber(),
+		who
+	});
+	const pair = keyring.addFromAddress(address, objectSpread({}, meta1, { isExternal: true }) as KeyringPair$Meta, null);
+	console.log('MultiSig address created::', pair.address);
+	return pair.address;
+}
+
 export const POST = withErrorHandling(async (req: NextRequest) => {
 	try {
 		const { name, signatories, network, threshold, proxy = [] } = await req.json();
+		console.log('signatories', signatories);
 		if (!name || !signatories || !network || !threshold) {
 			return NextResponse.json({ error: ResponseMessages.MISSING_PARAMS }, { status: 400 });
 		}
@@ -37,16 +59,22 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		if (!threshold) {
 			return NextResponse.json({ error: 'threshold is required' }, { status: 400 });
 		}
+		const options = {
+			ss58Format: networkConstants[network as ENetwork].ss58Format,
+			type: 'ethereum'
+		};
+		const keyring = createTestKeyring(options as KeyringOptions, true);
+		const multiSigOptions = {
+			name
+		};
+		const multiSigAddress = addMultisig(signatories, threshold, multiSigOptions, keyring);
+		console.log('multiSigAddress', multiSigAddress);
 
-		const encodedSignatories = signatories.map((signatory) =>
-			encodeAddress(signatory, networkConstants[network as ENetwork].ss58Format)
-		);
-		const multisigAddress = encodeMultiAddress(encodedSignatories, threshold);
 		const payload: IDBMultisig = {
 			name,
-			signatories: encodedSignatories,
+			signatories: signatories,
 			network,
-			address: multisigAddress,
+			address: multiSigAddress,
 			threshold,
 			type: EUserType.SUBSTRATE,
 			created_at: new Date(),

@@ -15,7 +15,9 @@ export enum ENetwork {
 	POLKADOT_ASSETHUB = 'assethub-polkadot',
 	WESTEND = 'westend',
 	PEOPLE = 'people-polkadot',
-	CENTRIFUGE = 'centrifuge'
+	CENTRIFUGE = 'centrifuge',
+	ROOT = 'root',
+	PORCINI = 'porcini'
 }
 
 export enum ETransactionOptions {
@@ -252,8 +254,8 @@ export enum ETransactionCreationType {
 	SET_IDENTITY = 'Set Identity',
 	DELEGATE = 'Delegate',
 	TELEPORT = 'Teleport Assets',
-	MANUAL_EXTRINSIC = 'Manual Extrinsic'
-	// CREATE_NFT = 'Create NFT'
+	MANUAL_EXTRINSIC = 'Manual Extrinsic',
+	CREATE_NFT = 'Create NFT'
 }
 
 export enum ESupportedApps {

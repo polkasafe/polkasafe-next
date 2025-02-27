@@ -118,15 +118,12 @@ const transfer = async ({
 	onFailed
 }: ITransferTransaction) => {
 	const { address, network, threshold, signatories: allSignatories } = multisig;
-	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+	const sender = substrateSender;
+	console.log('allSignatories', allSignatories);
 
 	// Sort signatories
-	const signatories = sortAddresses(
-		allSignatories
-			.map((s) => getEncodedAddress(s, network) || s)
-			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
-		networkConstants[network].ss58Format
-	);
+	const signatories = allSignatories.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender));
+	console.log('signatories', signatories);
 	const tx = data
 		.map((d) => {
 			if (!d?.amount || !d?.recipient) {
@@ -134,9 +131,15 @@ const transfer = async ({
 			}
 			const { amount, recipient, currency } = d;
 			const accountId = u8aToHex(decodeAddress(recipient));
+			console.log('accountId', accountId);
+			console.log('currency', currency);
+			console.log('network', network);
+			console.log('amount', amount);
 			return getTransferCalls(api, { amount, address: accountId, currency: d.currency }, network);
 		})
 		.filter((tx) => tx !== null);
+
+	console.log('tx', tx);
 
 	if (!tx || tx.length === 0) {
 		return;
@@ -210,12 +213,9 @@ const teleportAssets = async ({
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
 
 	// Sort signatories
-	const signatories = sortAddresses(
-		allSignatories
-			.map((s) => getEncodedAddress(s, network) || s)
-			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
-		networkConstants[network].ss58Format
-	);
+	const signatories = allSignatories
+		.map((s) => getEncodedAddress(s, network) || s)
+		.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender));
 
 	const accountId = u8aToHex(decodeAddress(recipientAddress));
 
@@ -327,12 +327,9 @@ const createProxy = async ({
 	const ZERO_WEIGHT = new Uint8Array(0);
 
 	// Sort signatories
-	const signatories = sortAddresses(
-		allSignatories
-			.map((s) => getEncodedAddress(s, network) || s)
-			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
-		networkConstants[network].ss58Format
-	);
+	const signatories = allSignatories
+		.map((s) => getEncodedAddress(s, network) || s)
+		.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender));
 	if (!api || !api.isReady) {
 		throw new Error(ERROR_MESSAGES.API_NOT_CONNECTED);
 	}
@@ -376,13 +373,13 @@ const cancelTransaction = async ({
 }: ICancelTransaction) => {
 	const { network, signatories: allSignatories } = multisig;
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+
+	console.log('sender in cancel', sender);
 	// Sort signatories
-	const signatories = sortAddresses(
-		allSignatories
-			.map((s) => getEncodedAddress(s, network) || s)
-			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
-		networkConstants[network].ss58Format
-	);
+	const signatories = allSignatories
+		.map((s) => getEncodedAddress(s, network) || s)
+		.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender));
+	console.log('signatories in cancel', signatories);
 
 	if (!callHash) {
 		console.log('invalid callHash');
@@ -420,13 +417,11 @@ const approveTransaction = async ({
 }: IApproveTransaction) => {
 	const { network, signatories: allSignatories, threshold, address } = multisig;
 	const sender = getEncodedAddress(substrateSender, network) || substrateSender;
+	console.log('sender in approve', sender);
 	// Sort signatories
-	const signatories = sortAddresses(
-		allSignatories
-			.map((s) => getEncodedAddress(s, network) || s)
-			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
-		networkConstants[network].ss58Format
-	);
+	const signatories = allSignatories
+		.map((s) => getEncodedAddress(s, network) || s)
+		.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender));
 
 	if (!calldata) {
 		console.log('invalid calldata');
@@ -477,12 +472,9 @@ const editProxy = async ({
 
 	// Sort signatories
 	// Sort signatories
-	const signatories = sortAddresses(
-		allSignatories
-			.map((s) => getEncodedAddress(s, network) || s)
-			.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender)),
-		networkConstants[network].ss58Format
-	);
+	const signatories = allSignatories
+		.map((s) => getEncodedAddress(s, network) || s)
+		.filter((s) => getSubstrateAddress(s) !== getSubstrateAddress(sender));
 
 	if (!newThreshold || !newSignatories || newSignatories.length < 2) {
 		throw new Error(ERROR_MESSAGES.INVALID_TRANSACTION);

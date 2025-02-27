@@ -43,6 +43,7 @@ export function QuickQueue({ multisigs }: IQuickHistory) {
 		return <Empty description='No Transaction Found' />;
 	}
 
+	console.log('data.transactions', data.transactions);
 	return (
 		<TransactionList
 			transactions={(data.transactions || []) as Array<IDashboardTransaction>}

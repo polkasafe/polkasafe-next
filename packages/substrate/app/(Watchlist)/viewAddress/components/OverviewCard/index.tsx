@@ -28,7 +28,7 @@ import { networkConstants } from '@common/constants/substrateNetworkConstant';
 import ParachainTooltipIcon from '@common/global-ui-components/ParachainTooltipIcon';
 import EditAddressName from '@common/modals/EditAddressName';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
-
+import EthIdenticon from '@common/global-ui-components/EthIdenticon';
 const ExternalLink = ({ network, address }: { network: ENetwork; address: string }) => (
 	<div className='absolute right-5 top-5'>
 		<div className='flex gap-x-4 items-center'>
@@ -145,15 +145,26 @@ function OverviewCard({ address, name, threshold, signatories, network, classNam
 			<div className='w-full'>
 				<div className='flex gap-x-3 items-center'>
 					<div className='relative'>
-						<Identicon
-							className={twMerge(
-								`border-2 rounded-full bg-transparent border-primary p-1.5`,
-								proxy && 'border-proxy-pink'
-							)}
-							value={selectedAddress}
-							size={50}
-							theme='substrate'
-						/>
+						{selectedAddress.startsWith('0x') ? (
+							<EthIdenticon
+								className={twMerge(
+									`border-2 rounded-full bg-transparent border-primary p-1.5`,
+									proxy && 'border-proxy-pink'
+								)}
+								address={selectedAddress}
+								size={50}
+							/>
+						) : (
+							<Identicon
+								className={twMerge(
+									`border-2 rounded-full bg-transparent border-primary p-1.5`,
+									proxy && 'border-proxy-pink'
+								)}
+								value={selectedAddress}
+								size={50}
+								theme='substrate'
+							/>
+						)}
 						<div
 							className={twMerge(
 								`bg-primary text-white text-sm rounded-lg absolute -bottom-0 left-[16px] px-2`,

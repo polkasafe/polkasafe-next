@@ -4,9 +4,9 @@
 
 import Identicon from '@polkadot/react-identicon';
 import { twMerge } from 'tailwind-merge';
-import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import { CopyIcon } from '@common/global-ui-components/Icons';
 import Typography, { ETypographyVariants } from '@common/global-ui-components/Typography';
+import EthIdenticon from '@common/global-ui-components/EthIdenticon';
 import shortenAddress from '../../utils/shortenAddress';
 
 interface IAddressProps {
@@ -44,14 +44,21 @@ export const SubstrateAddress: React.FC<IAddressProps> = ({
 }: IAddressProps) => {
 	return (
 		<div className={twMerge(styles.container, className)}>
-			{!disableIdenticon && (
-				<Identicon
-					className='image identicon'
-					value={getSubstrateAddress(address)}
-					size={identiconSize}
-					theme='substrate'
-				/>
-			)}
+			{!disableIdenticon &&
+				(address.startsWith('0x') ? (
+					<EthIdenticon
+						className='image identicon'
+						address={address}
+						size={identiconSize}
+					/>
+				) : (
+					<Identicon
+						className='image identicon'
+						value={address}
+						size={identiconSize}
+						theme='substrate'
+					/>
+				))}
 			<Typography
 				variant={ETypographyVariants.p}
 				className={styles.textContainer}

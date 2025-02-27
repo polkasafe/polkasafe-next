@@ -13,7 +13,7 @@ export const parseTransaction = (transaction: any) => {
 		to: transaction.to || '',
 		amountToken: transaction.amount_token,
 		network: transaction.network,
-		createdAt: new Date(transaction.created_at),
+		createdAt: transaction.created_at ? new Date(transaction.created_at) : new Date(),
 		callData: transaction.callData,
 		callHash: transaction.callHash,
 		approvals: transaction.approvals,

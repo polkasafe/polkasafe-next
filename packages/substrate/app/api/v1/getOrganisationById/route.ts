@@ -32,6 +32,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 		}
 
 		const { organisationId } = await req.json();
+		console.log('organisationId', organisationId);
 
 		if (!organisationId) {
 			return NextResponse.json({ error: ResponseMessages.INVALID_ORGANISATION_ID }, { status: 400 });
@@ -55,6 +56,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
 		const data = organisation.data() as IDBOrganisation;
 
+		console.log('organisation_data', data);
+
 		data.members = [...new Set(data?.members || [])] as Array<string>;
 		const multisigIds = (data?.multisigs || [])
 			.map((multisigId: string | any) => {
@@ -72,11 +75,13 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 			.filter((a: string | null) => Boolean(a));
 
 		const uniqueMultisigIds = [...new Set(multisigIds)] as Array<string>;
+		console.log('uniqueMultisigIds', uniqueMultisigIds);
 
 		const multisigsPromise =
 			uniqueMultisigIds.map(async (multisigId: string) => {
 				const multisig = await MULTISIG_COLLECTION.doc(multisigId).get();
 				const data = multisig.data() || null;
+				console.log('multisig', data);
 				if (!data) {
 					return null;
 				}

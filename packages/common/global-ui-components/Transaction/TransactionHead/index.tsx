@@ -98,10 +98,11 @@ export function TransactionHead({
 	callData,
 	multiId
 }: ITransactionHeadProps) {
+	console.log('callHash', multiId);
 	const allRecipes = to?.map((recipe) => recipe.address);
 	const allAmountsAndCurrency = to?.map((recipe) => ({ amount: recipe?.amount, currency: recipe?.currency }));
 
-	const subscanLink = `https://${network}.subscan.io/multisig_extrinsic/${multiId}?call_hash=${callHash}`;
+	const subscanLink = `https://${network === ENetwork.ROOT ? 'rootscan.io' : 'porcini.rootscan.io'}/tx/${callHash}`;
 
 	return (
 		<div className={isHomePage ? 'border-b border-text-secondary p-3 mr-2' : ''}>

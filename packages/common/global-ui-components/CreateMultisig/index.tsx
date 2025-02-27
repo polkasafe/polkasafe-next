@@ -18,7 +18,7 @@ import { useState } from 'react';
 // use availableSignatories to populate the select options
 export const CreateMultisig = ({ networks, availableSignatories, onSubmit, userAddress, onClose }: ICreateMultisig) => {
 	const [loading, setLoading] = useState(false);
-	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.POLKADOT);
+	const [selectedNetwork, setSelectedNetwork] = useState<ENetwork>(ENetwork.ROOT);
 	const notification = useNotification();
 
 	const [signatories, setSignatories] = useState<string[]>([userAddress]);

@@ -39,19 +39,6 @@ const columns = [
 	}
 ];
 
-const filterTransactions = (
-	transactions: Array<IDashboardTransaction>,
-	address: string | null,
-	network: ENetwork | null
-) => {
-	if (!address || !network) {
-		return transactions;
-	}
-	return transactions.filter(
-		(transaction) => transaction.multisigAddress === address && (transaction.network === ENetwork.PEOPLE && [ENetwork.POLKADOT, ENetwork.POLKADOT_ASSETHUB].includes(network) ? true : transaction.network === network)
-	);
-};
-
 export function TransactionList({ transactions = [], txType, className, variant }: ITransactionList) {
 	const multisig = useSearchParams().get('_multisig');
 	const network = useSearchParams().get('_network') as ENetwork;
@@ -80,8 +67,10 @@ export function TransactionList({ transactions = [], txType, className, variant 
 				}
 			>
 				{transactions &&
-					filterTransactions(transactions, multisig, network).map((transaction) => (
+					transactions.map((transaction) => (
 						<TransactionRow
+							blockNumber={transaction.blockNumber?.toString() || ''}
+							extrinsicIndex={transaction.extrinsicIndex || 0}
 							multiId={transaction.multiId}
 							callHash={transaction.callHash}
 							callData={transaction.callData}
@@ -96,7 +85,7 @@ export function TransactionList({ transactions = [], txType, className, variant 
 							}
 							transactionType={txType}
 							multisig={transaction.multisigAddress}
-							approvals={transaction.approvals}
+							approvals={transaction.approvals.map((approval) => approval.toLowerCase())}
 							variant={variant}
 							initiator={transaction.initiator || ''}
 							transactionFields={transaction.transactionFields}

@@ -18,6 +18,7 @@ import rococoLogo from '@common/assets/parachains-logos/rococo-logo.jpeg';
 import phalaLogo from '@common/assets/parachains-logos/phala-logo.png';
 import khalaLogo from '@common/assets/parachains-logos/khala-logo.png';
 import availLogo from '@common/assets/parachains-logos/avail-logo.png';
+import rootscanLogo from '@common/assets/parachains-logos/rootscan-logo.png';
 import { ENetwork } from '@common/enum/substrate';
 
 export const onrampTokens = {
@@ -68,7 +69,7 @@ export const onrampTokenProperties: {
 
 export const networkConstants = {
 	[ENetwork.AVAIL]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.AVAIL,
 		name: 'Avail',
 		blockTime: 12000,
@@ -83,7 +84,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.ALEPHZERO]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.ALEPHZERO,
 		name: 'Aleph Zero',
 		blockTime: 1000,
@@ -98,7 +99,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.ASTAR]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.ASTAR,
 		name: 'Astar',
 		blockTime: 12000,
@@ -113,7 +114,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.KHALA]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.KHALA,
 		name: 'Khala',
 		blockTime: 1000,
@@ -128,7 +129,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.KUSAMA]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.KUSAMA,
 		name: 'Kusama',
 		blockTime: 6000,
@@ -143,7 +144,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.PHALA]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.PHALA,
 		name: 'Phala',
 		blockTime: 1000,
@@ -158,7 +159,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.POLKADOT]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.POLKADOT,
 		name: 'Polkadot',
 		blockTime: 6000,
@@ -173,7 +174,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.ROCOCO]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.ROCOCO,
 		name: 'Rococo',
 		blockTime: 6000,
@@ -188,7 +189,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.ROCOCO_ASSETHUB]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.ROCOCO_ASSETHUB,
 		name: 'Rococo Asset Hub',
 		blockTime: 6000,
@@ -216,7 +217,7 @@ export const networkConstants = {
 		]
 	},
 	[ENetwork.KUSAMA_ASSETHUB]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.KUSAMA_ASSETHUB,
 		name: 'Kusama Asset Hub',
 		blockTime: 6000,
@@ -231,7 +232,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.POLKADOT_ASSETHUB]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.POLKADOT_ASSETHUB,
 		name: 'Polkadot Asset Hub',
 		blockTime: 6000,
@@ -259,7 +260,7 @@ export const networkConstants = {
 		]
 	},
 	[ENetwork.WESTEND]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.WESTEND,
 		name: 'Westend',
 		blockTime: 6000,
@@ -274,7 +275,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.PEOPLE]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.PEOPLE,
 		name: 'People',
 		blockTime: 6000,
@@ -289,7 +290,7 @@ export const networkConstants = {
 		supportedTokens: []
 	},
 	[ENetwork.CENTRIFUGE]: {
-		disabled: false,
+		disabled: true,
 		key: ENetwork.CENTRIFUGE,
 		name: 'Centrifuge',
 		blockTime: 15000,
@@ -302,5 +303,49 @@ export const networkConstants = {
 		rpcEndpoint: 'wss://centrifuge-rpc.dwellir.com',
 		chainId: 'polkadot:2031',
 		supportedTokens: []
+	},
+	[ENetwork.ROOT]: {
+		disabled: false,
+		key: ENetwork.ROOT,
+		name: 'Root',
+		blockTime: 4000,
+		logo: rootscanLogo,
+		ss58Format: 193,
+		subsquidUrl: '',
+		tokenDecimals: 6,
+		tokenSymbol: 'ROOT',
+		blockExplorerUrl: 'wss://porcini.rootnet.app/ws',
+		rpcEndpoint: 'wss://root.rootnet.live/ws',
+		chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c251',
+		supportedTokens: [
+			{
+				id: 2,
+				name: 'XRP',
+				symbol: 'XRP',
+				decimals: 6
+			}
+		]
+	},
+	[ENetwork.PORCINI]: {
+		disabled: false,
+		key: ENetwork.PORCINI,
+		name: 'Porcini',
+		blockTime: 5000,
+		logo: rootscanLogo,
+		ss58Format: 193,
+		subsquidUrl: '',
+		tokenDecimals: 6,
+		tokenSymbol: 'ROOT',
+		blockExplorerUrl: 'https://porcini.rootscan.io/',
+		rpcEndpoint: 'wss://porcini.rootnet.app/archive/ws',
+		chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c251',
+		supportedTokens: [
+			{
+				id: 2,
+				name: 'XRP',
+				symbol: 'XRP',
+				decimals: 6
+			}
+		]
 	}
 };

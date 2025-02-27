@@ -6,7 +6,6 @@ import { SwapOutlined } from '@ant-design/icons';
 import { Badge, Tooltip, Form, Divider } from 'antd';
 import React, { useEffect, useState } from 'react';
 
-import { getWalletAccounts } from '@common/utils/getWalletAccounts';
 import { IAddressBook } from '@common/types/substrate';
 import { InjectedAccount } from '@polkadot/extension-inject/types';
 import getEncodedAddress from '@common/utils/getEncodedAddress';
@@ -15,6 +14,8 @@ import shortenAddress from '@common/utils/shortenAddress';
 import Input from '@common/global-ui-components/Input';
 import { SearchIcon } from '@common/global-ui-components/Icons';
 import Button, { EButtonVariant } from '@common/global-ui-components/Button';
+import { getEvmAddress } from '@common/utils/getEvmAddresses';
+import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
 
 interface ISignature {
 	name: string;
@@ -63,11 +64,16 @@ const SelectSignatories = ({
 
 	const fetchWalletAccounts = async () => {
 		if (addresses && addresses.length > 0) return;
+		const subwallet = (window as any).SubWallet;
+		const talisman = (window as any).talismanEth;
 
-		const accounts = await getWalletAccounts();
+		if (!subwallet && !talisman) return;
+		const accounts = await getEvmAddress(subwallet);
+		const talismanAccounts = await getEvmAddress(talisman);
+		const allAccounts = [...accounts, ...talismanAccounts];
 
-		if (accounts && accounts.accounts) {
-			setWalletAccounts(accounts.accounts);
+		if (allAccounts && allAccounts.length > 0) {
+			setWalletAccounts(allAccounts.map((account) => ({ address: account, name: DEFAULT_ADDRESS_NAME })));
 		}
 	};
 
@@ -249,9 +255,7 @@ const SelectSignatories = ({
 						)}
 						{
 							<>
-								<div className='text-sm text-text-disabled'>
-									Addresses imported directly from your Polkadot.js wallet
-								</div>
+								<div className='text-sm text-text-disabled'>Addresses imported directly from your wallet</div>
 								{walletAccounts
 									.filter((item) => !signatories.includes(item.address))
 									.map((account, i) => (

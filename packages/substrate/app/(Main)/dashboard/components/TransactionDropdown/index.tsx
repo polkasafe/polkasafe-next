@@ -18,7 +18,16 @@ export const TransactionDropdown = ({ disabled }: { disabled?: boolean }) => {
 			<Dropdown
 				trigger={['click']}
 				menu={{
-					items: transactionTypes.filter((item) => item.key !== ETransactionCreationType.TELEPORT),
+					items: transactionTypes.filter(
+						(item) =>
+							![
+								ETransactionCreationType.TELEPORT,
+								ETransactionCreationType.CREATE_PROPOSAL,
+								ETransactionCreationType.DELEGATE,
+								ETransactionCreationType.MANUAL_EXTRINSIC,
+								ETransactionCreationType.SUBMIT_PREIMAGE
+							].includes(item.key)
+					),
 					onClick: (e) => {
 						setOpenModal(true);
 						setTransactionType(e.key as ETransactionCreationType);

@@ -14,6 +14,7 @@ import Typography, { ETypographyVariants } from '@common/global-ui-components/Ty
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LOGIN_URL } from '@substrate/app/global/end-points';
+import EthIdenticon from '@common/global-ui-components/EthIdenticon';
 
 interface IUserPopover {
 	userAddress: string;
@@ -56,12 +57,20 @@ const UserPopover = ({ userAddress, logout }: IUserPopover) => {
 				content={
 					<div className='bg-bg-main flex flex-col gap-2 p-4 w-64 border-[1px] border-primary rounded-lg mt-2'>
 						<div className='flex flex-col items-center gap-2'>
-							<Identicon
-								value={userAddress}
-								theme='substrate'
-								size={50}
-								className='rounded-full border-2 border-primary p-1'
-							/>
+							{userAddress.startsWith('0x') ? (
+								<EthIdenticon
+									className='image identicon'
+									address={userAddress}
+									size={50}
+								/>
+							) : (
+								<Identicon
+									className='image identicon'
+									value={userAddress}
+									size={50}
+									theme='substrate'
+								/>
+							)}
 							<Typography
 								variant={ETypographyVariants.h6}
 								className='font-bold text-text-primary m-auto'

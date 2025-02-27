@@ -1,5 +1,6 @@
 import { encodeAddress } from '@polkadot/util-crypto';
-import { chainProperties } from '../utils/constants/network_constants';
+import { networkConstants } from '@common/constants/substrateNetworkConstant';
+import { ENetwork } from '@common/enum/substrate';
 import { SUBSCAN_API_HEADERS } from '../utils/constants/subscan_consts';
 import { handleMultisigCreate } from './handleMultisigCreate';
 
@@ -10,7 +11,7 @@ export const fetchProxyData = async (
 	network: string,
 	statusGrabber: any
 ) => {
-	const response = await fetch(`https://${network}.api.subscan.io/api/scan/events`, {
+	const response = await fetch(`https://api-${network}.rootscan.io/api/scan/events`, {
 		body: JSON.stringify({
 			row: 1,
 			page: 0,
@@ -27,6 +28,6 @@ export const fetchProxyData = async (
 		return false;
 	}
 	const params = JSON.parse(responseJSON.data?.events[0]?.params);
-	const proxyAddress = encodeAddress(params[0].value, chainProperties[network].ss58Format);
+	const proxyAddress = encodeAddress(params[0].value, networkConstants[network as ENetwork].ss58Format);
 	await handleMultisigCreate(multisig, proxyAddress, signature, address, network, statusGrabber);
 };

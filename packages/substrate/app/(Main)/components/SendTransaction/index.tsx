@@ -94,6 +94,7 @@ export function SendTransaction({
 			recipient: recipient.address,
 			currency: recipient.currency
 		}));
+		console.log('data', { recipients, multisig, selectedProxy, transactionFields });
 		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.TRANSFER]({
 			api,
 			data,
@@ -190,13 +191,16 @@ export function SendTransaction({
 		values: ISetIdentityTransaction,
 		user: IConnectedUser,
 		api: ApiPromise,
-		peopleApi: ApiPromise,
+		peopleApi: ApiPromise | null,
 		onSuccess: ({ newTransaction }: IGenericObject) => void
 	) => {
 		const { address } = user;
 		const { sender: multisig, displayName, legalName, elementHandle, websiteUrl, twitterHandle, email } = values;
 		const transaction: ISubstrateExecuteProps = (await TRANSACTION_BUILDER[ETxType.SET_IDENTITY]({
-			api: multisig.network === ENetwork.POLKADOT || multisig.network === ENetwork.POLKADOT_ASSETHUB ? peopleApi : api,
+			api:
+				(multisig.network === ENetwork.POLKADOT || multisig.network === ENetwork.POLKADOT_ASSETHUB) && peopleApi
+					? peopleApi
+					: api,
 			data: {
 				displayName,
 				legalName,
@@ -431,6 +435,7 @@ export function SendTransaction({
 			notification({ ...ERROR_MESSAGES.AUTHENTICATION_FAILED });
 			return;
 		}
+		console.log('values', values);
 		// After successful transaction add the transaction to the queue with the latest transaction on top
 		const onSuccess = ({ newTransaction }: IGenericObject) => {
 			try {
@@ -477,13 +482,11 @@ export function SendTransaction({
 			}
 			const { sender: multisig, type } = values;
 			const apiAtom = getApi(multisig.network);
-			const peopleApiAtom = getApi(ENetwork.PEOPLE);
 			if (!apiAtom) {
 				notification({ ...ERROR_MESSAGES.API_NOT_CONNECTED });
 				return;
 			}
 			const { api } = apiAtom as { api: ApiPromise };
-			const { api: peopleApi } = peopleApiAtom as { api: ApiPromise };
 			if (!api || !api.isReady) {
 				notification({ ...ERROR_MESSAGES.API_NOT_CONNECTED });
 				return;
@@ -499,7 +502,7 @@ export function SendTransaction({
 					break;
 
 				case ETransactionCreationType.SET_IDENTITY:
-					await setIdentity(values as ISetIdentityTransaction, user, api, peopleApi, onSuccess);
+					await setIdentity(values as ISetIdentityTransaction, user, api, api, onSuccess);
 					break;
 
 				case ETransactionCreationType.DELEGATE:

@@ -17,6 +17,7 @@ import { useOrganisation } from '@substrate/app/atoms/organisation/organisationA
 import { Badge } from 'antd';
 import getSubstrateAddress from '@common/utils/getSubstrateAddress';
 import EditAddressName from '@common/modals/EditAddressName';
+import EthIdenticon from '@common/global-ui-components/EthIdenticon';
 
 interface IAddressComponent {
 	address: string;
@@ -43,13 +44,13 @@ const Address: React.FC<IAddressComponent> = ({
 	address,
 	name,
 	withBadge = true,
-	iconSize = 28,
+	iconSize = 35,
 	onlyAddress,
 	isMultisig,
 	isProxy,
 	signatories,
 	threshold,
-	network = ENetwork.ROCOCO,
+	network = ENetwork.ROOT,
 	addressLength,
 	fullAddress,
 	withEmail,
@@ -73,12 +74,20 @@ const Address: React.FC<IAddressComponent> = ({
 	return (
 		<div className=' flex items-center gap-x-3'>
 			{noIdenticon ? null : isProxy ? (
-				<Identicon
-					className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
-					value={address}
-					size={iconSize}
-					theme='substrate'
-				/>
+				address.startsWith('0x') ? (
+					<EthIdenticon
+						className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
+						address={address}
+						size={iconSize}
+					/>
+				) : (
+					<Identicon
+						className='rounded-full border-2 border-proxy-pink bg-transparent p-1'
+						value={address}
+						size={iconSize}
+						theme='substrate'
+					/>
+				)
 			) : isMultisig ? (
 				withBadge ? (
 					<Badge
@@ -87,20 +96,35 @@ const Address: React.FC<IAddressComponent> = ({
 						className='border-none'
 						color='#1573FE'
 					>
-						<Identicon
-							className='border-primary rounded-full border-2 bg-transparent p-1'
-							value={address}
-							size={iconSize}
-							theme='substrate'
-						/>
+						{address.startsWith('0x') ? (
+							<EthIdenticon
+								className='border-primary rounded-full border-2 bg-transparent p-1'
+								address={address}
+								size={iconSize}
+							/>
+						) : (
+							<Identicon
+								className='border-primary rounded-full border-2 bg-transparent p-1'
+								value={address}
+								size={iconSize}
+								theme='substrate'
+							/>
+						)}
 					</Badge>
 				) : (
 					<div className='border-2 border-primary p-1 rounded-full flex justify-center items-center relative'>
-						<Identicon
-							value={address}
-							size={iconSize}
-							theme='substrate'
-						/>
+						{address.startsWith('0x') ? (
+							<EthIdenticon
+								address={address}
+								size={iconSize}
+							/>
+						) : (
+							<Identicon
+								value={address}
+								size={iconSize}
+								theme='substrate'
+							/>
+						)}
 						{!!threshold && !!signatories && (
 							<div className='bg-primary text-white text-xs rounded-md absolute bottom-[-6px] px-2 py-[1px]'>
 								{threshold}/{signatories}
@@ -108,6 +132,11 @@ const Address: React.FC<IAddressComponent> = ({
 						)}
 					</div>
 				)
+			) : address.startsWith('0x') ? (
+				<EthIdenticon
+					address={address}
+					size={iconSize}
+				/>
 			) : (
 				<Identicon
 					value={address}

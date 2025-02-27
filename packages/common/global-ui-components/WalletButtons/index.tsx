@@ -18,6 +18,7 @@ import { DEFAULT_ADDRESS_NAME } from '@common/constants/defaults';
 import { useAtomValue } from 'jotai';
 import Image from 'next/image';
 import { PolkadotVaultModal } from '@common/modals/PolkadotVault';
+import { getEvmAddress } from '@common/utils/getEvmAddresses';
 
 interface IWalletButtons {
 	loggedInWallet: Wallet;
@@ -42,7 +43,7 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 	setVaultNetwork,
 	wcAtom
 }: IWalletButtons) => {
-	const [selectedWallet, setSelectedWallet] = useState<Wallet>(Wallet.POLKADOT);
+	const [selectedWallet, setSelectedWallet] = useState<Wallet>(Wallet.SUBWALLET);
 
 	const [openVaultModal, setOpenVaultModal] = useState<boolean>(false);
 
@@ -112,7 +113,35 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 	);
 
 	useEffect(() => {
-		getAccounts(loggedInWallet);
+		const getAddresses = async () => {
+			try {
+				const wallet = selectedWallet === Wallet.SUBWALLET ? (window as any).SubWallet : (window as any).talismanEth;
+				if (!wallet) {
+					setNoExtenstion?.(true);
+					return;
+				}
+				setNoExtenstion?.(false);
+
+				const accounts: string[] = await getEvmAddress(wallet);
+				if (!accounts) {
+					return;
+				}
+				console.log('accounts', accounts);
+				setAccounts(
+					accounts.map((account) => ({
+						address: account,
+						name: DEFAULT_ADDRESS_NAME
+					}))
+				);
+				return accounts;
+			} catch (error) {
+				console.error('Error fetching EVM address:', error);
+			}
+		};
+
+		// Example usage
+		getAddresses();
+		// getAccounts(loggedInWallet);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -151,7 +180,7 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 
 	return (
 		<div className={`mb-2 flex items-center justify-center gap-x-5 ${className}`}>
-			<PolkadotVaultModal
+			{/* <PolkadotVaultModal
 				openVaultModal={openVaultModal}
 				onClose={() => setOpenVaultModal(false)}
 				setAccounts={setAccounts}
@@ -166,7 +195,7 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 				onClick={(event: any) => handleWalletClick(event as any, Wallet.POLKADOT)}
 				icon={<PolkadotWalletIcon />}
 				tooltip='Polkadot'
-			/>
+			/> */}
 			<WalletButton
 				className={twMerge(
 					selectedWallet === Wallet.SUBWALLET ? 'border-primary bg-highlight border border-solid' : 'border-none'
@@ -192,7 +221,7 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 				icon={<WalletConnectLogo />}
 				tooltip='Wallet Connect'
 			/>
-			<WalletButton
+			{/* <WalletButton
 				className={twMerge(
 					selectedWallet === Wallet.POLKADOT_VAULT ? 'border-primary bg-highlight border border-solid' : 'border-none'
 				)}
@@ -206,7 +235,7 @@ const WalletButtons: React.FC<IWalletButtons> = ({
 					/>
 				}
 				tooltip='Polkadot Vault'
-			/>
+			/> */}
 		</div>
 	);
 };

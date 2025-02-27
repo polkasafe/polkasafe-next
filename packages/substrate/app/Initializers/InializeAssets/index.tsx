@@ -83,13 +83,15 @@ function InitializeAssets() {
 				const { data: balanceWithDecimals } = (await api.query.system.account(address)) as unknown as {
 					data: any;
 				};
+
+				console.log('balanceWithDecimals', balanceWithDecimals.toHuman());
 				const balance = {} as any;
 
-				if (network === ENetwork.POLKADOT_ASSETHUB || network === ENetwork.ROCOCO_ASSETHUB) {
+				if (network === ENetwork.ROOT || network === ENetwork.PORCINI) {
 					const tokenData = await getTokenBalance(api, address, network);
 					tokenData.map((t) => {
 						const currencies = currencyData?.[String(t.symbol).toLowerCase()] || {};
-						balance[String(t.symbol).toLowerCase()] = {...t, ...currencies};
+						balance[String(t.symbol).toLowerCase()] = { ...t, ...currencies };
 					});
 				}
 
@@ -124,7 +126,7 @@ function InitializeAssets() {
 						const tokenData = await getTokenBalance(api, address, network);
 						tokenData.map((t) => {
 							const currencies = currencyData?.[String(t.symbol).toLowerCase()] || {};
-							proxyBalance[String(t.symbol).toLowerCase()] = {...t, ...currencies};
+							proxyBalance[String(t.symbol).toLowerCase()] = { ...t, ...currencies };
 						});
 					}
 
@@ -174,7 +176,7 @@ function InitializeAssets() {
 			});
 
 			const assets = (await Promise.all(assetsPromise)).flat().filter((a) => Boolean(a));
-			// console.log('assets', assets);
+			console.log('assets', assets);
 			setAtom({ assets: assets, refetch: handleOrganisationAssets });
 		};
 		handleOrganisationAssets();

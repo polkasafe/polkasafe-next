@@ -18,11 +18,15 @@ export default function getEncodedAddress(address: string, network: ENetwork | s
 	// console.log('ss58Format', ss58Format, network);
 
 	if (!network || ss58Format === undefined || !address) {
-		return null;
+		return address;
+	}
+
+	if (network === ENetwork.ROOT || network === ENetwork.PORCINI) {
+		return address.toLowerCase();
 	}
 
 	try {
-		return encodeAddress(address, ss58Format);
+		return encodeAddress(address, ss58Format).toLowerCase();
 	} catch (e) {
 		console.error('getEncodedAddress error', e);
 		return null;
