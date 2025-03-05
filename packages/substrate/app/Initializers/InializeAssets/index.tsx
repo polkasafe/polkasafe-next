@@ -89,7 +89,7 @@ function InitializeAssets() {
 					const tokenData = await getTokenBalance(api, address, network);
 					tokenData.map((t) => {
 						const currencies = currencyData?.[String(t.symbol).toLowerCase()] || {};
-						balance[String(t.symbol).toLowerCase()] = {...t, ...currencies};
+						balance[String(t.symbol).toLowerCase()] = { ...t, ...currencies };
 					});
 				}
 
@@ -121,10 +121,10 @@ function InitializeAssets() {
 					const proxyBalance = {} as any;
 
 					if (network === ENetwork.POLKADOT_ASSETHUB || network === ENetwork.ROCOCO_ASSETHUB) {
-						const tokenData = await getTokenBalance(api, address, network);
+						const tokenData = await getTokenBalance(api, proxyAddress, network);
 						tokenData.map((t) => {
 							const currencies = currencyData?.[String(t.symbol).toLowerCase()] || {};
-							proxyBalance[String(t.symbol).toLowerCase()] = {...t, ...currencies};
+							proxyBalance[String(t.symbol).toLowerCase()] = { ...t, ...currencies };
 						});
 					}
 

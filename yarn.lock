@@ -1163,10 +1163,10 @@
   resolved "https://registry.npmjs.org/@emotion/unitless/-/unitless-0.8.1.tgz"
   integrity sha512-KOEGMu6dmJZtpadb476IsZBclKvILjopjUii3V+7MnXIQCYh8W3NgNcgwo21n9LXZX6EDIKvqfjYxXebDwxKmQ==
 
-"@esbuild/linux-x64@0.19.12":
+"@esbuild/darwin-arm64@0.19.12":
   version "0.19.12"
-  resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.19.12.tgz"
-  integrity sha512-B71g1QpxfwBvNrfyJdVDexenDIt1CiDN1TIXLbhOw0KhJzE78KIFGX6OJ9MrtC0oOqMWf+0xop4qEU8JrJTwCg==
+  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.19.12.tgz"
+  integrity sha512-B6IeSgZgtEzGC42jsI+YYu9Z3HKRxp8ZT3cqhvliEHovq8HSX2YX8lNocDn79gCKJXOSaEot9MVYky7AKjCs8g==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
@@ -1175,24 +1175,25 @@
   dependencies:
     eslint-visitor-keys "^3.3.0"
 
-"@eslint-community/regexpp@^4.10.0", "@eslint-community/regexpp@^4.11.0", "@eslint-community/regexpp@^4.5.1", "@eslint-community/regexpp@^4.6.1":
+"@eslint-community/regexpp@^4.10.0", "@eslint-community/regexpp@^4.12.1":
+  version "4.12.1"
+
+"@eslint-community/regexpp@^4.5.1", "@eslint-community/regexpp@^4.6.1":
   version "4.11.1"
   resolved "https://registry.npmjs.org/@eslint-community/regexpp/-/regexpp-4.11.1.tgz"
   integrity sha512-m4DVN9ZqskZoLU5GlWZadwDnYo3vAEydiUayB9widCl9ffWx2IvPnp6n3on5rJmziJSw9Bv+Z3ChDVdMwXCY8Q==
 
-"@eslint/config-array@^0.18.0":
-  version "0.18.0"
-  resolved "https://registry.npmjs.org/@eslint/config-array/-/config-array-0.18.0.tgz"
-  integrity sha512-fTxvnS1sRMu3+JjXwJG0j/i4RT9u4qJ+lqS/yCGap4lH4zZGzQ7tu+xZqQmcMZq5OBZDL4QRxQzRjkWcGt8IVw==
+"@eslint/config-array@^0.19.2":
+  version "0.19.2"
   dependencies:
-    "@eslint/object-schema" "^2.1.4"
+    "@eslint/object-schema" "^2.1.6"
     debug "^4.3.1"
     minimatch "^3.1.2"
 
-"@eslint/core@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.npmjs.org/@eslint/core/-/core-0.6.0.tgz"
-  integrity sha512-8I2Q8ykA4J0x0o7cg67FPVnehcqWTBehu/lmY+bolPFHGjh49YzGBMXTvpqVgEbBdvNCSxj6iFgiIyHzf03lzg==
+"@eslint/core@^0.12.0":
+  version "0.12.0"
+  dependencies:
+    "@types/json-schema" "^7.0.15"
 
 "@eslint/eslintrc@^2.1.4":
   version "2.1.4"
@@ -1209,10 +1210,8 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@eslint/eslintrc@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/@eslint/eslintrc/-/eslintrc-3.1.0.tgz"
-  integrity sha512-4Bfj15dVJdoy3RfZmmo86RK1Fwzn6SstsvK9JS+BaVKqC6QQQQyXekNaC+g+LKNgkQ+2VhGAzm6hO40AhMR3zQ==
+"@eslint/eslintrc@^3.3.0":
+  version "3.3.0"
   dependencies:
     ajv "^6.12.4"
     debug "^4.3.2"
@@ -1229,21 +1228,16 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.57.1.tgz"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@eslint/js@9.12.0":
-  version "9.12.0"
-  resolved "https://registry.npmjs.org/@eslint/js/-/js-9.12.0.tgz"
-  integrity sha512-eohesHH8WFRUprDNyEREgqP6beG6htMeUYeCpkEgBCieCMme5r9zFWjzAJp//9S+Kub4rqE+jXe9Cp1a7IYIIA==
+"@eslint/js@9.21.0":
+  version "9.21.0"
 
-"@eslint/object-schema@^2.1.4":
-  version "2.1.4"
-  resolved "https://registry.npmjs.org/@eslint/object-schema/-/object-schema-2.1.4.tgz"
-  integrity sha512-BsWiH1yFGjXXS2yvrf5LyuoSIIbPrGUWob917o+BTKuZ7qJdxX8aJLRxs1fS9n6r7vESrq1OUqb68dANcFXuQQ==
+"@eslint/object-schema@^2.1.6":
+  version "2.1.6"
 
-"@eslint/plugin-kit@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@eslint/plugin-kit/-/plugin-kit-0.2.0.tgz"
-  integrity sha512-vH9PiIMMwvhCx31Af3HiGzsVNULDbyVkHXwlemn/B0TFj/00ho3y55efXrUZTfQipxoHC5u4xq6zblww1zm1Ig==
+"@eslint/plugin-kit@^0.2.7":
+  version "0.2.7"
   dependencies:
+    "@eslint/core" "^0.12.0"
     levn "^0.4.1"
 
 "@fastify/busboy@^1.2.1":
@@ -1898,17 +1892,13 @@
     protobufjs "^7.2.5"
     yargs "^17.7.2"
 
-"@humanfs/core@^0.19.0":
-  version "0.19.0"
-  resolved "https://registry.npmjs.org/@humanfs/core/-/core-0.19.0.tgz"
-  integrity sha512-2cbWIHbZVEweE853g8jymffCA+NCMiuqeECeBBLm8dg2oFdjuGJhgN4UAbI+6v0CKbbhvtXA4qV8YR5Ji86nmw==
+"@humanfs/core@^0.19.1":
+  version "0.19.1"
 
-"@humanfs/node@^0.16.5":
-  version "0.16.5"
-  resolved "https://registry.npmjs.org/@humanfs/node/-/node-0.16.5.tgz"
-  integrity sha512-KSPA4umqSG4LHYRodq31VDwKAvaTF4xmVlzM8Aeh4PlU1JQ3IG0wiA8C25d3RQ9nJyM3mBHyI53K06VVL/oFFg==
+"@humanfs/node@^0.16.6":
+  version "0.16.6"
   dependencies:
-    "@humanfs/core" "^0.19.0"
+    "@humanfs/core" "^0.19.1"
     "@humanwhocodes/retry" "^0.3.0"
 
 "@humanwhocodes/config-array@^0.13.0":
@@ -1930,10 +1920,13 @@
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-2.0.3.tgz"
   integrity sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==
 
-"@humanwhocodes/retry@^0.3.0", "@humanwhocodes/retry@^0.3.1":
+"@humanwhocodes/retry@^0.3.0":
   version "0.3.1"
   resolved "https://registry.npmjs.org/@humanwhocodes/retry/-/retry-0.3.1.tgz"
   integrity sha512-JBxkERygn7Bv/GbN5Rv8Ul6LVknS+5Bp6RgDC/O8gEBU/yeH5Ui5C/OlWrTb6qct7LjjfT6Re2NxB0ln0yYybA==
+
+"@humanwhocodes/retry@^0.4.2":
+  version "0.4.2"
 
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
@@ -2115,22 +2108,13 @@
   dependencies:
     glob "7.1.7"
 
-"@next/eslint-plugin-next@14.2.15":
-  version "14.2.15"
-  resolved "https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-14.2.15.tgz"
-  integrity sha512-pKU0iqKRBlFB/ocOI1Ip2CkKePZpYpnw5bEItEkuZ/Nr9FQP1+p7VDWr4VfOdff4i9bFmrOaeaU1bFEyAcxiMQ==
+"@next/eslint-plugin-next@15.2.1":
+  version "15.2.1"
   dependencies:
-    glob "10.3.10"
+    fast-glob "3.3.1"
 
-"@next/swc-linux-x64-gnu@14.2.3":
+"@next/swc-darwin-arm64@14.2.3":
   version "14.2.3"
-  resolved "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-14.2.3.tgz"
-  integrity sha512-ENPiNnBNDInBLyUU5ii8PMQh+4XLr4pG51tOp6aJ9xqFQ2iRI6IH0Ds2yJkAzNV1CfyagcyzPfROMViS2wOZ9w==
-
-"@next/swc-linux-x64-musl@14.2.3":
-  version "14.2.3"
-  resolved "https://registry.npmjs.org/@next/swc-linux-x64-musl/-/swc-linux-x64-musl-14.2.3.tgz"
-  integrity sha512-BTAbq0LnCbF5MtoM7I/9UeUu/8ZBY0i8SFjUMCbPDOLv+un67e2JgyN4pmgfXBwy/I+RHu8q+k+MCkDN6P9ViQ==
 
 "@noble/curves@^1.3.0":
   version "1.6.0"
@@ -2185,15 +2169,8 @@
   resolved "https://registry.npmjs.org/@opentelemetry/api/-/api-1.9.0.tgz"
   integrity sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==
 
-"@parcel/watcher-linux-x64-glibc@2.4.1":
+"@parcel/watcher-darwin-arm64@2.4.1":
   version "2.4.1"
-  resolved "https://registry.npmjs.org/@parcel/watcher-linux-x64-glibc/-/watcher-linux-x64-glibc-2.4.1.tgz"
-  integrity sha512-s9O3fByZ/2pyYDPoLM6zt92yu6P4E39a03zvO0qCHOTjxmt3GHRMLuRZEWhWLASTMSrrnVNWdVI/+pUElJBBBg==
-
-"@parcel/watcher-linux-x64-musl@2.4.1":
-  version "2.4.1"
-  resolved "https://registry.npmjs.org/@parcel/watcher-linux-x64-musl/-/watcher-linux-x64-musl-2.4.1.tgz"
-  integrity sha512-L2nZTYR1myLNST0O632g0Dx9LyMNHrn6TOt76sYxWLdff3cB22/GZX2UPtJnaqQPdCRoszoY5rcOj4oMTtp5fQ==
 
 "@parcel/watcher-wasm@^2.4.1":
   version "2.4.1"
@@ -3190,10 +3167,13 @@
   resolved "https://registry.npmjs.org/@rtsao/scc/-/scc-1.1.0.tgz"
   integrity sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==
 
-"@rushstack/eslint-patch@^1.1.3", "@rushstack/eslint-patch@^1.3.3":
+"@rushstack/eslint-patch@^1.1.3":
   version "1.10.4"
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.10.4.tgz"
   integrity sha512-WJgX9nzTqknM393q1QJDJmoW28kUfEnybeTfVNcNAPnIx210RXm2DiXiHzfNPJNIUUb1tJnz/l4QGtJ30PgWmA==
+
+"@rushstack/eslint-patch@^1.10.3":
+  version "1.10.5"
 
 "@scure/base@^1.1.1", "@scure/base@^1.1.5", "@scure/base@^1.1.7":
   version "1.1.9"
@@ -4046,9 +4026,9 @@
     undici-types "~6.19.2"
 
 "@types/node@latest":
-  version "22.7.5"
+  version "22.13.9"
   dependencies:
-    undici-types "~6.19.2"
+    undici-types "~6.20.0"
 
 "@types/polylabel@^1.0.5":
   version "1.1.3"
@@ -4677,10 +4657,13 @@ acorn-jsx@^5.3.2:
   resolved "https://registry.npmjs.org/acorn-jsx/-/acorn-jsx-5.3.2.tgz"
   integrity sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==
 
-acorn@^8.11.3, acorn@^8.12.0, acorn@^8.9.0:
+acorn@^8.11.3, acorn@^8.9.0:
   version "8.12.1"
   resolved "https://registry.npmjs.org/acorn/-/acorn-8.12.1.tgz"
   integrity sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==
+
+acorn@^8.14.0:
+  version "8.14.0"
 
 agent-base@^7.0.2:
   version "7.1.1"
@@ -4840,6 +4823,9 @@ aria-query@^5.0.0:
   resolved "https://registry.npmjs.org/aria-query/-/aria-query-5.3.1.tgz"
   integrity sha512-Z/ZeOgVl7bcSYZ/u/rh0fOpvEpq//LZmdbkXyc7syVzjPAhfOa9ebsdTSjEBDU4vs5nC98Kfduj1uFo0qyET3g==
 
+aria-query@^5.3.2:
+  version "5.3.2"
+
 aria-query@~5.1.3, aria-query@5.1.3:
   version "5.1.3"
   resolved "https://registry.npmjs.org/aria-query/-/aria-query-5.1.3.tgz"
@@ -4854,6 +4840,12 @@ array-buffer-byte-length@^1.0.0, array-buffer-byte-length@^1.0.1:
   dependencies:
     call-bind "^1.0.5"
     is-array-buffer "^3.0.4"
+
+array-buffer-byte-length@^1.0.2:
+  version "1.0.2"
+  dependencies:
+    call-bound "^1.0.3"
+    is-array-buffer "^3.0.5"
 
 array-includes@^3.1.6, array-includes@^3.1.8:
   version "3.1.8"
@@ -4921,6 +4913,14 @@ array.prototype.flatmap@^1.3.2:
     es-abstract "^1.22.1"
     es-shim-unscopables "^1.0.0"
 
+array.prototype.flatmap@^1.3.3:
+  version "1.3.3"
+  dependencies:
+    call-bind "^1.0.8"
+    define-properties "^1.2.1"
+    es-abstract "^1.23.5"
+    es-shim-unscopables "^1.0.2"
+
 array.prototype.tosorted@^1.1.4:
   version "1.1.4"
   resolved "https://registry.npmjs.org/array.prototype.tosorted/-/array.prototype.tosorted-1.1.4.tgz"
@@ -4945,6 +4945,17 @@ arraybuffer.prototype.slice@^1.0.3:
     get-intrinsic "^1.2.3"
     is-array-buffer "^3.0.4"
     is-shared-array-buffer "^1.0.2"
+
+arraybuffer.prototype.slice@^1.0.4:
+  version "1.0.4"
+  dependencies:
+    array-buffer-byte-length "^1.0.1"
+    call-bind "^1.0.8"
+    define-properties "^1.2.1"
+    es-abstract "^1.23.5"
+    es-errors "^1.3.0"
+    get-intrinsic "^1.2.6"
+    is-array-buffer "^3.0.4"
 
 arrify@^2.0.0:
   version "2.0.1"
@@ -5164,6 +5175,12 @@ busboy@1.6.0:
   dependencies:
     streamsearch "^1.1.0"
 
+call-bind-apply-helpers@^1.0.0, call-bind-apply-helpers@^1.0.1, call-bind-apply-helpers@^1.0.2:
+  version "1.0.2"
+  dependencies:
+    es-errors "^1.3.0"
+    function-bind "^1.1.2"
+
 call-bind@^1.0.2, call-bind@^1.0.5, call-bind@^1.0.6, call-bind@^1.0.7:
   version "1.0.7"
   resolved "https://registry.npmjs.org/call-bind/-/call-bind-1.0.7.tgz"
@@ -5174,6 +5191,20 @@ call-bind@^1.0.2, call-bind@^1.0.5, call-bind@^1.0.6, call-bind@^1.0.7:
     function-bind "^1.1.2"
     get-intrinsic "^1.2.4"
     set-function-length "^1.2.1"
+
+call-bind@^1.0.8:
+  version "1.0.8"
+  dependencies:
+    call-bind-apply-helpers "^1.0.0"
+    es-define-property "^1.0.0"
+    get-intrinsic "^1.2.4"
+    set-function-length "^1.2.2"
+
+call-bound@^1.0.2, call-bound@^1.0.3:
+  version "1.0.4"
+  dependencies:
+    call-bind-apply-helpers "^1.0.2"
+    get-intrinsic "^1.3.0"
 
 callsites@^3.0.0:
   version "3.1.0"
@@ -5545,6 +5576,13 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
   resolved "https://registry.npmjs.org/cross-spawn/-/cross-spawn-7.0.3.tgz"
   integrity sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==
+  dependencies:
+    path-key "^3.1.0"
+    shebang-command "^2.0.0"
+    which "^2.0.1"
+
+cross-spawn@^7.0.6:
+  version "7.0.6"
   dependencies:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
@@ -5965,6 +6003,13 @@ data-view-buffer@^1.0.1:
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
 
+data-view-buffer@^1.0.2:
+  version "1.0.2"
+  dependencies:
+    call-bound "^1.0.3"
+    es-errors "^1.3.0"
+    is-data-view "^1.0.2"
+
 data-view-byte-length@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/data-view-byte-length/-/data-view-byte-length-1.0.1.tgz"
@@ -5974,12 +6019,26 @@ data-view-byte-length@^1.0.1:
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
 
+data-view-byte-length@^1.0.2:
+  version "1.0.2"
+  dependencies:
+    call-bound "^1.0.3"
+    es-errors "^1.3.0"
+    is-data-view "^1.0.2"
+
 data-view-byte-offset@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/data-view-byte-offset/-/data-view-byte-offset-1.0.0.tgz"
   integrity sha512-t/Ygsytq+R995EJ5PZlD4Cu56sWa8InXySaViRzw9apusqsOO2bQP+SbYzAhR0pFKoB+43lYy8rWban9JSuXnA==
   dependencies:
     call-bind "^1.0.6"
+    es-errors "^1.3.0"
+    is-data-view "^1.0.1"
+
+data-view-byte-offset@^1.0.1:
+  version "1.0.1"
+  dependencies:
+    call-bound "^1.0.2"
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
 
@@ -6243,6 +6302,13 @@ dot-case@^3.0.4:
     no-case "^3.0.4"
     tslib "^2.0.3"
 
+dunder-proto@^1.0.0, dunder-proto@^1.0.1:
+  version "1.0.1"
+  dependencies:
+    call-bind-apply-helpers "^1.0.1"
+    es-errors "^1.3.0"
+    gopd "^1.2.0"
+
 duplexify@^4.0.0, duplexify@^4.1.2, duplexify@^4.1.3:
   version "4.1.3"
   resolved "https://registry.npmjs.org/duplexify/-/duplexify-4.1.3.tgz"
@@ -6389,12 +6455,125 @@ es-abstract@^1.17.5, es-abstract@^1.22.1, es-abstract@^1.22.3, es-abstract@^1.23
     unbox-primitive "^1.0.2"
     which-typed-array "^1.1.15"
 
+es-abstract@^1.23.5, es-abstract@^1.23.9:
+  version "1.23.9"
+  dependencies:
+    array-buffer-byte-length "^1.0.2"
+    arraybuffer.prototype.slice "^1.0.4"
+    available-typed-arrays "^1.0.7"
+    call-bind "^1.0.8"
+    call-bound "^1.0.3"
+    data-view-buffer "^1.0.2"
+    data-view-byte-length "^1.0.2"
+    data-view-byte-offset "^1.0.1"
+    es-define-property "^1.0.1"
+    es-errors "^1.3.0"
+    es-object-atoms "^1.0.0"
+    es-set-tostringtag "^2.1.0"
+    es-to-primitive "^1.3.0"
+    function.prototype.name "^1.1.8"
+    get-intrinsic "^1.2.7"
+    get-proto "^1.0.0"
+    get-symbol-description "^1.1.0"
+    globalthis "^1.0.4"
+    gopd "^1.2.0"
+    has-property-descriptors "^1.0.2"
+    has-proto "^1.2.0"
+    has-symbols "^1.1.0"
+    hasown "^2.0.2"
+    internal-slot "^1.1.0"
+    is-array-buffer "^3.0.5"
+    is-callable "^1.2.7"
+    is-data-view "^1.0.2"
+    is-regex "^1.2.1"
+    is-shared-array-buffer "^1.0.4"
+    is-string "^1.1.1"
+    is-typed-array "^1.1.15"
+    is-weakref "^1.1.0"
+    math-intrinsics "^1.1.0"
+    object-inspect "^1.13.3"
+    object-keys "^1.1.1"
+    object.assign "^4.1.7"
+    own-keys "^1.0.1"
+    regexp.prototype.flags "^1.5.3"
+    safe-array-concat "^1.1.3"
+    safe-push-apply "^1.0.0"
+    safe-regex-test "^1.1.0"
+    set-proto "^1.0.0"
+    string.prototype.trim "^1.2.10"
+    string.prototype.trimend "^1.0.9"
+    string.prototype.trimstart "^1.0.8"
+    typed-array-buffer "^1.0.3"
+    typed-array-byte-length "^1.0.3"
+    typed-array-byte-offset "^1.0.4"
+    typed-array-length "^1.0.7"
+    unbox-primitive "^1.1.0"
+    which-typed-array "^1.1.18"
+
+es-abstract@^1.23.6:
+  version "1.23.9"
+  dependencies:
+    array-buffer-byte-length "^1.0.2"
+    arraybuffer.prototype.slice "^1.0.4"
+    available-typed-arrays "^1.0.7"
+    call-bind "^1.0.8"
+    call-bound "^1.0.3"
+    data-view-buffer "^1.0.2"
+    data-view-byte-length "^1.0.2"
+    data-view-byte-offset "^1.0.1"
+    es-define-property "^1.0.1"
+    es-errors "^1.3.0"
+    es-object-atoms "^1.0.0"
+    es-set-tostringtag "^2.1.0"
+    es-to-primitive "^1.3.0"
+    function.prototype.name "^1.1.8"
+    get-intrinsic "^1.2.7"
+    get-proto "^1.0.0"
+    get-symbol-description "^1.1.0"
+    globalthis "^1.0.4"
+    gopd "^1.2.0"
+    has-property-descriptors "^1.0.2"
+    has-proto "^1.2.0"
+    has-symbols "^1.1.0"
+    hasown "^2.0.2"
+    internal-slot "^1.1.0"
+    is-array-buffer "^3.0.5"
+    is-callable "^1.2.7"
+    is-data-view "^1.0.2"
+    is-regex "^1.2.1"
+    is-shared-array-buffer "^1.0.4"
+    is-string "^1.1.1"
+    is-typed-array "^1.1.15"
+    is-weakref "^1.1.0"
+    math-intrinsics "^1.1.0"
+    object-inspect "^1.13.3"
+    object-keys "^1.1.1"
+    object.assign "^4.1.7"
+    own-keys "^1.0.1"
+    regexp.prototype.flags "^1.5.3"
+    safe-array-concat "^1.1.3"
+    safe-push-apply "^1.0.0"
+    safe-regex-test "^1.1.0"
+    set-proto "^1.0.0"
+    string.prototype.trim "^1.2.10"
+    string.prototype.trimend "^1.0.9"
+    string.prototype.trimstart "^1.0.8"
+    typed-array-buffer "^1.0.3"
+    typed-array-byte-length "^1.0.3"
+    typed-array-byte-offset "^1.0.4"
+    typed-array-length "^1.0.7"
+    unbox-primitive "^1.1.0"
+    which-typed-array "^1.1.18"
+
 es-define-property@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/es-define-property/-/es-define-property-1.0.0.tgz"
   integrity sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==
   dependencies:
     get-intrinsic "^1.2.4"
+
+es-define-property@^1.0.1:
+  version "1.0.1"
 
 es-errors@^1.2.1, es-errors@^1.3.0:
   version "1.3.0"
@@ -6436,10 +6615,35 @@ es-iterator-helpers@^1.0.19:
     iterator.prototype "^1.1.2"
     safe-array-concat "^1.1.2"
 
+es-iterator-helpers@^1.2.1:
+  version "1.2.1"
+  dependencies:
+    call-bind "^1.0.8"
+    call-bound "^1.0.3"
+    define-properties "^1.2.1"
+    es-abstract "^1.23.6"
+    es-errors "^1.3.0"
+    es-set-tostringtag "^2.0.3"
+    function-bind "^1.1.2"
+    get-intrinsic "^1.2.6"
+    globalthis "^1.0.4"
+    gopd "^1.2.0"
+    has-property-descriptors "^1.0.2"
+    has-proto "^1.2.0"
+    has-symbols "^1.1.0"
+    internal-slot "^1.1.0"
+    iterator.prototype "^1.1.4"
+    safe-array-concat "^1.1.3"
+
 es-object-atoms@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/es-object-atoms/-/es-object-atoms-1.0.0.tgz"
   integrity sha512-MZ4iQ6JwHOBQjahnjwaC1ZtIBH+2ohjamzAO3oaHcXYup7qxjF2fixyH+Q71voWHeOkI2q/TnJao/KfXYIZWbw==
+  dependencies:
+    es-errors "^1.3.0"
+
+es-object-atoms@^1.1.1:
+  version "1.1.1"
   dependencies:
     es-errors "^1.3.0"
 
@@ -6451,6 +6655,14 @@ es-set-tostringtag@^2.0.3:
     get-intrinsic "^1.2.4"
     has-tostringtag "^1.0.2"
     hasown "^2.0.1"
+
+es-set-tostringtag@^2.1.0:
+  version "2.1.0"
+  dependencies:
+    es-errors "^1.3.0"
+    get-intrinsic "^1.2.6"
+    has-tostringtag "^1.0.2"
+    hasown "^2.0.2"
 
 es-shim-unscopables@^1.0.0, es-shim-unscopables@^1.0.2:
   version "1.0.2"
@@ -6467,6 +6679,13 @@ es-to-primitive@^1.2.1:
     is-callable "^1.1.4"
     is-date-object "^1.0.1"
     is-symbol "^1.0.2"
+
+es-to-primitive@^1.3.0:
+  version "1.3.0"
+  dependencies:
+    is-callable "^1.2.7"
+    is-date-object "^1.0.5"
+    is-symbol "^1.0.4"
 
 esbuild@^0.19.2:
   version "0.19.12"
@@ -6576,18 +6795,18 @@ eslint-config-next@13.4.19:
     eslint-plugin-react-hooks "^4.5.0 || 5.0.0-canary-7118f5dd7-20230705"
 
 eslint-config-next@latest:
-  version "14.2.15"
+  version "15.2.1"
   dependencies:
-    "@next/eslint-plugin-next" "14.2.15"
-    "@rushstack/eslint-patch" "^1.3.3"
+    "@next/eslint-plugin-next" "15.2.1"
+    "@rushstack/eslint-patch" "^1.10.3"
     "@typescript-eslint/eslint-plugin" "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0"
     "@typescript-eslint/parser" "^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0"
     eslint-import-resolver-node "^0.3.6"
     eslint-import-resolver-typescript "^3.5.2"
-    eslint-plugin-import "^2.28.1"
-    eslint-plugin-jsx-a11y "^6.7.1"
-    eslint-plugin-react "^7.33.2"
-    eslint-plugin-react-hooks "^4.5.0 || 5.0.0-canary-7118f5dd7-20230705"
+    eslint-plugin-import "^2.31.0"
+    eslint-plugin-jsx-a11y "^6.10.0"
+    eslint-plugin-react "^7.37.0"
+    eslint-plugin-react-hooks "^5.0.0"
 
 eslint-config-prettier@^9.0.0:
   version "9.1.0"
@@ -6622,6 +6841,11 @@ eslint-import-resolver-typescript@^3.5.2:
     is-bun-module "^1.0.2"
     is-glob "^4.0.3"
 
+eslint-module-utils@^2.12.0:
+  version "2.12.0"
+  dependencies:
+    debug "^3.2.7"
+
 eslint-module-utils@^2.8.1, eslint-module-utils@^2.9.0:
   version "2.11.0"
   resolved "https://registry.npmjs.org/eslint-module-utils/-/eslint-module-utils-2.11.0.tgz"
@@ -6642,7 +6866,7 @@ eslint-plugin-header@^3.1.1:
   resolved "https://registry.npmjs.org/eslint-plugin-header/-/eslint-plugin-header-3.1.1.tgz"
   integrity sha512-9vlKxuJ4qf793CmeeSrZUvVClw6amtpghq3CuWcB5cUNnWHQhgcqy5eF8oVKFk1G3Y/CbchGfEaw3wiIJaNmVg==
 
-eslint-plugin-import@^2.26.0, eslint-plugin-import@^2.28.1:
+eslint-plugin-import@^2.26.0:
   version "2.30.0"
   resolved "https://registry.npmjs.org/eslint-plugin-import/-/eslint-plugin-import-2.30.0.tgz"
   integrity sha512-/mHNE9jINJfiD2EKkg1BKyPyUk4zdnT54YgbOgfjSakWT5oyX/qQLVNTkehyfpcMxZXMy1zyonZ2v7hZTX43Yw==
@@ -6666,7 +6890,49 @@ eslint-plugin-import@^2.26.0, eslint-plugin-import@^2.28.1:
     semver "^6.3.1"
     tsconfig-paths "^3.15.0"
 
-eslint-plugin-jsx-a11y@^6.5.1, eslint-plugin-jsx-a11y@^6.7.1:
+eslint-plugin-import@^2.31.0:
+  version "2.31.0"
+  dependencies:
+    "@rtsao/scc" "^1.1.0"
+    array-includes "^3.1.8"
+    array.prototype.findlastindex "^1.2.5"
+    array.prototype.flat "^1.3.2"
+    array.prototype.flatmap "^1.3.2"
+    debug "^3.2.7"
+    doctrine "^2.1.0"
+    eslint-import-resolver-node "^0.3.9"
+    eslint-module-utils "^2.12.0"
+    hasown "^2.0.2"
+    is-core-module "^2.15.1"
+    is-glob "^4.0.3"
+    minimatch "^3.1.2"
+    object.fromentries "^2.0.8"
+    object.groupby "^1.0.3"
+    object.values "^1.2.0"
+    semver "^6.3.1"
+    string.prototype.trimend "^1.0.8"
+    tsconfig-paths "^3.15.0"
+
+eslint-plugin-jsx-a11y@^6.10.0:
+  version "6.10.2"
+  dependencies:
+    aria-query "^5.3.2"
+    array-includes "^3.1.8"
+    array.prototype.flatmap "^1.3.2"
+    ast-types-flow "^0.0.8"
+    axe-core "^4.10.0"
+    axobject-query "^4.1.0"
+    damerau-levenshtein "^1.0.8"
+    emoji-regex "^9.2.2"
+    hasown "^2.0.2"
+    jsx-ast-utils "^3.3.5"
+    language-tags "^1.0.9"
+    minimatch "^3.1.2"
+    object.fromentries "^2.0.8"
+    safe-regex-test "^1.0.3"
+    string.prototype.includes "^2.0.1"
+
+eslint-plugin-jsx-a11y@^6.5.1:
   version "6.10.0"
   resolved "https://registry.npmjs.org/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-6.10.0.tgz"
   integrity sha512-ySOHvXX8eSN6zz8Bywacm7CvGNhUtdjvqfQDVe6020TUK34Cywkw7m0KsCCk1Qtm9G1FayfTN1/7mMYnYO2Bhg==
@@ -6718,6 +6984,9 @@ eslint-plugin-promise@^6.1.1:
   resolved "https://registry.npmjs.org/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.6.2.tgz"
   integrity sha512-QzliNJq4GinDBcD8gPB5v0wh6g8q3SUi6EFF0x8N/BL9PoVs0atuGc47ozMRyOWAKdwaZ5OnbOEa3WR+dSGKuQ==
 
+eslint-plugin-react-hooks@^5.0.0:
+  version "5.2.0"
+
 eslint-plugin-react@^7.31.7, eslint-plugin-react@^7.33.2:
   version "7.36.1"
   resolved "https://registry.npmjs.org/eslint-plugin-react/-/eslint-plugin-react-7.36.1.tgz"
@@ -6740,6 +7009,28 @@ eslint-plugin-react@^7.31.7, eslint-plugin-react@^7.33.2:
     resolve "^2.0.0-next.5"
     semver "^6.3.1"
     string.prototype.matchall "^4.0.11"
+    string.prototype.repeat "^1.0.0"
+
+eslint-plugin-react@^7.37.0:
+  version "7.37.4"
+  dependencies:
+    array-includes "^3.1.8"
+    array.prototype.findlast "^1.2.5"
+    array.prototype.flatmap "^1.3.3"
+    array.prototype.tosorted "^1.1.4"
+    doctrine "^2.1.0"
+    es-iterator-helpers "^1.2.1"
+    estraverse "^5.3.0"
+    hasown "^2.0.2"
+    jsx-ast-utils "^2.4.1 || ^3.0.0"
+    minimatch "^3.1.2"
+    object.entries "^1.1.8"
+    object.fromentries "^2.0.8"
+    object.values "^1.2.1"
+    prop-types "^15.8.1"
+    resolve "^2.0.0-next.5"
+    semver "^6.3.1"
+    string.prototype.matchall "^4.0.12"
     string.prototype.repeat "^1.0.0"
 
 eslint-plugin-security@^1.7.1:
@@ -6767,10 +7058,8 @@ eslint-scope@^7.2.2:
     esrecurse "^4.3.0"
     estraverse "^5.2.0"
 
-eslint-scope@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.npmjs.org/eslint-scope/-/eslint-scope-8.1.0.tgz"
-  integrity sha512-14dSvlhaVhKKsa9Fx1l8A17s7ah7Ef7wCakJ10LYk6+GYmP9yDti2oq2SEwcyndt6knfcZyhyxwY3i9yL78EQw==
+eslint-scope@^8.2.0:
+  version "8.2.0"
   dependencies:
     esrecurse "^4.3.0"
     estraverse "^5.2.0"
@@ -6792,10 +7081,8 @@ eslint-visitor-keys@^3.3.0, eslint-visitor-keys@^3.4.1, eslint-visitor-keys@^3.4
   resolved "https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-3.4.3.tgz"
   integrity sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag==
 
-eslint-visitor-keys@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-4.1.0.tgz"
-  integrity sha512-Q7lok0mqMUSf5a/AdAZkA5a/gHcO6snwQClVNNvFKCAVlxXucdU8pKydU5ZVZjBx5xr37vGbFFWtLQYreLzrZg==
+eslint-visitor-keys@^4.2.0:
+  version "4.2.0"
 
 eslint@^8.49.0:
   version "8.57.1"
@@ -6842,28 +7129,28 @@ eslint@^8.49.0:
     text-table "^0.2.0"
 
 eslint@latest:
-  version "9.12.0"
+  version "9.21.0"
   dependencies:
     "@eslint-community/eslint-utils" "^4.2.0"
-    "@eslint-community/regexpp" "^4.11.0"
-    "@eslint/config-array" "^0.18.0"
-    "@eslint/core" "^0.6.0"
-    "@eslint/eslintrc" "^3.1.0"
-    "@eslint/js" "9.12.0"
-    "@eslint/plugin-kit" "^0.2.0"
-    "@humanfs/node" "^0.16.5"
+    "@eslint-community/regexpp" "^4.12.1"
+    "@eslint/config-array" "^0.19.2"
+    "@eslint/core" "^0.12.0"
+    "@eslint/eslintrc" "^3.3.0"
+    "@eslint/js" "9.21.0"
+    "@eslint/plugin-kit" "^0.2.7"
+    "@humanfs/node" "^0.16.6"
     "@humanwhocodes/module-importer" "^1.0.1"
-    "@humanwhocodes/retry" "^0.3.1"
+    "@humanwhocodes/retry" "^0.4.2"
     "@types/estree" "^1.0.6"
     "@types/json-schema" "^7.0.15"
     ajv "^6.12.4"
     chalk "^4.0.0"
-    cross-spawn "^7.0.2"
+    cross-spawn "^7.0.6"
     debug "^4.3.2"
     escape-string-regexp "^4.0.0"
-    eslint-scope "^8.1.0"
-    eslint-visitor-keys "^4.1.0"
-    espree "^10.2.0"
+    eslint-scope "^8.2.0"
+    eslint-visitor-keys "^4.2.0"
+    espree "^10.3.0"
     esquery "^1.5.0"
     esutils "^2.0.2"
     fast-deep-equal "^3.1.3"
@@ -6878,16 +7165,13 @@ eslint@latest:
     minimatch "^3.1.2"
     natural-compare "^1.4.0"
     optionator "^0.9.3"
-    text-table "^0.2.0"
 
-espree@^10.0.1, espree@^10.2.0:
-  version "10.2.0"
-  resolved "https://registry.npmjs.org/espree/-/espree-10.2.0.tgz"
-  integrity sha512-upbkBJbckcCNBDBDXEbuhjbP68n+scUd3k/U2EkyM9nw+I/jPiL4cLF/Al06CF96wRltFda16sxDFrxsI1v0/g==
+espree@^10.0.1, espree@^10.3.0:
+  version "10.3.0"
   dependencies:
-    acorn "^8.12.0"
+    acorn "^8.14.0"
     acorn-jsx "^5.3.2"
-    eslint-visitor-keys "^4.1.0"
+    eslint-visitor-keys "^4.2.0"
 
 espree@^9.0.0:
   version "9.6.1"
@@ -7033,6 +7317,15 @@ fast-glob@^3.2.12, fast-glob@^3.2.9, fast-glob@^3.3.2:
   version "3.3.2"
   resolved "https://registry.npmjs.org/fast-glob/-/fast-glob-3.3.2.tgz"
   integrity sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==
+  dependencies:
+    "@nodelib/fs.stat" "^2.0.2"
+    "@nodelib/fs.walk" "^1.2.3"
+    glob-parent "^5.1.2"
+    merge2 "^1.3.0"
+    micromatch "^4.0.4"
+
+fast-glob@3.3.1:
+  version "3.3.1"
   dependencies:
     "@nodelib/fs.stat" "^2.0.2"
     "@nodelib/fs.walk" "^1.2.3"
@@ -7347,6 +7640,9 @@ fs.realpath@^1.0.0:
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
+fsevents@~2.3.2:
+  version "2.3.3"
+
 function-bind@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz"
@@ -7361,6 +7657,16 @@ function.prototype.name@^1.1.6:
     define-properties "^1.2.0"
     es-abstract "^1.22.1"
     functions-have-names "^1.2.3"
+
+function.prototype.name@^1.1.8:
+  version "1.1.8"
+  dependencies:
+    call-bind "^1.0.8"
+    call-bound "^1.0.3"
+    define-properties "^1.2.1"
+    functions-have-names "^1.2.3"
+    hasown "^2.0.2"
+    is-callable "^1.2.7"
 
 functional-red-black-tree@^1.0.1:
   version "1.0.1"
@@ -7430,10 +7736,58 @@ get-intrinsic@^1.1.3, get-intrinsic@^1.2.1, get-intrinsic@^1.2.2, get-intrinsic@
     has-symbols "^1.0.3"
     hasown "^2.0.0"
 
+get-intrinsic@^1.2.5:
+  version "1.3.0"
+  dependencies:
+    call-bind-apply-helpers "^1.0.2"
+    es-define-property "^1.0.1"
+    es-errors "^1.3.0"
+    es-object-atoms "^1.1.1"
+    function-bind "^1.1.2"
+    get-proto "^1.0.1"
+    gopd "^1.2.0"
+    has-symbols "^1.1.0"
+    hasown "^2.0.2"
+    math-intrinsics "^1.1.0"
+
+get-intrinsic@^1.2.6, get-intrinsic@^1.2.7:
+  version "1.3.0"
+  dependencies:
+    call-bind-apply-helpers "^1.0.2"
+    es-define-property "^1.0.1"
+    es-errors "^1.3.0"
+    es-object-atoms "^1.1.1"
+    function-bind "^1.1.2"
+    get-proto "^1.0.1"
+    gopd "^1.2.0"
+    has-symbols "^1.1.0"
+    hasown "^2.0.2"
+    math-intrinsics "^1.1.0"
+
+get-intrinsic@^1.3.0:
+  version "1.3.0"
+  dependencies:
+    call-bind-apply-helpers "^1.0.2"
+    es-define-property "^1.0.1"
+    es-errors "^1.3.0"
+    es-object-atoms "^1.1.1"
+    function-bind "^1.1.2"
+    get-proto "^1.0.1"
+    gopd "^1.2.0"
+    has-symbols "^1.1.0"
+    hasown "^2.0.2"
+    math-intrinsics "^1.1.0"
+
 get-port-please@^3.1.2:
   version "3.1.2"
   resolved "https://registry.npmjs.org/get-port-please/-/get-port-please-3.1.2.tgz"
   integrity sha512-Gxc29eLs1fbn6LQ4jSU4vXjlwyZhF5HsGuMAa7gqBP4Rw4yxxltyDUuF5MBclFzDTXO+ACchGQoeela4DSfzdQ==
+
+get-proto@^1.0.0, get-proto@^1.0.1:
+  version "1.0.1"
+  dependencies:
+    dunder-proto "^1.0.1"
+    es-object-atoms "^1.0.0"
 
 get-stream@^6.0.1:
   version "6.0.1"
@@ -7454,6 +7808,13 @@ get-symbol-description@^1.0.2:
     es-errors "^1.3.0"
     get-intrinsic "^1.2.4"
 
+get-symbol-description@^1.1.0:
+  version "1.1.0"
+  dependencies:
+    call-bound "^1.0.3"
+    es-errors "^1.3.0"
+    get-intrinsic "^1.2.6"
+
 get-tsconfig@^4.7.5:
   version "4.8.1"
   resolved "https://registry.npmjs.org/get-tsconfig/-/get-tsconfig-4.8.1.tgz"
@@ -7461,7 +7822,7 @@ get-tsconfig@^4.7.5:
   dependencies:
     resolve-pkg-maps "^1.0.0"
 
-glob-parent@^5.1.2:
+glob-parent@^5.1.2, glob-parent@~5.1.2:
   version "5.1.2"
   resolved "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.2.tgz"
   integrity sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==
@@ -7474,13 +7835,6 @@ glob-parent@^6.0.2:
   integrity sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==
   dependencies:
     is-glob "^4.0.3"
-
-glob-parent@~5.1.2:
-  version "5.1.2"
-  resolved "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.2.tgz"
-  integrity sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==
-  dependencies:
-    is-glob "^4.0.1"
 
 glob@^10.3.10:
   version "10.4.5"
@@ -7517,17 +7871,6 @@ glob@^8.0.0:
     minimatch "^5.0.1"
     once "^1.3.0"
 
-glob@10.3.10:
-  version "10.3.10"
-  resolved "https://registry.npmjs.org/glob/-/glob-10.3.10.tgz"
-  integrity sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==
-  dependencies:
-    foreground-child "^3.1.0"
-    jackspeak "^2.3.5"
-    minimatch "^9.0.1"
-    minipass "^5.0.0 || ^6.0.2 || ^7.0.0"
-    path-scurry "^1.10.1"
-
 glob@7.1.7:
   version "7.1.7"
   resolved "https://registry.npmjs.org/glob/-/glob-7.1.7.tgz"
@@ -7557,7 +7900,7 @@ globals@^14.0.0:
   resolved "https://registry.npmjs.org/globals/-/globals-14.0.0.tgz"
   integrity sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==
 
-globalthis@^1.0.3:
+globalthis@^1.0.3, globalthis@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npmjs.org/globalthis/-/globalthis-1.0.4.tgz"
   integrity sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==
@@ -7669,6 +8012,9 @@ gopd@^1.0.1:
   dependencies:
     get-intrinsic "^1.1.3"
 
+gopd@^1.2.0:
+  version "1.2.0"
+
 graceful-fs@^4.1.2, graceful-fs@^4.1.9, graceful-fs@^4.2.11, graceful-fs@^4.2.4, graceful-fs@^4.2.9:
   version "4.2.11"
   resolved "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.11.tgz"
@@ -7739,10 +8085,18 @@ has-proto@^1.0.1, has-proto@^1.0.3:
   resolved "https://registry.npmjs.org/has-proto/-/has-proto-1.0.3.tgz"
   integrity sha512-SJ1amZAJUiZS+PhsVLf5tGydlaVB8EdFpaSO4gmiUKUOxk8qzn5AIy4ZeJUmh22znIdk/uMAUT2pl3FxzVUH+Q==
 
+has-proto@^1.2.0:
+  version "1.2.0"
+  dependencies:
+    dunder-proto "^1.0.0"
+
 has-symbols@^1.0.2, has-symbols@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/has-symbols/-/has-symbols-1.0.3.tgz"
   integrity sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==
+
+has-symbols@^1.1.0:
+  version "1.1.0"
 
 has-tostringtag@^1.0.0, has-tostringtag@^1.0.2:
   version "1.0.2"
@@ -8019,6 +8373,13 @@ internal-slot@^1.0.4, internal-slot@^1.0.7:
     hasown "^2.0.0"
     side-channel "^1.0.4"
 
+internal-slot@^1.1.0:
+  version "1.1.0"
+  dependencies:
+    es-errors "^1.3.0"
+    hasown "^2.0.2"
+    side-channel "^1.1.0"
+
 internmap@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/internmap/-/internmap-1.0.1.tgz"
@@ -8063,6 +8424,13 @@ is-array-buffer@^3.0.2, is-array-buffer@^3.0.4:
     call-bind "^1.0.2"
     get-intrinsic "^1.2.1"
 
+is-array-buffer@^3.0.5:
+  version "3.0.5"
+  dependencies:
+    call-bind "^1.0.8"
+    call-bound "^1.0.3"
+    get-intrinsic "^1.2.6"
+
 is-arrayish@^0.2.1:
   version "0.2.1"
   resolved "https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.2.1.tgz"
@@ -8082,6 +8450,11 @@ is-bigint@^1.0.1:
   dependencies:
     has-bigints "^1.0.1"
 
+is-bigint@^1.1.0:
+  version "1.1.0"
+  dependencies:
+    has-bigints "^1.0.2"
+
 is-binary-path@~2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/is-binary-path/-/is-binary-path-2.1.0.tgz"
@@ -8096,6 +8469,12 @@ is-boolean-object@^1.1.0:
   dependencies:
     call-bind "^1.0.2"
     has-tostringtag "^1.0.0"
+
+is-boolean-object@^1.2.1:
+  version "1.2.2"
+  dependencies:
+    call-bound "^1.0.3"
+    has-tostringtag "^1.0.2"
 
 is-bun-module@^1.0.2:
   version "1.2.1"
@@ -8123,12 +8502,25 @@ is-data-view@^1.0.1:
   dependencies:
     is-typed-array "^1.1.13"
 
+is-data-view@^1.0.2:
+  version "1.0.2"
+  dependencies:
+    call-bound "^1.0.2"
+    get-intrinsic "^1.2.6"
+    is-typed-array "^1.1.13"
+
 is-date-object@^1.0.1, is-date-object@^1.0.5:
   version "1.0.5"
   resolved "https://registry.npmjs.org/is-date-object/-/is-date-object-1.0.5.tgz"
   integrity sha512-9YQaSxsAiSwcvS33MBk3wTCVnWK+HhF8VZR2jRxehM16QcVOdHqPn4VPHmRK4lSr38n9JriurInLcP90xsYNfQ==
   dependencies:
     has-tostringtag "^1.0.0"
+
+is-date-object@^1.1.0:
+  version "1.1.0"
+  dependencies:
+    call-bound "^1.0.2"
+    has-tostringtag "^1.0.2"
 
 is-decimal@^2.0.0:
   version "2.0.1"
@@ -8151,6 +8543,11 @@ is-finalizationregistry@^1.0.2:
   integrity sha512-0by5vtUJs8iFQb5TYUHHPudOR+qXYIMKtiUzvLIZITZUjknFmziyBJuLhVRc+Ds0dREFlskDNJKYIdIzu/9pfw==
   dependencies:
     call-bind "^1.0.2"
+
+is-finalizationregistry@^1.1.0:
+  version "1.1.1"
+  dependencies:
+    call-bound "^1.0.3"
 
 is-fullwidth-code-point@^3.0.0:
   version "3.0.0"
@@ -8205,6 +8602,12 @@ is-number-object@^1.0.4:
   dependencies:
     has-tostringtag "^1.0.0"
 
+is-number-object@^1.1.1:
+  version "1.1.1"
+  dependencies:
+    call-bound "^1.0.3"
+    has-tostringtag "^1.0.2"
+
 is-number@^7.0.0:
   version "7.0.0"
   resolved "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz"
@@ -8228,6 +8631,14 @@ is-regex@^1.1.4:
     call-bind "^1.0.2"
     has-tostringtag "^1.0.0"
 
+is-regex@^1.2.1:
+  version "1.2.1"
+  dependencies:
+    call-bound "^1.0.2"
+    gopd "^1.2.0"
+    has-tostringtag "^1.0.2"
+    hasown "^2.0.2"
+
 is-set@^2.0.2, is-set@^2.0.3:
   version "2.0.3"
   resolved "https://registry.npmjs.org/is-set/-/is-set-2.0.3.tgz"
@@ -8239,6 +8650,11 @@ is-shared-array-buffer@^1.0.2, is-shared-array-buffer@^1.0.3:
   integrity sha512-nA2hv5XIhLR3uVzDDfCIknerhx8XUKnstuOERPNNIinXG7v9u+ohXF67vxm4TPTEPU6lm61ZkwP3c9PCB97rhg==
   dependencies:
     call-bind "^1.0.7"
+
+is-shared-array-buffer@^1.0.4:
+  version "1.0.4"
+  dependencies:
+    call-bound "^1.0.3"
 
 is-stream-ended@^0.1.4:
   version "0.1.4"
@@ -8262,6 +8678,12 @@ is-string@^1.0.5, is-string@^1.0.7:
   dependencies:
     has-tostringtag "^1.0.0"
 
+is-string@^1.1.1:
+  version "1.1.1"
+  dependencies:
+    call-bound "^1.0.3"
+    has-tostringtag "^1.0.2"
+
 is-symbol@^1.0.2, is-symbol@^1.0.3:
   version "1.0.4"
   resolved "https://registry.npmjs.org/is-symbol/-/is-symbol-1.0.4.tgz"
@@ -8269,12 +8691,24 @@ is-symbol@^1.0.2, is-symbol@^1.0.3:
   dependencies:
     has-symbols "^1.0.2"
 
+is-symbol@^1.0.4, is-symbol@^1.1.1:
+  version "1.1.1"
+  dependencies:
+    call-bound "^1.0.2"
+    has-symbols "^1.1.0"
+    safe-regex-test "^1.1.0"
+
 is-typed-array@^1.1.13:
   version "1.1.13"
   resolved "https://registry.npmjs.org/is-typed-array/-/is-typed-array-1.1.13.tgz"
   integrity sha512-uZ25/bUAlUY5fR4OKT4rZQEBrzQWYV9ZJYGGsUmEJ6thodVJ1HX64ePQ6Z0qPWP+m+Uq6e9UugrE38jeYsDSMw==
   dependencies:
     which-typed-array "^1.1.14"
+
+is-typed-array@^1.1.14, is-typed-array@^1.1.15:
+  version "1.1.15"
+  dependencies:
+    which-typed-array "^1.1.16"
 
 is-weakmap@^2.0.2:
   version "2.0.2"
@@ -8287,6 +8721,11 @@ is-weakref@^1.0.2:
   integrity sha512-qctsuLZmIQ0+vSSMfoVvyFe2+GSEvnmZ2ezTup1SBse9+twCCeial6EEi3Nc2KFcf6+qz2FBPnjXsk8xhKSaPQ==
   dependencies:
     call-bind "^1.0.2"
+
+is-weakref@^1.1.0:
+  version "1.1.1"
+  dependencies:
+    call-bound "^1.0.3"
 
 is-weakset@^2.0.3:
   version "2.0.3"
@@ -8331,14 +8770,15 @@ iterator.prototype@^1.1.2:
     reflect.getprototypeof "^1.0.4"
     set-function-name "^2.0.1"
 
-jackspeak@^2.3.5:
-  version "2.3.6"
-  resolved "https://registry.npmjs.org/jackspeak/-/jackspeak-2.3.6.tgz"
-  integrity sha512-N3yCS/NegsOBokc8GAdM8UcmfsKiSS8cipheD/nivzr700H+nsMOxJjQnvwOcRYVuFkdH0wGUvW2WbXGmrZGbQ==
+iterator.prototype@^1.1.4:
+  version "1.1.5"
   dependencies:
-    "@isaacs/cliui" "^8.0.2"
-  optionalDependencies:
-    "@pkgjs/parseargs" "^0.11.0"
+    define-data-property "^1.1.4"
+    es-object-atoms "^1.0.0"
+    get-intrinsic "^1.2.6"
+    get-proto "^1.0.0"
+    has-symbols "^1.1.0"
+    set-function-name "^2.0.2"
 
 jackspeak@^3.1.2:
   version "3.4.3"
@@ -8996,6 +9436,9 @@ markerjs2@^2.29.4:
   resolved "https://registry.npmjs.org/markerjs2/-/markerjs2-2.32.2.tgz"
   integrity sha512-clxO3ODp0Ks6tKxgu4mlMXiljkRL0wW/U3UaNBMKehXLIdDX0fg+VNiCCqGXV7iqHDYJdEGeXgdLiQEHg8EpwQ==
 
+math-intrinsics@^1.1.0:
+  version "1.1.0"
+
 mdast-util-find-and-replace@^3.0.0:
   version "3.0.1"
   resolved "https://registry.npmjs.org/mdast-util-find-and-replace/-/mdast-util-find-and-replace-3.0.1.tgz"
@@ -9555,13 +9998,6 @@ minimatch@^5.0.1:
   dependencies:
     brace-expansion "^2.0.1"
 
-minimatch@^9.0.1:
-  version "9.0.5"
-  resolved "https://registry.npmjs.org/minimatch/-/minimatch-9.0.5.tgz"
-  integrity sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==
-  dependencies:
-    brace-expansion "^2.0.1"
-
 minimatch@^9.0.4:
   version "9.0.5"
   resolved "https://registry.npmjs.org/minimatch/-/minimatch-9.0.5.tgz"
@@ -9830,10 +10266,8 @@ object-hash@^3.0.0:
   resolved "https://registry.npmjs.org/object-hash/-/object-hash-3.0.0.tgz"
   integrity sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==
 
-object-inspect@^1.13.1:
-  version "1.13.2"
-  resolved "https://registry.npmjs.org/object-inspect/-/object-inspect-1.13.2.tgz"
-  integrity sha512-IRZSRuzJiynemAXPYtPe5BoI/RESNYR7TYm50MC5Mqbd3Jmw5y790sErYw3V6SryFJD64b74qQQs9wn5Bg/k3g==
+object-inspect@^1.13.1, object-inspect@^1.13.3:
+  version "1.13.4"
 
 object-is@^1.1.5:
   version "1.1.6"
@@ -9856,6 +10290,16 @@ object.assign@^4.1.2, object.assign@^4.1.4, object.assign@^4.1.5:
     call-bind "^1.0.5"
     define-properties "^1.2.1"
     has-symbols "^1.0.3"
+    object-keys "^1.1.1"
+
+object.assign@^4.1.7:
+  version "4.1.7"
+  dependencies:
+    call-bind "^1.0.8"
+    call-bound "^1.0.3"
+    define-properties "^1.2.1"
+    es-object-atoms "^1.0.0"
+    has-symbols "^1.1.0"
     object-keys "^1.1.1"
 
 object.entries@^1.1.5, object.entries@^1.1.8:
@@ -9892,6 +10336,14 @@ object.values@^1.1.6, object.values@^1.2.0:
   integrity sha512-yBYjY9QX2hnRmZHAjG/f13MzmBzxzYgQhFrke06TTyKY5zSTEqkOeukBzIdVA3j3ulu8Qa3MbVFShV7T2RmGtQ==
   dependencies:
     call-bind "^1.0.7"
+    define-properties "^1.2.1"
+    es-object-atoms "^1.0.0"
+
+object.values@^1.2.1:
+  version "1.2.1"
+  dependencies:
+    call-bind "^1.0.8"
+    call-bound "^1.0.3"
     define-properties "^1.2.1"
     es-object-atoms "^1.0.0"
 
@@ -9970,6 +10422,13 @@ otpauth@^9.1.5:
   integrity sha512-KixtXWN9RGdS8WHPfDo7qsOYiivCbl+VeLBT+7HBTtJebBO6aXr/bpZXr+TwY2COecdY82VeBghm31mLYQVZlQ==
   dependencies:
     "@noble/hashes" "1.4.0"
+
+own-keys@^1.0.1:
+  version "1.0.1"
+  dependencies:
+    get-intrinsic "^1.2.6"
+    object-keys "^1.1.1"
+    safe-push-apply "^1.0.0"
 
 p-limit@^2.2.0:
   version "2.3.0"
@@ -10095,7 +10554,7 @@ path-parse@^1.0.7:
   resolved "https://registry.npmjs.org/path-parse/-/path-parse-1.0.7.tgz"
   integrity sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==
 
-path-scurry@^1.10.1, path-scurry@^1.11.1:
+path-scurry@^1.11.1:
   version "1.11.1"
   resolved "https://registry.npmjs.org/path-scurry/-/path-scurry-1.11.1.tgz"
   integrity sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==
@@ -11068,6 +11527,18 @@ reflect.getprototypeof@^1.0.4:
     globalthis "^1.0.3"
     which-builtin-type "^1.1.3"
 
+reflect.getprototypeof@^1.0.6, reflect.getprototypeof@^1.0.9:
+  version "1.0.10"
+  dependencies:
+    call-bind "^1.0.8"
+    define-properties "^1.2.1"
+    es-abstract "^1.23.9"
+    es-errors "^1.3.0"
+    es-object-atoms "^1.0.0"
+    get-intrinsic "^1.2.7"
+    get-proto "^1.0.1"
+    which-builtin-type "^1.2.1"
+
 regenerate-unicode-properties@^10.1.0:
   version "10.2.0"
   resolved "https://registry.npmjs.org/regenerate-unicode-properties/-/regenerate-unicode-properties-10.2.0.tgz"
@@ -11106,6 +11577,16 @@ regexp.prototype.flags@^1.5.1, regexp.prototype.flags@^1.5.2:
     define-properties "^1.2.1"
     es-errors "^1.3.0"
     set-function-name "^2.0.1"
+
+regexp.prototype.flags@^1.5.3:
+  version "1.5.4"
+  dependencies:
+    call-bind "^1.0.8"
+    define-properties "^1.2.1"
+    es-errors "^1.3.0"
+    get-proto "^1.0.1"
+    gopd "^1.2.0"
+    set-function-name "^2.0.2"
 
 regexpp@^3.0.0:
   version "3.2.0"
@@ -11313,10 +11794,25 @@ safe-array-concat@^1.1.2:
     has-symbols "^1.0.3"
     isarray "^2.0.5"
 
+safe-array-concat@^1.1.3:
+  version "1.1.3"
+  dependencies:
+    call-bind "^1.0.8"
+    call-bound "^1.0.2"
+    get-intrinsic "^1.2.6"
+    has-symbols "^1.1.0"
+    isarray "^2.0.5"
+
 safe-buffer@^5.0.1, safe-buffer@^5.2.1, safe-buffer@>=5.1.0, safe-buffer@~5.2.0:
   version "5.2.1"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz"
   integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
+
+safe-push-apply@^1.0.0:
+  version "1.0.0"
+  dependencies:
+    es-errors "^1.3.0"
+    isarray "^2.0.5"
 
 safe-regex-test@^1.0.3:
   version "1.0.3"
@@ -11326,6 +11822,13 @@ safe-regex-test@^1.0.3:
     call-bind "^1.0.6"
     es-errors "^1.3.0"
     is-regex "^1.1.4"
+
+safe-regex-test@^1.1.0:
+  version "1.1.0"
+  dependencies:
+    call-bound "^1.0.2"
+    es-errors "^1.3.0"
+    is-regex "^1.2.1"
 
 safe-regex@^2.1.1:
   version "2.1.1"
@@ -11408,12 +11911,17 @@ semver@^6.1.0, semver@^6.3.0, semver@^6.3.1:
   resolved "https://registry.npmjs.org/semver/-/semver-6.3.1.tgz"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
 
-semver@^7.1.2, semver@^7.6.0:
+semver@^7.1.2:
   version "7.6.3"
   resolved "https://registry.npmjs.org/semver/-/semver-7.6.3.tgz"
   integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
 
 semver@^7.5.4:
+  version "7.6.3"
+  resolved "https://registry.npmjs.org/semver/-/semver-7.6.3.tgz"
+  integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
+
+semver@^7.6.0:
   version "7.6.3"
   resolved "https://registry.npmjs.org/semver/-/semver-7.6.3.tgz"
   integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
@@ -11433,7 +11941,7 @@ set-blocking@^2.0.0:
   resolved "https://registry.npmjs.org/set-blocking/-/set-blocking-2.0.0.tgz"
   integrity sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==
 
-set-function-length@^1.2.1:
+set-function-length@^1.2.1, set-function-length@^1.2.2:
   version "1.2.2"
   resolved "https://registry.npmjs.org/set-function-length/-/set-function-length-1.2.2.tgz"
   integrity sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==
@@ -11454,6 +11962,13 @@ set-function-name@^2.0.1, set-function-name@^2.0.2:
     es-errors "^1.3.0"
     functions-have-names "^1.2.3"
     has-property-descriptors "^1.0.2"
+
+set-proto@^1.0.0:
+  version "1.0.0"
+  dependencies:
+    dunder-proto "^1.0.1"
+    es-errors "^1.3.0"
+    es-object-atoms "^1.0.0"
 
 setimmediate@^1.0.5:
   version "1.0.5"
@@ -11494,6 +12009,29 @@ shell-quote@^1.6.1:
   resolved "https://registry.npmjs.org/shell-quote/-/shell-quote-1.8.1.tgz"
   integrity sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==
 
+side-channel-list@^1.0.0:
+  version "1.0.0"
+  dependencies:
+    es-errors "^1.3.0"
+    object-inspect "^1.13.3"
+
+side-channel-map@^1.0.1:
+  version "1.0.1"
+  dependencies:
+    call-bound "^1.0.2"
+    es-errors "^1.3.0"
+    get-intrinsic "^1.2.5"
+    object-inspect "^1.13.3"
+
+side-channel-weakmap@^1.0.2:
+  version "1.0.2"
+  dependencies:
+    call-bound "^1.0.2"
+    es-errors "^1.3.0"
+    get-intrinsic "^1.2.5"
+    object-inspect "^1.13.3"
+    side-channel-map "^1.0.1"
+
 side-channel@^1.0.4, side-channel@^1.0.6:
   version "1.0.6"
   resolved "https://registry.npmjs.org/side-channel/-/side-channel-1.0.6.tgz"
@@ -11503,6 +12041,15 @@ side-channel@^1.0.4, side-channel@^1.0.6:
     es-errors "^1.3.0"
     get-intrinsic "^1.2.4"
     object-inspect "^1.13.1"
+
+side-channel@^1.1.0:
+  version "1.1.0"
+  dependencies:
+    es-errors "^1.3.0"
+    object-inspect "^1.13.3"
+    side-channel-list "^1.0.0"
+    side-channel-map "^1.0.1"
+    side-channel-weakmap "^1.0.2"
 
 signal-exit@^3.0.2, signal-exit@^3.0.7:
   version "3.0.7"
@@ -11726,6 +12273,13 @@ string.prototype.includes@^2.0.0:
     define-properties "^1.1.3"
     es-abstract "^1.17.5"
 
+string.prototype.includes@^2.0.1:
+  version "2.0.1"
+  dependencies:
+    call-bind "^1.0.7"
+    define-properties "^1.2.1"
+    es-abstract "^1.23.3"
+
 string.prototype.matchall@^4.0.11:
   version "4.0.11"
   resolved "https://registry.npmjs.org/string.prototype.matchall/-/string.prototype.matchall-4.0.11.tgz"
@@ -11743,6 +12297,23 @@ string.prototype.matchall@^4.0.11:
     regexp.prototype.flags "^1.5.2"
     set-function-name "^2.0.2"
     side-channel "^1.0.6"
+
+string.prototype.matchall@^4.0.12:
+  version "4.0.12"
+  dependencies:
+    call-bind "^1.0.8"
+    call-bound "^1.0.3"
+    define-properties "^1.2.1"
+    es-abstract "^1.23.6"
+    es-errors "^1.3.0"
+    es-object-atoms "^1.0.0"
+    get-intrinsic "^1.2.6"
+    gopd "^1.2.0"
+    has-symbols "^1.1.0"
+    internal-slot "^1.1.0"
+    regexp.prototype.flags "^1.5.3"
+    set-function-name "^2.0.2"
+    side-channel "^1.1.0"
 
 string.prototype.padend@^3.0.0:
   version "3.1.6"
@@ -11762,6 +12333,17 @@ string.prototype.repeat@^1.0.0:
     define-properties "^1.1.3"
     es-abstract "^1.17.5"
 
+string.prototype.trim@^1.2.10:
+  version "1.2.10"
+  dependencies:
+    call-bind "^1.0.8"
+    call-bound "^1.0.2"
+    define-data-property "^1.1.4"
+    define-properties "^1.2.1"
+    es-abstract "^1.23.5"
+    es-object-atoms "^1.0.0"
+    has-property-descriptors "^1.0.2"
+
 string.prototype.trim@^1.2.9:
   version "1.2.9"
   resolved "https://registry.npmjs.org/string.prototype.trim/-/string.prototype.trim-1.2.9.tgz"
@@ -11778,6 +12360,14 @@ string.prototype.trimend@^1.0.8:
   integrity sha512-p73uL5VCHCO2BZZ6krwwQE3kCzM7NKmis8S//xEC6fQonchbum4eP6kR4DLEjQFO3Wnj3Fuo8NM0kOSjVdHjZQ==
   dependencies:
     call-bind "^1.0.7"
+    define-properties "^1.2.1"
+    es-object-atoms "^1.0.0"
+
+string.prototype.trimend@^1.0.9:
+  version "1.0.9"
+  dependencies:
+    call-bind "^1.0.8"
+    call-bound "^1.0.2"
     define-properties "^1.2.1"
     es-object-atoms "^1.0.0"
 
@@ -11895,7 +12485,7 @@ stylis@4.3.2:
   resolved "https://registry.npmjs.org/stylis/-/stylis-4.3.2.tgz"
   integrity sha512-bhtUjWd/z6ltJiQwg0dUfxEJ+W+jdqQd8TbWLWyeIJHlnsqmGLRFFd8e5mA0AZi/zx90smXRlN66YMTcaSFifg==
 
-"substrate@file:/home/ellu/house-of-common/polkasafe-next/packages/substrate":
+"substrate@file:/Users/aleemalam/Developer/House-of-common/polkasafe-next/packages/substrate":
   version "0.1.0"
   resolved "file:packages/substrate"
   dependencies:
@@ -11926,6 +12516,7 @@ stylis@4.3.2:
     date-fns "^3.3.1"
     dayjs "^1.11.11"
     deep-parse-json "^2.0.0"
+    esbuild "^0.19.2"
     fetch-ponyfill "^7.1.0"
     firebase-admin "^11.11.0"
     formidable-serverless "^1.1.1"
@@ -12254,6 +12845,13 @@ typed-array-buffer@^1.0.2:
     es-errors "^1.3.0"
     is-typed-array "^1.1.13"
 
+typed-array-buffer@^1.0.3:
+  version "1.0.3"
+  dependencies:
+    call-bound "^1.0.3"
+    es-errors "^1.3.0"
+    is-typed-array "^1.1.14"
+
 typed-array-byte-length@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/typed-array-byte-length/-/typed-array-byte-length-1.0.1.tgz"
@@ -12264,6 +12862,15 @@ typed-array-byte-length@^1.0.1:
     gopd "^1.0.1"
     has-proto "^1.0.3"
     is-typed-array "^1.1.13"
+
+typed-array-byte-length@^1.0.3:
+  version "1.0.3"
+  dependencies:
+    call-bind "^1.0.8"
+    for-each "^0.3.3"
+    gopd "^1.2.0"
+    has-proto "^1.2.0"
+    is-typed-array "^1.1.14"
 
 typed-array-byte-offset@^1.0.2:
   version "1.0.2"
@@ -12277,6 +12884,17 @@ typed-array-byte-offset@^1.0.2:
     has-proto "^1.0.3"
     is-typed-array "^1.1.13"
 
+typed-array-byte-offset@^1.0.4:
+  version "1.0.4"
+  dependencies:
+    available-typed-arrays "^1.0.7"
+    call-bind "^1.0.8"
+    for-each "^0.3.3"
+    gopd "^1.2.0"
+    has-proto "^1.2.0"
+    is-typed-array "^1.1.15"
+    reflect.getprototypeof "^1.0.9"
+
 typed-array-length@^1.0.6:
   version "1.0.6"
   resolved "https://registry.npmjs.org/typed-array-length/-/typed-array-length-1.0.6.tgz"
@@ -12289,13 +12907,23 @@ typed-array-length@^1.0.6:
     is-typed-array "^1.1.13"
     possible-typed-array-names "^1.0.0"
 
+typed-array-length@^1.0.7:
+  version "1.0.7"
+  dependencies:
+    call-bind "^1.0.7"
+    for-each "^0.3.3"
+    gopd "^1.0.1"
+    is-typed-array "^1.1.13"
+    possible-typed-array-names "^1.0.0"
+    reflect.getprototypeof "^1.0.6"
+
 typescript@5.1.6:
   version "5.1.6"
   resolved "https://registry.npmjs.org/typescript/-/typescript-5.1.6.tgz"
   integrity sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==
 
 typescript@latest:
-  version "5.6.3"
+  version "5.8.2"
 
 ua-parser-js@^1.0.35:
   version "1.0.39"
@@ -12341,6 +12969,14 @@ unbox-primitive@^1.0.2:
     has-symbols "^1.0.3"
     which-boxed-primitive "^1.0.2"
 
+unbox-primitive@^1.1.0:
+  version "1.1.0"
+  dependencies:
+    call-bound "^1.0.3"
+    has-bigints "^1.0.2"
+    has-symbols "^1.1.0"
+    which-boxed-primitive "^1.1.1"
+
 uncrypto@^0.1.3:
   version "0.1.3"
   resolved "https://registry.npmjs.org/uncrypto/-/uncrypto-0.1.3.tgz"
@@ -12355,6 +12991,9 @@ undici-types@~6.19.2:
   version "6.19.8"
   resolved "https://registry.npmjs.org/undici-types/-/undici-types-6.19.8.tgz"
   integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
+
+undici-types@~6.20.0:
+  version "6.20.0"
 
 undici@6.19.7:
   version "6.19.7"
@@ -12660,6 +13299,24 @@ which-boxed-primitive@^1.0.2:
     is-string "^1.0.5"
     is-symbol "^1.0.3"
 
+which-boxed-primitive@^1.1.0:
+  version "1.1.1"
+  dependencies:
+    is-bigint "^1.1.0"
+    is-boolean-object "^1.2.1"
+    is-number-object "^1.1.1"
+    is-string "^1.1.1"
+    is-symbol "^1.1.1"
+
+which-boxed-primitive@^1.1.1:
+  version "1.1.1"
+  dependencies:
+    is-bigint "^1.1.0"
+    is-boolean-object "^1.2.1"
+    is-number-object "^1.1.1"
+    is-string "^1.1.1"
+    is-symbol "^1.1.1"
+
 which-builtin-type@^1.1.3:
   version "1.1.4"
   resolved "https://registry.npmjs.org/which-builtin-type/-/which-builtin-type-1.1.4.tgz"
@@ -12677,6 +13334,23 @@ which-builtin-type@^1.1.3:
     which-boxed-primitive "^1.0.2"
     which-collection "^1.0.2"
     which-typed-array "^1.1.15"
+
+which-builtin-type@^1.2.1:
+  version "1.2.1"
+  dependencies:
+    call-bound "^1.0.2"
+    function.prototype.name "^1.1.6"
+    has-tostringtag "^1.0.2"
+    is-async-function "^2.0.0"
+    is-date-object "^1.1.0"
+    is-finalizationregistry "^1.1.0"
+    is-generator-function "^1.0.10"
+    is-regex "^1.2.1"
+    is-weakref "^1.0.2"
+    isarray "^2.0.5"
+    which-boxed-primitive "^1.1.0"
+    which-collection "^1.0.2"
+    which-typed-array "^1.1.16"
 
 which-collection@^1.0.1, which-collection@^1.0.2:
   version "1.0.2"
@@ -12702,6 +13376,16 @@ which-typed-array@^1.1.13, which-typed-array@^1.1.14, which-typed-array@^1.1.15:
     call-bind "^1.0.7"
     for-each "^0.3.3"
     gopd "^1.0.1"
+    has-tostringtag "^1.0.2"
+
+which-typed-array@^1.1.16, which-typed-array@^1.1.18:
+  version "1.1.18"
+  dependencies:
+    available-typed-arrays "^1.0.7"
+    call-bind "^1.0.8"
+    call-bound "^1.0.3"
+    for-each "^0.3.3"
+    gopd "^1.2.0"
     has-tostringtag "^1.0.2"
 
 which@^1.2.9:

@@ -6,6 +6,7 @@
 /* eslint-disable sort-keys */
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	fallback: false,
 	async headers() {
 		return [
 			{

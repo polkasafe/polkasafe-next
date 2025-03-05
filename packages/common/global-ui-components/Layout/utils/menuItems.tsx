@@ -3,7 +3,6 @@ import {
 	AddressBookIcon,
 	AppsIcon,
 	AssetsIcon,
-	ExchangeIcon,
 	HomeIcon,
 	SettingsIcon,
 	StarIcon,
@@ -28,12 +27,6 @@ export const menuItems = [
 		baseURL: '/assets',
 		icon: <AssetsIcon />,
 		title: 'Assets'
-	},
-	{
-		baseURL: '/exchange',
-		authenticated: true,
-		icon: <ExchangeIcon />,
-		title: 'Exchange'
 	},
 	{
 		baseURL: '/watch-list',
