@@ -34,3 +34,4 @@ export const assethubRococoApi = atom<IApiAtom | null>(null);
 export const availTuringApi = atom<IApiAtom | null>(null);
 export const westendApi = atom<IApiAtom | null>(null);
 export const peopleChainApi = atom<IApiAtom | null>(null);
+export const hydrationApi = atom<IApiAtom | null>(null);

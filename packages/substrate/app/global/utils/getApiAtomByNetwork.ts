@@ -12,7 +12,8 @@ import {
 	rococoApi,
 	assethubPolkadotApi,
 	assethubKusamaApi,
-	westendApi
+	westendApi,
+	hydrationApi
 } from '@substrate/app/atoms/api/apiAtom';
 
 export const getApiAtomByNetwork = (network: string) => {
@@ -37,6 +38,8 @@ export const getApiAtomByNetwork = (network: string) => {
 			return assethubKusamaApi;
 		case ENetwork.WESTEND:
 			return westendApi;
+		case ENetwork.HYDRATION:
+			return hydrationApi;
 		default:
 			return polkadotApi;
 	}

@@ -37,8 +37,12 @@ export const executeTx = async ({
 				console.log('Transaction is in block');
 				setStatus?.('Transaction is in block');
 				const blockHash = status.asInBlock.toString();
+				resolve(txHash.toString());
+				console.log(events, 'events');
+
 				// eslint-disable-next-line no-restricted-syntax
 				for (const { event } of events) {
+					console.log('event', event.method);
 					if (event.method === 'ExtrinsicSuccess') {
 						success = true;
 						resolve(txHash.toString());
@@ -55,21 +59,19 @@ export const executeTx = async ({
 							const errorMessageFallbackString = `${section}.${method} : ${docs.join(' ')}`;
 							console.log(errorMessageFallbackString, 'error module');
 							reject(`${errorMessageFallbackString} error module`);
+							onFailed?.(`${errorMessageFallbackString} error module`);
 						} else if (dispatchError?.isToken) {
 							console.log(`${dispatchError.type}.${dispatchError.asToken.type}`);
 							reject(`${dispatchError.type}.${dispatchError.asToken.type}`);
+							onFailed?.(`${dispatchError.type}.${dispatchError.asToken.type}`);
 						} else {
 							reject(`${dispatchError.type}`);
+							onFailed?.(`${dispatchError.type}`);
 						}
 					}
 				}
 			} else if (status.isFinalized) {
-				console.log(success, 'checking success');
-				if (success) {
-					console.log('sending success');
-					console.log(txHash.toHex(), txHash.toString(), txHash);
-					onSuccess?.({ txHash: txHash.toHex() || txHash.toString() || txHash, txIndex });
-				}
+				onSuccess?.({ txHash: txHash.toHex() || txHash.toString() || txHash, txIndex });
 				console.log(`Transaction has been included in blockHash ${status.asFinalized.toHex()}`);
 				console.log(`tx: https://${network}.subscan.io/extrinsic/${txHash}`);
 			}

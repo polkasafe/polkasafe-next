@@ -16,9 +16,10 @@ import {
 	assethubKusamaApi,
 	westendApi,
 	assethubRococoApi,
-	peopleChainApi
+	peopleChainApi,
+	hydrationApi
 } from '@substrate/app/atoms/api/apiAtom';
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 
 import { initialize } from 'avail-js-sdk';
@@ -29,18 +30,19 @@ import { checkAvailNetwork } from '@substrate/app/global/utils/checkAvailNetwork
 import { networkConstants } from '@common/constants/substrateNetworkConstant';
 
 function InitializeAPI() {
-	const [PolkadotApiAtom, setPolkadotApiAtom] = useAtom(polkadotApi);
-	const [PeoplePolkadotApiAtom, setPeoplePolkadotApiAtom] = useAtom(peopleChainApi);
-	const [AstarApiAtom, setAstarApiAtom] = useAtom(astarApi);
-	const [AvailApiAtom, setAvailApiAtom] = useAtom(availApi);
-	const [KhalaApiAtom, setKhalaApiAtom] = useAtom(khalaApi);
-	const [KusamaApiAtom, setKusamaApiAtom] = useAtom(kusamaApi);
-	const [PhalaApiAtom, setPhalaApiAtom] = useAtom(phalaApi);
-	const [RococoApiAtom, setRococoApiAtom] = useAtom(rococoApi);
-	const [AssethubPolkadotApiAtom, setAssethubPolkadotApiAtom] = useAtom(assethubPolkadotApi);
-	const [AssethubKusamaApiAtom, setAssethubKusamaApiAtom] = useAtom(assethubKusamaApi);
-	const [WestendApiAtom, setWestendApiAtom] = useAtom(westendApi);
-	const [AssethubRococoApiAtom, setAssethubRococoApiAtom] = useAtom(assethubRococoApi);
+	const setPolkadotApiAtom = useSetAtom(polkadotApi);
+	const setPeoplePolkadotApiAtom = useSetAtom(peopleChainApi);
+	const setAstarApiAtom = useSetAtom(astarApi);
+	const setAvailApiAtom = useSetAtom(availApi);
+	const setKhalaApiAtom = useSetAtom(khalaApi);
+	const setKusamaApiAtom = useSetAtom(kusamaApi);
+	const setPhalaApiAtom = useSetAtom(phalaApi);
+	const setRococoApiAtom = useSetAtom(rococoApi);
+	const setAssethubPolkadotApiAtom = useSetAtom(assethubPolkadotApi);
+	const setAssethubKusamaApiAtom = useSetAtom(assethubKusamaApi);
+	const setWestendApiAtom = useSetAtom(westendApi);
+	const setAssethubRococoApiAtom = useSetAtom(assethubRococoApi);
+	const setHydrationApiAtom = useSetAtom(hydrationApi);
 
 	const getApiSetter = (network: string) => {
 		switch (network) {
@@ -68,6 +70,8 @@ function InitializeAPI() {
 				return setAssethubRococoApiAtom;
 			case ENetwork.PEOPLE:
 				return setPeoplePolkadotApiAtom;
+			case ENetwork.HYDRATION:
+				return setHydrationApiAtom;
 			default:
 				return null;
 		}

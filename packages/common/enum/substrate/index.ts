@@ -15,7 +15,8 @@ export enum ENetwork {
 	POLKADOT_ASSETHUB = 'assethub-polkadot',
 	WESTEND = 'westend',
 	PEOPLE = 'people-polkadot',
-	CENTRIFUGE = 'centrifuge'
+	CENTRIFUGE = 'centrifuge',
+	HYDRATION = 'hydration'
 }
 
 export enum ETransactionOptions {

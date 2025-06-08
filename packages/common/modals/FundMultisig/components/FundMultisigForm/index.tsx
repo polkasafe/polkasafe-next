@@ -20,7 +20,7 @@ import Balance from '@common/global-ui-components/Balance';
 
 export function FundMultisigForm() {
 	const { multisigs, onFundMultisig, assets } = useDashboardContext();
-	const network = multisigs[0].network || ENetwork.POLKADOT; 
+	const network = multisigs[0].network || ENetwork.POLKADOT;
 	const [user] = useUser();
 	const { getApi } = useAllAPI();
 	const api = getApi(network);
@@ -87,9 +87,15 @@ export function FundMultisigForm() {
 									name={DEFAULT_USER_ADDRESS_NAME}
 									address={user?.address || ''}
 								/>
-								{api?.api && 
-									<Balance onChange={(balance) => setUserBalance(new BN(balance))} address={user?.address || ''} network={network} api={api?.api} apiReady={api?.apiReady}  />
-								}
+								{api?.api && (
+									<Balance
+										onChange={(balance) => setUserBalance(new BN(balance))}
+										address={user?.address || ''}
+										network={network}
+										api={api?.api}
+										apiReady={api?.apiReady}
+									/>
+								)}
 							</div>
 						</div>
 						<div>
@@ -115,7 +121,9 @@ export function FundMultisigForm() {
 								formName='amount'
 								required
 							/>
-							{!amount.isZero() && amount.gt(userBalance) && <span className='text-failure text-xs'>Insufficient Balance in Sender Account!</span>}
+							{!amount.isZero() && amount.gt(userBalance) && (
+								<span className='text-failure text-xs'>Insufficient Balance in Sender Account!</span>
+							)}
 						</div>
 
 						{/* {fundFormFields.map((field) => (

@@ -24,9 +24,9 @@ function Initializers({ userAddress, signature, organisations }: IInitializer) {
 				organisations={organisations}
 			/>
 			<InitializeOrganisation />
+			<InitializeAPI />
 			<InitializeAssets />
 			<InitializeWalletConnect />
-			<InitializeAPI />
 			<InitializeTransaction />
 		</>
 	);

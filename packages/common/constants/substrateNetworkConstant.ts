@@ -18,6 +18,7 @@ import rococoLogo from '@common/assets/parachains-logos/rococo-logo.jpeg';
 import phalaLogo from '@common/assets/parachains-logos/phala-logo.png';
 import khalaLogo from '@common/assets/parachains-logos/khala-logo.png';
 import availLogo from '@common/assets/parachains-logos/avail-logo.png';
+import hydrationLogo from '@common/assets/parachains-logos/hydration-logo.png';
 import { ENetwork } from '@common/enum/substrate';
 
 export const onrampTokens = {
@@ -301,6 +302,21 @@ export const networkConstants = {
 		blockExplorerUrl: 'https://centrifuge.subscan.io/',
 		rpcEndpoint: 'wss://centrifuge-rpc.dwellir.com',
 		chainId: 'polkadot:2031',
+		supportedTokens: []
+	},
+	[ENetwork.HYDRATION]: {
+		disabled: false,
+		key: ENetwork.HYDRATION,
+		name: 'Hydration',
+		blockTime: 6000,
+		logo: hydrationLogo,
+		ss58Format: 0,
+		subsquidUrl: '',
+		tokenDecimals: 12,
+		tokenSymbol: 'HYX',
+		blockExplorerUrl: 'https://hydration.subscan.io/',
+		rpcEndpoint: 'wss://hydration.dotters.network',
+		chainId: 'polkadot:91b171bb158e2d3848fa23a9f1ckk25182',
 		supportedTokens: []
 	}
 };
