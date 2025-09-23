@@ -109,7 +109,7 @@ export const networkConstants = {
 		tokenDecimals: 18,
 		tokenSymbol: 'ASTR',
 		blockExplorerUrl: 'https://astar.subscan.io/',
-		rpcEndpoint: 'wss://astar-rpc.dwellir.com/',
+		rpcEndpoint: 'wss://rpc.astar.network',
 		chainId: 'polkadot:9eb76c5184c4ab8679d2d5d819fdf90b',
 		supportedTokens: []
 	},
