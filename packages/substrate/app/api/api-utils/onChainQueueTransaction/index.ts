@@ -33,6 +33,8 @@ const getQueueTransactions = async (multisigAddress: string, network: string, pa
 			? queueData.multisig.filter((transaction: any) => transaction.status === 'Approval')
 			: [];
 
+	console.log('filteredQueueData', filteredQueueData);
+
 	const queuePromise = filteredQueueData.map(async (transaction: any) => {
 		const dbTransactionDoc = await TRANSACTION_COLLECTION.doc(transaction.call_hash).get();
 		const dbTransaction: IDBTransaction = dbTransactionDoc.data() as IDBTransaction;
